@@ -34,7 +34,8 @@ Suggests:
 Remotes:
     tidyverse/ggplot2,
     tidyverts/tsibble,
-    tidyverts/tsibbledata
+    tidyverts/tsibbledata,
+    tidyverts/fable
 ByteCompile: true
 VignetteBuilder: knitr
 License: GPL-3
