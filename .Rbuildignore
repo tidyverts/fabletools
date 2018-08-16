@@ -1,0 +1,6 @@
+^README\.Rmd$
+Makefile
+^fablelite\.Rproj$
+^\.Rproj\.user$
+^\.travis\.yml$
+^data-raw$
