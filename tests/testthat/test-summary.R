@@ -3,7 +3,7 @@ context("test-summary.R")
 test_that("Summarising mables / fables", {
   fit <- USAccDeaths %>% 
     as_tsibble() %>%
-    ETS(value)
+    fable::ETS(value)
   
   fc <- fit %>% 
     forecast()

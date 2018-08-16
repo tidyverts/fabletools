@@ -3,7 +3,7 @@ context("test-multivariate.R")
 test_that("multiple univariate", {
   fit <- tsibbledata::UKLungDeaths %>%
     gather(type, deaths, -index) %>%
-    ETS(deaths)
+    fable::ETS(deaths)
   
   expect_equal(sort(fit$type), c("fdeaths", "mdeaths"))
   expect_s3_class(fit$model, "lst_mdl")
