@@ -28,6 +28,8 @@ mable <- function(data, model, parsed_model){
 #' 
 #' @param x A mable-like object
 #' 
+#' @importFrom tibble new_tibble
+#' 
 #' @export
 new_mable <- function(x){
   stopifnot(!is.null(x[["model"]]))
