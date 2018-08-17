@@ -61,6 +61,11 @@ get_frequencies.numeric <- function(period, ...){
 }
 
 #' @export
+get_frequencies.NULL <- function(period, ...){
+  NULL
+}
+
+#' @export
 get_frequencies.character <- function(period, data, ...){
   frequencies <- common_periods(data)
   if(period == "all"){
