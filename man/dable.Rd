@@ -4,14 +4,14 @@
 \alias{dable}
 \title{Create a new dable}
 \usage{
-dable(key_vals, data, decomposition)
+dable(data, decomposition, parsed_model)
 }
 \arguments{
-\item{key_vals}{A list of values for keys}
+\item{data}{A tsibble used for decomposition}
 
-\item{data}{The nested data (one row per decomposition)}
+\item{decomposition}{The decomposition table}
 
-\item{decomposition}{A list of decompositions}
+\item{parsed_model}{The parsed decomposition from \code{parse_model}}
 }
 \description{
 Create a new dable

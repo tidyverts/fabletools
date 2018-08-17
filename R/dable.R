@@ -1,14 +1,41 @@
 #' Create a new dable
 #' 
-#' @param key_vals A list of values for keys
-#' @param data The nested data (one row per decomposition)
-#' @param decomposition A list of decompositions
+#' @param data A tsibble used for decomposition
+#' @param decomposition The decomposition table
+#' @param parsed_model The parsed decomposition from `parse_model`
 #'
-#' @importFrom tibble new_tibble
+#' @importFrom dplyr grouped_df
 #'
 #' @export
-dable <- function(key_vals, data, decomposition){
-  new_tibble(tibble(!!!key_vals, data=data, decomposition=enclass(decomposition, "lst_dcmp")), subclass = c("dable", "lst_ts"))
+dable <- function(data, decomposition, parsed_model){
+  key_vals <- as.list(data)[key_vars(data)]
+  data <- (data %>%
+             grouped_df(key_vars(.)) %>%
+             nest)$data
+  new_dable(tibble(!!!key_vals, data=data,
+                   decomposition=list(
+                     enclass(decomposition,
+                             model = parsed_model$model, 
+                             response = parsed_model$response,
+                             transformation = parsed_model$transformation)
+                   )
+  )
+  )
+}
+
+#' Constructor
+#' 
+#' A constructor function for producing a dable (most useful for extension package authors)
+#' 
+#' @param x A dable-like object
+#' 
+#' @export
+new_dable <- function(x){
+  stopifnot(!is.null(x[["decomposition"]]))
+  if(!inherits(x[["decomposition"]], "lst_dcmp")){
+    x[["decomposition"]] <- add_class(x[["decomposition"]], "lst_dcmp")
+  }
+  new_tibble(x, subclass = c("dable", "lst_ts"))
 }
 
 #' Coerce a dataset to a dable
