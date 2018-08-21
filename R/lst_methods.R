@@ -17,7 +17,7 @@ format.lst_mdl <- function(x, ...){
 
 #' @export
 c.lst_mdl <- function(x, ...){
-  enclass(NextMethod(), "lst_mdl")
+  add_class(NextMethod(), "lst_mdl")
 }
 
 #' @export
@@ -55,7 +55,7 @@ format.lst_fc <- function(x, ...){
 
 #' @export
 c.lst_fc <- function(x, ...){
-  enclass(NextMethod(), "lst_fc")
+  add_class(NextMethod(), "lst_fc")
 }
 
 #' @export
@@ -81,7 +81,7 @@ pillar_shaft.lst_dcmp <- function(x, ...){
 
 #' @export
 c.lst_dcmp <- function(x, ...){
-  enclass(NextMethod(), "lst_dcmp")
+  add_class(NextMethod(), "lst_dcmp")
 }
 
 #' @export
