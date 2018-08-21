@@ -90,6 +90,11 @@ model_sum <- function(x){
 }
 
 #' @export
+model_sum.default <- function(x){
+  obj_sum(x)
+}
+
+#' @export
 #' @importFrom forecast forecast
 #' @importFrom dplyr mutate
 forecast.mable <- function(object, ...){
