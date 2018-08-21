@@ -1,13 +1,9 @@
 context("test-multivariate.R")
 
 test_that("multiple univariate", {
-  fit <- UKLungDeaths %>%
-    fable::ETS(value)
+  expect_equal(sort(mbl_multi$key), c("fdeaths", "mdeaths"))
+  expect_s3_class(mbl_multi$model, "lst_mdl")
   
-  expect_equal(sort(fit$key), c("fdeaths", "mdeaths"))
-  expect_s3_class(fit$model, "lst_mdl")
-  fc <- fit %>% forecast
-  
-  expect_equal(sort(fc$key), c("fdeaths", "mdeaths"))
-  expect_s3_class(fc$forecast, "lst_fc")
+  expect_equal(sort(fbl_multi$key), c("fdeaths", "mdeaths"))
+  expect_s3_class(fbl_multi$forecast, "lst_fc")
 })
