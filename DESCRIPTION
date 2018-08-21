@@ -22,6 +22,7 @@ Imports:
     forecast
 Suggests:
     fable,
+    tsibblestats,
     knitr,
     colorspace,
     digest,
@@ -33,6 +34,7 @@ Suggests:
     covr
 Remotes:
     tidyverts/tsibble,
+    tidyverts/tsibblestats,
     tidyverts/fable
 ByteCompile: true
 VignetteBuilder: knitr
