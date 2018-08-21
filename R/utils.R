@@ -82,15 +82,6 @@ merge_pos_list <- function(...){
     set_names(names(dots_list(...)[[1]]))
 }
 
-flatten_first_args <- function(parsed_model){
-  parsed_model$args <- parsed_model$args %>%
-    map(~ if(length(.x) > 1){stop("Only one special of each type is allowed for this model")} else {.x[[1]]}) %>%
-    set_names(NULL) %>%
-    unlist(recursive = FALSE) %>%
-    as.list # If no args are provided, unlist removes list structure
-  parsed_model
-}
-
 #' @importFrom purrr imap reduce
 enclass <- function(x, subclass = NULL, ...){
   dots_list(...) %>%
