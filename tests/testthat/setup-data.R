@@ -10,3 +10,9 @@ fbl <- mbl %>% forecast
 mbl_multi <- UKLungDeaths %>%
   fable::ETS(value)
 fbl_multi <- mbl_multi %>% forecast
+
+dbl <- USAccDeaths %>%
+  tsibblestats::STL(value)
+
+dbl_multi <- UKLungDeaths %>%
+  tsibblestats::STL(value)
