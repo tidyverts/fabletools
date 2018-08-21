@@ -123,7 +123,7 @@ parse_model <- function(data, model, specials = NULL){
 #' @export
 parse_model_rhs <- function(model_rhs, data, specials = NULL){
   if(is.null(specials)){
-    return(list())
+    return(list(specials = NULL))
   }
   model_rhs %>%
     parse_specials(specials = specials) %>%
@@ -134,7 +134,7 @@ parse_model_rhs <- function(model_rhs, data, specials = NULL){
             }
           )
     ) %>%
-    list(args = .)
+    list(specials = .)
 }
 
 #' Parse the RHS of the model formula for transformations
