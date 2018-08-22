@@ -143,6 +143,15 @@ fitted.mable <- function(object, ...){
 #' @export
 fitted.fable <- fitted.mable
 
+#' @export
+interpolate.mable <- function(model, ...){
+  model %>%
+    transmute(!!!syms(key_vars(.)),
+              interpolated = map2(!!sym("model"), !!sym("data"), interpolate, ...)
+    ) %>%
+    unnest(key = syms(key_vars(model)))
+}
+
 #' @importFrom forecast getResponse
 #' @export
 getResponse.mable <- function(object, ...){
