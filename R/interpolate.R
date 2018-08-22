@@ -14,7 +14,7 @@ interpolate <- function(model, ...){
 }
 
 #' @export
-interpolate.default <- function(model, data){
+interpolate.default <- function(model, data, ...){
   resp <- expr_text(model%@%"response")
   missingVals <- is.na(data[[resp]])
   data[[resp]][missingVals] <- fitted(model)[missingVals]
