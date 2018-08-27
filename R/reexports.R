@@ -1,6 +1,6 @@
-#' @importFrom magrittr %>%
+#' @importFrom tsibble %>%
 #' @export
-magrittr::`%>%`
+tsibble::`%>%`
 
 #' @export
 tsibble::as_tsibble
