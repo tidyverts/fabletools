@@ -5,7 +5,6 @@ type_sum.lst_mdl <- function(x){
   "model"
 }
 
-#' @export
 pillar_shaft.lst_mdl <- function(x, ...){
   pillar::new_pillar_shaft_simple(format(x))
 }
@@ -36,7 +35,6 @@ type_sum.lst_fc <- function(x){
   "fc"
 }
 
-#' @export
 pillar_shaft.lst_fc <- function(x, ...){
   pillar::new_pillar_shaft_simple(format(x))
 }
@@ -74,7 +72,6 @@ type_sum.lst_dcmp <- function(x){
   "dcmp"
 }
 
-#' @export
 pillar_shaft.lst_dcmp <- function(x, ...){
   NextMethod()
 }

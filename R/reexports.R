@@ -5,13 +5,13 @@ tsibble::`%>%`
 #' @export
 tsibble::as_tsibble
 
-#' @importFrom pillar type_sum
+#' @importFrom tsibble type_sum
 #' @export
-pillar::type_sum
+tsibble::type_sum
 
-#' @importFrom pillar obj_sum
+#' @importFrom tibble obj_sum
 #' @export
-pillar::obj_sum
+tibble::obj_sum
 
 #' @importFrom forecast forecast
 #' @export

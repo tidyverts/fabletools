@@ -32,7 +32,6 @@ obj_sum.fcdist <- function(x) {
   rep("dist", length(x))
 }
 
-#' @export
 pillar_shaft.fcdist <- function(x, ...){
   pillar::new_pillar_shaft_simple(format(x), align = "left", min_width = 10)
 }

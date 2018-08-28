@@ -31,8 +31,8 @@ below to see their documentation.
 
   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}, \code{\link[ggplot2]{autolayer}}}
 
-  \item{pillar}{\code{\link[pillar]{type_sum}}, \code{\link[pillar]{obj_sum}}}
+  \item{tibble}{\code{\link[tibble]{obj_sum}}}
 
-  \item{tsibble}{\code{\link[tsibble]{\%>\%}}, \code{\link[tsibble]{as_tsibble}}}
+  \item{tsibble}{\code{\link[tsibble]{\%>\%}}, \code{\link[tsibble]{as_tsibble}}, \code{\link[tsibble]{type_sum}}}
 }}
 
