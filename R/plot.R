@@ -37,7 +37,7 @@ autoplot.fable <- function(object, level = c(80, 95), ...){
     warn("Only univariate forecast plots are currently supported. Plotting the first forecast.")
   }
   suppressMessages(autoplot(object$data[[1]], !!(object$model[[1]]%@%"response"))) +
-    autolayer(object, level = level, ...)
+    autolayer(new_fable(object[1,]), level = level, ...)
 }
 
 #' @export
