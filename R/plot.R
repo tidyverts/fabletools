@@ -96,8 +96,8 @@ fortify.fable <- function(object, level = c(80, 95), showgap = TRUE){
   )
   if(!is.null(level)){
     tsbl <- tsbl %>%
-      gather(level, hilo, -(!!index(.)), -mean) %>%
-      mutate(hilo = enclass(hilo, "hilo"),
+      gather(level, hilo, !!!syms(as.character(level))) %>%
+      mutate(hilo = add_class(hilo, "hilo"),
              level = level(hilo),
              lower = lower(hilo),
              upper = upper(hilo)) %>%
