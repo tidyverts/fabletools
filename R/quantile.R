@@ -15,6 +15,7 @@ new_fcdist <- function(f, ..., transformation = ~ .x, abbr = NULL){
   f_quo <- enquo(f)
   t_fn <- as_mapper(transformation)
   pmap(dots_list(...), list) %>%
+    set_names(NULL) %>% 
     enclass("fcdist",
             f = f,
             t = t_fn,
