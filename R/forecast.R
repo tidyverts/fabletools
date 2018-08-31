@@ -10,9 +10,6 @@ forecast.mable <- function(object, h = NULL, newdata = NULL, biasadj = TRUE, boo
   if(bootstrap){
     abort("bootstrapping is not yet supported")
   }
-  if(!missing(biasadj)){
-    abort("specifying biasadj is not yet supported")
-  }
   
   # Prepare newdata for forecast.model
   if(is.null(newdata)){
@@ -43,7 +40,12 @@ forecast.mable <- function(object, h = NULL, newdata = NULL, biasadj = TRUE, boo
   fc <- map2(object$model, fc,
              function(model, fc){
                bt <- invert_transformation((model%@%"fable")$transformation)
-               fc[["mean"]] <- biasadj(bt, fc[["se"]]^2)(fc[["mean"]])
+               if(isTRUE(biasadj)){
+                 fc[["mean"]] <- biasadj(bt, fc[["se"]]^2)(fc[["mean"]])
+               }
+               else{
+                 fc[["mean"]] <- bt(fc[["mean"]])
+               }
                transformation(fc[["distribution"]]) <- bt
                fc
              })
