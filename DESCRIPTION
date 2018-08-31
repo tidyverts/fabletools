@@ -8,33 +8,33 @@ Authors@R: c(
 Depends:
     R (>= 3.1.3),
 Imports:
-    rlang (>= 0.2.0),
-    purrr (>= 0.2.3),
-    tibble (>= 1.4.1),
-    tsibble (>= 0.1.5.9000),
     dplyr (>= 0.7.3),
+    forecast,
     ggplot2 (>= 3.0.0),
-    tidyselect,
-    stats,
     numDeriv,
-    forecast
+    purrr (>= 0.2.3),
+    rlang (>= 0.2.0),
+    stats,
+    tibble (>= 1.4.1),
+    tidyselect,
+    tsibble (>= 0.1.5.9000)
 Suggests:
-    fable,
-    tsibblestats,
-    knitr,
     colorspace,
-    pillar (>= 1.0.1),
-    digest,
-    scales,
-    rmarkdown,
-    testthat,
-    spelling,
+    covr,
     crayon,
-    covr
+    digest,
+    fable,
+    knitr,
+    pillar (>= 1.0.1),
+    tsibblestats,
+    rmarkdown,
+    scales,
+    spelling,
+    testthat
 Remotes:
+    tidyverts/fable
     tidyverts/tsibble,
     tidyverts/tsibblestats,
-    tidyverts/fable
 ByteCompile: true
 VignetteBuilder: knitr
 License: GPL-3
