@@ -4,16 +4,12 @@
 \alias{fable}
 \title{Create a new fable}
 \usage{
-fable(key_vals, data, model, forecast)
+fable(mable, forecast)
 }
 \arguments{
-\item{key_vals}{A set of key values}
+\item{mable}{The mable used to produce the forecasts}
 
-\item{data}{A tsibble used for modelling}
-
-\item{model}{The fitted model}
-
-\item{forecast}{A list of tsibble forecasts}
+\item{forecast}{A list of tsibble forecasts (from \code{construct_f})}
 }
 \description{
 Create a new fable

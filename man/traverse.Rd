@@ -4,8 +4,8 @@
 \alias{traverse}
 \title{Recursively traverse an object}
 \usage{
-traverse(x, f = ~.x, g = ~.x, h = ~.x, base = ~is_syntactic_literal(.x)
-  || is_symbol(.x))
+traverse(x, f = ~.x, g = ~.x, h = ~.x,
+  base = ~is_syntactic_literal(.x) || is_symbol(.x))
 }
 \arguments{
 \item{x}{The object to traverse}

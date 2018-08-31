@@ -23,6 +23,12 @@ new_fcdist <- function(f, ..., transformation = ~ .x, abbr = NULL){
             trans = !is.name(body(t_fn)))
 }
 
+`transformation<-` <- function(x, value){
+  attr(x, "t") <- value
+  attr(x, "trans") = !is.name(body(value))
+  x
+}
+
 #' @export
 type_sum.fcdist <- function(x){
   "dist"

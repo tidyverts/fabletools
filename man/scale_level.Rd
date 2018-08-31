@@ -96,3 +96,4 @@ This set of scales defines new scales for level geoms equivalent to the
 ones already defined by ggplot2. This allows the shade of confidence intervals
 to work with the legend output.
 }
+\concept{scale_level_*}

@@ -4,21 +4,13 @@
 \name{reexports}
 \alias{reexports}
 \alias{\%>\%}
-\alias{reexports}
 \alias{as_tsibble}
-\alias{reexports}
 \alias{type_sum}
-\alias{reexports}
 \alias{obj_sum}
-\alias{reexports}
 \alias{forecast}
-\alias{reexports}
 \alias{accuracy}
-\alias{reexports}
 \alias{getResponse}
-\alias{reexports}
 \alias{autoplot}
-\alias{reexports}
 \alias{autolayer}
 \title{Objects exported from other packages}
 \keyword{internal}

@@ -1,11 +1,11 @@
 #' Create a new fable
 #'
-#' @inheritParams mable
-#' @param key_vals A set of key values
-#' @param forecast A list of tsibble forecasts
+#' @param mable The mable used to produce the forecasts
+#' @param forecast A list of tsibble forecasts (from `construct_f`)
 #' @export
-fable <- function(key_vals, data, model, forecast){
-  new_fable(tibble(!!!key_vals, data=data, model=model, forecast=forecast))
+fable <- function(mable, forecast){
+  mable[["forecast"]] <- forecast
+  new_fable(mable)
 }
 
 #' Constructor
@@ -23,7 +23,7 @@ new_fable <- function(x){
   if(!inherits(x[["forecast"]], "lst_fc")){
     x[["forecast"]] <- add_class(x[["forecast"]], "lst_fc")
   }
-  new_tibble(x, subclass = c("fable", "lst_ts"))
+  add_class(x, c("fable", "lst_ts"))
 }
 
 
@@ -98,7 +98,7 @@ key.fable <- key.dable
 
 #' @export
 key_vars.fable <- function(x){
-  setdiff(colnames(x), c("data", "model", "forecast"))
+  setdiff(colnames(x), c("data", "model", "newdata", "forecast"))
 }
 
 #' @export

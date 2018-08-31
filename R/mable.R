@@ -14,9 +14,12 @@ mable <- function(data, model, parsed_model){
      nest)$data
   new_mable(tibble(!!!key_vals, data=data,
                    model=list(enclass(model,
-                                      model = parsed_model$model, 
-                                      response = parsed_model$response,
-                                      transformation = parsed_model$transformation)
+                                      fable = 
+                                        list(
+                                          model = parsed_model$model, 
+                                          response = parsed_model$response,
+                                          transformation = parsed_model$transformation)
+                                        )
                               )
                    )
   )
@@ -94,18 +97,6 @@ model_sum.default <- function(x){
   obj_sum(x)
 }
 
-#' @export
-#' @importFrom forecast forecast
-#' @importFrom dplyr mutate
-forecast.mable <- function(object, ...){
-  fable(
-    key_vals=as.list(object)[key_vars(object)],
-    data=object$data, 
-    model=object$model, 
-    forecast=map2(object$model, object$data, forecast, ...)
-  )
-}
-
 #' @importFrom stats residuals
 #' @export
 residuals.mable <- function(object, ...){
@@ -113,7 +104,7 @@ residuals.mable <- function(object, ...){
     transmute(!!!syms(key_vars(.)),
               residuals = map2(!!sym("data"), !!sym("model"),
                                function(data, model) {
-                                 data %>% transmute(residuals = data[[expr_text(attr(model, "response"))]] - as.numeric(fitted(model)))
+                                 data %>% transmute(residuals = data[[expr_text((model%@%"fable")$response)]] - as.numeric(fitted(model)))
                                }
               )
     )%>%
