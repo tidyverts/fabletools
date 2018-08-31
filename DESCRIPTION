@@ -32,9 +32,9 @@ Suggests:
     spelling,
     testthat
 Remotes:
-    tidyverts/fable
+    tidyverts/fable,
     tidyverts/tsibble,
-    tidyverts/tsibblestats,
+    tidyverts/tsibblestats
 ByteCompile: true
 VignetteBuilder: knitr
 License: GPL-3
