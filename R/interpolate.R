@@ -20,3 +20,12 @@ interpolate.default <- function(model, data, ...){
   data[[resp]][missingVals] <- fitted(model)[missingVals]
   data
 }
+
+#' @export
+interpolate.mable <- function(model, ...){
+  model %>%
+    transmute(!!!syms(key_vars(.)),
+              interpolated = map2(!!sym("model"), !!sym("data"), interpolate, ...)
+    ) %>%
+    unnest(key = syms(key_vars(model)))
+}
