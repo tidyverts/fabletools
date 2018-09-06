@@ -50,6 +50,8 @@ forecast.mable <- function(object, h = NULL, newdata = NULL, biasadj = TRUE, boo
                fc
              })
   
+  fc[["se"]] <- NULL
+  
   fable(object, fc)
 }
 
