@@ -14,6 +14,7 @@ mable <- function(data, model, parsed_model){
      nest)$data
   new_mable(tibble(!!!key_vals, data=data,
                    model=list(enclass(model,
+                                      "fable_model",
                                       fable = 
                                         list(
                                           model = parsed_model$model, 
