@@ -84,6 +84,21 @@ new_transformation <- function(transformation, inverse){
             inverse = as_mapper(inverse))
 }
 
+#' Extract a transformation from an object
+#' 
+#' @param x An object containing a transformation (such as a `fable_model`)
+#' @param ... Additional arguments passed on to other methods
+#' 
+#' @export
+transformation <- function(x, ...){
+  UseMethod("transformation")
+}
+
+#' @export
+transformation.default <- function(x, ...){
+  as_transformation(x, ...)
+}
+
 as_transformation <- function(x, ...){
   UseMethod("as_transformation")
 }
