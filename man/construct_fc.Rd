@@ -9,9 +9,9 @@ construct_fc(newdata, point, se, dist)
 \arguments{
 \item{newdata}{The newdata provided to the forecast function}
 
-\item{point}{The point forecast}
+\item{point}{The point transformed forecasts}
 
-\item{se}{The standard error of the forecast}
+\item{se}{The standard error of the transformed forecasts}
 
 \item{dist}{The forecast distribution (typically produced using \code{new_fcdist})}
 }

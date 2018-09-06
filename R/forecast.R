@@ -63,8 +63,8 @@ forecast.mable <- function(object, h = NULL, newdata = NULL, biasadj = TRUE, boo
 #' Backtransformations are automatically handled, and so no transformations should be specified here.
 #' 
 #' @param newdata The newdata provided to the forecast function
-#' @param point The point forecast
-#' @param se The standard error of the forecast
+#' @param point The point transformed forecasts
+#' @param se The standard error of the transformed forecasts
 #' @param dist The forecast distribution (typically produced using `new_fcdist`)
 #' 
 #' @export
