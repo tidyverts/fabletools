@@ -35,7 +35,7 @@ forecast.mable <- function(object, h = NULL, newdata = NULL, biasadj = TRUE, boo
     }
   }
   # Evaluate forecasts
-  fc <- pmap(object %>% select(c("model", "data", "newdata")) %>% rename(!!!list(object = sym("model"))), forecast, ...)
+  fc <- map2(object$model, object$newdata, forecast, ...)
   # Modify forecasts with transformations / biasadj
   fc <- map2(object$model, fc,
              function(model, fc){
