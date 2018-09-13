@@ -70,7 +70,7 @@ getPointForecast <- function(object, ...){
     transmute(!!!syms(key_vars(.)),
               mean = map(!!sym("forecast"), ~ transmute(.x, !!sym("mean")))
     ) %>%
-    unnest(key = syms(key_vars(object)))
+    unnest(key = id(key_vars(object)))
 }
 
 #' @importFrom dplyr mutate_if
@@ -88,7 +88,7 @@ summary.fable <- function(object, level=c(80,95), ...){
                        }
         )
       ) %>%
-      unnest(forecast, key = syms(key_vars(object))) %>%
+      unnest(forecast, key = id(key_vars(object))) %>%
       mutate_if(is.list, enclass, "hilo")
     )
 }

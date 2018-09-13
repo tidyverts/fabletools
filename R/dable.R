@@ -81,7 +81,7 @@ components.dable <- function(object, ...){
       !!!syms(key_vars(.)),
       components = map(object$decomposition, components)
     ) %>%
-    unnest(key = syms(key_vars(object)))
+    unnest(key = id(key_vars(object)))
 }
 
 #' @importFrom tsibble key

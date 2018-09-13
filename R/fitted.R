@@ -9,7 +9,7 @@ fitted.mable <- function(object, ...){
                             }
               )
     ) %>%
-    unnest(key = syms(key_vars(object)))
+    unnest(key = id(key_vars(object)))
 }
 
 #' @importFrom stats fitted

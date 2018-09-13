@@ -113,7 +113,7 @@ components.mable <- function(object, ...){
       !!!syms(key_vars(.)),
       components = map(object$model, components)
     ) %>%
-    unnest(key = syms(key_vars(object)))
+    unnest(key = id(key_vars(object)))
 }
 
 #' @export
@@ -125,7 +125,7 @@ key_vars.mable <- function(x){
 }
 
 #' @export
-n_keys.mable <- function (x){
+n_keys.mable <- function(x){
   key <- key_vars(x)
   if (is_empty(key)) {
     return(1L)

@@ -27,5 +27,5 @@ interpolate.mable <- function(model, ...){
     transmute(!!!syms(key_vars(.)),
               interpolated = map2(!!sym("model"), !!sym("data"), interpolate, ...)
     ) %>%
-    unnest(key = syms(key_vars(model)))
+    unnest(key = id(key_vars(model)))
 }
