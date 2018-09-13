@@ -8,6 +8,8 @@ response(x, ...)
 }
 \arguments{
 \item{x}{An object containing a response variable (such as a \code{fable_model})}
+
+\item{...}{Additional arguments for methods}
 }
 \value{
 An expression for the response variable

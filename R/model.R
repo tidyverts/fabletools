@@ -40,6 +40,7 @@ transformation.fable_model <- function(x, ...){
 #' Extract the response variable from an object
 #' 
 #' @param x An object containing a response variable (such as a `fable_model`)
+#' @param ... Additional arguments for methods
 #' 
 #' @return An expression for the response variable
 #' @export
