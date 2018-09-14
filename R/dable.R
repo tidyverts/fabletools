@@ -76,12 +76,13 @@ tbl_sum.dable <- function(x){
 
 #' @export
 components.dable <- function(object, ...){
+  keys <- syms(key_vars(object))
   object %>%
     transmute(
-      !!!syms(key_vars(.)),
+      !!!keys,
       components = map(object$decomposition, components)
     ) %>%
-    unnest(key = id(key_vars(object)))
+    unnest(key = keys)
 }
 
 #' @importFrom tsibble key

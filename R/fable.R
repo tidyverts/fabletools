@@ -66,19 +66,21 @@ tbl_sum.fable <- function(x){
 }
 
 getPointForecast <- function(object, ...){
+  keys <- syms(key_vars(object))
   object %>%
-    transmute(!!!syms(key_vars(.)),
+    transmute(!!!keys,
               mean = map(!!sym("forecast"), ~ transmute(.x, !!sym("mean")))
     ) %>%
-    unnest(key = id(key_vars(object)))
+    unnest(key = keys)
 }
 
 #' @importFrom dplyr mutate_if
 #' @export
 summary.fable <- function(object, level=c(80,95), ...){
+  keys <- syms(key_vars(object))
   suppressWarnings(
     object %>%
-      select(!!!syms(key_vars(object)), "forecast") %>%
+      select(!!!keys, "forecast") %>%
       mutate(
         forecast = map(forecast,
                        function(fc){
@@ -88,7 +90,7 @@ summary.fable <- function(object, level=c(80,95), ...){
                        }
         )
       ) %>%
-      unnest(forecast, key = id(key_vars(object))) %>%
+      unnest(forecast, key = keys) %>%
       mutate_if(is.list, enclass, "hilo")
     )
 }

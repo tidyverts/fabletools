@@ -108,12 +108,13 @@ summary.mable <- function(object, ...){
 
 #' @export
 components.mable <- function(object, ...){
+  keys <- syms(key_vars(object))
   object %>%
     transmute(
-      !!!syms(key_vars(.)),
+      !!!keys,
       components = map(object$model, components)
     ) %>%
-    unnest(key = id(key_vars(object)))
+    unnest(key = keys)
 }
 
 #' @export

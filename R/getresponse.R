@@ -1,8 +1,9 @@
 #' @importFrom forecast getResponse
 #' @export
 getResponse.mable <- function(object, ...){
+  keys <- syms(key_vars(object))
   object %>%
-    transmute(!!!syms(key_vars(.)),
+    transmute(!!!keys,
               fitted = map2(!!sym("data"), !!sym("model"),
                             function(data, model) {
                               response <- model%@%"response"
@@ -10,7 +11,7 @@ getResponse.mable <- function(object, ...){
                             }
               )
     ) %>%
-    unnest(key = id(key_vars(object)))
+    unnest(key = keys)
 }
 
 #' @importFrom forecast getResponse

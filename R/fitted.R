@@ -1,15 +1,16 @@
 #' @importFrom stats fitted
 #' @export
 fitted.mable <- function(object, ...){
+  keys <- syms(key_vars(object))
   object %>%
-    transmute(!!!syms(key_vars(.)),
+    transmute(!!!keys,
               fitted = map2(!!sym("data"), !!sym("model"),
                             function(data, model) {
                               data %>% transmute(fitted = as.numeric(fitted(model)))
                             }
               )
     ) %>%
-    unnest(key = id(key_vars(object)))
+    unnest(key = keys)
 }
 
 #' @importFrom stats fitted

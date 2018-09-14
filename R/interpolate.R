@@ -23,9 +23,10 @@ interpolate.default <- function(model, data, ...){
 
 #' @export
 interpolate.mable <- function(model, ...){
+  keys <- syms(key_vars(model))
   model %>%
-    transmute(!!!syms(key_vars(.)),
+    transmute(!!!keys,
               interpolated = map2(!!sym("model"), !!sym("data"), interpolate, ...)
     ) %>%
-    unnest(key = id(key_vars(model)))
+    unnest(key = keys)
 }

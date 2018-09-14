@@ -59,11 +59,12 @@ autolayer.fable <- function(object, level = c(80, 95), series = NULL, ...){
 #' @export
 fortify.fable <- function(object, level = c(80, 95), showgap = TRUE){
   # Tidy format with repeated predicted values
+  keys <- syms(key_vars(object))
   if(!showgap){
     extract_last_obs <- function(data, model) {
       data %>%
         filter(!!index(.) == last(!!index(.))) %>%
-        transmute(!!!syms(key_vars(.)),
+        transmute(!!!keys,
                   !!index(.),
                   mean = !!attr(!!sym("model"), "response"),
                   !!!set_names(map(level, ~ expr(new_hilo(mean, mean, !!.x))), level)
@@ -71,10 +72,10 @@ fortify.fable <- function(object, level = c(80, 95), showgap = TRUE){
     }
     gap <- suppressWarnings(object %>% 
       transmute(
-        !!!syms(key_vars(.)),
+        !!!keys,
         gap = map2(!!sym("data"), !!sym("model"), extract_last_obs)
       ) %>%
-      unnest(gap, key = id(!!!syms(key_vars(object))))
+      unnest(gap, key = keys)
     )
   }
   else{
@@ -82,7 +83,7 @@ fortify.fable <- function(object, level = c(80, 95), showgap = TRUE){
   }
   tsbl <- suppressWarnings(
     object %>% 
-      select(!!!syms(key_vars(object)), forecast) %>%
+      select(!!!keys, forecast) %>%
       mutate(
         forecast = map(forecast, 
                        function(fc){
@@ -92,7 +93,7 @@ fortify.fable <- function(object, level = c(80, 95), showgap = TRUE){
                            rbind(gap)
                        })
       ) %>%
-      unnest(forecast, key = id(key_vars(object)))
+      unnest(forecast, key = keys)
   )
   if(!is.null(level)){
     tsbl <- tsbl %>%
