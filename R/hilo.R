@@ -13,7 +13,6 @@
 #' @examples
 #' new_hilo(lower = rnorm(10), upper = rnorm(10) + 5, level = 95L)
 #'
-#' @importFrom purrr pmap
 #' @export
 new_hilo <- function(lower, upper, level = NULL) {
   if (missing(lower) || missing(upper)) {
@@ -100,10 +99,9 @@ bt <- function(x, hilo) {
   x >= hilo$lower & x <= hilo$upper
 }
 
-#' @importFrom purrr map_dbl
 #' @export
 `$.hilo` <- function(x, name) {
-  map_dbl(x, name)
+  map_dbl(x, function(.x) .x[["name"]])
 }
 
 #' @export

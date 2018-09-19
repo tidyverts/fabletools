@@ -12,7 +12,6 @@ Imports:
     forecast,
     ggplot2 (>= 3.0.0),
     numDeriv,
-    purrr (>= 0.2.3),
     rlang (>= 0.2.0),
     stats,
     tibble (>= 1.4.1),

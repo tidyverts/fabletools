@@ -67,7 +67,7 @@ fortify.fable <- function(object, level = c(80, 95), showgap = TRUE){
         transmute(!!!keys,
                   !!index(.),
                   mean = !!attr(!!sym("model"), "response"),
-                  !!!set_names(map(level, ~ expr(new_hilo(mean, mean, !!.x))), level)
+                  !!!set_names(map(level, function(.x) expr(new_hilo(mean, mean, !!.x))), level)
         )
     }
     gap <- suppressWarnings(object %>% 
@@ -88,7 +88,7 @@ fortify.fable <- function(object, level = c(80, 95), showgap = TRUE){
         forecast = map(forecast, 
                        function(fc){
                          fc %>%
-                           mutate(!!!set_names(map(level, ~ expr(hilo(!!sym("distribution"), !!.x))), level)) %>%
+                           mutate(!!!set_names(map(level, function(.x) expr(hilo(!!sym("distribution"), !!.x))), level)) %>%
                            select(exclude("distribution")) %>%
                            rbind(gap)
                        })

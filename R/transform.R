@@ -1,6 +1,5 @@
 # Lookup table for function inverses
 #' @importFrom dplyr first
-#' @importFrom purrr compact possibly
 inverse_table <- function() {
   table <- new.env(parent = emptyenv())
   list(
@@ -44,13 +43,15 @@ traverse_transformation <- function(transformation){
   
   # Evaluate transformation stack via call traversal along longest argument (hopefully, the data)
   traverse_call(!!transformation,
-                f = ~ append(.y, .x[[1]]),
-                g = ~ .x %>%
+                .f = function(.x, .y) append(.y, .x[[1]]),
+                .g = function(.x) {
+                  .x %>%
                   get_expr %>%
                   as.list %>% 
                   map(new_quosure, env = get_env(.x)) %>%
-                  .[which.max(map(., ~ length(eval_tidy(.x))))],
-                h = ~ list(.x))
+                  .[which.max(map(., function(.x) length(eval_tidy(.x))))]
+                },
+                .h = list)
 }
 
 #' Create a new modelling transformation
@@ -79,9 +80,9 @@ traverse_transformation <- function(transformation){
 #' 
 #' @export
 new_transformation <- function(transformation, inverse){
-  as_mapper(transformation) %>% 
+  transformation %>% 
     enclass("transformation", 
-            inverse = as_mapper(inverse))
+            inverse = inverse)
 }
 
 #' Extract a transformation from an object
@@ -151,7 +152,7 @@ as_transformation.call <- function(x, data = NULL){
 #' @importFrom numDeriv hessian
 #' @export
 biasadj <- function(bt_fn, fvar){
-  new_function(alist(x=), expr((!!bt_fn)(!!sym("x")) + !!fvar/2*purrr::map_dbl(!!sym("x"), hessian, func = !!bt_fn)))
+  new_function(alist(x=), expr((!!bt_fn)(!!sym("x")) + !!fvar/2*map_dbl(as.numeric(!!sym("x")), hessian, func = !!bt_fn)))
 }
 
 #' @export
@@ -197,7 +198,7 @@ invert_transformation.call <- function(x, data, ...){
 inverse_table <- inverse_table()
 
 map(c("log", "logb"),
-    ~ inverse_table$add("base", .x, 
+    function(.x) inverse_table$add("base", .x, 
                   function(operation, target, result){
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)

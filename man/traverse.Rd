@@ -4,19 +4,19 @@
 \alias{traverse}
 \title{Recursively traverse an object}
 \usage{
-traverse(x, f = ~.x, g = ~.x, h = ~.x,
-  base = ~is_syntactic_literal(.x) || is_symbol(.x))
+traverse(x, .f = identity, .g = identity, .h = identity,
+  base = function(.x) is_syntactic_literal(.x) || is_symbol(.x))
 }
 \arguments{
 \item{x}{The object to traverse}
 
-\item{f}{A function (mapper) for combining the recursed components}
-
-\item{g}{A function (mapper) applied to the object before recursion}
-
-\item{h}{A function (mapper) applied to the base case}
-
 \item{base}{The base case for the recursion}
+
+\item{f}{A function for combining the recursed components}
+
+\item{g}{A function applied to the object before recursion}
+
+\item{h}{A function applied to the base case}
 }
 \description{
 Recursively traverse an object

@@ -69,7 +69,7 @@ getPointForecast <- function(object, ...){
   keys <- syms(key_vars(object))
   object %>%
     transmute(!!!keys,
-              mean = map(!!sym("forecast"), ~ transmute(.x, !!sym("mean")))
+              mean = map(!!sym("forecast"), function(.x) transmute(.x, !!sym("mean")))
     ) %>%
     unnest(key = keys)
 }
@@ -85,7 +85,7 @@ summary.fable <- function(object, level=c(80,95), ...){
         forecast = map(forecast,
                        function(fc){
                          fc %>%
-                           mutate(!!!set_names(map(level, ~ expr(hilo(!!sym("distribution"), !!.x))), paste0(level, "%"))) %>%
+                           mutate(!!!set_names(map(level, function(.x) expr(hilo(!!sym("distribution"), !!.x))), paste0(level, "%"))) %>%
                            select(exclude("distribution"))
                        }
         )

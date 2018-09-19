@@ -11,16 +11,15 @@
 #' mydist
 #' hilo(mydist, 95)
 #' @export
-new_fcdist <- function(f, ..., transformation = ~ .x, abbr = NULL){
+new_fcdist <- function(f, ..., transformation = identity, abbr = NULL){
   f_quo <- enquo(f)
-  t_fn <- as_mapper(transformation)
   pmap(dots_list(...), list) %>%
     set_names(NULL) %>% 
     enclass("fcdist",
             f = f,
-            t = t_fn,
+            t = transformation,
             qname = abbr%||%quo_text(f_quo),
-            trans = !is.name(body(t_fn)))
+            trans = !is.name(body(transformation)))
 }
 
 `transformation<-` <- function(x, value){
@@ -54,7 +53,7 @@ format.fcdist <- function(x, ...){
   x %>%
     map_chr(function(qt){
       args <- qt %>%
-        imap(~ paste0(ifelse(nchar(.y)>0, paste0(.y, " = "), ""),
+        imap(function(.x, .y) paste0(ifelse(nchar(.y)>0, paste0(.y, " = "), ""),
                       format(.x, trim = TRUE, digits = 2))) %>%
         invoke("paste", ., sep = ", ")
       out <- paste0(
@@ -79,7 +78,7 @@ format.fcdist <- function(x, ...){
 #' @export
 c.fcdist <- function(...){
   sameAttr <- dots_list(...) %>%
-    map(~ if(!inherits(.x, "fcdist")) {abort("Only combining fcdist objects is supported")} else {attributes(.x)}) %>%
+    map(function(.x) if(!inherits(.x, "fcdist")) {abort("Only combining fcdist objects is supported")} else {attributes(.x)}) %>%
     duplicated %>%
     .[-1]
   if(any(!sameAttr)){

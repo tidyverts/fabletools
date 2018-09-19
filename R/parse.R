@@ -2,12 +2,16 @@ parse_specials <- function(call = NULL, specials = NULL, xreg = TRUE){
   if(!is.null(call)){ # No model specified
     call <- enexpr(call)
     parsed <- traverse_call(!!call,
-                            g = ~ .x %>%
-                              get_expr %>% # Extract call
-                              as.list %>% # Split call components
-                              .[-1] %>% # Drop function operator (as it is known to be "+")
-                              map(expr), # Rebuild quosure for recursive map
-                            h = function(x){ # Base types
+                            .f = function(.x, ...) {
+                              merge_named_list(.x[[1]], .x[[2]])},
+                            .g = function(.x){ 
+                              .x %>%
+                                get_expr %>% # Extract call
+                                as.list %>% # Split call components
+                                .[-1] %>% # Drop function operator (as it is known to be "+")
+                                map(expr) # Rebuild quosure for recursive map
+                            },
+                            .h = function(x){ # Base types
                               x <- get_expr(x)
                               if(!is_call(x) || !(call_name(x) %in% names(specials))){
                                 if(!xreg) stop("Exogenous regressors are not supported for this model type")
@@ -17,9 +21,10 @@ parse_specials <- function(call = NULL, specials = NULL, xreg = TRUE){
                                 list(list(x)) %>% set_names(call_name(x))
                               }
                             },
-                            f = function(.x, ...) {
-                              merge_named_list(.x[[1]], .x[[2]])},
-                            base = ~ .x %>% get_expr %>% {!is_call(.) || call_name(.) != "+"}
+                            base = function(.x){
+                              .x <- get_expr(.x)
+                              !is_call(.x) || call_name(.x) != "+"
+                            }
     )
   } else {
     parsed <- list()
@@ -32,7 +37,7 @@ parse_specials <- function(call = NULL, specials = NULL, xreg = TRUE){
   parsed <- parsed %>%
     append(
       missing_specials %>%
-        map(~ list(call2(.x))) %>%
+        map(function(.x) list(call2(.x))) %>%
         set_names(missing_specials)
     )
   
@@ -47,13 +52,12 @@ parse_response <- function(model_lhs){
   
   # Traverse call along longest argument (hopefully, the response)
   traverse_call(!!model_lhs,
-                f = ~ .x[[1]],
-                g = ~ .x %>%
+                .f = function(.x) .x[[1]],
+                .g = function(.x) .x %>%
                   get_expr %>%
                   as.list %>% 
                   map(new_quosure, env = get_env(.x)) %>%
-                  .[which.max(map(., ~ length(eval_tidy(.x))))],
-                h = ~ .x) %>%
+                  .[which.max(map(., function(.x) length(eval_tidy(.x))))]) %>%
     get_expr
 }
 
@@ -63,8 +67,6 @@ parse_response <- function(model_lhs){
 #' in a model function.
 #' @param model The user's model specification (unevaluated)
 #' @param data A dataset used for automatic response selection
-#' 
-#' @importFrom purrr compose
 #' 
 #' @export
 validate_model <- function(model, data = NULL){
@@ -127,13 +129,14 @@ parse_model_rhs <- function(model_rhs, data, specials = NULL){
   }
   model_rhs %>%
     parse_specials(specials = specials) %>%
-    map(~ .x %>%
+    map(function(.x){
+      .x %>%
           map(
             function(special){
               eval_tidy(special, data = data, env = specials)
             }
           )
-    ) %>%
+    }) %>%
     list(specials = .)
 }
 

@@ -14,7 +14,7 @@ forecast.mable <- function(object, h = NULL, newdata = NULL, biasadj = TRUE, boo
   # Prepare newdata for forecast.model
   if(is.null(newdata)){
     if(is.null(h)){
-      h <- map_dbl(object$data, ~ get_frequencies("smallest", .x)*2)
+      h <- map_dbl(object$data, function(.x) get_frequencies("smallest", .x)*2)
     }
     object[["newdata"]] <- map2(object$data, h,
                                 function(data, h){

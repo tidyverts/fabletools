@@ -1,4 +1,3 @@
-#' @importFrom purrr safely
 guess_response <- function(.data){
   all_vars <- custom_error(
     measured_vars,

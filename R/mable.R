@@ -101,7 +101,7 @@ model_sum.default <- function(x){
 #' @importFrom utils head
 #' @export
 summary.mable <- function(object, ...){
-  map(head(object$model), ~capture.output(summary(.x))) %>%
+  map(head(object$model), function(.x) capture.output(summary(.x))) %>%
     invoke(cat, ., sep="\n")
   invisible(object)
 }

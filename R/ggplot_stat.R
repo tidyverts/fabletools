@@ -43,12 +43,14 @@ StatForecast <- ggplot2::ggproto(
     extra_vars <- data[-na.omit(match(c("x", "y", "level", "ymin", "ymax"), colnames(data)))] %>%
       as.list %>%
       map(unique) %>%
-      map(~if(length(.x)>1){
-          warning("Plot parameters unable to be set by `stat_forecast`, defaulting to first available values")
+      map(
+        function(.x){
+          if(length(.x)>1){
+            warning("Plot parameters unable to be set by `stat_forecast`, defaulting to first available values")
+          }
           .x[1]
-        } else {
-          .x
-        })
+        }
+      )
     fcast %>%
       mutate(!!!extra_vars)
   }

@@ -4,7 +4,7 @@
 \alias{new_fcdist}
 \title{Create a forecast distribution object}
 \usage{
-new_fcdist(f, ..., transformation = ~.x, abbr = NULL)
+new_fcdist(f, ..., transformation = identity, abbr = NULL)
 }
 \arguments{
 \item{f}{A distribution function producing quantiles (such as \code{qnorm})}
