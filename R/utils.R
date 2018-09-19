@@ -53,6 +53,10 @@ exclude <- function(match, vars = tidyselect::peek_vars()){
 custom_error <- function(.f, error){
   force(error)
   function(...){
-    possibly(.f, abort(error))(...)
+    res <- capture_error(.f(...))
+    if(!is.null(res$error)){
+      abort(error)
+    }
+    res$result
   }
 }
