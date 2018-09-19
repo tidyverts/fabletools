@@ -101,7 +101,7 @@ bt <- function(x, hilo) {
 
 #' @export
 `$.hilo` <- function(x, name) {
-  map_dbl(x, function(.x) .x[["name"]])
+  map_dbl(x, function(.x) .x[[name]])
 }
 
 #' @export
