@@ -98,7 +98,7 @@ model_sum.default <- function(x){
   obj_sum(x)
 }
 
-#' @importFrom utils head
+#' @importFrom utils head capture.output
 #' @export
 summary.mable <- function(object, ...){
   map(head(object$model), function(.x) capture.output(summary(.x))) %>%
