@@ -15,7 +15,7 @@ bt(x, hilo)
 Validate whether values fall in the hilo
 }
 \examples{
-myhilo <- new_hilo(lower = rnorm(10), upper = rnorm(10) + 5)
+myhilo <- new_hilo(lower = rnorm(10), upper = rnorm(10) + 5, level = 95)
 bt(0.2017, myhilo)
 
 }

@@ -90,7 +90,7 @@ is_hilo <- function(x) {
 #' @param hilo A vector of `hilo` objects.
 #'
 #' @examples
-#' myhilo <- new_hilo(lower = rnorm(10), upper = rnorm(10) + 5)
+#' myhilo <- new_hilo(lower = rnorm(10), upper = rnorm(10) + 5, level = 95)
 #' bt(0.2017, myhilo)
 #'
 #' @export
