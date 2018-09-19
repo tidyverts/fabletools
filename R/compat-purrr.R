@@ -7,8 +7,9 @@
 
 # Slightly adapted from the version found in rlang
 
-map <- lapply
-
+map <- function(.x, .f, ...) {
+  lapply(.x, .f, ...)
+}
 map_mold <- function(...) {
   out <- vapply(..., USE.NAMES = FALSE)
   names(out) <- names(..1)
