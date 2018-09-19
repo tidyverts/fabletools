@@ -1,9 +1,9 @@
 #' Recursively traverse an object
 #' 
 #' @param x The object to traverse
-#' @param f A function for combining the recursed components
-#' @param g A function applied to the object before recursion
-#' @param h A function applied to the base case
+#' @param .f A function for combining the recursed components
+#' @param .g A function applied to the object before recursion
+#' @param .h A function applied to the base case
 #' @param base The base case for the recursion
 #' 
 #' @export
@@ -12,7 +12,7 @@ traverse <-  function(x, .f = identity, .g = identity, .h = identity, base = fun
   if(base(x))
     return(.h(x))
   # recursive case
-  .f(map(.g(x), traverse, .f=.f, .g=.g, .h=.h, base=base), .h(x))
+  .f(lapply(.g(x), traverse, .f=.f, .g=.g, .h=.h, base=base), .h(x))
 }
 
 traverse_list <- function(x,
