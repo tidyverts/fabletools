@@ -112,10 +112,9 @@ as_transformation.transformation <- function(x, ...){
 }
 
 as_transformation.name <- function(x, ...){
-  fmls <- eval_tidy(quo(alist(x = !!enexpr(x))))
   new_transformation(
-    new_function(fmls, expr(x)),
-    new_function(fmls, expr(x))
+    identity,
+    identity
   )
 }
 
