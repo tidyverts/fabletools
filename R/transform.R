@@ -80,9 +80,7 @@ traverse_transformation <- function(transformation){
 #' 
 #' @export
 new_transformation <- function(transformation, inverse){
-  transformation %>% 
-    enclass("transformation", 
-            inverse = inverse)
+  structure(transformation, class = "transformation", inverse = inverse)
 }
 
 #' Extract a transformation from an object
