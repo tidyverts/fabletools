@@ -4,7 +4,7 @@
 \alias{multi_model}
 \title{Multiple calls to a model for mass modelling}
 \usage{
-multi_model(data, cl, keys)
+multi_model(data, cl, keys, env = caller_env(n = 2))
 }
 \arguments{
 \item{data}{A tsibble}
@@ -12,6 +12,8 @@ multi_model(data, cl, keys)
 \item{cl}{A modelling call}
 
 \item{keys}{A set of keys to nest over}
+
+\item{env}{The environment to estimate batch models in}
 }
 \description{
 Multiple calls to a model for mass modelling

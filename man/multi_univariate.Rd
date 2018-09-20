@@ -4,12 +4,14 @@
 \alias{multi_univariate}
 \title{Multiple calls to a univariate model for each tsibble key}
 \usage{
-multi_univariate(data, cl)
+multi_univariate(data, cl, env = caller_env(n = 2))
 }
 \arguments{
 \item{data}{A tsibble}
 
 \item{cl}{A modelling call}
+
+\item{env}{The environment to estimate batch models in}
 }
 \description{
 Multiple calls to a univariate model for each tsibble key

@@ -1,11 +1,10 @@
 #' Multiple calls to a univariate model for each tsibble key
 #' 
-#' @param data A tsibble
-#' @param cl A modelling call
+#' @inheritParams multi_model
 #' 
 #' @export
-multi_univariate <- function(data, cl){
-  multi_model(data, cl, syms(key_vars(data)))
+multi_univariate <- function(data, cl, env = caller_env(n=2)){
+  multi_model(data, cl, syms(key_vars(data)), env = env)
 }
 
 #' Multiple calls to a model for mass modelling
@@ -13,20 +12,19 @@ multi_univariate <- function(data, cl){
 #' @param data A tsibble
 #' @param cl A modelling call
 #' @param keys A set of keys to nest over
+#' @param env The environment to estimate batch models in
 #' 
 #' @importFrom dplyr bind_cols
 #' 
 #' @export
-multi_model <- function(data, cl, keys){
-  nested_data <- data %>% 
-    group_by(!!!keys) %>%
-    nest(.key = ".data")
-  
+multi_model <- function(data, cl, keys, env = caller_env(n=2)){
   # Re-evaluate cl in environment with split data
+  nested_data <- nest(group_by(data, !!!keys), .key = ".data")
+  
   out <- map(nested_data[[".data"]], function(x){
     eval_tidy(
       get_expr(cl),
-      env = child_env(caller_env(), !!expr_text(get_expr(cl)$data) := x)
+      env = child_env(env, !!expr_text(get_expr(cl)$data) := x)
     )
   }) %>% 
     invoke("rbind", .)
