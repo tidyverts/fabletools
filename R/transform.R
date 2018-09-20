@@ -107,6 +107,10 @@ as_transformation.default <- function(x, ...){
   as_transformation(x, ...)
 }
 
+as_transformation.transformation <- function(x, ...){
+  x
+}
+
 as_transformation.name <- function(x, ...){
   fmls <- eval_tidy(quo(alist(x = !!enexpr(x))))
   new_transformation(
