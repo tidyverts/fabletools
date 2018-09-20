@@ -112,9 +112,10 @@ as_transformation.transformation <- function(x, ...){
 }
 
 as_transformation.name <- function(x, ...){
+  ident <- `formals<-`(identity, value = list(x = enexpr(x)))
   new_transformation(
-    identity,
-    identity
+    ident,
+    ident
   )
 }
 
