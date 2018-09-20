@@ -41,7 +41,8 @@ forecast.mable <- function(object, h = NULL, newdata = NULL, biasadj = TRUE, boo
              function(model, fc){
                bt <- invert_transformation((model%@%"fable")$transformation)
                if(isTRUE(biasadj)){
-                 fc[["mean"]] <- biasadj(bt, fc[["se"]]^2)(fc[["mean"]])
+                 # Faster version of biasadj(bt, fc[["se"]]^2)(fc[["mean"]]) 
+                 fc[["mean"]] <- bt(fc[["mean"]]) + fc[["se"]]^2/2*map_dbl(as.numeric(fc[["mean"]]), hessian, func = bt)
                }
                else{
                  fc[["mean"]] <- bt(fc[["mean"]])
