@@ -29,7 +29,8 @@ new_fable <- function(x){
 
 #' Coerce a dataset to a fable
 #'
-#' @inheritParams as_mable
+#' @param data A dataset containing a list model column 
+#' @param model A bare input containing the model column's name 
 #' @param forecast A bare input containing the forecast column's name
 #'
 #' @export

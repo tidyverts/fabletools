@@ -4,15 +4,10 @@
 #' @param model The fitted model
 #' @param parsed_model The parsed model from `parse_model`
 #'
-#' @importFrom dplyr grouped_df
-#'
 #' @export
 mable <- function(data, model, parsed_model){
-  key_vals <- as.list(data)[key_vars(data)]
-  data <- (data %>%
-     grouped_df(key_vars(.)) %>%
-     nest)$data
-  new_mable(tibble(!!!key_vals, data=data,
+  nested <- nest(group_by_key(data))
+  as_mable(tibble(!!!nested[key_vars(data)], data=nested$data,
                    model=list(enclass(model,
                                       "fable_model",
                                       fable = 
@@ -46,15 +41,15 @@ new_mable <- function(x){
 
 #' Coerce a dataset to a mable
 #' 
-#' @param data A dataset containing a list model column
-#' @param model A bare input containing the model column's name
+#' @param x A dataset containing a list model column
 #' 
 #' @export
-as_mable <- function(data, model){
-  model <- enexpr(model)
-  data %>%
-    mutate(!!!list(model = expr(enclass(!!model, "lst_mdl")))) %>%
-    enclass("mable")
+as_mable <- function(x){
+  stopifnot(!is.null(x[["model"]]))
+  if(!inherits(x[["model"]], "lst_mdl")){
+    x[["model"]] <- add_class(x[["model"]], "lst_mdl")
+  }
+  x %>% add_class(c("mable", "lst_ts"))
 }
 
 #' @importFrom tibble tbl_sum
