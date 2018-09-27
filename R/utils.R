@@ -60,3 +60,29 @@ custom_error <- function(.f, error){
     res$result
   }
 }
+
+bind_new_data <- function(object, new_data){
+  if(is.null(new_data)){
+    new_data <- map_dbl(object$data, function(.x) get_frequencies("smallest", .x)*2)
+  }
+  if(is.numeric(new_data)){
+    object[["new_data"]] <- map2(object$data, new_data,
+                                function(data, h){
+                                  idx <- expr_text(index(data))
+                                  future <- fc_idx(data[[idx]], h)
+                                  build_tsibble(list2(!!idx := future), key = id(), index = idx)
+                                })
+  }
+  else{
+    new_data <- new_data %>% 
+      group_by(!!!syms(key_vars(object))) %>% 
+      nest(.key = ".new_data")
+    if(length(key_vars(object)) > 0){
+      object <- left_join(object, new_data, by = key_vars(object))
+    }
+    else{
+      object[["new_data"]] <- newdata[[".new_data"]]
+    }
+  }
+  object
+}

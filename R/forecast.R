@@ -11,31 +11,11 @@ forecast.mable <- function(object, h = NULL, newdata = NULL, biasadj = TRUE, boo
     abort("bootstrapping is not yet supported")
   }
   
-  # Prepare newdata for forecast.model
-  if(is.null(newdata)){
-    if(is.null(h)){
-      h <- map_dbl(object$data, function(.x) get_frequencies("smallest", .x)*2)
-    }
-    object[["newdata"]] <- map2(object$data, h,
-                                function(data, h){
-                                  idx <- expr_text(index(data))
-                                  future <- fc_idx(data[[idx]], h)
-                                  build_tsibble(list2(!!idx := future), key = id(), index = idx)
-                                })
-  }
-  else{
-    newdata <- newdata %>% 
-      group_by(!!!syms(key_vars(object))) %>% 
-      nest(.key = "newdata")
-    if(length(key_vars(object)) > 0){
-      object <- left_join(object, newdata, by = key_vars(object))
-    }
-    else{
-      object[["newdata"]] <- newdata[["newdata"]]
-    }
-  }
+  # Prepare new_data for forecast.model
+  object <- bind_new_data(object, newdata)
+  
   # Evaluate forecasts
-  fc <- map2(object$model, object$newdata, forecast, ...)
+  fc <- map2(object$model, object$new_data, forecast, ...)
   # Modify forecasts with transformations / biasadj
   fc <- map2(object$model, fc,
              function(model, fc){

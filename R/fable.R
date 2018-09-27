@@ -101,7 +101,7 @@ key.fable <- key.dable
 
 #' @export
 key_vars.fable <- function(x){
-  setdiff(colnames(x), c("data", "model", "newdata", "forecast"))
+  setdiff(colnames(x), c("data", "model", "new_data", "forecast"))
 }
 
 #' @export
