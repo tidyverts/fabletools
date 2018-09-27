@@ -6,13 +6,13 @@ fc_idx <- function(idx, h){
 #' @export
 #' @importFrom forecast forecast
 #' @importFrom dplyr mutate
-forecast.mable <- function(object, h = NULL, newdata = NULL, biasadj = TRUE, bootstrap = FALSE, ...){
+forecast.mable <- function(object, new_data = NULL, biasadj = TRUE, bootstrap = FALSE, ...){
   if(bootstrap){
     abort("bootstrapping is not yet supported")
   }
   
   # Prepare new_data for forecast.model
-  object <- bind_new_data(object, newdata)
+  object <- bind_new_data(object, new_data)
   
   # Evaluate forecasts
   fc <- map2(object$model, object$new_data, forecast, ...)
