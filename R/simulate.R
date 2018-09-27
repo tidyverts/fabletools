@@ -1,5 +1,5 @@
 #' @export
-simulate <- function(object, new_data, times = 1, seed = NULL, ...){
+simulate <- function(object, new_data, ...){
   UseMethod("simulate")
 }
 
