@@ -23,6 +23,7 @@ new_specials_env <- function(..., .env = caller_env(), .required_specials = NULL
         set_env(fn, env_bury(get_env(fn), !!!.vals))
       }
     )
-  ) %>%
-    enclass(NULL, required_specials = .required_specials)
+  )
+  
+  structure(.env, required_specials = .required_specials)
 }
