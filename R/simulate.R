@@ -6,7 +6,7 @@ simulate <- function(object, new_data, times = 1, seed = NULL, ...){
 #' @export
 simulate.mable <- function(object, new_data, times = 1, seed = NULL, ...){
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
-    runif(1)
+    stats::runif(1)
   if (is.null(seed)) 
     RNGstate <- get(".Random.seed", envir = .GlobalEnv)
   else {
@@ -28,5 +28,5 @@ simulate.mable <- function(object, new_data, times = 1, seed = NULL, ...){
   object <- bind_new_data(object, new_data)
   names(object)[names(object) == "model"] <- "object"
   object$.sim <- map2(object$object, object$new_data, simulate, ...)
-  unnest(object, .sim, key = key)
+  unnest(object, !!sym(".sim"), key = key)
 }
