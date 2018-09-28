@@ -10,6 +10,8 @@ simulate(object, new_data, ...)
 \item{object}{A model (typically a mable)}
 
 \item{new_data}{A tsibble used to define the simulation details}
+
+\item{...}{Additional optional arguments}
 }
 \description{
 Simulate responses from a model

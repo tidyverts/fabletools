@@ -2,6 +2,7 @@
 #' 
 #' @param object A model (typically a mable)
 #' @param new_data A tsibble used to define the simulation details
+#' @param ... Additional optional arguments
 #' 
 #' @examples
 #' library(fable)
