@@ -1,3 +1,15 @@
+#' @inherit stats::simulate
+#' 
+#' @param object A model (typically a mable)
+#' @param new_data A tsibble used to define the simulation details
+#' 
+#' @examples
+#' library(fable)
+#' library(tsibbledata)
+#' UKLungDeaths %>% 
+#'   LM(mdeaths ~ fourier("year", K = 4) + fdeaths) %>% 
+#'   simulate(UKLungDeaths, times = 5)
+#'   
 #' @export
 simulate <- function(object, new_data, ...){
   UseMethod("simulate")
