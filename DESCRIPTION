@@ -29,11 +29,13 @@ Suggests:
     rmarkdown,
     scales,
     spelling,
-    testthat
+    testthat,
+    tsibbledata
 Remotes:
     tidyverts/fable,
     tidyverts/tsibble,
-    tidyverts/tsibblestats
+    tidyverts/tsibblestats,
+    tidyverts/tsibbledata
 ByteCompile: true
 VignetteBuilder: knitr
 License: GPL-3
