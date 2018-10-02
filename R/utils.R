@@ -76,12 +76,12 @@ bind_new_data <- function(object, new_data){
   else{
     new_data <- new_data %>% 
       group_by(!!!syms(key_vars(object))) %>% 
-      nest(.key = ".new_data")
+      nest(.key = "new_data")
     if(length(key_vars(object)) > 0){
       object <- left_join(object, new_data, by = key_vars(object))
     }
     else{
-      object[["new_data"]] <- new_data[[".new_data"]]
+      object[["new_data"]] <- new_data[["new_data"]]
     }
   }
   object
