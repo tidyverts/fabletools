@@ -53,8 +53,15 @@ format.fcdist <- function(x, ...){
   x %>%
     map_chr(function(qt){
       args <- qt %>%
-        imap(function(.x, .y) paste0(ifelse(nchar(.y)>0, paste0(.y, " = "), ""),
-                      format(.x, trim = TRUE, digits = 2))) %>%
+        imap(function(.x, .y){
+          if(length(.x) <= 1){
+            .x <- format(.x, trim = TRUE, digits = 2)
+          }
+          else{
+            .x <- sprintf("%s[%i]", type_sum(.x), length(.x))
+          }
+          paste0(ifelse(nchar(.y)>0, paste0(.y, " = "), ""), .x)
+        }) %>%
         invoke("paste", ., sep = ", ")
       out <- paste0(
         attr(x, "qname"),
