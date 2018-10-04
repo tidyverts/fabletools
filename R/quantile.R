@@ -116,10 +116,10 @@ hilo.fcdist <- function(x, level = 95, ...){
   if (level < 0 || level > 100) {
     abort("'level' can't be negative or greater than 100.")
   }
+  args <- merge_pos_list(!!!as_list(x))
   list(lower = 50-level/2, upper = 50+level/2) %>%
     map(function(level){
-      eval_tidy(quo(attr(x, "t")(attr(x, "f")(level/100, !!!merge_pos_list(!!!x))))) %>%
-        unlist(recursive = FALSE, use.names = FALSE)
+      attr(x,"t")(do.call(attr(x, "f"), c(list(level/100), as.list(args))))
     }) %>%
     append(list(level = level)) %>%
     invoke("new_hilo", .)
