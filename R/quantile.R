@@ -133,3 +133,17 @@ quantile.fcdist <- function(x, probs = seq(0, 1, 0.25), ...){
       unlist(recursive = FALSE, use.names = FALSE)
   })
 }
+
+qsample <- function(p, x = list(), ...){
+  map_dbl(x, function(x) as.numeric(stats::quantile(x, p, ...)))
+}
+
+#' Prepare a forecast distribution from simulated cases
+#' 
+#' @param x A list of sampled quantities
+#' @param ... Additional arguments for `quantile`
+#' 
+#' @export
+sample_quantile <- function(x, ...){
+  new_fcdist(qsample, x = map(x, list), ..., abbr = "sim")
+}
