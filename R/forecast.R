@@ -6,10 +6,7 @@ fc_idx <- function(idx, h){
 #' @export
 #' @importFrom forecast forecast
 #' @importFrom dplyr mutate
-forecast.mable <- function(object, new_data = NULL, biasadj = TRUE, bootstrap = FALSE, ...){
-  if(bootstrap){
-    abort("bootstrapping is not yet supported")
-  }
+forecast.mable <- function(object, new_data = NULL, biasadj = TRUE, ...){
   
   # Prepare new_data for forecast.model
   object <- bind_new_data(object, new_data)
