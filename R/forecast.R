@@ -25,10 +25,9 @@ forecast.mable <- function(object, new_data = NULL, biasadj = TRUE, ...){
                  fc[["mean"]] <- bt(fc[["mean"]])
                }
                transformation(fc[["distribution"]]) <- bt
+               fc[["sd"]] <- NULL
                fc
              })
-  
-  fc[["sd"]] <- NULL
   
   fable(object, fc)
 }
