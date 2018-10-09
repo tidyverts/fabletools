@@ -4,14 +4,14 @@
 \alias{construct_fc}
 \title{Construct a new set of forecasts}
 \usage{
-construct_fc(newdata, point, se, dist)
+construct_fc(newdata, point, sd, dist)
 }
 \arguments{
 \item{newdata}{The newdata provided to the forecast function}
 
 \item{point}{The point transformed forecasts}
 
-\item{se}{The standard error of the transformed forecasts}
+\item{sd}{The standard deviation of the transformed forecasts}
 
 \item{dist}{The forecast distribution (typically produced using \code{new_fcdist})}
 }

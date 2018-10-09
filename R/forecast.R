@@ -18,8 +18,8 @@ forecast.mable <- function(object, new_data = NULL, biasadj = TRUE, ...){
              function(model, fc){
                bt <- invert_transformation((model%@%"fable")$transformation)
                if(isTRUE(biasadj)){
-                 # Faster version of biasadj(bt, fc[["se"]]^2)(fc[["mean"]]) 
-                 fc[["mean"]] <- bt(fc[["mean"]]) + fc[["se"]]^2/2*map_dbl(as.numeric(fc[["mean"]]), hessian, func = bt)
+                 # Faster version of biasadj(bt, fc[["sd"]]^2)(fc[["mean"]]) 
+                 fc[["mean"]] <- bt(fc[["mean"]]) + fc[["sd"]]^2/2*map_dbl(as.numeric(fc[["mean"]]), hessian, func = bt)
                }
                else{
                  fc[["mean"]] <- bt(fc[["mean"]])
@@ -28,7 +28,7 @@ forecast.mable <- function(object, new_data = NULL, biasadj = TRUE, ...){
                fc
              })
   
-  fc[["se"]] <- NULL
+  fc[["sd"]] <- NULL
   
   fable(object, fc)
 }
@@ -42,17 +42,17 @@ forecast.mable <- function(object, new_data = NULL, biasadj = TRUE, ...){
 #' 
 #' @param newdata The newdata provided to the forecast function
 #' @param point The point transformed forecasts
-#' @param se The standard error of the transformed forecasts
+#' @param sd The standard deviation of the transformed forecasts
 #' @param dist The forecast distribution (typically produced using `new_fcdist`)
 #' 
 #' @export
-construct_fc <- function(newdata, point, se, dist){
+construct_fc <- function(newdata, point, sd, dist){
   stopifnot(is_tsibble(newdata))
   stopifnot(is.numeric(point))
   stopifnot(inherits(dist, "fcdist"))
   fc <- newdata[expr_text(index(newdata))]
   fc[["mean"]] <- point
-  fc[["se"]] <- se
+  fc[["sd"]] <- sd
   fc[["distribution"]] <- dist
   attributes(fc[["distribution"]]) <- attributes(dist)
   new_fc(fc)
