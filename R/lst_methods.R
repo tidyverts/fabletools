@@ -32,7 +32,7 @@ print.lst_mdl <- function(x, ...){
 
 #' @export
 type_sum.lst_fc <- function(x){
-  "fc"
+  "fcst"
 }
 
 pillar_shaft.lst_fc <- function(x, ...){
