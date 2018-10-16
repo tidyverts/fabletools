@@ -9,12 +9,11 @@ stream <- function(object, ...){
 }
 
 #' @export
-stream.mable <- function(object, data, ...){
+stream.mable <- function(object, new_data, ...){
   obj_vars <- key_vars(object)
-  newdata <- data %>% 
+  newdata <- new_data %>% 
     group_by(!!!syms(obj_vars)) %>%
-    nest %>%
-    rename(.newdata = !!sym("data"))
+    nest(.key = ".newdata")
   
   if(length(key_vars(object)) == 0){
     object <- object %>%
@@ -26,9 +25,8 @@ stream.mable <- function(object, data, ...){
   }
   object %>%
     mutate(
-      data = map2(data, !!sym(".newdata"), rbind),
-      model = map2(!!sym("model"), !!sym(".newdata"), stream, ...) %>% enclass("lst_mdl")
+      model = map2(!!sym("model"), !!sym(".newdata"), stream, ...) %>% add_class("lst_mdl")
     ) %>%
     select(exclude(".newdata")) %>%
-    enclass("mable")
+    as_mable
 }
