@@ -36,7 +36,7 @@ autoplot.fable <- function(object, level = c(80, 95), ...){
   if(NROW(object)>1){
     warn("Only univariate forecast plots are currently supported. Plotting the first forecast.")
   }
-  suppressMessages(autoplot(object$data[[1]], !!(response(object$model[[1]])))) +
+  ggplot() +
     autolayer(new_fable(object[1,]), level = level, ...)
 }
 
