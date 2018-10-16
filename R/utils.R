@@ -63,10 +63,10 @@ custom_error <- function(.f, error){
 
 bind_new_data <- function(object, new_data){
   if(is.null(new_data)){
-    new_data <- map_dbl(object$data, function(.x) get_frequencies("smallest", .x)*2)
+    new_data <- map_dbl(fitted(object), function(.x) get_frequencies("smallest", .x)*2)
   }
   if(is.numeric(new_data)){
-    object[["new_data"]] <- map2(object$data, new_data,
+    object[["new_data"]] <- map2(fitted(object), new_data,
                                 function(data, h){
                                   idx <- expr_text(index(data))
                                   future <- fc_idx(data[[idx]], h)

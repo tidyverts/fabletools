@@ -6,10 +6,8 @@
 #'
 #' @export
 mable <- function(data, model, parsed_model){
-  nested <- nest(group_by_key(data))
-  as_mable(tibble(!!!nested[key_vars(data)], data=nested$data,
-                   model=list(enclass(model,
-                                      "fable_model",
+  as_mable(tibble(model=list(structure(model,
+                                      class = c(class(model), "fable_model"),
                                       fable = 
                                         list(
                                           model = parsed_model$model, 
@@ -57,18 +55,18 @@ as_mable <- function(x){
 #' @importFrom dplyr pull
 #' @export
 tbl_sum.mable <- function(x){
-  intervals <- x %>%
-    pull(!!sym("data")) %>%
-    map(interval) %>%
-    unique
-  if(length(intervals)==1){
-    int_disp <- format(intervals[[1]])
-  }
-  else{
-    int_disp <- "MIXED"
-  }
+  # intervals <- x %>%
+  #   pull(!!sym("data")) %>%
+  #   map(interval) %>%
+  #   unique
+  # if(length(intervals)==1){
+  #   int_disp <- format(intervals[[1]])
+  # }
+  # else{
+  #   int_disp <- "MIXED"
+  # }
   
-  out <- c(`A mable` = sprintf("%s model%s [%s]", big_mark(NROW(x)), ifelse(NROW(x)==1, "", "s"), int_disp))
+  out <- c(`A mable` = sprintf("%s model%s", big_mark(NROW(x)), ifelse(NROW(x)==1, "", "s")))
   
   if(!is_empty(key_vars(x))){
     out <- c(out, key_sum(x))
