@@ -63,7 +63,7 @@ custom_error <- function(.f, error){
 
 bind_new_data <- function(object, new_data){
   if(is.null(new_data)){
-    new_data <- map_dbl(fitted(object), function(.x) get_frequencies("smallest", .x)*2)
+    new_data <- map_dbl(nest(grouped_df(fitted(object), key_vars(fitted(object))))$data, function(.x) get_frequencies("smallest", .x)*2)
   }
   if(is.numeric(new_data)){
     object[["new_data"]] <- map2(fitted(object), new_data,
