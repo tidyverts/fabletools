@@ -62,7 +62,7 @@ custom_error <- function(.f, error){
 }
 
 bind_new_data <- function(object, new_data){
-  idx <- nest(grouped_df(fitted(object), key_vars(fitted(object))))$data
+  idx <- nest(group_by_key(fitted(object)))$data
   if(is.null(new_data)){
     new_data <- map_dbl(idx, function(.x) get_frequencies("smallest", .x)*2)
   }
