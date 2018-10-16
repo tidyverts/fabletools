@@ -62,11 +62,12 @@ custom_error <- function(.f, error){
 }
 
 bind_new_data <- function(object, new_data){
+  idx <- nest(grouped_df(fitted(object), key_vars(fitted(object))))$data
   if(is.null(new_data)){
-    new_data <- map_dbl(nest(grouped_df(fitted(object), key_vars(fitted(object))))$data, function(.x) get_frequencies("smallest", .x)*2)
+    new_data <- map_dbl(idx, function(.x) get_frequencies("smallest", .x)*2)
   }
   if(is.numeric(new_data)){
-    object[["new_data"]] <- map2(fitted(object), new_data,
+    object[["new_data"]] <- map2(idx, new_data,
                                 function(data, h){
                                   idx <- expr_text(index(data))
                                   future <- fc_idx(data[[idx]], h)
