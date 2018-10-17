@@ -7,14 +7,14 @@ fc_idx <- function(idx, h){
 #' @importFrom forecast forecast
 #' @importFrom dplyr mutate
 forecast.mable <- function(object, new_data = NULL, biasadj = TRUE, ...){
-  
+  keys <- key(object)
   # Prepare new_data for forecast.model
   object <- bind_new_data(object, new_data)
   
   # Evaluate forecasts
   fc <- map2(object$model, object$new_data, forecast, ...)
   # Modify forecasts with transformations / biasadj
-  fc <- map2(object$model, fc,
+  object$fc <- fc <- map2(object$model, fc,
              function(model, fc){
                bt <- invert_transformation((model%@%"fable")$transformation)
                if(isTRUE(biasadj)){
@@ -29,7 +29,9 @@ forecast.mable <- function(object, new_data = NULL, biasadj = TRUE, ...){
                fc
              })
   
-  fable(object, fc)
+  out <- suppressWarnings(unnest(object, fc, key = keys))
+  out$distribution <- fc %>% map(function(x) x[["distribution"]]) %>% invoke(c, .)
+  out
 }
 
 #' Construct a new set of forecasts
