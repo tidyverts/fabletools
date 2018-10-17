@@ -1,7 +1,7 @@
 #' Create a new fable
 #'
-#' @param mable The mable used to produce the forecasts
-#' @param forecast A list of tsibble forecasts (from `construct_f`)
+#' @param mable The mable containing models used to produce the forecasts
+#' @param forecast A list of tsibble forecasts (from `construct_fc`)
 #' @export
 fable <- function(mable, forecast){
   mable[["forecast"]] <- forecast

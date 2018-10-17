@@ -7,9 +7,9 @@
 fable(mable, forecast)
 }
 \arguments{
-\item{mable}{The mable used to produce the forecasts}
+\item{mable}{The mable containing models used to produce the forecasts}
 
-\item{forecast}{A list of tsibble forecasts (from \code{construct_f})}
+\item{forecast}{A list of tsibble forecasts (from \code{construct_fc})}
 }
 \description{
 Create a new fable
