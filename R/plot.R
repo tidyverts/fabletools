@@ -107,3 +107,45 @@ fortify.fable <- function(object, level = c(80, 95), showgap = TRUE){
   tsbl
 }
 
+
+#' @importFrom ggplot2 fortify
+#' @export
+fortify.fbl_ts <- function(object, level = c(80, 95)){
+  object %>%
+    mutate(!!!set_names(map(level, function(.x) expr(hilo(!!sym("distribution"), !!.x))), level)) %>%
+    select(exclude("distribution")) %>%
+    gather(level, hilo, !!!syms(as.character(level))) %>%
+    mutate(hilo = add_class(hilo, "hilo"),
+           level = level(hilo),
+           lower = lower(hilo),
+           upper = upper(hilo)) %>%
+    select(exclude("hilo"))
+}
+
+#' @export
+autoplot.fbl_ts <- function(object, level = c(80, 95), ...){
+  if(NROW(object)>1){
+    warn("Only univariate forecast plots are currently supported. Plotting the first forecast.")
+  }
+  ggplot() +
+    autolayer(object, level = level, ...)
+}
+
+#' @export
+autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
+  data <- fortify(object, level = level, ...)
+  mapping <- eval_tidy(quo(aes(x = !!index(data), y = !!sym("mean"))))
+  browser()
+  if(!is.null(level)){
+    mapping$level <- sym("level")
+    mapping$ymin <- sym("lower")
+    mapping$ymax <- sym("upper")
+  }
+  if(!is.null(series)){
+    mapping$colour <- series
+  }
+  if(!is_empty(key_vars(object))){
+    mapping$colour <- expr(interaction(!!!syms(key_vars(object))))
+  }
+  geom_forecast(mapping = mapping, stat = "identity", data = data)
+}

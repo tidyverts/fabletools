@@ -31,7 +31,7 @@ forecast.mable <- function(object, new_data = NULL, biasadj = TRUE, ...){
   
   out <- suppressWarnings(unnest(object, fc, key = keys))
   out$distribution <- fc %>% map(function(x) x[["distribution"]]) %>% invoke(c, .)
-  out
+  add_class(out, "fbl_ts")
 }
 
 #' Construct a new set of forecasts
