@@ -107,19 +107,18 @@ fortify.fable <- function(object, level = c(80, 95), showgap = TRUE){
   tsbl
 }
 
-
 #' @importFrom ggplot2 fortify
 #' @export
 fortify.fbl_ts <- function(object, level = c(80, 95)){
   object %>%
     mutate(!!!set_names(map(level, function(.x) expr(hilo(!!sym("distribution"), !!.x))), level)) %>%
-    select(exclude("distribution")) %>%
+    select(!!expr(-!!sym("distribution"))) %>% 
     gather(level, hilo, !!!syms(as.character(level))) %>%
     mutate(hilo = add_class(hilo, "hilo"),
            level = level(hilo),
            lower = lower(hilo),
            upper = upper(hilo)) %>%
-    select(exclude("hilo"))
+    select(!!expr(-!!sym("hilo")))
 }
 
 #' @export
