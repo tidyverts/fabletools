@@ -145,9 +145,6 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 
 #' @export
 autoplot.fbl_ts <- function(object, level = c(80, 95), ...){
-  if(NROW(object)>1){
-    warn("Only univariate forecast plots are currently supported. Plotting the first forecast.")
-  }
   ggplot() +
     autolayer(object, level = level, ...)
 }
