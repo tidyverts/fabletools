@@ -70,7 +70,7 @@ bind_new_data <- function(object, new_data){
     object[["new_data"]] <- map2(idx, new_data,
                                 function(data, h){
                                   idx <- expr_text(index(data))
-                                  future <- fc_idx(data[[idx]], h)
+                                  future <- seq(data[[idx]][[NROW(data)]], length.out = h + 1, by = time_unit(interval(data)))[-1]
                                   build_tsibble(list2(!!idx := future), key = id(), index = idx)
                                 })
   }
