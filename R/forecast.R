@@ -52,10 +52,5 @@ construct_fc <- function(newdata, point, sd, dist){
   fc[["sd"]] <- sd
   fc[["distribution"]] <- dist
   attributes(fc[["distribution"]]) <- attributes(dist)
-  new_fc(fc)
-}
-
-new_fc <- function(x){
-  stopifnot(is_tsibble(x))
-  add_class(x, "tbl_fc")
+  as_fable(fc, resp = !!sym("mean"), dist = dist)
 }
