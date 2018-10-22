@@ -67,15 +67,21 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 }
 
 #' @export
-autoplot.fbl_ts <- function(object, level = c(80, 95), ...){
-  ggplot() +
+autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
+  if (!is.null(data)){
+    p <- autoplot(data, !!response(object))
+  }
+  else{
+    p <- ggplot()
+  }
+  p +
     autolayer(object, level = level, ...)
 }
 
 #' @export
 autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   data <- fortify(object, level = level, ...)
-  mapping <- eval_tidy(quo(aes(x = !!index(data), y = !!sym("mean"))))
+  mapping <- eval_tidy(quo(aes(x = !!index(data), y = !!response(object))))
   if(!is.null(level)){
     mapping$level <- sym("level")
     mapping$ymin <- sym("lower")
