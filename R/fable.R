@@ -1,114 +1,68 @@
-#' Create a new fable
+#' Create a fable object
 #'
-#' @param mable The mable containing models used to produce the forecasts
-#' @param forecast A list of tsibble forecasts (from `construct_fc`)
+#' @inheritParams tsibble::tsibble
+#' @param resp The response variable (given as a bare or unquoted variable).
+#' @param dist The distribution variable (given as a bare or unquoted variable).
+#'
 #' @export
-fable <- function(mable, forecast){
-  mable[["forecast"]] <- forecast
-  new_fable(mable)
+fable <- function(..., key = id(), index, resp, dist, regular = TRUE){
+  tsbl <- tsibble(..., key = !!enquo(key), index = !!enexpr(index), regular = regular)
+  as_fable(tsbl)
 }
 
-#' Constructor
+#' Coerce to a fable object
 #' 
-#' A constructor function for producing a fable (most useful for extension package authors)
+#' @inheritParams fable
+#' @param x Object to be coerced to a fable (`fbl_ts`)
 #' 
-#' @param x A fable-like object
-#' 
+#' @rdname as-fable
 #' @export
-new_fable <- function(x){
-  stopifnot(!is.null(x[["model"]]), !is.null(x[["forecast"]]))
-  if(!inherits(x[["model"]], "lst_mdl")){
-    x[["model"]] <- add_class(x[["model"]], "lst_mdl")
-  }
-  if(!inherits(x[["forecast"]], "lst_fc")){
-    x[["forecast"]] <- add_class(x[["forecast"]], "lst_fc")
-  }
-  add_class(x, c("fable", "lst_ts"))
+as_fable <- function(x, ...){
+  UseMethod("as_fable")
 }
 
-
-#' Coerce a dataset to a fable
-#'
-#' @param data A dataset containing a list model column 
-#' @param model A bare input containing the model column's name 
-#' @param forecast A bare input containing the forecast column's name
-#'
+#' @rdname as-fable
 #' @export
-as_fable <- function(data, model, forecast){
-  model <- enexpr(model)
-  forecast <- enexpr(model)
-  data %>%
-    mutate(!!!list(model = expr(enclass(!!model, "lst_mdl")),
-                   forecast = expr(enclass(!!forecast, "lst_mdl")))) %>%
-    enclass("fable")
+as_fable.tbl_ts <- function(x, resp, dist, ...){
+  fbl <- structure(x, class = c("fbl_ts", class(x)),
+                   response = enexpr(resp), dist = enexpr(dist))
+  validate_fable(fbl)
+  fbl
+}
+
+validate_fable <- function(fbl){
+  stopifnot(inherits(fbl, "fbl_ts"))
+  if (!(expr_text(response(fbl)) %in% names(fbl))){
+    abort("Could not find response variable `%s` in the fable.",
+          expr_text(response(fbl)))
+  }
+  if (!(expr_text(fbl%@%"dist") %in% names(fbl))){
+    abort("Could not find distribution variable `%s` in the fable.",
+          expr_text(fbl%@%"dist"))
+  }
+  if (!inherits(fbl[[expr_text(fbl%@%"dist")]], "fcdist")){
+    abort('Distribution variable must be of class "fcdist"')
+  }
+}
+
+#' @export
+response.fbl_ts <- function(x, ...){
+  x%@%response
 }
 
 #' @importFrom tibble tbl_sum
 #' @export
-tbl_sum.fable <- function(x){
-  intervals <- x %>%
-    pull(!!sym("data")) %>%
-    map(interval) %>%
-    unique
-  if(length(intervals)==1){
-    int_disp <- format(intervals[[1]])
-  }
-  else{
-    int_disp <- "MIXED"
-  }
-
-  out <- c(`A fable` = sprintf("%s forecast%s [%s]", big_mark(NROW(x)), ifelse(NROW(x)==1, "", "s"), int_disp))
-
-  if(!is_empty(key_vars(x))){
-    out <- c(out, key_sum(x))
-  }
-
+tbl_sum.fbl_ts <- function(x){
+  out <- NextMethod()
+  names(out)[1] <- "A fable"
   out
 }
 
-getPointForecast <- function(object, ...){
-  keys <- syms(key_vars(object))
+#' @export
+summary.fbl_ts <- function(object, level=c(80,95), ...){
   object %>%
-    transmute(!!!keys,
-              mean = map(!!sym("forecast"), function(.x) transmute(.x, !!sym("mean")))
-    ) %>%
-    unnest(key = keys)
-}
-
-#' @importFrom dplyr mutate_if
-#' @export
-summary.fable <- function(object, level=c(80,95), ...){
-  keys <- syms(key_vars(object))
-  suppressWarnings(
-    object %>%
-      select(!!!keys, "forecast") %>%
-      mutate(
-        forecast = map(forecast,
-                       function(fc){
-                         fc %>%
-                           mutate(!!!set_names(map(level, function(.x) expr(hilo(!!sym("distribution"), !!.x))), paste0(level, "%"))) %>%
-                           select(exclude("distribution"))
-                       }
-        )
-      ) %>%
-      unnest(forecast, key = keys) %>%
-      mutate_if(is.list, enclass, "hilo")
-    )
-}
-
-#' @export
-key.fable <- key.dable
-
-#' @export
-key_vars.fable <- function(x){
-  setdiff(colnames(x), c("data", "model", "new_data", "forecast"))
-}
-
-#' @export
-n_keys.fable <- function (x){
-  key <- key_vars(x)
-  if (is_empty(key)) {
-    return(1L)
-  }
-  NROW(distinct(ungroup(as_tibble(x)), !!!syms(key)))
+    transmute(
+      !!response(object),
+      !!!set_names(map(level,function(.x) expr(hilo(!!object%@%"dist", !!.x))),
+                   paste0(level, "%")))
 }

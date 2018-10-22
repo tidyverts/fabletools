@@ -2,15 +2,28 @@
 % Please edit documentation in R/fable.R
 \name{fable}
 \alias{fable}
-\title{Create a new fable}
+\title{Create a fable object}
 \usage{
-fable(mable, forecast)
+fable(..., key = id(), index, resp, dist, regular = TRUE)
 }
 \arguments{
-\item{mable}{The mable containing models used to produce the forecasts}
+\item{...}{A set of name-value pairs. The names of "key" and "index" should
+be avoided as they are used as the arguments.}
 
-\item{forecast}{A list of tsibble forecasts (from \code{construct_fc})}
+\item{key}{Structural variable(s) that define unique time indices, used with
+the helper \link{id}. If a univariate time series (without an explicit key),
+simply call \code{id()}. See below for details.}
+
+\item{index}{A bare (or unquoted) variable to specify the time index variable.}
+
+\item{resp}{The response variable (given as a bare or unquoted variable).}
+
+\item{dist}{The distribution variable (given as a bare or unquoted variable).}
+
+\item{regular}{Regular time interval (\code{TRUE}) or irregular (\code{FALSE}). The
+interval is determined by the greatest common divisor of positive time distances,
+if \code{TRUE}.}
 }
 \description{
-Create a new fable
+Create a fable object
 }
