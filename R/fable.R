@@ -63,6 +63,6 @@ summary.fbl_ts <- function(object, level=c(80,95), ...){
   object %>%
     transmute(
       !!response(object),
-      !!!set_names(map(level,function(.x) expr(hilo(!!object%@%"dist", !!.x))),
+      !!!set_names(map(level,function(.x) expr(hilo(!!(object%@%"dist"), !!.x))),
                    paste0(level, "%")))
 }
