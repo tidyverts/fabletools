@@ -1,19 +1,21 @@
+#' @param bias_adjust Use adjusted back-transformed mean for transformations. 
+#' Refer to `vignette("transformations")` for more details.
 #' @export
 #' @importFrom forecast forecast
 #' @importFrom dplyr mutate
-forecast.mable <- function(object, new_data = NULL, biasadj = TRUE, ...){
+forecast.mable <- function(object, new_data = NULL, bias_adjust = TRUE, ...){
   keys <- key(object)
   # Prepare new_data for forecast.model
   object <- bind_new_data(object, new_data)
   
   # Evaluate forecasts
   fc <- map2(object$model, object$new_data, forecast, ...)
-  # Modify forecasts with transformations / biasadj
+  # Modify forecasts with transformations / bias_adjust
   object$fc <- fc <- map2(object$model, fc,
              function(model, fc){
                bt <- invert_transformation((model%@%"fable")$transformation)
-               if(isTRUE(biasadj)){
-                 # Faster version of biasadj(bt, fc[["sd"]]^2)(fc[["mean"]]) 
+               if(isTRUE(bias_adjust)){
+                 # Faster version of bias_adjust(bt, fc[["sd"]]^2)(fc[["mean"]]) 
                  fc[["mean"]] <- bt(fc[["mean"]]) + fc[["sd"]]^2/2*map_dbl(as.numeric(fc[["mean"]]), hessian, func = bt)
                }
                else{

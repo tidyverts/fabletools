@@ -153,7 +153,7 @@ as_transformation.call <- function(x, data = NULL){
 #' 
 #' @importFrom numDeriv hessian
 #' @export
-biasadj <- function(bt_fn, fvar){
+bias_adjust <- function(bt_fn, fvar){
   new_function(alist(x=), expr((!!bt_fn)(!!sym("x")) + !!fvar/2*map_dbl(as.numeric(!!sym("x")), hessian, func = !!bt_fn)))
 }
 
