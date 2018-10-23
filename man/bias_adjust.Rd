@@ -20,7 +20,7 @@ More details about bias adjustment can be found in the transformations vignette:
 }
 \examples{
 
-adj_fn <- biasadj(exp, 1:10)
+adj_fn <- bias_adjust(exp, 1:10)
 y <- rnorm(10)
 exp(y)
 adj_fn(y)
