@@ -9,7 +9,7 @@ stream <- function(object, ...){
 }
 
 #' @export
-stream.mable <- function(object, new_data, ...){
+stream.mdl_df <- function(object, new_data, ...){
   obj_vars <- key_vars(object)
   newdata <- new_data %>% 
     group_by(!!!syms(obj_vars)) %>%

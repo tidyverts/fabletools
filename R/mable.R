@@ -33,7 +33,7 @@ new_mable <- function(x){
   if(!inherits(x[["model"]], "lst_mdl")){
     x[["model"]] <- add_class(x[["model"]], "lst_mdl")
   }
-  new_tibble(x, subclass = c("mable", "lst_ts"))
+  new_tibble(x, subclass = "mdl_df")
 }
 
 
@@ -47,25 +47,14 @@ as_mable <- function(x){
   if(!inherits(x[["model"]], "lst_mdl")){
     x[["model"]] <- add_class(x[["model"]], "lst_mdl")
   }
-  x %>% add_class(c("mable", "lst_ts"))
+  x %>% add_class("mdl_df")
 }
 
 #' @importFrom tibble tbl_sum
 #' @importFrom tsibble key_sum
 #' @importFrom dplyr pull
 #' @export
-tbl_sum.mable <- function(x){
-  # intervals <- x %>%
-  #   pull(!!sym("data")) %>%
-  #   map(interval) %>%
-  #   unique
-  # if(length(intervals)==1){
-  #   int_disp <- format(intervals[[1]])
-  # }
-  # else{
-  #   int_disp <- "MIXED"
-  # }
-  
+tbl_sum.mdl_df <- function(x){
   out <- c(`A mable` = sprintf("%s model%s", big_mark(NROW(x)), ifelse(NROW(x)==1, "", "s")))
   
   if(!is_empty(key_vars(x))){
@@ -93,14 +82,14 @@ model_sum.default <- function(x){
 
 #' @importFrom utils head capture.output
 #' @export
-summary.mable <- function(object, ...){
+summary.mdl_df <- function(object, ...){
   map(head(object$model), function(.x) capture.output(summary(.x))) %>%
     invoke(cat, ., sep="\n")
   invisible(object)
 }
 
 #' @export
-components.mable <- function(object, ...){
+components.mdl_df <- function(object, ...){
   keys <- syms(key_vars(object))
   object %>%
     transmute(
@@ -111,15 +100,15 @@ components.mable <- function(object, ...){
 }
 
 #' @export
-key.mable <- key.dable
+key.mdl_df <- key.dable
 
 #' @export
-key_vars.mable <- function(x){
+key_vars.mdl_df <- function(x){
   setdiff(colnames(x), c("data", "model"))
 }
 
 #' @export
-n_keys.mable <- function(x){
+n_keys.mdl_df <- function(x){
   key <- key_vars(x)
   if (is_empty(key)) {
     return(1L)

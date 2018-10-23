@@ -3,7 +3,7 @@
 #' @export
 #' @importFrom forecast forecast
 #' @importFrom dplyr mutate
-forecast.mable <- function(object, new_data = NULL, bias_adjust = TRUE, ...){
+forecast.mdl_df <- function(object, new_data = NULL, bias_adjust = TRUE, ...){
   keys <- key(object)
   # Prepare new_data for forecast.model
   object <- bind_new_data(object, new_data)
@@ -26,7 +26,7 @@ forecast.mable <- function(object, new_data = NULL, bias_adjust = TRUE, ...){
                fc
              })
   
-  out <- suppressWarnings(unnest(object, fc, key = keys))
+  out <- suppressWarnings(unnest(add_class(object, "lst_ts"), fc, key = keys))
   out$distribution <- fc %>% map(function(x) x[["distribution"]]) %>% invoke(c, .)
   
   as_fable(out, resp = !!sym("mean"), dist = !!sym("distribution"))

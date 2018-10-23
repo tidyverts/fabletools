@@ -17,7 +17,7 @@ simulate <- function(object, new_data, ...){
 }
 
 #' @export
-simulate.mable <- function(object, new_data, times = 1, seed = NULL, ...){
+simulate.mdl_df <- function(object, new_data, times = 1, seed = NULL, ...){
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
     stats::runif(1)
   if (is.null(seed)) 
@@ -37,9 +37,9 @@ simulate.mable <- function(object, new_data, times = 1, seed = NULL, ...){
     new_data <- key_add(new_data, !!sym(".rep"))
   }
   
-  key <- syms(key_vars(object))
+  keys <- syms(key_vars(object))
   object <- bind_new_data(object, new_data)
   names(object)[names(object) == "model"] <- "object"
   object$.sim <- map2(object$object, object$new_data, simulate, ...)
-  unnest(object, !!sym(".sim"), key = key)
+  unnest(add_class(object, "lst_ts"), !!sym(".sim"), key = keys)
 }

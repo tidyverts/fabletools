@@ -10,7 +10,7 @@ refit <- function(object, new_data, ...){
 }
 
 #' @export
-refit.mable <- function(object, new_data, ...){
+refit.mdl_df <- function(object, new_data, ...){
   key <- syms(key_vars(object))
   object <- bind_new_data(object, new_data)
   names(object)[names(object) == "model"] <- "object"

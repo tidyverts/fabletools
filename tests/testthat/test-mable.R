@@ -1,7 +1,7 @@
 context("test-mable.R")
 
 test_that("Mable classes", {
-  expect_s3_class(mbl, c("mable", "lst_ts"))
+  expect_s3_class(mbl, "mdl_df")
   expect_s3_class(mbl[["model"]], "lst_mdl")
 })
 
