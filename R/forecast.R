@@ -54,5 +54,5 @@ construct_fc <- function(newdata, point, sd, dist){
   fc[["sd"]] <- sd
   fc[["distribution"]] <- dist
   attributes(fc[["distribution"]]) <- attributes(dist)
-  as_fable(fc, resp = !!sym("mean"), dist = dist)
+  as_fable(fc, resp = !!sym("mean"), dist = !!sym("distribution"))
 }
