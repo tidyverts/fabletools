@@ -56,8 +56,8 @@ autoplot.mable <- function(object, ...){
 #' @export
 fortify.fbl_ts <- function(object, level = c(80, 95)){
   object %>%
-    mutate(!!!set_names(map(level, function(.x) expr(hilo(!!sym("distribution"), !!.x))), level)) %>%
-    select(!!expr(-!!sym("distribution"))) %>% 
+    mutate(!!!set_names(map(level, function(.x) expr(hilo(!!(object%@%"dist"), !!.x))), level)) %>%
+    select(!!expr(-!!(object%@%"dist"))) %>% 
     gather(level, hilo, !!!syms(as.character(level))) %>%
     mutate(hilo = add_class(hilo, "hilo"),
            level = level(hilo),

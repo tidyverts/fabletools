@@ -16,20 +16,21 @@ forecast.mdl_df <- function(object, new_data = NULL, bias_adjust = TRUE, ...){
                bt <- invert_transformation((model%@%"fable")$transformation)
                if(isTRUE(bias_adjust)){
                  # Faster version of bias_adjust(bt, fc[["sd"]]^2)(fc[["mean"]]) 
-                 fc[["mean"]] <- bt(fc[["mean"]]) + fc[["sd"]]^2/2*map_dbl(as.numeric(fc[["mean"]]), hessian, func = bt)
+                 fc[[expr_text(response(fc))]] <- bt(fc[[expr_text(response(fc))]]) +
+                   fc[["sd"]]^2/2*map_dbl(as.numeric(fc[[expr_text(response(fc))]]), hessian, func = bt)
                }
                else{
-                 fc[["mean"]] <- bt(fc[["mean"]])
+                 fc[[expr_text(response(fc))]] <- bt(fc[[expr_text(response(fc))]])
                }
-               transformation(fc[["distribution"]]) <- bt
+               transformation(fc[[expr_text(fc%@%"dist")]]) <- bt
                fc[["sd"]] <- NULL
                fc
              })
   
   out <- suppressWarnings(unnest(add_class(object, "lst_ts"), fc, key = keys))
-  out$distribution <- fc %>% map(function(x) x[["distribution"]]) %>% invoke(c, .)
+  out[[expr_text(fc[[1]]%@%"dist")]] <- fc %>% map(function(x) x[[expr_text(x%@%"dist")]]) %>% invoke(c, .)
   
-  as_fable(out, resp = !!sym("mean"), dist = !!sym("distribution"))
+  as_fable(out, resp = !!response(fc[[1]]), dist = !!(fc[[1]]%@%"dist"))
 }
 
 #' Construct a new set of forecasts
@@ -52,7 +53,7 @@ construct_fc <- function(newdata, point, sd, dist){
   fc <- newdata[expr_text(index(newdata))]
   fc[["mean"]] <- point
   fc[["sd"]] <- sd
-  fc[["distribution"]] <- dist
-  attributes(fc[["distribution"]]) <- attributes(dist)
-  as_fable(fc, resp = !!sym("mean"), dist = !!sym("distribution"))
+  fc[[".distribution"]] <- dist
+  attributes(fc[[".distribution"]]) <- attributes(dist)
+  as_fable(fc, resp = !!sym("mean"), dist = !!sym(".distribution"))
 }

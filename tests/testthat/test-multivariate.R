@@ -5,5 +5,5 @@ test_that("multiple univariate", {
   expect_s3_class(mbl_multi$model, "lst_mdl")
   
   expect_equal(sort(unique(fbl_multi$key)), c("fdeaths", "mdeaths"))
-  expect_s3_class(fbl_multi$distribution, "fcdist")
+  expect_s3_class(fbl_multi[[expr_text(fbl_multi%@%"dist")]], "fcdist")
 })
