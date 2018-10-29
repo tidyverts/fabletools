@@ -14,19 +14,13 @@ interpolate <- function(model, ...){
 }
 
 #' @export
-interpolate.default <- function(model, data, ...){
-  resp <- expr_text(model%@%"response")
-  missingVals <- is.na(data[[resp]])
-  data[[resp]][missingVals] <- fitted(model)[missingVals]
-  data
-}
-
-#' @export
-interpolate.mable <- function(model, ...){
-  keys <- syms(key_vars(model))
+interpolate.mdl_df <- function(model, new_data, ...){
   model %>%
-    transmute(!!!keys,
-              interpolated = map2(!!sym("model"), !!sym("data"), interpolate, ...)
-    ) %>%
-    unnest(key = keys)
+    bind_new_data(new_data) %>% 
+    transmute(
+      !!!syms(key_vars(model)),
+      interpolated = map2(model, new_data, interpolate, ...)
+    ) %>% 
+    add_class("lst_ts") %>% 
+    unnest(key = key(model))
 }
