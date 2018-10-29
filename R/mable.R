@@ -46,13 +46,13 @@ new_mable <- function(x){
 #' @param x A dataset containing a list model column
 #' 
 #' @export
-as_mable <- function(x){
+as_mable <- function(x, key = structure(exprs(), class = "key")){
   stopifnot(!is.null(x[["model"]]))
   if(!inherits(x[["model"]], "lst_mdl")){
     x[["model"]] <- add_class(x[["model"]], "lst_mdl")
   }
   x %>% 
-    enclass("mdl_df", key = structure(exprs(), class = "key"))
+    enclass("mdl_df", key = key)
 }
 
 #' @importFrom tibble tbl_sum

@@ -10,23 +10,11 @@ stream <- function(object, ...){
 
 #' @export
 stream.mdl_df <- function(object, new_data, ...){
-  obj_vars <- key_vars(object)
-  newdata <- new_data %>% 
-    group_by(!!!syms(obj_vars)) %>%
-    nest(.key = ".newdata")
-  
-  if(length(key_vars(object)) == 0){
-    object <- object %>%
-      mutate(.newdata = newdata$.newdata)
-  }
-  else{
-    object <- object %>%
-      left_join(newdata, by = obj_vars)
-  }
   object %>%
-    mutate(
-      model = map2(!!sym("model"), !!sym(".newdata"), stream, ...) %>% add_class("lst_mdl")
+    bind_new_data(new_data) %>% 
+    transmute(
+      !!!flatten(key(object)),
+      model = map2(!!sym("model"), !!sym("new_data"), stream, ...)
     ) %>%
-    select(exclude(".newdata")) %>%
-    as_mable
+    as_mable(key = key(object))
 }
