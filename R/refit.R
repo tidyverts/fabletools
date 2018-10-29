@@ -11,12 +11,12 @@ refit <- function(object, new_data, ...){
 
 #' @export
 refit.mdl_df <- function(object, new_data, ...){
-  key <- syms(key_vars(object))
-  object <- bind_new_data(object, new_data)
-  names(object)[names(object) == "model"] <- "object"
-
-  out <- map2(object$object, object$new_data, refit, ...) %>% 
-    invoke("rbind", .)
-  
-  add_class(bind_cols(object[map_chr(key, expr_text)], out), class(out))
+  object %>%
+    bind_new_data(new_data) %>% 
+    transmute(
+      !!!flatten(key(object)),
+      model = map2(!!sym("model"), !!sym("new_data"), refit, ...)
+    ) %>%
+    {suppressWarnings(unnest(., model))} %>% 
+    as_mable(key = key(object))
 }
