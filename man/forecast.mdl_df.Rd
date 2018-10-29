@@ -17,6 +17,8 @@ time series with no exogenous regressors).}
 
 \item{bias_adjust}{Use adjusted back-transformed mean for transformations.
 Refer to \code{vignette("transformations")} for more details.}
+
+\item{...}{Further arguments to forecast model methods.}
 }
 \description{
 Forecast a mable

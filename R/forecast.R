@@ -6,6 +6,7 @@
 #' time series with no exogenous regressors).
 #' @param bias_adjust Use adjusted back-transformed mean for transformations. 
 #' Refer to `vignette("transformations")` for more details.
+#' @param ... Further arguments to forecast model methods.
 #' 
 #' @export
 #' @importFrom forecast forecast
