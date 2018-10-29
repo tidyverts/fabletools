@@ -4,7 +4,7 @@
 #' 
 #' @export
 multi_univariate <- function(data, cl, env = caller_env(n=2)){
-  multi_model(data, cl, syms(key_vars(data)), env = env)
+  multi_model(data, cl, key(data), env = env)
 }
 
 #' Multiple calls to a model for mass modelling
@@ -19,7 +19,7 @@ multi_univariate <- function(data, cl, env = caller_env(n=2)){
 #' @export
 multi_model <- function(data, cl, keys, env = caller_env(n=2)){
   # Re-evaluate cl in environment with split data
-  nested_data <- nest(group_by(data, !!!keys), .key = ".data")
+  nested_data <- nest(group_by(data, !!!flatten(keys)), .key = ".data")
   
   out <- map(nested_data[[".data"]], function(x){
     eval_tidy(
@@ -29,5 +29,7 @@ multi_model <- function(data, cl, keys, env = caller_env(n=2)){
   }) %>% 
     invoke("rbind", .)
   
-  add_class(bind_cols(nested_data[map_chr(keys, expr_text)], out), class(out))
+  structure(bind_cols(nested_data[key_vars(keys)], out),
+            key = keys,
+            class = class(out))
 }

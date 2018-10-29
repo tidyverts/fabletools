@@ -6,16 +6,20 @@
 #'
 #' @export
 mable <- function(data, model, parsed_model){
-  as_mable(tibble(model=list(structure(model,
-                                      class = c(class(model), "fable_model"),
-                                      fable = 
-                                        list(
-                                          model = parsed_model$model, 
-                                          response = parsed_model$response,
-                                          transformation = parsed_model$transformation)
-                                        )
-                              )
-                   )
+  as_mable(
+    tibble(
+      model=list(
+        structure(model,
+                  class = c(class(model), "fable_model"),
+                  fable = 
+                    list(
+                      model = parsed_model$model, 
+                      response = parsed_model$response,
+                      transformation = parsed_model$transformation
+                    )
+        )
+      )
+    )
   )
 }
 
@@ -47,7 +51,8 @@ as_mable <- function(x){
   if(!inherits(x[["model"]], "lst_mdl")){
     x[["model"]] <- add_class(x[["model"]], "lst_mdl")
   }
-  x %>% add_class("mdl_df")
+  x %>% 
+    enclass("mdl_df", key = structure(exprs(), class = "key"))
 }
 
 #' @importFrom tibble tbl_sum
@@ -100,11 +105,13 @@ components.mdl_df <- function(object, ...){
 }
 
 #' @export
-key.mdl_df <- key.dable
+key.mdl_df <- function(x){
+  x%@%"key"
+}
 
 #' @export
 key_vars.mdl_df <- function(x){
-  setdiff(colnames(x), c("data", "model"))
+  key_vars(key(x))
 }
 
 #' @export
