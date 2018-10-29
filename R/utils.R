@@ -62,28 +62,14 @@ custom_error <- function(.f, error){
 }
 
 bind_new_data <- function(object, new_data){
-  idx <- nest(group_by_key(fitted(object)))$data
-  if(is.null(new_data)){
-    new_data <- map_dbl(idx, function(.x) get_frequencies("smallest", .x)*2)
-  }
-  if(is.numeric(new_data)){
-    object[["new_data"]] <- map2(idx, new_data,
-                                function(data, h){
-                                  idx <- expr_text(index(data))
-                                  future <- seq(data[[idx]][[NROW(data)]], length.out = h + 1, by = time_unit(interval(data)))[-1]
-                                  build_tsibble(list2(!!idx := future), key = id(), index = idx)
-                                })
+  new_data <- new_data %>% 
+    group_by(!!!syms(key_vars(object))) %>% 
+    nest(.key = "new_data")
+  if(length(key_vars(object)) > 0){
+    object <- left_join(object, new_data, by = key_vars(object))
   }
   else{
-    new_data <- new_data %>% 
-      group_by(!!!syms(key_vars(object))) %>% 
-      nest(.key = "new_data")
-    if(length(key_vars(object)) > 0){
-      object <- left_join(object, new_data, by = key_vars(object))
-    }
-    else{
-      object[["new_data"]] <- new_data[["new_data"]]
-    }
+    object[["new_data"]] <- new_data[["new_data"]]
   }
   object
 }
