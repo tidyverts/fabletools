@@ -8,6 +8,8 @@ as_mable(x, key = structure(exprs(), class = "key"))
 }
 \arguments{
 \item{x}{A dataset containing a list model column}
+
+\item{key}{Structural variable(s) that identify each model}
 }
 \description{
 Coerce a dataset to a mable

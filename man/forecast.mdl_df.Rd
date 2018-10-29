@@ -8,6 +8,13 @@
   bias_adjust = TRUE, ...)
 }
 \arguments{
+\item{object}{A mable containing models used for forecasting.}
+
+\item{new_data}{A \code{tsibble} containing future information used to forecast.}
+
+\item{h}{The forecast horison (can be used instead of \code{new_data} for regular
+time series with no exogenous regressors).}
+
 \item{bias_adjust}{Use adjusted back-transformed mean for transformations.
 Refer to \code{vignette("transformations")} for more details.}
 }

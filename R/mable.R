@@ -44,6 +44,7 @@ new_mable <- function(x){
 #' Coerce a dataset to a mable
 #' 
 #' @param x A dataset containing a list model column
+#' @param key Structural variable(s) that identify each model
 #' 
 #' @export
 as_mable <- function(x, key = structure(exprs(), class = "key")){
