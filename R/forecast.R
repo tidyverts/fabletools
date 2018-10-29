@@ -1,3 +1,5 @@
+#' Forecast a mable
+#' 
 #' @param bias_adjust Use adjusted back-transformed mean for transformations. 
 #' Refer to `vignette("transformations")` for more details.
 #' @export
