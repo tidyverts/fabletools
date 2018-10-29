@@ -95,13 +95,13 @@ summary.mdl_df <- function(object, ...){
 
 #' @export
 components.mdl_df <- function(object, ...){
-  keys <- syms(key_vars(object))
   object %>%
     transmute(
-      !!!keys,
+      !!!syms(key_vars(object)),
       components = map(object$model, components)
-    ) %>%
-    unnest(key = keys)
+    ) %>% 
+    add_class("lst_ts") %>% 
+    unnest(key = key(object))
 }
 
 #' @export
