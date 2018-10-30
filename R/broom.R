@@ -18,3 +18,13 @@ glance.mdl_df <- function(x, ...){
     ) %>% 
     unnest()
 }
+
+#' @export
+tidy.mdl_df <- function(x, ...){
+  x %>%
+    transmute(
+      !!!syms(key_vars(x)),
+      tidied = map(model, tidy)
+    ) %>% 
+    unnest()
+}

@@ -14,6 +14,7 @@
 \alias{autolayer}
 \alias{augment}
 \alias{glance}
+\alias{tidy}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -21,7 +22,7 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{broom}{\code{\link[broom]{augment}}, \code{\link[broom]{glance}}}
+  \item{broom}{\code{\link[broom]{augment}}, \code{\link[broom]{glance}}, \code{\link[broom]{tidy}}}
 
   \item{forecast}{\code{\link[forecast]{forecast}}, \code{\link[forecast]{accuracy}}, \code{\link[forecast]{getResponse}}}
 

@@ -40,3 +40,7 @@ broom::augment
 #' @importFrom broom glance
 #' @export
 broom::glance
+
+#' @importFrom broom tidy
+#' @export
+broom::tidy
