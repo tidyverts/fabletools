@@ -36,3 +36,7 @@ ggplot2::autolayer
 #' @importFrom broom augment
 #' @export
 broom::augment
+
+#' @importFrom broom glance
+#' @export
+broom::glance

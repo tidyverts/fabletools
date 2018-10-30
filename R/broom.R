@@ -8,3 +8,13 @@ augment.mdl_df <- function(x, ...){
     add_class("lst_ts") %>% 
     unnest(key = key(x))
 }
+
+#' @export
+glance.mdl_df <- function(x, ...){
+  x %>%
+    transmute(
+      !!!syms(key_vars(x)),
+      aug = map(model, glance)
+    ) %>% 
+    unnest()
+}
