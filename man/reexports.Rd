@@ -12,6 +12,7 @@
 \alias{getResponse}
 \alias{autoplot}
 \alias{autolayer}
+\alias{augment}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -19,6 +20,8 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
+  \item{broom}{\code{\link[broom]{augment}}}
+
   \item{forecast}{\code{\link[forecast]{forecast}}, \code{\link[forecast]{accuracy}}, \code{\link[forecast]{getResponse}}}
 
   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}, \code{\link[ggplot2]{autolayer}}}

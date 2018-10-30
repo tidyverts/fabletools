@@ -32,3 +32,7 @@ ggplot2::autoplot
 #' @importFrom ggplot2 autolayer
 #' @export
 ggplot2::autolayer
+
+#' @importFrom broom augment
+#' @export
+broom::augment

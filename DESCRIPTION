@@ -16,7 +16,8 @@ Imports:
     stats,
     tibble (>= 1.4.1),
     tidyselect,
-    tsibble (>= 0.1.5.9000)
+    tsibble (>= 0.1.5.9000),
+    broom
 Suggests:
     colorspace,
     covr,
