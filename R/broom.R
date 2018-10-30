@@ -14,7 +14,7 @@ glance.mdl_df <- function(x, ...){
   x %>%
     transmute(
       !!!syms(key_vars(x)),
-      aug = map(model, glance)
+      glanced = map(model, glance)
     ) %>% 
     unnest()
 }
