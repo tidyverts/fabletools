@@ -31,15 +31,19 @@ ACF1(.resid, na.action = stats::na.pass, ...)
 \arguments{
 \item{.resid}{A vector of residuals from either the training (model accuracy) or test (forecast accuracy) data.}
 
+\item{na.rm}{Remove the missing values before calculating the accuracy measure}
+
+\item{...}{Additional arguments for each measure}
+
 \item{.resp}{A vector of responses matching the residuals (for forecast accuracy, the original data must be provided).}
+
+\item{demean}{Should the response be demeaned (MASE)}
 
 \item{.period}{The seasonal period of the data (defaulting to 'smallest' seasonal period).}
 
-\item{.fitted}{The fitted values from the model, or forecasted values from the forecast.}
+\item{d}{Should the response model include a first difference?}
 
-\item{.dist}{The distribution of fitted values from the model, or forecasted values from the forecast.}
-
-\item{.expr_resp}{An expression for the response variable.}
+\item{D}{Should the response model include a seasonal difference?}
 }
 \description{
 Point estimate accuracy measures
