@@ -8,7 +8,6 @@
 \alias{type_sum}
 \alias{obj_sum}
 \alias{forecast}
-\alias{accuracy}
 \alias{getResponse}
 \alias{autoplot}
 \alias{autolayer}
@@ -24,7 +23,7 @@ below to see their documentation.
 \describe{
   \item{broom}{\code{\link[broom]{augment}}, \code{\link[broom]{glance}}, \code{\link[broom]{tidy}}}
 
-  \item{forecast}{\code{\link[forecast]{forecast}}, \code{\link[forecast]{accuracy}}, \code{\link[forecast]{getResponse}}}
+  \item{forecast}{\code{\link[forecast]{forecast}}, \code{\link[forecast]{getResponse}}}
 
   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}, \code{\link[ggplot2]{autolayer}}}
 

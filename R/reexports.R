@@ -17,10 +17,6 @@ tibble::obj_sum
 #' @export
 forecast::forecast
 
-#' @importFrom forecast accuracy
-#' @export
-forecast::accuracy
-
 #' @importFrom forecast getResponse
 #' @export
 forecast::getResponse
