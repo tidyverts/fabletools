@@ -21,12 +21,12 @@ accuracy <- function(x, ...){
 
 #' Point estimate accuracy measures
 #' 
-#' @param .resid: A vector of residuals from either the training (model accuracy) or test (forecast accuracy) data.
-#' @param .resp: A vector of responses matching the residuals (for forecast accuracy, the original data must be provided).
-#' @param .fitted: The fitted values from the model, or forecasted values from the forecast.
-#' @param .dist: The distribution of fitted values from the model, or forecasted values from the forecast.
-#' @param .period: The seasonal period of the data (defaulting to 'smallest' seasonal period).
-#' @param .expr_resp: An expression for the response variable.
+#' @param .resid A vector of residuals from either the training (model accuracy) or test (forecast accuracy) data.
+#' @param .resp A vector of responses matching the residuals (for forecast accuracy, the original data must be provided).
+#' @param .fitted The fitted values from the model, or forecasted values from the forecast.
+#' @param .dist The distribution of fitted values from the model, or forecasted values from the forecast.
+#' @param .period The seasonal period of the data (defaulting to 'smallest' seasonal period).
+#' @param .expr_resp An expression for the response variable.
 #' 
 #' @rdname point-accuracy-measures
 #' @export

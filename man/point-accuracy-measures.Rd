@@ -29,17 +29,17 @@ MASE(.resid, .resp, demean = FALSE, na.rm = TRUE, .period,
 ACF1(.resid, na.action = stats::na.pass, ...)
 }
 \arguments{
-\item{.resid:}{A vector of residuals from either the training (model accuracy) or test (forecast accuracy) data.}
+\item{.resid}{A vector of residuals from either the training (model accuracy) or test (forecast accuracy) data.}
 
-\item{.resp:}{A vector of responses matching the residuals (for forecast accuracy, the original data must be provided).}
+\item{.resp}{A vector of responses matching the residuals (for forecast accuracy, the original data must be provided).}
 
-\item{.fitted:}{The fitted values from the model, or forecasted values from the forecast.}
+\item{.period}{The seasonal period of the data (defaulting to 'smallest' seasonal period).}
 
-\item{.dist:}{The distribution of fitted values from the model, or forecasted values from the forecast.}
+\item{.fitted}{The fitted values from the model, or forecasted values from the forecast.}
 
-\item{.period:}{The seasonal period of the data (defaulting to 'smallest' seasonal period).}
+\item{.dist}{The distribution of fitted values from the model, or forecasted values from the forecast.}
 
-\item{.expr_resp:}{An expression for the response variable.}
+\item{.expr_resp}{An expression for the response variable.}
 }
 \description{
 Point estimate accuracy measures
