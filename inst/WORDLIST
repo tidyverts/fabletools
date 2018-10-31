@@ -9,7 +9,11 @@ geoms
 ggplot
 ggproto
 hilo
+horison
 mable
+MAPE
+MASE
+MPE
 newdata
 obj
 stat
