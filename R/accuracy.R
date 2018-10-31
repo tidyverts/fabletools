@@ -1,30 +1,71 @@
-ME <- function(res, na.rm = TRUE, ...){
-  mean(res, na.rm = na.rm, ...)
+#' Evaluate model/forecast accuracy
+#' 
+#' The measures calculated are:
+#' \itemize{
+#'   \item ME: Mean Error
+#'   \item RMSE: Root Mean Squared Error
+#'   \item MAE: Mean Absolute Error
+#'   \item MPE: Mean Percentage Error
+#'   \item MAPE: Mean Absolute Percentage Error
+#'   \item MASE: Mean Absolute Scaled Error
+#'   \item ACF1: Autocorrelation of errors at lag 1.
+#' }
+#' 
+#' @export
+accuracy <- function(x, ...){
+  UseMethod("accuracy")
 }
 
-MSE <- function(res, na.rm = TRUE, ...){
-  mean(res ^ 2, na.rm = na.rm, ...)
+#' Point estimate accuracy measures
+#' 
+#' @param .resid: A vector of residuals from either the training (model accuracy) or test (forecast accuracy) data.
+#' @param .resp: A vector of responses matching the residuals (for forecast accuracy, the original data must be provided).
+#' @param .fitted: The fitted values from the model, or forecasted values from the forecast.
+#' @param .dist: The distribution of fitted values from the model, or forecasted values from the forecast.
+#' @param .period: The seasonal period of the data (defaulting to 'smallest' seasonal period).
+#' @param .expr_resp: An expression for the response variable.
+#' 
+#' @rdname point-accuracy-measures
+#' @export
+ME <- function(.resid, na.rm = TRUE, ...){
+  mean(.resid, na.rm = na.rm, ...)
 }
 
-RMSE <- function(res, na.rm = TRUE, ...){
-  sqrt(MSE(res, na.rm = na.rm, ...))
+#' @rdname point-accuracy-measures
+#' @export
+MSE <- function(.resid, na.rm = TRUE, ...){
+  mean(.resid ^ 2, na.rm = na.rm, ...)
 }
 
-MAE <- function(res, na.rm = TRUE, ...){
-  mean(abs(res), na.rm = na.rm, ...)
+#' @rdname point-accuracy-measures
+#' @export
+RMSE <- function(.resid, na.rm = TRUE, ...){
+  sqrt(MSE(.resid, na.rm = na.rm, ...))
 }
 
-MPE <- function(res, y, na.rm = TRUE, ...){
-  mean(res / y * 100, na.rm = TRUE, ...)
+#' @rdname point-accuracy-measures
+#' @export
+MAE <- function(.resid, na.rm = TRUE, ...){
+  mean(abs(.resid), na.rm = na.rm, ...)
 }
 
-MAPE <- function(res, y, na.rm = TRUE, ...){
-  mean(abs(res / y * 100), na.rm = TRUE, ...)
+#' @rdname point-accuracy-measures
+#' @export
+MPE <- function(.resid, .resp, na.rm = TRUE, ...){
+  mean(.resid / .resp * 100, na.rm = TRUE, ...)
 }
 
-MASE <- function(res, y, demean = FALSE, na.rm = TRUE, period, d = period == 1, D = period > 1, ...){
+#' @rdname point-accuracy-measures
+#' @export
+MAPE <- function(.resid, .resp, na.rm = TRUE, ...){
+  mean(abs(.resid / .resp * 100), na.rm = TRUE, ...)
+}
+
+#' @rdname point-accuracy-measures
+#' @export
+MASE <- function(.resid, .resp, demean = FALSE, na.rm = TRUE, .period, d = .period == 1, D = .period > 1, ...){
   if (D > 0) { # seasonal differencing
-    y <- diff(y, lag = period, differences = D)
+    y <- diff(.resp, lag = .period, differences = D)
   }
   if (d > 0) {
     y <- diff(y, differences = d)
@@ -35,72 +76,11 @@ MASE <- function(res, y, demean = FALSE, na.rm = TRUE, period, d = period == 1, 
   else{
     scale <- mean(abs(y), na.rm = na.rm, ...)
   }
-  mase <- mean(abs(res / scale), na.rm = na.rm, ...)
+  mase <- mean(abs(.resid / scale), na.rm = na.rm, ...)
 }
 
-ACF1 <- function(res, na.action = stats::na.pass, ...){
-  stats::acf(res, plot = FALSE, lag.max = 2, na.action = na.action, ...)$acf[2, 1, 1]
-}
-
-accuracy.mable <- function(f, period = "smallest"){
-  response <- getResponse(f)$response
-  period <- get_frequencies(period, response)
-  residuals(f) %>% 
-    group_by(!!!syms(key_vars(.))) %>% 
-    as_tibble() %>% 
-    summarise(
-      Type = "Training set",
-      ME = ME(residuals),
-      RMSE = RMSE(residuals),
-      MAE = MAE(residuals),
-      MPE = MPE(residuals, response),
-      MAPE = MAPE(residuals, response),
-      MASE = MASE(residuals, response, period = period),
-      ACF1 = ACF1(residuals)
-    )
-}
-
-accuracy.fable <- function(f, x, period = "smallest"){
-  response <- getResponse(f)$response
-  accuracy_data <- residuals(f) %>% mutate(Type = "Training set")
-  if(!missing(x)){
-    keys <- key_vars(f)
-    
-    test_data <- x %>% 
-      group_by(!!!syms(keys)) %>% 
-      nest(.key = "newdata")
-    
-    if(NROW(f) > 1){
-      left_join(f, test_data, by = keys)
-    }
-    else{
-      f$newdata <- test_data$newdata
-    }
-    
-    resid_test <- f %>% 
-      transmute(!!!syms(keys),
-                residuals = pmap(list(!!sym("model"), !!sym("forecast"), !!sym("newdata")),
-                                 function(model, forecast, newdata){
-                                   forecast %>% 
-                                     transmute(residuals = newdata[[model%@%"response"]] - mean)
-                                 })
-      ) %>% 
-      unnest %>% 
-      mutate(Type = "Test set")
-    
-    accuracy_data <- rbind(accuracy_data, resid_test)
-  }
-  period <- get_frequencies(period, accuracy_data)
-  accuracy_data %>% 
-    group_by(!!!syms(c(key_vars(.), "Type"))) %>% 
-    as_tibble() %>% 
-    summarise(
-      ME = ME(residuals),
-      RMSE = RMSE(residuals),
-      MAE = MAE(residuals),
-      MPE = MPE(residuals, response),
-      MAPE = MAPE(residuals, response),
-      MASE = MASE(residuals, response, period = period),
-      ACF1 = ACF1(residuals)
-    )
+#' @rdname point-accuracy-measures
+#' @export
+ACF1 <- function(.resid, na.action = stats::na.pass, ...){
+  stats::acf(.resid, plot = FALSE, lag.max = 2, na.action = na.action, ...)$acf[2, 1, 1]
 }
