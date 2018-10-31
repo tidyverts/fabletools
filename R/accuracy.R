@@ -1,5 +1,8 @@
 #' Evaluate model/forecast accuracy
 #' 
+#' @param x A model or forecast object
+#' @param ... Additional arguments to be passed to other methods
+#' 
 #' The measures calculated are:
 #' \itemize{
 #'   \item ME: Mean Error

@@ -6,7 +6,11 @@
 \usage{
 accuracy(x, ...)
 }
-\description{
+\arguments{
+\item{x}{A model or forecast object}
+
+\item{...}{Additional arguments to be passed to other methods
+
 The measures calculated are:
 \itemize{
 \item ME: Mean Error
@@ -16,5 +20,8 @@ The measures calculated are:
 \item MAPE: Mean Absolute Percentage Error
 \item MASE: Mean Absolute Scaled Error
 \item ACF1: Autocorrelation of errors at lag 1.
+}}
 }
+\description{
+Evaluate model/forecast accuracy
 }
