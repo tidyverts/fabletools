@@ -17,6 +17,6 @@ refit.mdl_df <- function(object, new_data, ...){
       !!!flatten(key(object)),
       model = map2(!!sym("model"), !!sym("new_data"), refit, ...)
     ) %>%
-    {suppressWarnings(unnest(., model))} %>% 
+    {suppressWarnings(unnest(., !!sym("model")))} %>% 
     as_mable(key = key(object))
 }
