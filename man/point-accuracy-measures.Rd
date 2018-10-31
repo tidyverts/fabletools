@@ -33,7 +33,7 @@ ACF1(.resid, na.action = stats::na.pass, ...)
 
 \item{na.rm}{Remove the missing values before calculating the accuracy measure}
 
-\item{...}{Additional arguments for each measure}
+\item{...}{Additional arguments for each measure.}
 
 \item{.resp}{A vector of responses matching the residuals (for forecast accuracy, the original data must be provided).}
 
@@ -44,6 +44,8 @@ ACF1(.resid, na.action = stats::na.pass, ...)
 \item{d}{Should the response model include a first difference?}
 
 \item{D}{Should the response model include a seasonal difference?}
+
+\item{na.action}{Function to handle missing values.}
 }
 \description{
 Point estimate accuracy measures

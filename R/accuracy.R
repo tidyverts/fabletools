@@ -28,10 +28,11 @@ accuracy <- function(x, ...){
 # #' @param .dist The distribution of fitted values from the model, or forecasted values from the forecast.
 # #' @param .expr_resp An expression for the response variable.
 #' @param na.rm Remove the missing values before calculating the accuracy measure
-#' @param ... Additional arguments for each measure
+#' @param ... Additional arguments for each measure.
 #' @param demean Should the response be demeaned (MASE)
 #' @param d Should the response model include a first difference?
 #' @param D Should the response model include a seasonal difference?
+#' @param na.action Function to handle missing values.
 #' 
 #' @rdname point-accuracy-measures
 #' @export
