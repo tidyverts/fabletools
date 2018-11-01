@@ -47,7 +47,7 @@ new_mable <- function(x){
 #' @param key Structural variable(s) that identify each model
 #' 
 #' @export
-as_mable <- function(x, key = structure(exprs(), class = "key")){
+as_mable <- function(x, key = list()){
   stopifnot(!is.null(x[["model"]]))
   if(!inherits(x[["model"]], "lst_mdl")){
     x[["model"]] <- add_class(x[["model"]], "lst_mdl")
@@ -63,8 +63,8 @@ as_mable <- function(x, key = structure(exprs(), class = "key")){
 tbl_sum.mdl_df <- function(x){
   out <- c(`A mable` = sprintf("%s model%s", big_mark(NROW(x)), ifelse(NROW(x)==1, "", "s")))
   
-  if(!is_empty(key_vars(x))){
-    out <- c(out, key_sum(x))
+  if(!is_empty(key(x))){
+    out <- c(out, c("Key" = sprintf("[%s]", paste0(key_vars(x), collapse = ","))))
   }
   
   out
@@ -101,7 +101,7 @@ key.mdl_df <- function(x){
 
 #' @export
 key_vars.mdl_df <- function(x){
-  key_vars(key(x))
+  map_chr(key(x), expr_text)
 }
 
 #' @export
