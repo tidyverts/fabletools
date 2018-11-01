@@ -19,6 +19,48 @@ accuracy <- function(x, ...){
   UseMethod("accuracy")
 }
 
+#' @export
+accuracy.mdl_df <- function(x, measures = list(ME, RMSE, MAPE), ...){
+  dots <- dots_list(...)
+  aug <- augment(x)
+  measures <- squash(measures)
+  
+  if(is.null(dots$.period)){
+    .period <- get_frequencies("smallest", aug)
+  }
+
+  # Build measure calls  
+  missing_args <- chr()
+  available_args <- c(names(dots), names(aug), ".period")
+  fns <- map(measures, function(fn){
+    args <- formals(fn)
+    args <- args[names(args) != "..."]
+    req_args <- names(args)[map_lgl(args, is_missing)]
+    if(!all(match_req <- req_args %in% available_args)){
+      missing_args <<- c(missing_args, req_args[!match_req])
+      return(NULL)
+    }
+    
+    # Function call
+    expr((!!fn)(!!!syms(available_args[available_args%in%names(args)])))
+  })
+  
+  if(!is_empty(missing_args)){
+    warn(
+      sprintf("Could not estimate all measures as the following arguments are missing: %s",
+      paste0(missing_args, collapse = ", "))
+    )
+  }
+  
+  names(fns) <- names(fns) %||% seq_along(fns)
+  aug %>% 
+    group_by_key %>% 
+    as_tibble %>% 
+    summarise(
+      !!!compact(fns)
+    )
+}
+
 #' Point estimate accuracy measures
 #' 
 #' @param .resid A vector of residuals from either the training (model accuracy) or test (forecast accuracy) data.
