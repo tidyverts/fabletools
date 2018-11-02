@@ -57,7 +57,6 @@ as_mable <- function(x, key = list()){
 }
 
 #' @importFrom tibble tbl_sum
-#' @importFrom tsibble key_sum
 #' @importFrom dplyr pull
 #' @export
 tbl_sum.mdl_df <- function(x){

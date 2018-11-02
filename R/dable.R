@@ -67,8 +67,8 @@ tbl_sum.dable <- function(x){
   
   out <- c(`A dable` = sprintf("[%s]", int_disp))
   
-  if(!is_empty(key_vars(x))){
-    out <- c(out, key_sum(x))
+  if(!is_empty(key(x))){
+    out <- c(out, c("Key" = sprintf("[%s]", paste0(key_vars(x), collapse = ","))))
   }
   
   out
