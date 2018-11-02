@@ -72,7 +72,7 @@ construct_fc <- function(newdata, point, sd, dist){
   stopifnot(is_tsibble(newdata))
   stopifnot(is.numeric(point))
   stopifnot(inherits(dist, "fcdist"))
-  fc <- newdata[,expr_text(index(newdata))]
+  fc <- select(newdata, !!index(newdata))
   fc[["mean"]] <- point
   fc[["sd"]] <- sd
   fc[[".distribution"]] <- dist
