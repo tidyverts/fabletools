@@ -14,6 +14,7 @@ fable <- function(..., key = id(), index, resp, dist, regular = TRUE){
 #' 
 #' @inheritParams fable
 #' @param x Object to be coerced to a fable (`fbl_ts`)
+#' @param ... Additional arguments passed to methods
 #' 
 #' @rdname as-fable
 #' @export
