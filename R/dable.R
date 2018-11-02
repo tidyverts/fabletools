@@ -37,6 +37,8 @@ as_dable.tbl_ts <- function(x, resp, dcmp, ...){
 #' @export
 tbl_sum.dcmp_ts <- function(x){
   out <- NextMethod()
-  names(out)[1] <- "A decomposed tsibble"
-  out
+  names(out)[1] <- "A dable"
+  append(out,
+         c("Decomposition" = 
+             paste(expr_text(x%@%"resp"), expr_text(x%@%"dcmp"), sep = " = ")))
 }
