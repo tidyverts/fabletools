@@ -2,17 +2,28 @@
 % Please edit documentation in R/dable.R
 \name{dable}
 \alias{dable}
-\title{Create a new dable}
+\title{Create a dable object}
 \usage{
-dable(data, decomposition, parsed_model)
+dable(..., key = id(), index, resp, dcmp, regular = TRUE)
 }
 \arguments{
-\item{data}{A tsibble used for decomposition}
+\item{...}{A set of name-value pairs. The names of "key" and "index" should
+be avoided as they are used as the arguments.}
 
-\item{decomposition}{The decomposition table}
+\item{key}{Variable(s) that define unique time indices, used in conjuction
+with the helper \code{\link[=id]{id()}}. If a univariate time series (without an explicit key),
+simply call \code{id()}.}
 
-\item{parsed_model}{The parsed decomposition from \code{parse_model}}
+\item{index}{A bare (or unquoted) variable to specify the time index variable.}
+
+\item{resp}{The response variable (given as a bare or unquoted variable).}
+
+\item{dcmp}{An expression of data columns defining how the variable was decomposed.}
+
+\item{regular}{Regular time interval (\code{TRUE}) or irregular (\code{FALSE}). The
+interval is determined by the greatest common divisor of positive time distances,
+if \code{TRUE}.}
 }
 \description{
-Create a new dable
+Create a dable object
 }

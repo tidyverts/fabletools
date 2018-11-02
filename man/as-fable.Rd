@@ -12,8 +12,7 @@ as_fable(x, ...)
 \arguments{
 \item{x}{Object to be coerced to a fable (\code{fbl_ts})}
 
-\item{...}{A set of name-value pairs. The names of "key" and "index" should
-be avoided as they are used as the arguments.}
+\item{...}{Additional arguments passed to methods}
 
 \item{resp}{The response variable (given as a bare or unquoted variable).}
 
