@@ -33,7 +33,7 @@ StatForecast <- ggplot2::ggproto(
 
     fit <- eval_tidy(quo(plot_data %>% !!model))
     fcast <- do.call("forecast", append(list(fit), fc.args))
-    fcast <- fortify(fcast, level = levels, showgap = showgap) %>% 
+    fcast <- fortify(fcast, level = levels) %>% 
       mutate(x := as.numeric(!!sym("x")))
     
     aes_cn <- match(c("mean", "lower", "upper"), colnames(fcast))
