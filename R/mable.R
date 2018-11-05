@@ -8,7 +8,7 @@
 mable <- function(data, model, parsed_model){
   as_mable(
     tibble(
-      !!!as_list(data[1, key_vars(data)]),
+      !!!as_list(as_tibble(data)[1, key_vars(data)]),
       model=list(
         structure(model,
                   class = c(class(model), "fable_model"),
