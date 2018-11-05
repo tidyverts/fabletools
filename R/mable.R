@@ -65,7 +65,9 @@ tbl_sum.mdl_df <- function(x){
   out <- c(`A mable` = sprintf("%s model%s", big_mark(NROW(x)), ifelse(NROW(x)==1, "", "s")))
   
   if(!is_empty(key(x))){
-    out <- c(out, c("Key" = sprintf("[%s]", paste0(key_vars(x), collapse = ","))))
+    out <- c(out, c("Key" = sprintf("%s [%i]",
+                                    paste0(key_vars(x), collapse = ", "),
+                                    n_keys(x))))
   }
   
   out
