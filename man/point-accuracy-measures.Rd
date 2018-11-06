@@ -23,11 +23,11 @@ RMSE(.resid, na.rm = TRUE, ...)
 
 MAE(.resid, na.rm = TRUE, ...)
 
-MPE(.resid, .resp, na.rm = TRUE, ...)
+MPE(.resid, .actual, na.rm = TRUE, ...)
 
-MAPE(.resid, .resp, na.rm = TRUE, ...)
+MAPE(.resid, .actual, na.rm = TRUE, ...)
 
-MASE(.resid, .resp, demean = FALSE, na.rm = TRUE, .period,
+MASE(.resid, .train, demean = FALSE, na.rm = TRUE, .period,
   d = .period == 1, D = .period > 1, ...)
 
 ACF1(.resid, na.action = stats::na.pass, ...)
@@ -35,17 +35,23 @@ ACF1(.resid, na.action = stats::na.pass, ...)
 point_measures
 }
 \arguments{
-\item{.resid}{A vector of residuals from either the training (model accuracy) or test (forecast accuracy) data.}
+\item{.resid}{A vector of residuals from either the training (model accuracy)
+or test (forecast accuracy) data.}
 
 \item{na.rm}{Remove the missing values before calculating the accuracy measure}
 
 \item{...}{Additional arguments for each measure.}
 
-\item{.resp}{A vector of responses matching the residuals (for forecast accuracy, the original data must be provided).}
+\item{.actual}{A vector of responses matching the fitted values
+(for forecast accuracy, \code{new_data} must be provided).}
+
+\item{.train}{A vector of responses used to train the model
+(for forecast accuracy, the \code{orig_data} must be provided).}
 
 \item{demean}{Should the response be demeaned (MASE)}
 
-\item{.period}{The seasonal period of the data (defaulting to 'smallest' seasonal period).}
+\item{.period}{The seasonal period of the data (defaulting to 'smallest' seasonal period).
+from a model, or forecasted values from the forecast.}
 
 \item{d}{Should the response model include a first difference?}
 
