@@ -1,9 +1,14 @@
 #' Point estimate accuracy measures
 #' 
-#' @param .resid A vector of residuals from either the training (model accuracy) or test (forecast accuracy) data.
-#' @param .resp A vector of responses matching the residuals (for forecast accuracy, the original data must be provided).
+#' @param .resid A vector of residuals from either the training (model accuracy)
+#'  or test (forecast accuracy) data.
+#' @param .actual A vector of responses matching the fitted values 
+#' (for forecast accuracy, `new_data` must be provided).
+#' @param .train A vector of responses used to train the model
+#' (for forecast accuracy, the `orig_data` must be provided).
 #' @param .period The seasonal period of the data (defaulting to 'smallest' seasonal period).
-# #' @param .fitted The fitted values from the model, or forecasted values from the forecast.
+# #' @param .fc A vector containing the one-step-ahead fitted (forecasted) values 
+#' from a model, or forecasted values from the forecast.
 # #' @param .dist The distribution of fitted values from the model, or forecasted values from the forecast.
 # #' @param .expr_resp An expression for the response variable.
 #' @param na.rm Remove the missing values before calculating the accuracy measure
@@ -42,29 +47,29 @@ MAE <- function(.resid, na.rm = TRUE, ...){
 
 #' @rdname point-accuracy-measures
 #' @export
-MPE <- function(.resid, .resp, na.rm = TRUE, ...){
-  mean(.resid / .resp * 100, na.rm = TRUE, ...)
+MPE <- function(.resid, .actual, na.rm = TRUE, ...){
+  mean(.resid / .actual * 100, na.rm = TRUE, ...)
 }
 #' @rdname point-accuracy-measures
 #' @export
-MAPE <- function(.resid, .resp, na.rm = TRUE, ...){
-  mean(abs(.resid / .resp * 100), na.rm = TRUE, ...)
+MAPE <- function(.resid, .actual, na.rm = TRUE, ...){
+  mean(abs(.resid / .actual * 100), na.rm = TRUE, ...)
 }
 
 #' @rdname point-accuracy-measures
 #' @export
-MASE <- function(.resid, .resp, demean = FALSE, na.rm = TRUE, .period, d = .period == 1, D = .period > 1, ...){
+MASE <- function(.resid, .train, demean = FALSE, na.rm = TRUE, .period, d = .period == 1, D = .period > 1, ...){
   if (D > 0) { # seasonal differencing
-    y <- diff(.resp, lag = .period, differences = D)
+    .train <- diff(.train, lag = .period, differences = D)
   }
   if (d > 0) {
-    y <- diff(y, differences = d)
+    .train <- diff(.train, differences = d)
   }
   if(demean){
-    scale <- mean(abs(y - mean(y, na.rm = na.rm, ...)), na.rm = na.rm, ...)
+    scale <- mean(abs(.train - mean(.train, na.rm = na.rm, ...)), na.rm = na.rm, ...)
   }
   else{
-    scale <- mean(abs(y), na.rm = na.rm, ...)
+    scale <- mean(abs(.train), na.rm = na.rm, ...)
   }
   mase <- mean(abs(.resid / scale), na.rm = na.rm, ...)
 }
@@ -133,8 +138,14 @@ build_accuracy_calls <- function(measures, available_args){
 accuracy.mdl_df <- function(x, measures = list(point_measures), ...){
   dots <- dots_list(...)
   aug <- augment(x) %>% 
-    rename(".resp" := !!response(x[["model"]][[1]])) %>% 
-    mutate(.resid = !!sym(".resp") - !!sym(".fitted"))
+    rename(
+      ".actual" := !!response(x[["model"]][[1]]),
+      ".fc" = ".fitted"
+    ) %>% 
+    mutate(
+      .resid = !!sym(".actual") - !!sym(".fc"),
+      .train = !!sym(".actual")
+    )
   measures <- squash(measures)
   
   if(is.null(dots$.period)){
@@ -158,11 +169,11 @@ accuracy.fbl_ts <- function(x, new_data, measures = list(point_measures), ...){
 
   aug <- x %>% 
     transmute(
-      .fitted = !!response(x),
+      .fc = !!response(x),
       .dist = !!(x%@%"dist")
     ) %>% 
     left_join(
-      transmute(new_data, !!index(new_data), .resp = !!response(x)),
+      transmute(new_data, !!index(new_data), .actual = !!response(x)),
       by = c(expr_text(index(x)), key_vars(x))
     ) %>% 
     mutate(.resid = !!sym(".resp") - !!sym(".fitted"))
