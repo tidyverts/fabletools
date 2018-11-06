@@ -4,20 +4,22 @@
 \alias{construct_fc}
 \title{Construct a new set of forecasts}
 \usage{
-construct_fc(newdata, point, sd, dist)
+construct_fc(newdata, point, sd, dist, response)
 }
 \arguments{
 \item{newdata}{The newdata provided to the forecast function}
 
-\item{point}{The point transformed forecasts}
+\item{point}{The transformed point forecasts}
 
 \item{sd}{The standard deviation of the transformed forecasts}
 
 \item{dist}{The forecast distribution (typically produced using \code{new_fcdist})}
+
+\item{response}{The column name of the response variable}
 }
 \description{
-Allows extension packages to create a tsibble forecast object.
-This structure is a suitable output for model extension package's forecast generic.
+Will be deprecated in the future, forecast objects should be produced with
+either \code{fable} or \code{as_fable} functions.
 }
 \details{
 Backtransformations are automatically handled, and so no transformations should be specified here.

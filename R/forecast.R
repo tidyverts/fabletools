@@ -57,25 +57,26 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
 
 #' Construct a new set of forecasts
 #' 
-#' Allows extension packages to create a tsibble forecast object.
-#' This structure is a suitable output for model extension package's forecast generic.
+#' Will be deprecated in the future, forecast objects should be produced with
+#' either `fable` or `as_fable` functions.
 #' 
 #' Backtransformations are automatically handled, and so no transformations should be specified here.
 #' 
 #' @param newdata The newdata provided to the forecast function
-#' @param point The point transformed forecasts
+#' @param point The transformed point forecasts
 #' @param sd The standard deviation of the transformed forecasts
 #' @param dist The forecast distribution (typically produced using `new_fcdist`)
+#' @param response The column name of the response variable
 #' 
 #' @export
-construct_fc <- function(newdata, point, sd, dist){
+construct_fc <- function(newdata, point, sd, dist, response){
   stopifnot(is_tsibble(newdata))
   stopifnot(is.numeric(point))
   stopifnot(inherits(dist, "fcdist"))
   fc <- select(newdata, !!index(newdata))
-  fc[["mean"]] <- point
+  fc[[response]] <- point
   fc[["sd"]] <- sd
   fc[[".distribution"]] <- dist
   attributes(fc[[".distribution"]]) <- attributes(dist)
-  as_fable(fc, resp = !!sym("mean"), dist = !!sym(".distribution"))
+  as_fable(fc, resp = !!sym(response), dist = !!sym(".distribution"))
 }
