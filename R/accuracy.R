@@ -115,6 +115,28 @@ winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE){
 #' @export
 interval_measures <- list(winkler = winkler_score)
 
+#' Distribution accuracy measures
+#' 
+#' @inheritParams interval-accuracy-measures
+#' @name dist-accuracy-measures
+NULL
+
+#' @rdname dist-accuracy-measures
+#' @export
+percentile_score <- function(.dist, .actual, na.rm = TRUE){
+  probs <- seq(0.01, 0.99, 0.01)
+  percentiles <- quantile(.dist, probs)
+  map2_dbl(percentiles, probs, function(percentile, prob){
+    L <- ifelse(.actual < percentile, (1-prob), prob)*abs(percentile-.actual)
+    mean(L, na.rm = na.rm)
+  }) %>% 
+    mean(na.rm = na.rm)
+}
+
+#' @rdname interval-accuracy-measures
+#' @export
+distribution_measures <- list(percentile = percentile_score)
+
 #' Evaluate model/forecast accuracy
 #' 
 #' @param x A model or forecast object
