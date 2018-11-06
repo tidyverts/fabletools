@@ -128,9 +128,9 @@ hilo.fcdist <- function(x, level = 95, ...){
 #' @importFrom stats quantile
 #' @export
 quantile.fcdist <- function(x, probs = seq(0, 1, 0.25), ...){
+  args <- merge_pos_list(!!!as_list(x))
   map(probs, function(prob){
-    eval_tidy(quo(attr(x, "t")(attr(x, "f")(prob, !!!merge_pos_list(!!!x))))) %>%
-      unlist(recursive = FALSE, use.names = FALSE)
+    attr(x,"t")(do.call(attr(x, "f"), c(list(prob), as.list(args))))
   })
 }
 
