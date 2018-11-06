@@ -176,7 +176,7 @@ accuracy.fbl_ts <- function(x, new_data, measures = list(point_measures), ...){
       transmute(new_data, !!index(new_data), .actual = !!response(x)),
       by = c(expr_text(index(x)), key_vars(x))
     ) %>% 
-    mutate(.resid = !!sym(".resp") - !!sym(".fitted"))
+    mutate(.resid = !!sym(".actual") - !!sym(".fc"))
   
   measures <- squash(measures)
   
