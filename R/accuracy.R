@@ -101,19 +101,9 @@ accuracy <- function(x, ...){
   UseMethod("accuracy")
 }
 
-#' @export
-accuracy.mdl_df <- function(x, measures = list(point_measures), ...){
-  dots <- dots_list(...)
-  aug <- rename(augment(x), ".resp" := !!response(x[["model"]][[1]]))
-  measures <- squash(measures)
-  
-  if(is.null(dots$.period)){
-    .period <- get_frequencies("smallest", aug)
-  }
-
+build_accuracy_calls <- function(measures, available_args){
   # Build measure calls  
   missing_args <- chr()
-  available_args <- c(names(dots), names(aug), ".period")
   fns <- map(measures, function(fn){
     args <- formals(fn)
     args <- args[names(args) != "..."]
@@ -130,16 +120,63 @@ accuracy.mdl_df <- function(x, measures = list(point_measures), ...){
   if(!is_empty(missing_args)){
     warn(
       sprintf("Could not estimate all measures as the following arguments are missing: %s",
-      paste0(missing_args, collapse = ", "))
+              paste0(missing_args, collapse = ", "))
     )
   }
   
   names(fns) <- names(fns) %||% seq_along(fns)
+  fns
+}
+
+#' @export
+accuracy.mdl_df <- function(x, measures = list(point_measures), ...){
+  dots <- dots_list(...)
+  aug <- rename(augment(x), ".resp" := !!response(x[["model"]][[1]]))
+  measures <- squash(measures)
+  
+  if(is.null(dots$.period)){
+    dots$.period <- get_frequencies("smallest", aug)
+  }
+  
+  fns <- build_accuracy_calls(measures, c(names(dots), names(aug)))
+  
   aug %>% 
     group_by_key %>% 
     as_tibble %>% 
     summarise(
       Type = "Training",
+      !!!compact(fns)
+    )
+}
+
+#' @export
+accuracy.fbl_ts <- function(x, new_data, measures = list(point_measures), ...){
+  dots <- dots_list(...)
+
+  aug <- x %>% 
+    transmute(
+      .fitted = !!response(x),
+      .dist = !!(x%@%"dist")
+    ) %>% 
+    left_join(
+      transmute(new_data, !!index(new_data), .resp = !!response(x)),
+      by = c(expr_text(index(x)), key_vars(x))
+    ) %>% 
+    mutate(.resid = !!sym(".resp") - !!sym(".fitted"))
+  
+  measures <- squash(measures)
+  
+  if(is.null(dots$.period)){
+    dots$.period <- get_frequencies("smallest", aug)
+  }
+  
+  fns <- build_accuracy_calls(measures, c(names(dots), names(aug)))
+  
+  aug %>% 
+    group_by_key %>% 
+    as_tibble %>% 
+    summarise(
+      Type = "Test",
       !!!compact(fns)
     )
 }
