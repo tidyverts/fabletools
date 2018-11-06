@@ -132,7 +132,9 @@ build_accuracy_calls <- function(measures, available_args){
 #' @export
 accuracy.mdl_df <- function(x, measures = list(point_measures), ...){
   dots <- dots_list(...)
-  aug <- rename(augment(x), ".resp" := !!response(x[["model"]][[1]]))
+  aug <- augment(x) %>% 
+    rename(".resp" := !!response(x[["model"]][[1]])) %>% 
+    mutate(.resid = !!sym(".resp") - !!sym(".fitted"))
   measures <- squash(measures)
   
   if(is.null(dots$.period)){
