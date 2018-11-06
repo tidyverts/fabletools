@@ -77,7 +77,8 @@ ACF1 <- function(.resid, na.action = stats::na.pass, ...){
 
 #' @rdname point-accuracy-measures
 #' @export
-point_measures <- list(ME = ME, RMSE = RMSE, MAPE = MAPE)
+point_measures <- list(ME = ME, RMSE = RMSE, MAE = MAE,
+                       MPE = MPE, MAPE = MAPE, ACF1 = ACF1)
 
 #' Evaluate model/forecast accuracy
 #' 
@@ -138,6 +139,7 @@ accuracy.mdl_df <- function(x, measures = list(point_measures), ...){
     group_by_key %>% 
     as_tibble %>% 
     summarise(
+      Type = "Training",
       !!!compact(fns)
     )
 }
