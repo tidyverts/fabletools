@@ -103,7 +103,7 @@ accuracy <- function(x, ...){
 #' @export
 accuracy.mdl_df <- function(x, measures = list(point_measures), ...){
   dots <- dots_list(...)
-  aug <- augment(x)
+  aug <- rename(augment(x), ".resp" := !!response(x[["model"]][[1]]))
   measures <- squash(measures)
   
   if(is.null(dots$.period)){
