@@ -9,7 +9,6 @@
 #' @param .period The seasonal period of the data (defaulting to 'smallest' seasonal period).
 # #' @param .fc A vector containing the one-step-ahead fitted (forecasted) values 
 #' from a model, or forecasted values from the forecast.
-# #' @param .dist The distribution of fitted values from the model, or forecasted values from the forecast.
 # #' @param .expr_resp An expression for the response variable.
 #' @param na.rm Remove the missing values before calculating the accuracy measure
 #' @param ... Additional arguments for each measure.
@@ -84,6 +83,37 @@ ACF1 <- function(.resid, na.action = stats::na.pass, ...){
 #' @export
 point_measures <- list(ME = ME, RMSE = RMSE, MAE = MAE,
                        MPE = MPE, MAPE = MAPE, ACF1 = ACF1)
+
+#' Interval estimate accuracy measures
+#' 
+#' @inheritParams point-accuracy-measures
+#' @param .dist The distribution of fitted values from the model, or forecasted values from the forecast.
+#' 
+#' @name interval-accuracy-measures
+NULL
+
+#' @rdname interval-accuracy-measures
+#' @export
+winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE){
+  interval <- hilo(.dist, level)
+  alpha <- 1-level/100
+  lt <- interval$lower
+  ut <- interval$upper
+  score <- ifelse(
+    .actual < lt, 
+      (ut - lt) + (2/alpha)*(lt-.actual),
+  ifelse(
+    .actual > ut,
+      (ut - lt) + (2/alpha)*(.actual-ut),
+  # else     
+    ut-lt)
+  )
+  mean(score, na.rm = na.rm)
+}
+
+#' @rdname interval-accuracy-measures
+#' @export
+interval_measures <- list(winkler = winkler_score)
 
 #' Evaluate model/forecast accuracy
 #' 
