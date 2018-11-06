@@ -88,6 +88,7 @@ point_measures <- list(ME = ME, RMSE = RMSE, MAE = MAE,
 #' 
 #' @inheritParams point-accuracy-measures
 #' @param .dist The distribution of fitted values from the model, or forecasted values from the forecast.
+#' @param level The level of the forecast interval.
 #' 
 #' @name interval-accuracy-measures
 NULL

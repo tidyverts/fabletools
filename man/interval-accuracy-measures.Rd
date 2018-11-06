@@ -21,6 +21,8 @@ distribution_measures
 \item{.actual}{A vector of responses matching the fitted values
 (for forecast accuracy, \code{new_data} must be provided).}
 
+\item{level}{The level of the forecast interval.}
+
 \item{na.rm}{Remove the missing values before calculating the accuracy measure}
 }
 \description{
