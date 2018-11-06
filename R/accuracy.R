@@ -188,7 +188,7 @@ build_accuracy_calls <- function(measures, available_args){
 }
 
 #' @export
-accuracy.mdl_df <- function(x, measures = list(point_measures), ...){
+accuracy.mdl_df <- function(x, measures = list(point_measures, MASE = MASE), ...){
   dots <- dots_list(...)
   aug <- augment(x) %>% 
     rename(
@@ -207,13 +207,15 @@ accuracy.mdl_df <- function(x, measures = list(point_measures), ...){
   
   fns <- build_accuracy_calls(measures, c(names(dots), names(aug)))
   
-  aug %>% 
-    group_by_key %>% 
-    as_tibble %>% 
-    summarise(
-      Type = "Training",
-      !!!compact(fns)
-    )
+  with(dots,
+    aug %>% 
+      group_by_key %>% 
+      as_tibble %>% 
+      summarise(
+        Type = "Training",
+        !!!compact(fns)
+      )
+  )
 }
 
 #' @export
@@ -238,11 +240,13 @@ accuracy.fbl_ts <- function(x, new_data, measures = list(point_measures), ...){
   }
   
   fns <- build_accuracy_calls(measures, c(names(dots), names(aug)))
-  aug %>% 
-    group_by_key %>% 
-    as_tibble %>% 
-    summarise(
-      Type = "Test",
-      !!!compact(fns)
-    )
+  with(dots,
+    aug %>% 
+      group_by_key %>% 
+      as_tibble %>% 
+      summarise(
+        Type = "Test",
+        !!!compact(fns)
+      )
+  )
 }
