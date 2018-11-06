@@ -114,7 +114,8 @@ build_accuracy_calls <- function(measures, available_args){
     }
     
     # Function call
-    expr((!!fn)(!!!syms(available_args[available_args%in%names(args)])))
+    inputs <- available_args[available_args%in%names(args)]
+    call2(fn, !!!set_names(syms(inputs), inputs))
   })
   
   if(!is_empty(missing_args)){
@@ -171,7 +172,6 @@ accuracy.fbl_ts <- function(x, new_data, measures = list(point_measures), ...){
   }
   
   fns <- build_accuracy_calls(measures, c(names(dots), names(aug)))
-  
   aug %>% 
     group_by_key %>% 
     as_tibble %>% 
