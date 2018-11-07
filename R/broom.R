@@ -2,7 +2,6 @@
 augment.mdl_df <- function(x, ...){
   x %>%
     transmute(
-      !!!syms(key_vars(x)),
       aug = map(!!sym("model"), augment)
     ) %>% 
     add_class("lst_ts") %>% 
