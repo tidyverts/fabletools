@@ -1,7 +1,6 @@
 #' Simulate responses from a model
 #' 
 #' @param object A model (typically a mable)
-#' @param new_data A tsibble used to define the simulation details
 #' @param ... Additional optional arguments
 #' 
 #' @examples
@@ -12,12 +11,12 @@
 #'   simulate(UKLungDeaths, times = 5)
 #'   
 #' @export
-simulate <- function(object, new_data, ...){
+simulate <- function(object, ...){
   UseMethod("simulate")
 }
 
 #' @export
-simulate.mdl_df <- function(object, new_data, times = 1, seed = NULL, ...){
+simulate.mdl_df <- function(object, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
     stats::runif(1)
   if (is.null(seed)) 
@@ -29,6 +28,22 @@ simulate.mdl_df <- function(object, new_data, times = 1, seed = NULL, ...){
     on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
   }
   
+  keys <- key(object)
+  
+  if(is.null(new_data)){
+    lst_fits <- nest(group_by_key(fitted(object)))
+    if(is.null(h)){
+      h <- map_dbl(lst_fits$data, function(.x) get_frequencies("smallest", .x)*2)
+    }
+    lst_fits[["new_data"]] <- map2(lst_fits$data, h,
+                                   function(data, h){
+                                     idx <- expr_text(index(data))
+                                     future <- seq(data[[idx]][[NROW(data)]], length.out = h + 1, by = time_unit(interval(data)))[-1]
+                                     build_tsibble(list2(!!idx := future), key = id(), index = idx)
+                                   })
+    new_data <- unnest(lst_fits, new_data, key = keys)
+  }
+  
   if(is.null(new_data[[".rep"]])){
     .rep <- rep(seq_len(times), each = NROW(new_data))
     new_data <- do.call("rbind", rep(list(new_data), times))
@@ -37,7 +52,6 @@ simulate.mdl_df <- function(object, new_data, times = 1, seed = NULL, ...){
     new_data <- key_add(new_data, !!sym(".rep"))
   }
   
-  keys <- syms(key_vars(object))
   object <- bind_new_data(object, new_data)
   names(object)[names(object) == "model"] <- "object"
   object$.sim <- map2(object$object, object$new_data, simulate, ...)

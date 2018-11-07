@@ -4,12 +4,10 @@
 \alias{simulate}
 \title{Simulate responses from a model}
 \usage{
-simulate(object, new_data, ...)
+simulate(object, ...)
 }
 \arguments{
 \item{object}{A model (typically a mable)}
-
-\item{new_data}{A tsibble used to define the simulation details}
 
 \item{...}{Additional optional arguments}
 }
