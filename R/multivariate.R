@@ -19,7 +19,7 @@ multi_univariate <- function(data, cl, env = caller_env(n=2)){
 #' @export
 multi_model <- function(data, cl, keys, env = caller_env(n=2)){
   # Re-evaluate cl in environment with split data
-  split_data <- data %>% split(as_tibble(data)[key_vars(data)])
+  split_data <- split(data, group_indices(group_by(data, !!!keys)))
   map(split_data, function(x){
     eval_tidy(
       get_expr(cl),
