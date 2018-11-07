@@ -20,7 +20,7 @@ Simulate responses from a model
 library(fable)
 library(tsibbledata)
 UKLungDeaths \%>\% 
-  LM(mdeaths ~ fourier("year", K = 4) + fdeaths) \%>\% 
+  TSLM(mdeaths ~ fourier("year", K = 4) + fdeaths) \%>\% 
   simulate(UKLungDeaths, times = 5)
   
 }
