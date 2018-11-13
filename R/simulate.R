@@ -49,7 +49,7 @@ simulate.mdl_df <- function(object, new_data = NULL, h = NULL, times = 1, seed =
     new_data <- do.call("rbind", rep(list(new_data), times))
     new_data[[".rep"]] <- .rep
     
-    new_data <- key_add(new_data, !!sym(".rep"))
+    new_data <- key_by(new_data, !!sym(".rep"), !!!key(new_data))
   }
   
   object <- bind_new_data(object, new_data)

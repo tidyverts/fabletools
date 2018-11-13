@@ -73,8 +73,3 @@ bind_new_data <- function(object, new_data){
   }
   object
 }
-
-key_add <- function(object, ...){
-  .key <- structure(append(key(object), enexprs(...)), class = class(key(object)))
-  as_tsibble(object, validate = TRUE, key = .key, index = !!index(object))
-}
