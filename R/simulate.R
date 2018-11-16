@@ -45,11 +45,11 @@ simulate.mdl_df <- function(object, new_data = NULL, h = NULL, times = 1, seed =
   }
   
   if(is.null(new_data[[".rep"]])){
-    .rep <- rep(seq_len(times), each = NROW(new_data))
-    new_data <- do.call("rbind", rep(list(new_data), times))
-    new_data[[".rep"]] <- .rep
-    
-    new_data <- key_by(new_data, !!sym(".rep"), !!!key(new_data))
+    new_data <- map(seq_len(times), function(rep){
+      new_data[[".rep"]] <- rep
+      key_by(new_data, !!sym(".rep"), !!!key(new_data))
+    }) %>% 
+      invoke("rbind", .)
   }
   
   object <- bind_new_data(object, new_data)
