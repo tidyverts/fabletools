@@ -27,7 +27,7 @@ as_dable <- function(x, ...){
 #' 
 #' @export
 as_dable.tbl_ts <- function(x, resp, dcmp, ...){
-  fbl <- structure(x, class = c("dcmp_ts", class(x)),
+  fbl <- as_tsibble(x, class = "dcmp_ts",
                    resp = enexpr(resp),
                    dcmp = enexpr(dcmp))
   fbl

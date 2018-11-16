@@ -25,7 +25,7 @@ as_fable <- function(x, ...){
 #' @rdname as-fable
 #' @export
 as_fable.tbl_ts <- function(x, resp, dist, ...){
-  fbl <- structure(x, class = c("fbl_ts", class(x)),
+  fbl <- new_tsibble(x, class = "fbl_ts",
                    response = enexpr(resp), dist = enexpr(dist))
   validate_fable(fbl)
   fbl
