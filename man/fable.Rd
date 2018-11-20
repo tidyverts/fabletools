@@ -21,8 +21,7 @@ simply call \code{id()}.}
 \item{dist}{The distribution variable (given as a bare or unquoted variable).}
 
 \item{regular}{Regular time interval (\code{TRUE}) or irregular (\code{FALSE}). The
-interval is determined by the greatest common divisor of positive time distances,
-if \code{TRUE}.}
+interval is determined by the greatest common divisor of index column, if \code{TRUE}.}
 }
 \description{
 Create a fable object

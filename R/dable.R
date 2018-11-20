@@ -33,6 +33,11 @@ as_dable.tbl_ts <- function(x, resp, dcmp, ...){
   fbl
 }
 
+#' @export
+as_tsibble.dcmp_ts <- function(x, ...){
+  new_tsibble(x)
+}
+
 #' @importFrom tibble tbl_sum
 #' @export
 tbl_sum.dcmp_ts <- function(x){
@@ -41,4 +46,23 @@ tbl_sum.dcmp_ts <- function(x){
   append(out,
          c("Decomposition" = 
              paste(expr_text(x%@%"resp"), expr_text(x%@%"dcmp"), sep = " = ")))
+}
+
+#' @export
+rbind.dcmp_ts <- function(...){
+  dots <- dots_list(...)
+  dcmp <- map(dots, function(x) x%@%"dcmp")
+  resp <- map(dots, function(x) x%@%"resp")
+  if(length(resp <- unique(resp)) > 1){
+    abort("Decomposition response variables must be the same for all models.")
+  }
+  if(length(dcmp <- unique(dcmp)) > 1){
+    warn("Batch decompositions contain different components. Using decomposition with most variables.")
+    vars <- map(dcmp, all.vars)
+    
+    dcmp <- dcmp[[which.max(map_dbl(vars, length))]]
+  }
+  
+  as_dable(invoke("rbind", map(dots, as_tsibble)),
+           resp = !!resp[[1]], dcmp = !!dcmp)
 }
