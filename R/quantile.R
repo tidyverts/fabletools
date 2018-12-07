@@ -154,7 +154,7 @@ qsample <- function(p, x = list(), ...){
 #' 
 #' @export
 dist_normal <- function(mean, sd, ...){
-  new_fcdist(stats::qnorm, mean, sd = sd, ..., abbr = "N")
+  new_fcdist(stats::qnorm, mean, sd = sd, ..., abbr = format_dist("N"))
 }
 
 #' @rdname distributions
@@ -163,5 +163,5 @@ dist_normal <- function(mean, sd, ...){
 #' 
 #' @export
 dist_sim <- function(sample, ...){
-  new_fcdist(qsample, x = map(sample, list), ..., abbr = "sim")
+  new_fcdist(qsample, x = map(sample, list), ..., abbr = format_dist("sim"))
 }
