@@ -59,7 +59,7 @@ format_dist <- function(fn_nm){
         else{
           out <- sprintf("%s[%i]", map_chr(arg, type_sum), map_int(arg, length))
         }
-        if(nchar(nm)){
+        if(is_character(nm)){
           out <- paste0(nm, "=", out)
         }
         out
@@ -179,5 +179,5 @@ dist_normal <- function(mean, sd, ...){
 #' 
 #' @export
 dist_sim <- function(sample, ...){
-  new_fcdist(qsample, x = map(sample, list), ..., format_fn = format_dist("sim"))
+  new_fcdist(qsample, map(sample, list), ..., format_fn = format_dist("sim"))
 }
