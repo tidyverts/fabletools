@@ -14,7 +14,7 @@ new_fcdist(f, ..., transformation = identity,
 
 \item{transformation}{Transformation to be applied to resulting quantiles from \code{f}}
 
-\item{abbr}{Abbreviation for display purposes, defaults to the object name of \code{f}}
+\item{format_fn}{Function that is used to format the distribution display}
 }
 \description{
 Create a forecast distribution object

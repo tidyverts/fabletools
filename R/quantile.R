@@ -3,7 +3,7 @@
 #' @param f A distribution function producing quantiles (such as `qnorm`)
 #' @param ... Arguments for `f` function
 #' @param transformation Transformation to be applied to resulting quantiles from `f`
-#' @param abbr Abbreviation for display purposes, defaults to the object name of `f`
+#' @param format_fn Function that is used to format the distribution display
 #' 
 #' @examples 
 #' mydist <- new_fcdist(qnorm, transformation = exp,
