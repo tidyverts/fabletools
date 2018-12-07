@@ -138,11 +138,20 @@ qsample <- function(p, x = list(), ...){
   map_dbl(x, function(x) as.numeric(stats::quantile(x, p, ...)))
 }
 
-#' Prepare a forecast distribution from simulated cases
+#' Distributions for intervals
 #' 
-#' @param x A list of sampled quantities
-#' @param ... Additional arguments for `quantile`
+#' @param mean vector of distributional means.
+#' @param sd vector of distributional standard deviations.
+#' @param ... Additional arguments passed on to quantile methods.
 #' 
+#' @rdname distributions
+#' 
+#' @export
+dist_normal <- function(mean, sd, ...){
+  new_fcdist(qnorm, mean, sd = sd, ..., abbr = "N")
+}
+
+#' @rdname distributions
 #' @export
 dist_sim <- function(x, ...){
   new_fcdist(qsample, x = map(x, list), ..., abbr = "sim")
