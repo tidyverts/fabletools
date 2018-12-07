@@ -144,6 +144,6 @@ qsample <- function(p, x = list(), ...){
 #' @param ... Additional arguments for `quantile`
 #' 
 #' @export
-sample_quantile <- function(x, ...){
+dist_sim <- function(x, ...){
   new_fcdist(qsample, x = map(x, list), ..., abbr = "sim")
 }
