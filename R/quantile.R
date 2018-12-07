@@ -6,19 +6,19 @@
 #' @param abbr Abbreviation for display purposes, defaults to the object name of `f`
 #' 
 #' @examples 
-#' mydist <- new_fcdist(qnorm, mean = rep(3, 10), sd = seq(0, 1, length.out=10),
-#'  transformation = exp, abbr = "N")
+#' mydist <- new_fcdist(qnorm, transformation = exp,
+#'  mean = rep(3, 10), sd = seq(0, 1, length.out=10))
 #' mydist
 #' hilo(mydist, 95)
 #' @export
-new_fcdist <- function(f, ..., transformation = identity, abbr = NULL){
-  f_quo <- enquo(f)
+new_fcdist <- function(f, ..., transformation = identity,
+                       format_fn = format_dist(deparse(substitute(f)))){
   pmap(dots_list(...), list) %>%
     set_names(NULL) %>% 
     enclass("fcdist",
             f = f,
             t = transformation,
-            qname = abbr%||%quo_text(f_quo),
+            format = format_fn,
             trans = !is.name(body(transformation)))
 }
 
@@ -48,28 +48,31 @@ print.fcdist <- function(x, ...) {
   invisible(x)
 }
 
+format_dist <- function(fn_nm){
+  function(x, ...){
+    out <- transpose(x) %>% 
+      imap(function(arg, nm){
+        if(length(arg[[1]]) <= 1){
+          out <- format(unlist(arg), digits = 2, ...)
+        }
+        else{
+          out <- sprintf("%s[%i]", type_sum(arg), length(arg))
+        }
+        if(nchar(nm)){
+          out <- paste0(nm, "=", out)
+        }
+        out
+      }) %>%
+      invoke("paste", ., sep = ", ")
+    
+    # Add dist name q()
+    sprintf("%s(%s)", fn_nm, out)
+  }
+}
+
 #' @export
 format.fcdist <- function(x, ...){
-  out <- transpose(x) %>% 
-    imap(function(arg, nm){
-      if(length(arg[[1]]) <= 1){
-        out <- format(unlist(arg), digits = 2, ...)
-      }
-      else{
-        out <- sprintf("%s[%i]", type_sum(arg), length(arg))
-      }
-      if(nchar(nm)){
-        out <- paste0(nm, "=", out)
-      }
-      out
-    }) %>%
-    invoke("paste", ., sep = ", ")
-  
-  # Add dist name q()
-  out <- paste0(
-    attr(x, "qname"),
-    "(", out, ")"
-  )
+  out <- (x%@%"format")(x, ...)
   
   # Add transformation indicator t()
   if(attr(x, "trans")){
