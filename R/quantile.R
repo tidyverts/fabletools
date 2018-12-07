@@ -144,6 +144,17 @@ qsample <- function(p, x = list(), ...){
   map_dbl(x, function(x) as.numeric(stats::quantile(x, p, ...)))
 }
 
+format_dist_normal <- function(x, ...){
+  args <- transpose(x) %>% 
+    map(unlist)
+  
+  # Add dist name q()
+  sprintf("N(%s, %s)", 
+          format(args$mean, digits = 2, ...),
+          format(args$sd^2, digits = 2, ...)
+  )
+}
+
 #' Distributions for intervals
 #' 
 #' @param mean vector of distributional means.
@@ -152,9 +163,12 @@ qsample <- function(p, x = list(), ...){
 #' 
 #' @rdname distributions
 #' 
+#' @example 
+#' dist_normal(rep(3, 10), seq(0, 1, length.out=10))
+#' 
 #' @export
 dist_normal <- function(mean, sd, ...){
-  new_fcdist(stats::qnorm, mean, sd = sd, ..., abbr = format_dist("N"))
+  new_fcdist(stats::qnorm, mean = mean, sd = sd, ..., format_fn = format_dist_normal)
 }
 
 #' @rdname distributions
@@ -163,5 +177,5 @@ dist_normal <- function(mean, sd, ...){
 #' 
 #' @export
 dist_sim <- function(sample, ...){
-  new_fcdist(qsample, x = map(sample, list), ..., abbr = format_dist("sim"))
+  new_fcdist(qsample, x = map(sample, list), ..., format_fn = format_dist("sim"))
 }
