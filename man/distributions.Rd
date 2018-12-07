@@ -7,7 +7,7 @@
 \usage{
 dist_normal(mean, sd, ...)
 
-dist_sim(x, ...)
+dist_sim(sample, ...)
 }
 \arguments{
 \item{mean}{vector of distributional means.}
@@ -15,6 +15,8 @@ dist_sim(x, ...)
 \item{sd}{vector of distributional standard deviations.}
 
 \item{...}{Additional arguments passed on to quantile methods.}
+
+\item{sample}{a list of simulated values}
 }
 \description{
 Distributions for intervals

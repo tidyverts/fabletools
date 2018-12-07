@@ -152,7 +152,10 @@ dist_normal <- function(mean, sd, ...){
 }
 
 #' @rdname distributions
+#' 
+#' @param sample a list of simulated values
+#' 
 #' @export
-dist_sim <- function(x, ...){
-  new_fcdist(qsample, x = map(x, list), ..., abbr = "sim")
+dist_sim <- function(sample, ...){
+  new_fcdist(qsample, x = map(sample, list), ..., abbr = "sim")
 }
