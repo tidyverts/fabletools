@@ -52,11 +52,12 @@ format_dist <- function(fn_nm){
   function(x, ...){
     out <- transpose(x) %>% 
       imap(function(arg, nm){
-        if(length(arg[[1]]) <= 1){
-          out <- format(unlist(arg), digits = 2, ...)
+        arg <- unlist(arg, recursive = FALSE)
+        if(!is_list(arg)){
+          out <- format(arg, digits = 2, ...)
         }
         else{
-          out <- sprintf("%s[%i]", type_sum(arg), length(arg))
+          out <- sprintf("%s[%i]", map_chr(arg, type_sum), map_int(arg, length))
         }
         if(nchar(nm)){
           out <- paste0(nm, "=", out)
@@ -165,6 +166,7 @@ format_dist_normal <- function(x, ...){
 #' 
 #' @example 
 #' dist_normal(rep(3, 10), seq(0, 1, length.out=10))
+#' dist_sim(list(rnorm(100), rnorm(100), rnorm(100)))
 #' 
 #' @export
 dist_normal <- function(mean, sd, ...){
