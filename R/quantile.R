@@ -164,7 +164,7 @@ format_dist_normal <- function(x, ...){
 #' 
 #' @rdname distributions
 #' 
-#' @example 
+#' @examples
 #' dist_normal(rep(3, 10), seq(0, 1, length.out=10))
 #' dist_sim(list(rnorm(100), rnorm(100), rnorm(100)))
 #' 
