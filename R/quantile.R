@@ -50,30 +50,33 @@ print.fcdist <- function(x, ...) {
 
 #' @export
 format.fcdist <- function(x, ...){
-  x %>%
-    map_chr(function(qt){
-      args <- qt %>%
-        imap(function(.x, .y){
-          if(length(.x) <= 1){
-            .x <- format(.x, trim = TRUE, digits = 2)
-          }
-          else{
-            .x <- sprintf("%s[%i]", type_sum(.x), length(.x))
-          }
-          paste0(ifelse(nchar(.y)>0, paste0(.y, " = "), ""), .x)
-        }) %>%
-        invoke("paste", ., sep = ", ")
-      out <- paste0(
-        attr(x, "qname"),
-        "(", args, ")"
-      )
-      if(attr(x, "trans")){
-        paste0("t(", out, ")")
+  out <- transpose(x) %>% 
+    imap(function(arg, nm){
+      if(length(arg[[1]]) <= 1){
+        out <- format(unlist(arg), digits = 2, ...)
       }
       else{
-        out
+        out <- sprintf("%s[%i]", type_sum(arg), length(arg))
       }
-    })
+      if(nchar(nm)){
+        out <- paste0(nm, "=", out)
+      }
+      out
+    }) %>%
+    invoke("paste", ., sep = ", ")
+  
+  # Add dist name q()
+  out <- paste0(
+    attr(x, "qname"),
+    "(", out, ")"
+  )
+  
+  # Add transformation indicator t()
+  if(attr(x, "trans")){
+    out <- paste0("t(", out, ")")
+  }
+  
+  out
 }
 
 #' @export
