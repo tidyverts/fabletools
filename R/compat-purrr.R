@@ -116,15 +116,12 @@ compact <- function(.x) {
 
 transpose <- function(.l) {
   inner_names <- names(.l[[1]])
-  if (is.null(inner_names)) {
-    fields <- seq_along(.l[[1]])
-  } else {
-    fields <- set_names(inner_names)
-  }
 
-  map(fields, function(i) {
+  result <- map(seq_along(.l[[1]]), function(i) {
     map(.l, .subset2, i)
   })
+  
+  set_names(result, inner_names)
 }
 
 every <- function(.x, .p, ...) {

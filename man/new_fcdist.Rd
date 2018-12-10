@@ -4,7 +4,8 @@
 \alias{new_fcdist}
 \title{Create a forecast distribution object}
 \usage{
-new_fcdist(f, ..., transformation = identity, abbr = NULL)
+new_fcdist(f, ..., transformation = identity,
+  format_fn = format_dist(deparse(substitute(f))))
 }
 \arguments{
 \item{f}{A distribution function producing quantiles (such as \code{qnorm})}
@@ -13,14 +14,14 @@ new_fcdist(f, ..., transformation = identity, abbr = NULL)
 
 \item{transformation}{Transformation to be applied to resulting quantiles from \code{f}}
 
-\item{abbr}{Abbreviation for display purposes, defaults to the object name of \code{f}}
+\item{format_fn}{Function that is used to format the distribution display}
 }
 \description{
 Create a forecast distribution object
 }
 \examples{
-mydist <- new_fcdist(qnorm, mean = rep(3, 10), sd = seq(0, 1, length.out=10),
- transformation = exp, abbr = "N")
+mydist <- new_fcdist(qnorm, transformation = exp,
+ mean = rep(3, 10), sd = seq(0, 1, length.out=10))
 mydist
 hilo(mydist, 95)
 }

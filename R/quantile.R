@@ -3,22 +3,22 @@
 #' @param f A distribution function producing quantiles (such as `qnorm`)
 #' @param ... Arguments for `f` function
 #' @param transformation Transformation to be applied to resulting quantiles from `f`
-#' @param abbr Abbreviation for display purposes, defaults to the object name of `f`
+#' @param format_fn Function that is used to format the distribution display
 #' 
 #' @examples 
-#' mydist <- new_fcdist(qnorm, mean = rep(3, 10), sd = seq(0, 1, length.out=10),
-#'  transformation = exp, abbr = "N")
+#' mydist <- new_fcdist(qnorm, transformation = exp,
+#'  mean = rep(3, 10), sd = seq(0, 1, length.out=10))
 #' mydist
 #' hilo(mydist, 95)
 #' @export
-new_fcdist <- function(f, ..., transformation = identity, abbr = NULL){
-  f_quo <- enquo(f)
+new_fcdist <- function(f, ..., transformation = identity,
+                       format_fn = format_dist(deparse(substitute(f)))){
   pmap(dots_list(...), list) %>%
     set_names(NULL) %>% 
     enclass("fcdist",
             f = f,
             t = transformation,
-            qname = abbr%||%quo_text(f_quo),
+            format = format_fn,
             trans = !is.name(body(transformation)))
 }
 
@@ -48,32 +48,39 @@ print.fcdist <- function(x, ...) {
   invisible(x)
 }
 
+format_dist <- function(fn_nm){
+  function(x, ...){
+    out <- transpose(x) %>% 
+      imap(function(arg, nm){
+        arg <- unlist(arg, recursive = FALSE)
+        if(!is_list(arg)){
+          out <- format(arg, digits = 2, ...)
+        }
+        else{
+          out <- sprintf("%s[%i]", map_chr(arg, type_sum), map_int(arg, length))
+        }
+        if(is_character(nm)){
+          out <- paste0(nm, "=", out)
+        }
+        out
+      }) %>%
+      invoke("paste", ., sep = ", ")
+    
+    # Add dist name q()
+    sprintf("%s(%s)", fn_nm, out)
+  }
+}
+
 #' @export
 format.fcdist <- function(x, ...){
-  x %>%
-    map_chr(function(qt){
-      args <- qt %>%
-        imap(function(.x, .y){
-          if(length(.x) <= 1){
-            .x <- format(.x, trim = TRUE, digits = 2)
-          }
-          else{
-            .x <- sprintf("%s[%i]", type_sum(.x), length(.x))
-          }
-          paste0(ifelse(nchar(.y)>0, paste0(.y, " = "), ""), .x)
-        }) %>%
-        invoke("paste", ., sep = ", ")
-      out <- paste0(
-        attr(x, "qname"),
-        "(", args, ")"
-      )
-      if(attr(x, "trans")){
-        paste0("t(", out, ")")
-      }
-      else{
-        out
-      }
-    })
+  out <- (x%@%"format")(x, ...)
+  
+  # Add transformation indicator t()
+  if(attr(x, "trans")){
+    out <- paste0("t(", out, ")")
+  }
+  
+  out
 }
 
 #' @export
@@ -138,12 +145,39 @@ qsample <- function(p, x = list(), ...){
   map_dbl(x, function(x) as.numeric(stats::quantile(x, p, ...)))
 }
 
-#' Prepare a forecast distribution from simulated cases
+format_dist_normal <- function(x, ...){
+  args <- transpose(x) %>% 
+    map(unlist)
+  
+  # Add dist name q()
+  sprintf("N(%s, %s)", 
+          format(args$mean, digits = 2, ...),
+          format(args$sd^2, digits = 2, ...)
+  )
+}
+
+#' Distributions for intervals
 #' 
-#' @param x A list of sampled quantities
-#' @param ... Additional arguments for `quantile`
+#' @param mean vector of distributional means.
+#' @param sd vector of distributional standard deviations.
+#' @param ... Additional arguments passed on to quantile methods.
+#' 
+#' @rdname distributions
+#' 
+#' @examples
+#' dist_normal(rep(3, 10), seq(0, 1, length.out=10))
+#' dist_sim(list(rnorm(100), rnorm(100), rnorm(100)))
 #' 
 #' @export
-sample_quantile <- function(x, ...){
-  new_fcdist(qsample, x = map(x, list), ..., abbr = "sim")
+dist_normal <- function(mean, sd, ...){
+  new_fcdist(stats::qnorm, mean = mean, sd = sd, ..., format_fn = format_dist_normal)
+}
+
+#' @rdname distributions
+#' 
+#' @param sample a list of simulated values
+#' 
+#' @export
+dist_sim <- function(sample, ...){
+  new_fcdist(qsample, map(sample, list), ..., format_fn = format_dist("sim"))
 }
