@@ -30,7 +30,7 @@ parse_specials <- function(call = NULL, specials = NULL, xreg = TRUE){
     parsed <- list()
   }
   
-
+  
   # Add required_specials
   missing_specials <- attr(specials, "required_specials") %>% 
     .[!(.%in%names(parsed))]
@@ -108,6 +108,18 @@ validate_model <- function(model, data = NULL){
 #' @importFrom tibble tibble
 #' @export
 parse_model <- function(data, model, specials = NULL){
+  # Bind .specials and .data to specials
+  if(!is.null(specials)){
+    imap(as.list(specials), function(fn, nm){
+      assign(nm,
+             set_env(fn, env_bury(get_env(fn),
+                                  .data = data,
+                                  .specials = specials)),
+             envir = specials
+      )
+    })
+  }
+  
   # Parse model
   list2(
     model = model,
