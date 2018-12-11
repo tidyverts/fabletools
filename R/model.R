@@ -1,17 +1,17 @@
 #' Define a model
 #' 
-#' @param formula The user specified formula
 #' @param train A function used to train the model to data
 #' @param specials A list of functions used to be evaluated from the formula.
 #' If specials is NULL, no specials are computed
-#' @param ... Additional arguments passed to train
 #' 
 #' @export
-new_model_definition <- function(formula, train, specials, ...){
-  structure(
-    list(formula, train, specials, dots = list(...)),
-    class = "model_definition"
-  )
+new_model_definition <- function(train, specials){
+  function(formula, ...){
+    structure(
+      list(train, specials, dots = list(...)),
+      class = "model_definition"
+    )
+  }
 }
 
 #' Extract the left hand side of a model
