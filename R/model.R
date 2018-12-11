@@ -10,27 +10,33 @@ model <- function(.data, ...){
 
 #' @export
 model.tbl_ts <- function(.data, ...){
+  nm <- map(enexprs(...), expr_text)
   models <- dots_list(...)
   
   keys <- key(.data)
   .data <- nest(group_by(.data, !!!keys), .key = "lst_data")
   
-  eval_models <- function(model_def, lst_data){
-    model_def$formula <- validate_model(model_def$formula, .data[[1]])
-    map(lst_data, function(data){
-      parsed <- parse_model(data, model_def$formula, model_def$specials)
-      data <- transmute(data, !!model_lhs(parsed$model))
-      eval_tidy(
-        expr(model_def$train(.data = data, formula = model_def$formula,
-                             specials = parsed$specials, !!!model_def$dots))
-      )
+  eval_models <- function(models, lst_data){
+    map(models, function(model_def){
+      model_def$formula <- validate_model(model_def$formula, lst_data[[1]])
+      map(lst_data, function(data){
+        parsed <- parse_model(data, model_def$formula, model_def$specials)
+        data <- transmute(data, !!model_lhs(parsed$model))
+        eval_tidy(
+          expr(model_def$train(.data = data, formula = model_def$formula,
+                               specials = parsed$specials, !!!model_def$dots))
+        )
+      })
     })
   }
+  
+  fits <- eval_models(models, .data[["lst_data"]])
+  names(fits) <- ifelse(nchar(names(fits)), names(fits), nm)
   
   .data %>% 
     transmute(
       !!!keys,
-      !!!map2(models, .data[["lst_data"]], eval_models)
+      !!!fits
     )
 }
 
