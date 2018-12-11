@@ -8,7 +8,7 @@
 new_model_definition <- function(train, specials){
   function(formula, ...){
     structure(
-      list(train, specials, dots = list(...)),
+      list(formula, train, specials, dots = list(...)),
       class = "model_definition"
     )
   }
