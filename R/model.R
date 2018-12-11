@@ -1,3 +1,39 @@
+#' Estimate models
+#' 
+#' @param .data A data structure suitable for the models (such as a `tsibble`)
+#' @param ... Definitions for the models to be used
+#' 
+#' @export
+model <- function(.data, ...){
+  UseMethod("model")
+}
+
+#' @export
+model.tbl_ts <- function(.data, ...){
+  models <- dots_list(...)
+  
+  keys <- key(.data)
+  .data <- nest(group_by(.data, !!!keys), .key = "lst_data")
+  
+  eval_models <- function(model_def, lst_data){
+    model_def$formula <- validate_model(model_def$formula, .data[[1]])
+    map(lst_data, function(data){
+      parsed <- parse_model(data, model_def$formula, model_def$specials)
+      data <- transmute(data, !!model_lhs(parsed$model))
+      eval_tidy(
+        expr(model_def$train(.data = data, formula = model_def$formula,
+                             specials = parsed$specials, !!!model_def$dots))
+      )
+    })
+  }
+  
+  .data %>% 
+    transmute(
+      !!!keys,
+      !!!map2(models, .data[["lst_data"]], eval_models)
+    )
+}
+
 #' Define a model
 #' 
 #' @param train A function used to train the model to data
