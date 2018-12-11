@@ -9,7 +9,7 @@ new_model_definition <- function(train, specials){
   function(formula, ...){
     structure(
       list(
-        formula = formula, 
+        formula = enquo(formula),
         train = train, 
         specials = specials, 
         dots = list(...)),

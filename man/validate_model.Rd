@@ -7,7 +7,7 @@
 validate_model(model, data = NULL)
 }
 \arguments{
-\item{model}{The user's model specification (unevaluated)}
+\item{model}{A quosure for the user's model specification}
 
 \item{data}{A dataset used for automatic response selection}
 }

@@ -65,16 +65,13 @@ parse_response <- function(model_lhs){
 #' 
 #' Appropriately format the user's model for evaluation. Typically ran as one of the first steps
 #' in a model function.
-#' @param model The user's model specification (unevaluated)
+#' @param model A quosure for the user's model specification
 #' @param data A dataset used for automatic response selection
 #' 
 #' @export
 validate_model <- function(model, data = NULL){
-  # Capture parent expression
-  model <- enquo(model)
-  model_expr <- eval_tidy(set_expr(model, expr(rlang::enexpr(!!get_expr(model)))))
   # Clean inputs
-  if(is_missing(model_expr)){
+  if(quo_is_missing(model)){
     model <- guess_response(data)
   }
   else{
@@ -83,7 +80,11 @@ validate_model <- function(model, data = NULL){
       
       # Add response if missing
       if(is.null(model_lhs(model))){
-        model <- new_formula(lhs = guess_response(data), rhs = model_rhs(model), env = get_env(model))
+        model <- new_formula(
+          lhs = guess_response(data),
+          rhs = model_rhs(model),
+          env = get_env(model)
+        )
       }
     }
     else{
