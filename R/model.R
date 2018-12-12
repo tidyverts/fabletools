@@ -47,7 +47,7 @@ model.tbl_ts <- function(.data, ...){
 #' If specials is NULL, no specials are computed
 #' 
 #' @export
-new_model_definition <- function(train, specials){
+define_model <- function(train, specials){
   function(formula, ...){
     structure(
       list(
