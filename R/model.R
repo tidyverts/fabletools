@@ -50,7 +50,7 @@ new_model <- function(fit, response, transformation){
 
 #' @export
 model_sum.model <- function(x){
-  NextMethod()
+  model_sum(x$fit)
 }
 
 #' Define a model
