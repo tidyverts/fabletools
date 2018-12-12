@@ -22,10 +22,11 @@ model.tbl_ts <- function(.data, ...){
       map(lst_data, function(data){
         parsed <- parse_model(data, model_def$formula, model_def$specials)
         data <- transmute(data, !!model_lhs(parsed$model))
-        eval_tidy(
+        fit <- eval_tidy(
           expr(model_def$train(.data = data, formula = model_def$formula,
                                specials = parsed$specials, !!!model_def$dots))
         )
+        new_model(fit, parsed$response, parsed$transformation)
       })
     })
   }
@@ -37,7 +38,19 @@ model.tbl_ts <- function(.data, ...){
     transmute(
       !!!keys,
       !!!fits
-    )
+    ) %>% 
+    as_mable(keys, syms(names(fits)))
+}
+
+new_model <- function(fit, response, transformation){
+  structure(list(fit = fit, 
+                 response = response, transformation = transformation),
+            class = "model")
+}
+
+#' @export
+model_sum.model <- function(x){
+  NextMethod()
 }
 
 #' Define a model

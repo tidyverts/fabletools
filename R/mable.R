@@ -5,57 +5,27 @@
 #' @param parsed_model The parsed model from `parse_model`
 #'
 #' @export
-mable <- function(data, model, parsed_model){
-  as_mable(
-    tibble(
-      !!!as_list(as_tibble(data)[1, key_vars(data)]),
-      model=list(
-        structure(model,
-                  class = c(class(model), "fable_model"),
-                  fable = 
-                    list(
-                      model = parsed_model$model, 
-                      response = parsed_model$response,
-                      transformation = parsed_model$transformation
-                    )
-        )
-      )
-    ),
-    key = key(data)
-  )
+mable <- function(..., key = id(), models = id()){
+  as_mable(tibble(...), key = key, models = models)
 }
-
-#' Constructor
-#' 
-#' A constructor function for producing a mable (most useful for extension package authors)
-#' 
-#' @param x A mable-like object
-#' 
-#' @importFrom tibble new_tibble
-#' 
-#' @export
-new_mable <- function(x){
-  stopifnot(!is.null(x[["model"]]))
-  if(!inherits(x[["model"]], "lst_mdl")){
-    x[["model"]] <- add_class(x[["model"]], "lst_mdl")
-  }
-  new_tibble(x, subclass = "mdl_df")
-}
-
 
 #' Coerce a dataset to a mable
 #' 
 #' @param x A dataset containing a list model column
 #' @param key Structural variable(s) that identify each model
 #' 
+#' @rdname as_mable
 #' @export
-as_mable <- function(x, key = list()){
-  stopifnot(!is.null(x[["model"]]))
-  if(!inherits(x[["model"]], "lst_mdl")){
-    x[["model"]] <- add_class(x[["model"]], "lst_mdl")
-  }
-  x %>% 
-    enclass("mdl_df", key = key)
+as_mable <- function(x, ...){
+  UseMethod("as_mable")
+}
+
+#' @export
+#' @rdname as_mable
+as_mable.tbl_df <- function(x, key = id(), models = id(), ...){
+  add_mdl_lst <- map(models, function(model) expr(add_class(!!model, "lst_mdl")))
+  x <- mutate(x, !!!set_names(add_mdl_lst, map_chr(models, as_string)))
+  structure(x, class = union("mdl_df", class(x)), key = key, models = models)
 }
 
 #' @importFrom tibble tbl_sum

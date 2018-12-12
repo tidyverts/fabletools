@@ -2,9 +2,12 @@
 % Please edit documentation in R/mable.R
 \name{as_mable}
 \alias{as_mable}
+\alias{as_mable.tbl_df}
 \title{Coerce a dataset to a mable}
 \usage{
-as_mable(x, key = list())
+as_mable(x, ...)
+
+\method{as_mable}{tbl_df}(x, key = id(), models = id(), ...)
 }
 \arguments{
 \item{x}{A dataset containing a list model column}

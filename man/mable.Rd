@@ -4,7 +4,7 @@
 \alias{mable}
 \title{Create a new mable}
 \usage{
-mable(data, model, parsed_model)
+mable(..., key = id(), models = id())
 }
 \arguments{
 \item{data}{A tsibble used for modelling}
