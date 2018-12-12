@@ -25,7 +25,7 @@ as_mable <- function(x, ...){
 as_mable.tbl_df <- function(x, key = id(), models = id(), ...){
   add_mdl_lst <- map(models, function(model) expr(add_class(!!model, "lst_mdl")))
   x <- mutate(x, !!!set_names(add_mdl_lst, map_chr(models, as_string)))
-  structure(x, class = union("mdl_df", class(x)), key = key, models = models)
+  tibble::new_tibble(x, key = key, models = models, subclass = "mdl_df")
 }
 
 #' @importFrom tibble tbl_sum
