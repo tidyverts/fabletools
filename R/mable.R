@@ -1,8 +1,9 @@
 #' Create a new mable
 #' 
-#' @param data A tsibble used for modelling
-#' @param model The fitted model
-#' @param parsed_model The parsed model from `parse_model`
+#' @inheritParams tibble::tibble
+#' 
+#' @param key Structural variable(s) that identify each model.
+#' @param models Identifiers for the columns containing model(s).
 #'
 #' @export
 mable <- function(..., key = id(), models = id()){
@@ -11,8 +12,8 @@ mable <- function(..., key = id(), models = id()){
 
 #' Coerce a dataset to a mable
 #' 
-#' @param x A dataset containing a list model column
-#' @param key Structural variable(s) that identify each model
+#' @param x A dataset containing a list model column.
+#' @param ... Additional arguments passed to other methods.
 #' 
 #' @rdname as_mable
 #' @export
@@ -20,8 +21,12 @@ as_mable <- function(x, ...){
   UseMethod("as_mable")
 }
 
-#' @export
 #' @rdname as_mable
+#' 
+#' @param key Structural variable(s) that identify each model.
+#' @param models Identifiers for the columns containing model(s).
+#' 
+#' @export
 as_mable.tbl_df <- function(x, key = id(), models = id(), ...){
   add_mdl_lst <- map(models, function(model) expr(add_class(!!model, "lst_mdl")))
   x <- mutate(x, !!!set_names(add_mdl_lst, map_chr(models, as_string)))

@@ -7,11 +7,14 @@
 mable(..., key = id(), models = id())
 }
 \arguments{
-\item{data}{A tsibble used for modelling}
+\item{...}{A set of name-value pairs. Arguments are evaluated sequentially,
+so you can refer to previously created variables.  These arguments are
+processed with \code{\link[rlang:quos]{rlang::quos()}} and support unquote via \code{!!} and
+unquote-splice via \code{!!!}.}
 
-\item{model}{The fitted model}
+\item{key}{Structural variable(s) that identify each model.}
 
-\item{parsed_model}{The parsed model from \code{parse_model}}
+\item{models}{Identifiers for the columns containing model(s).}
 }
 \description{
 Create a new mable

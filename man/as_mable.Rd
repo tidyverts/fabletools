@@ -10,9 +10,13 @@ as_mable(x, ...)
 \method{as_mable}{tbl_df}(x, key = id(), models = id(), ...)
 }
 \arguments{
-\item{x}{A dataset containing a list model column}
+\item{x}{A dataset containing a list model column.}
 
-\item{key}{Structural variable(s) that identify each model}
+\item{...}{Additional arguments passed to other methods.}
+
+\item{key}{Structural variable(s) that identify each model.}
+
+\item{models}{Identifiers for the columns containing model(s).}
 }
 \description{
 Coerce a dataset to a mable
