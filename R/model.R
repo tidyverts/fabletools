@@ -61,6 +61,8 @@ model_sum.model <- function(x){
 #' 
 #' @export
 define_model <- function(train, specials){
+  force(train)
+  force(specials)
   function(formula, ...){
     structure(
       list(
