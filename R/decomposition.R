@@ -12,11 +12,13 @@ components <- function(object, ...){
 
 #' @export
 components.mdl_df <- function(object, ...){
-  object %>%
-    transmute(
-      !!!syms(key_vars(object)),
-      components = map(object$model, components)
-    ) %>% 
-    add_class("lst_ts") %>% 
-    unnest(key = key(object))
+  keys <- key(object)
+  object <- gather(object, ".model", ".fit", !!!(object%@%"models"))
+  object <- transmute(object, !!!keys, !!sym(".model"),
+                      cmp = map(!!sym(".fit"), components))
+  unnest(add_class(object, "lst_ts"), key = keys)
+}
+
+components.model <- function(object, ...){
+  components(object$fit, ...)
 }
