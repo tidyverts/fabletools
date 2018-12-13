@@ -11,6 +11,7 @@ fitted.mdl_df <- function(object, ...){
   unnest(add_class(out, "lst_ts"), key = keys)
 }
 
+#' @export
 fitted.model <- function(object, ...){
   fitted(object$fit, ...)
 }
