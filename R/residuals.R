@@ -1,13 +1,12 @@
 #' @importFrom stats residuals
 #' @export
 residuals.mdl_df <- function(object, ...){
-  keys <- syms(key_vars(object))
-  
   out <- gather(object, ".model", ".fit", !!!(object%@%"models"))
+  keys <- key(out)
   out <- transmute(out,
-                   !!!keys,
-                   !!sym(".model"),
-                   residuals = map(!!sym(".fit"), residuals)
+    !!!keys,
+    !!sym(".model"),
+    residuals = map(!!sym(".fit"), residuals)
   )
   unnest(add_class(out, "lst_ts"), key = keys)
 }

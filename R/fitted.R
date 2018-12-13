@@ -1,8 +1,8 @@
 #' @importFrom stats fitted
 #' @export
 fitted.mdl_df <- function(object, ...){
-  keys <- syms(key_vars(object))
   out <- gather(object, ".model", ".fit", !!!(object%@%"models"))
+  keys <- key(out)
   out <- transmute(out,
     !!!keys,
     !!sym(".model"),

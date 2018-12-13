@@ -33,6 +33,13 @@ as_mable.tbl_df <- function(x, key = id(), models = id(), ...){
   tibble::new_tibble(x, key = key, models = models, subclass = "mdl_df")
 }
 
+#' @export
+as_tibble.mdl_df <- function(x, ...){
+  attr(x, "key") <- attr(x, "models") <- NULL
+  class(x) <- c("tbl_df", "tbl", "data.frame")
+  as_tibble(x, ...)
+}
+
 #' @importFrom tibble tbl_sum
 #' @importFrom dplyr pull
 #' @export
@@ -46,6 +53,18 @@ tbl_sum.mdl_df <- function(x){
   }
   
   out
+}
+
+#' @export
+gather.mdl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE,
+                          convert = FALSE, factor_key = FALSE){
+  key <- sym(enexpr(key))
+  value <- enexpr(value)
+  tbl <- gather(as_tibble(data), key = !!key, value = !!value, 
+                ..., na.rm = na.rm, convert = convert, factor_key = factor_key)
+  
+  mdls <- syms(names(which(map_lgl(tbl, inherits, "lst_mdl"))))
+  as_mable(tbl, key = c(key(data), key), models = mdls)
 }
 
 #' Provide a succinct summary of a model
