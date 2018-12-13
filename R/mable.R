@@ -56,7 +56,7 @@ model_sum <- function(x){
 
 #' @export
 model_sum.default <- function(x){
-  obj_sum(x)
+  type_sum(x)
 }
 
 #' @importFrom utils head capture.output
