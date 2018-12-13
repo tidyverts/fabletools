@@ -7,7 +7,7 @@
 transformation(x, ...)
 }
 \arguments{
-\item{x}{An object containing a transformation (such as a \code{fable_model})}
+\item{x}{An object containing a transformation}
 
 \item{...}{Additional arguments passed on to other methods}
 }

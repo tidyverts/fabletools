@@ -7,7 +7,7 @@
 response(x, ...)
 }
 \arguments{
-\item{x}{An object containing a response variable (such as a \code{fable_model})}
+\item{x}{An object containing a response variable}
 
 \item{...}{Additional arguments for methods}
 }
