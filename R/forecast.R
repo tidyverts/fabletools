@@ -12,8 +12,6 @@
 #' @importFrom forecast forecast
 #' @importFrom dplyr mutate
 forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
-  keys <- key(object)
-  
   # Prepare new_data for forecast.model
   if(is.null(new_data)){
     lst_fits <- nest(group_by_key(fitted(object)))
@@ -26,33 +24,44 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
                        future <- seq(data[[idx]][[NROW(data)]], length.out = h + 1, by = time_unit(interval(data)))[-1]
                        build_tsibble(list2(!!idx := future), key = id(), index = idx)
                      })
-    new_data <- unnest(lst_fits, new_data, key = keys)
+    new_data <- unnest(lst_fits, new_data, key = key(object))
   }
+  
+  object <- gather(object, ".model", ".fit", !!!(object%@%"models"))
+  keys <- key(object)
   object <- bind_new_data(object, new_data)
   
   # Evaluate forecasts
-  fc <- map2(object$model, object$new_data, forecast, ...)
-  # Modify forecasts with transformations / bias_adjust
-  object$fc <- fc <- map2(object$model, fc,
-             function(model, fc){
-               bt <- invert_transformation((model%@%"fable")$transformation)
-               if(isTRUE(bias_adjust)){
-                 # Faster version of bias_adjust(bt, fc[["sd"]]^2)(fc[["mean"]]) 
-                 fc[[expr_text(response(fc))]] <- bt(fc[[expr_text(response(fc))]]) +
-                   fc[["sd"]]^2/2*map_dbl(as.numeric(fc[[expr_text(response(fc))]]), hessian, func = bt)
-               }
-               else{
-                 fc[[expr_text(response(fc))]] <- bt(fc[[expr_text(response(fc))]])
-               }
-               transformation(fc[[expr_text(fc%@%"dist")]]) <- bt
-               fc[["sd"]] <- NULL
-               fc
-             })
+  fc <- map2(object$.fit, object$new_data, forecast, bias_adjust = bias_adjust, ...)
   
   out <- suppressWarnings(unnest(add_class(object, "lst_ts"), fc, key = keys))
   out[[expr_text(fc[[1]]%@%"dist")]] <- fc %>% map(function(x) x[[expr_text(x%@%"dist")]]) %>% invoke(c, .)
   
   as_fable(out, resp = !!response(fc[[1]]), dist = !!(fc[[1]]%@%"dist"))
+}
+
+#' @export
+forecast.model <- function(object, new_data, bias_adjust = TRUE, ...){
+  fc <- forecast(object$fit, new_data, ...)
+  
+  # Modify forecasts with transformations / bias_adjust
+  bt <- invert_transformation(object$transformation)
+  if(isTRUE(bias_adjust)){
+    # Faster version of bias_adjust(bt, fc[["sd"]]^2)(fc[["mean"]]) 
+    fc[["point"]] <- bt(fc[["point"]]) +
+      fc[["sd"]]^2/2*map_dbl(as.numeric(fc[["point"]]), hessian, func = bt)
+  }
+  else{
+    fc[["point"]] <- bt(fc[["point"]])
+  }
+  transformation(fc[["dist"]]) <- bt
+  
+  as_fable(transmute(new_data, 
+                     !!as_string(object$response) := fc[["point"]],
+                     .distribution = fc[["dist"]]),
+           resp = !!object$response,
+           dist = !!sym(".distribution")
+  )
 }
 
 #' Construct a new set of forecasts
@@ -69,14 +78,8 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
 #' @param response The column name of the response variable
 #' 
 #' @export
-construct_fc <- function(newdata, point, sd, dist, response){
-  stopifnot(is_tsibble(newdata))
+construct_fc <- function(point, sd, dist){
   stopifnot(is.numeric(point))
   stopifnot(inherits(dist, "fcdist"))
-  fc <- select(newdata, !!index(newdata))
-  fc[[response]] <- point
-  fc[["sd"]] <- sd
-  fc[[".distribution"]] <- dist
-  attributes(fc[[".distribution"]]) <- attributes(dist)
-  as_fable(fc, resp = !!sym(response), dist = !!sym(".distribution"))
+  list(point = point, sd = sd, dist = dist)
 }
