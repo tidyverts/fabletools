@@ -2,9 +2,15 @@
 #' @export
 fitted.mdl_df <- function(object, ...){
   keys <- syms(key_vars(object))
-  out <- transmute(object,
+  out <- gather(object, ".model", ".fit", !!!(object%@%"models"))
+  out <- transmute(out,
     !!!keys,
-    fitted = map(!!sym("model"), fitted)
+    !!sym(".model"),
+    fitted = map(!!sym(".fit"), fitted)
   )
   unnest(add_class(out, "lst_ts"), key = keys)
+}
+
+fitted.model <- function(object, ...){
+  fitted(object$fit, ...)
 }
