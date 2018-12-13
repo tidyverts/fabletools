@@ -1,29 +1,35 @@
 #' @export
 augment.mdl_df <- function(x, ...){
-  x %>%
-    transmute(
-      aug = map(!!sym("model"), augment)
-    ) %>% 
-    add_class("lst_ts") %>% 
-    unnest(key = key(x))
+  x <- gather(x, ".model", ".fit", !!!(x%@%"models"))
+  x <- transmute(x, aug = map(!!sym("model"), augment))
+  unnest(add_class(x, "lst_ts"), key = key(x))
+}
+
+#' @export
+augment.model <- function(object, ...){
+  augment(object$fit, ...)
 }
 
 #' @export
 glance.mdl_df <- function(x, ...){
-  x %>%
-    transmute(
-      !!!syms(key_vars(x)),
-      glanced = map(!!sym("model"), glance)
-    ) %>% 
-    unnest()
+  x <- gather(x, ".model", ".fit", !!!(x%@%"models"))
+  x <- transmute(x, glanced = map(!!sym("model"), glance))
+  unnest(add_class(x, "lst_ts"), key = key(x))
+}
+
+#' @export
+glance.model <- function(object, ...){
+  glance(object$fit, ...)
 }
 
 #' @export
 tidy.mdl_df <- function(x, ...){
-  x %>%
-    transmute(
-      !!!syms(key_vars(x)),
-      tidied = map(!!sym("model"), tidy)
-    ) %>% 
-    unnest()
+  x <- gather(x, ".model", ".fit", !!!(x%@%"models"))
+  x <- transmute(x, tidied = map(!!sym("model"), tidy))
+  unnest(add_class(x, "lst_ts"), key = key(x))
+}
+
+#' @export
+tidy.model <- function(object, ...){
+  tidy(object$fit, ...)
 }
