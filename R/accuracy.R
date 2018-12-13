@@ -190,9 +190,10 @@ build_accuracy_calls <- function(measures, available_args){
 #' @export
 accuracy.mdl_df <- function(x, measures = list(point_measures, MASE = MASE), ...){
   dots <- dots_list(...)
+  
   aug <- augment(x) %>% 
     rename(
-      ".actual" := !!response(x[["model"]][[1]]),
+      ".actual" := !!x[[as_string((x%@%"models")[[1]])]][[1]][["response"]],
       ".fc" = ".fitted"
     ) %>% 
     mutate(
@@ -242,8 +243,8 @@ accuracy.fbl_ts <- function(x, new_data, measures = list(point_measures), ...){
   fns <- build_accuracy_calls(measures, c(names(dots), names(aug)))
   with(dots,
     aug %>% 
-      group_by_key %>% 
       as_tibble %>% 
+      group_by(!!!key(aug)) %>% 
       summarise(
         Type = "Test",
         !!!compact(fns)
