@@ -19,6 +19,7 @@ components.mdl_df <- function(object, ...){
   unnest(add_class(object, "lst_ts"), key = keys)
 }
 
+#' @export
 components.model <- function(object, ...){
   components(object$fit, ...)
 }
