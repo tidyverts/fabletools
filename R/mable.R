@@ -68,6 +68,18 @@ gather.mdl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE
 }
 
 #' @export
+select.mdl_df <- function (.data, ...){
+  key <- key(.data)
+  .data <- select(as_tibble(.data), !!!key(.data), ...)
+  
+  mdls <- syms(names(which(map_lgl(.data, inherits, "lst_mdl"))))
+  if(is_empty(mdls)){
+    abort("A mable must contain at least one model. To remove all models, first convert to a tibble with `as_tibble()`.")
+  }
+  as_mable(.data, key = key, models = mdls)
+}
+
+#' @export
 key.mdl_df <- function(x){
   x%@%"key"
 }
