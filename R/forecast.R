@@ -27,16 +27,17 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
     new_data <- unnest(lst_fits, new_data, key = key(object))
   }
   
-  object <- gather(object, ".model", ".fit", !!!(object%@%"models"))
-  keys <- key(object)
+  keys <- c(key(object), sym(".model"))
+  mdls <- object%@%"models"
   object <- bind_new_data(object, new_data)
+  object <- gather(object, ".model", ".fit", !!!mdls)
   
   # Evaluate forecasts
   fc <- map2(object$.fit, object$new_data, forecast, bias_adjust = bias_adjust, ...)
   
+  # Construct fable
   out <- suppressWarnings(unnest(add_class(object, "lst_ts"), fc, key = keys))
   out[[expr_text(fc[[1]]%@%"dist")]] <- fc %>% map(function(x) x[[expr_text(x%@%"dist")]]) %>% invoke(c, .)
-  
   as_fable(out, resp = !!(fc[[1]]%@%"response"), dist = !!(fc[[1]]%@%"dist"))
 }
 
