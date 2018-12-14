@@ -28,10 +28,8 @@ simulate.mdl_df <- function(object, new_data = NULL, h = NULL, times = 1, seed =
     on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
   }
   
-  keys <- key(object)
-  
   if(is.null(new_data)){
-    lst_fits <- nest(group_by_key(fitted(object)))
+    lst_fits <- nest(group_by_key(fitted(select(object, !!((object%@%"models")[[1]])))))
     if(is.null(h)){
       h <- map_dbl(lst_fits$data, function(.x) get_frequencies("smallest", .x)*2)
     }
@@ -41,7 +39,7 @@ simulate.mdl_df <- function(object, new_data = NULL, h = NULL, times = 1, seed =
                                      future <- seq(data[[idx]][[NROW(data)]], length.out = h + 1, by = time_unit(interval(data)))[-1]
                                      build_tsibble(list2(!!idx := future), key = id(), index = idx)
                                    })
-    new_data <- unnest(lst_fits, new_data, key = keys)
+    new_data <- unnest(lst_fits, new_data, key = key(object))
   }
   
   if(is.null(new_data[[".rep"]])){
@@ -52,8 +50,16 @@ simulate.mdl_df <- function(object, new_data = NULL, h = NULL, times = 1, seed =
       invoke("rbind", .)
   }
   
+  keys <- c(key(object), sym(".model"))
+  mdls <- object%@%"models"
   object <- bind_new_data(object, new_data)
-  names(object)[names(object) == "model"] <- "object"
-  object$.sim <- map2(object$object, object$new_data, simulate, ...)
+  object <- gather(object, ".model", ".fit", !!!mdls)
+  
+  object$.sim <- map2(object[[".fit"]], object[["new_data"]], simulate, ...)
   unnest(add_class(object, "lst_ts"), !!sym(".sim"), key = keys)
+}
+
+#' @export
+simulate.model <- function(object, ...){
+  simulate(object[["fit"]], ...)
 }
