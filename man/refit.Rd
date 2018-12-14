@@ -2,7 +2,7 @@
 % Please edit documentation in R/refit.R
 \name{refit}
 \alias{refit}
-\title{Refit a model with new data}
+\title{Refit a mable with new data}
 \usage{
 refit(object, new_data, ...)
 }
@@ -14,5 +14,5 @@ refit(object, new_data, ...)
 \item{...}{Additional optional arguments for refit methods}
 }
 \description{
-Refit a model with new data
+Refit a mable with new data
 }
