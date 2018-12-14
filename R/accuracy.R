@@ -225,11 +225,11 @@ accuracy.fbl_ts <- function(x, new_data, measures = list(point_measures), ...){
 
   aug <- x %>% 
     transmute(
-      .fc = !!response(x),
+      .fc = !!(x%@%"response"),
       .dist = !!(x%@%"dist")
     ) %>% 
     left_join(
-      transmute(new_data, !!index(new_data), .actual = !!response(x)),
+      transmute(new_data, !!index(new_data), .actual = !!(x%@%"repsonse")),
       by = c(expr_text(index(x)), key_vars(x))
     ) %>% 
     mutate(.resid = !!sym(".actual") - !!sym(".fc"))

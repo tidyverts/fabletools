@@ -33,22 +33,17 @@ as_fable.tbl_ts <- function(x, resp, dist, ...){
 
 validate_fable <- function(fbl){
   stopifnot(inherits(fbl, "fbl_ts"))
-  if (!(expr_text(response(fbl)) %in% names(fbl))){
+  if (!(as_string(fbl%@%"response") %in% names(fbl))){
     abort("Could not find response variable `%s` in the fable.",
-          expr_text(response(fbl)))
+          as_string(fbl%@%"response"))
   }
-  if (!(expr_text(fbl%@%"dist") %in% names(fbl))){
+  if (!(as_string(fbl%@%"dist") %in% names(fbl))){
     abort("Could not find distribution variable `%s` in the fable.",
-          expr_text(fbl%@%"dist"))
+          as_string(fbl%@%"dist"))
   }
   if (!inherits(fbl[[expr_text(fbl%@%"dist")]], "fcdist")){
     abort('Distribution variable must be of class "fcdist"')
   }
-}
-
-#' @export
-response.fbl_ts <- function(x, ...){
-  x%@%"response"
 }
 
 #' @importFrom tibble tbl_sum
@@ -63,7 +58,7 @@ tbl_sum.fbl_ts <- function(x){
 summary.fbl_ts <- function(object, level=c(80,95), ...){
   object %>%
     transmute(
-      !!response(object),
+      !!(object%@%"response"),
       !!!set_names(map(level,function(.x) expr(hilo(!!(object%@%"dist"), !!.x))),
                    paste0(level, "%")))
 }

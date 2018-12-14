@@ -4,16 +4,16 @@
 \alias{construct_fc}
 \title{Construct a new set of forecasts}
 \usage{
-construct_fc(newdata, point, sd, dist, response)
+construct_fc(point, sd, dist)
 }
 \arguments{
-\item{newdata}{The newdata provided to the forecast function}
-
 \item{point}{The transformed point forecasts}
 
 \item{sd}{The standard deviation of the transformed forecasts}
 
 \item{dist}{The forecast distribution (typically produced using \code{new_fcdist})}
+
+\item{newdata}{The newdata provided to the forecast function}
 
 \item{response}{The column name of the response variable}
 }
