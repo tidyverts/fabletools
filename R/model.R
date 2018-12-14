@@ -48,6 +48,23 @@ new_model <- function(fit, response, transformation){
             class = "model")
 }
 
+
+#' Provide a succinct summary of a model
+#' 
+#' Similarly to pillar's type_sum and obj_sum, model_sum is used to provide brief model summaries.
+#' 
+#' @param x The model to summarise
+#' 
+#' @export
+model_sum <- function(x){
+  UseMethod("model_sum")
+}
+
+#' @export
+model_sum.default <- function(x){
+  type_sum(x)
+}
+
 #' @export
 model_sum.model <- function(x){
   model_sum(x$fit)

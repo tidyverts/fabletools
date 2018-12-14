@@ -67,35 +67,6 @@ gather.mdl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE
   as_mable(tbl, key = c(key(data), key), models = mdls)
 }
 
-#' Provide a succinct summary of a model
-#' 
-#' Similarly to pillar's type_sum and obj_sum, model_sum is used to provide brief model summaries.
-#' 
-#' @param x The model to summarise
-#' 
-#' @export
-model_sum <- function(x){
-  UseMethod("model_sum")
-}
-
-#' @export
-model_sum.default <- function(x){
-  type_sum(x)
-}
-
-#' @importFrom utils head capture.output
-#' @export
-summary.mdl_df <- function(object, ...){
-  map(head(object[[as_string((object%@%"models")[[1]])]]), function(.x) capture.output(summary(.x))) %>%
-    invoke(cat, ., sep="\n")
-  invisible(object)
-}
-
-#' @export
-summary.model <- function(object, ...){
-  summary(object$fit, ...)
-}
-
 #' @export
 key.mdl_df <- function(x){
   x%@%"key"

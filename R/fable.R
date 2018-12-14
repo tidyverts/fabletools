@@ -53,12 +53,3 @@ tbl_sum.fbl_ts <- function(x){
   names(out)[1] <- "A fable"
   out
 }
-
-#' @export
-summary.fbl_ts <- function(object, level=c(80,95), ...){
-  object %>%
-    transmute(
-      !!(object%@%"response"),
-      !!!set_names(map(level,function(.x) expr(hilo(!!(object%@%"dist"), !!.x))),
-                   paste0(level, "%")))
-}
