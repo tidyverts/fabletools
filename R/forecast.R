@@ -12,9 +12,10 @@
 #' @importFrom forecast forecast
 #' @importFrom dplyr mutate
 forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
+  
   # Prepare new_data for forecast.model
   if(is.null(new_data)){
-    lst_fits <- nest(group_by_key(fitted(object)))
+    lst_fits <- nest(group_by_key(fitted(select(object, !!((object%@%"models")[[1]])))))
     if(is.null(h)){
       h <- map_dbl(lst_fits$data, function(.x) get_frequencies("smallest", .x)*2)
     }
