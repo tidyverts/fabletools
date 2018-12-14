@@ -210,8 +210,8 @@ accuracy.mdl_df <- function(x, measures = list(point_measures, MASE = MASE), ...
   
   with(dots,
     aug %>% 
-      group_by_key %>% 
-      as_tibble %>% 
+      as_tibble %>%
+      group_by(!!!key(aug)) %>% 
       summarise(
         Type = "Training",
         !!!compact(fns)
