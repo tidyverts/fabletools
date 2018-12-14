@@ -12,10 +12,6 @@ construct_fc(point, sd, dist)
 \item{sd}{The standard deviation of the transformed forecasts}
 
 \item{dist}{The forecast distribution (typically produced using \code{new_fcdist})}
-
-\item{newdata}{The newdata provided to the forecast function}
-
-\item{response}{The column name of the response variable}
 }
 \description{
 Will be deprecated in the future, forecast objects should be produced with

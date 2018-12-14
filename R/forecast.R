@@ -71,11 +71,9 @@ forecast.model <- function(object, new_data, bias_adjust = TRUE, ...){
 #' 
 #' Backtransformations are automatically handled, and so no transformations should be specified here.
 #' 
-#' @param newdata The newdata provided to the forecast function
 #' @param point The transformed point forecasts
 #' @param sd The standard deviation of the transformed forecasts
 #' @param dist The forecast distribution (typically produced using `new_fcdist`)
-#' @param response The column name of the response variable
 #' 
 #' @export
 construct_fc <- function(point, sd, dist){
