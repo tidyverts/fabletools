@@ -15,12 +15,21 @@ interpolate <- function(model, ...){
 
 #' @export
 interpolate.mdl_df <- function(model, new_data, ...){
+  if(length(model%@%"models") > 1){
+abort("Interpolation can only be done using one model. 
+Please use select() to choose the model to interpolate with.")
+  }
   model %>%
     bind_new_data(new_data) %>% 
     transmute(
-      !!!syms(key_vars(model)),
-      interpolated = map2(model, new_data, interpolate, ...)
+      !!!key(model),
+      interpolated = map2(!!!(model%@%"models"), new_data, interpolate, ...)
     ) %>% 
     add_class("lst_ts") %>% 
     unnest(key = key(model))
+}
+
+#' @export
+interpolate.model <- function(model, ...){
+  interpolate(model[["fit"]], ...)
 }
