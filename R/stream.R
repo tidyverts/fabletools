@@ -12,9 +12,16 @@ stream <- function(object, ...){
 stream.mdl_df <- function(object, new_data, ...){
   object %>%
     bind_new_data(new_data) %>% 
+    gather(".model", ".fit", !!!(object%@%"models")) %>% 
     transmute(
-      !!!flatten(key(object)),
-      model = map2(!!sym("model"), !!sym("new_data"), stream, ...)
+      !!!key(object),
+      !!sym(".model"),
+      .fit = map2(!!sym(".fit"), !!sym("new_data"), stream, ...)
     ) %>%
-    as_mable(key = key(object))
+    spread(".model", ".fit") %>% 
+    as_mable(key = key(object), models = object%@%"models")
+}
+
+stream.model <- function(object, new_data, ...){
+  stream(object[["fit"]], new_data, ...)
 }
