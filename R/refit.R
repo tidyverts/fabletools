@@ -1,4 +1,4 @@
-#' Refit a model with new data
+#' Refit a mable with new data
 #' 
 #' @param object A model (typically a mable)
 #' @param new_data A tsibble containing the new data
@@ -13,10 +13,16 @@ refit <- function(object, new_data, ...){
 refit.mdl_df <- function(object, new_data, ...){
   object %>%
     bind_new_data(new_data) %>% 
+    gather(".model", ".fit", !!!(object%@%"models")) %>% 
     transmute(
-      !!!flatten(key(object)),
-      model = map2(!!sym("model"), !!sym("new_data"), refit, ...)
+      !!!key(object),
+      !!sym(".model"),
+      .fit = map2(!!sym(".fit"), !!sym("new_data"), refit, ...)
     ) %>%
-    {suppressWarnings(unnest(., !!sym("model")))} %>% 
-    as_mable(key = key(object))
+    spread(".model", ".fit") %>% 
+    as_mable(key = key(object), models = object%@%"models")
+}
+
+refit.model <- function(object, new_data, ...){
+  refit(object[["fit"]], new_data, ...)
 }
