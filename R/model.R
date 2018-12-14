@@ -102,14 +102,3 @@ model_rhs <- function(model){
     expr(NULL)
   }
 }
-
-#' Extract the response variable from an object
-#' 
-#' @param x An object containing a response variable
-#' @param ... Additional arguments for methods
-#' 
-#' @return An expression for the response variable
-#' @export
-response <- function(x, ...){
-  UseMethod("response")
-}
