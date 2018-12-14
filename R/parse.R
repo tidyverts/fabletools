@@ -88,7 +88,7 @@ validate_model <- function(model, data = NULL){
       }
     }
     else{
-      model <- model_expr
+      model <- get_expr(model)
     }
   }
   
