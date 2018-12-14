@@ -7,8 +7,8 @@ augment.mdl_df <- function(x, ...){
 }
 
 #' @export
-augment.model <- function(object, ...){
-  augment(object$fit, ...)
+augment.model <- function(x, ...){
+  augment(x$fit, ...)
 }
 
 #' @export
@@ -20,8 +20,8 @@ glance.mdl_df <- function(x, ...){
 }
 
 #' @export
-glance.model <- function(object, ...){
-  glance(object$fit, ...)
+glance.model <- function(x, ...){
+  glance(x$fit, ...)
 }
 
 #' @export
@@ -33,6 +33,6 @@ tidy.mdl_df <- function(x, ...){
 }
 
 #' @export
-tidy.model <- function(object, ...){
-  tidy(object$fit, ...)
+tidy.model <- function(x, ...){
+  tidy(x$fit, ...)
 }
