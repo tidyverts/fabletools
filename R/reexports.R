@@ -29,14 +29,26 @@ ggplot2::autoplot
 #' @export
 ggplot2::autolayer
 
-#' @importFrom broom augment
+#' @importFrom generics equation
 #' @export
-broom::augment
+generics::equation
 
-#' @importFrom broom glance
+#' @importFrom generics interpolate
 #' @export
-broom::glance
+generics::interpolate
 
-#' @importFrom broom tidy
+#' @importFrom generics components
 #' @export
-broom::tidy
+generics::components
+
+#' @importFrom generics augment
+#' @export
+generics::augment
+
+#' @importFrom generics glance
+#' @export
+generics::glance
+
+#' @importFrom generics tidy
+#' @export
+generics::tidy
