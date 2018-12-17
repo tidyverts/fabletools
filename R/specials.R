@@ -16,6 +16,7 @@ new_specials_env <- function(..., .env = caller_env(), .required_specials = NULL
   else{
     .env <- .env
   }
+  env_bind(.env, ...)
   
   .env <- structure(.env, required_specials = .required_specials)
   if(!is.null(.vals)){
