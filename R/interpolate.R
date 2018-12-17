@@ -15,6 +15,6 @@ Please use select() to choose the model to interpolate with.")
 }
 
 #' @export
-interpolate.object <- function(object, ...){
+interpolate.model <- function(object, ...){
   interpolate(object[["fit"]], ...)
 }
