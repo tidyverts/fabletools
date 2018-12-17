@@ -131,7 +131,7 @@ parse_model_rhs <- function(model_rhs, data, specials = NULL){
   
   # Bind .specials and .data to specials
   if(!is.null(specials)){
-    specials_fn_bind(specials, .data = data, .specials = specials)
+    specials_fn_bind(specials, !!!list(.data = data, .specials = specials))
   }
   
   model_rhs %>%
