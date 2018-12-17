@@ -131,14 +131,7 @@ parse_model_rhs <- function(model_rhs, data, specials = NULL){
   
   # Bind .specials and .data to specials
   if(!is.null(specials)){
-    imap(as.list(specials), function(fn, nm){
-      assign(nm,
-             set_env(fn, env_bury(get_env(fn),
-                                  .data = data,
-                                  .specials = specials)),
-             envir = specials
-      )
-    })
+    specials_fn_bind(specials, .data = data, .specials = specials)
   }
   
   model_rhs %>%

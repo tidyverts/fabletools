@@ -12,7 +12,7 @@ new_specials_env(..., .env = caller_env(), .required_specials = NULL,
 
 \item{.env}{The evaluation environment of the specials (to find other user objects)}
 
-\item{.required_specials}{The names of specials which must be provided (and if not, are included used with no inputs).}
+\item{.required_specials}{The names of specials which must be provided (and if not, are included with no inputs).}
 
 \item{.bury}{If TRUE, the specials are bound to a child environment of \code{.env}.}
 
