@@ -22,6 +22,7 @@ stream.mdl_df <- function(object, new_data, ...){
     as_mable(key = key(object), models = object%@%"models")
 }
 
+#' @export
 stream.model <- function(object, new_data, ...){
   stream(object[["fit"]], new_data, ...)
 }

@@ -16,7 +16,6 @@ glance.mdl_df <- function(x, ...){
   x <- gather(x, ".model", ".fit", !!!(x%@%"models"))
   keys <- key(x)
   x <- transmute(x, !!!keys, !!sym(".model"), glanced = map(!!sym(".fit"), glance))
-  browser()
   unnest(add_class(x, "lst_ts"), !!sym("glanced"), key = keys)
 }
 
