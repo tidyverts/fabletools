@@ -23,6 +23,7 @@ refit.mdl_df <- function(object, new_data, ...){
     as_mable(key = key(object), models = object%@%"models")
 }
 
+#' @export
 refit.model <- function(object, new_data, ...){
   refit(object[["fit"]], new_data, ...)
 }
