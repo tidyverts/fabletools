@@ -81,9 +81,13 @@ define_model <- function(train, specials){
   force(train)
   force(specials)
   function(formula, ...){
+    formula <- enquo(formula)
+    if(possibly(compose(is.data.frame, eval_tidy), FALSE)(formula)){
+      abort("The API for fable models has changed. Read more here: https://github.com/tidyverts/fable/issues/77")
+    }
     structure(
       list(
-        formula = enquo(formula),
+        formula = formula,
         train = train, 
         specials = specials, 
         dots = list(...)),
