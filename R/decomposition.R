@@ -24,7 +24,7 @@ train_decomposition <- function(.data, dcmp_fn, dcmp_args, formula,
           #.resid = residuals
         ),
       fit = tibble(method = "Decomposition model",
-                   decomposition = list(dcmp_method))
+                   decomposition = list(dcmp_method)),
       models = mdls
     ),
     class = "decomposition_model"
