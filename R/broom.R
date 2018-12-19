@@ -3,7 +3,7 @@ augment.mdl_df <- function(x, ...){
   x <- gather(x, ".model", ".fit", !!!(x%@%"models"))
   keys <- key(x)
   x <- transmute(x, !!!keys, !!sym(".model"), aug = map(!!sym(".fit"), augment))
-  unnest(add_class(x, "lst_ts"), key = keys)
+  unnest(add_class(x, "lst_ts"), !!sym("aug"), key = keys)
 }
 
 #' @export
@@ -16,7 +16,8 @@ glance.mdl_df <- function(x, ...){
   x <- gather(x, ".model", ".fit", !!!(x%@%"models"))
   keys <- key(x)
   x <- transmute(x, !!!keys, !!sym(".model"), glanced = map(!!sym(".fit"), glance))
-  unnest(add_class(x, "lst_ts"), key = keys)
+  browser()
+  unnest(add_class(x, "lst_ts"), !!sym("glanced"), key = keys)
 }
 
 #' @export
@@ -29,7 +30,7 @@ tidy.mdl_df <- function(x, ...){
   x <- gather(x, ".model", ".fit", !!!(x%@%"models"))
   keys <- key(x)
   x <- transmute(x, !!!keys, !!sym(".model"), tidied = map(!!sym(".fit"), tidy))
-  unnest(add_class(x, "lst_ts"), key = keys)
+  unnest(add_class(x, "lst_ts"), !!sym("tidied"), key = keys)
 }
 
 #' @export
