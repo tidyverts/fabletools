@@ -8,12 +8,17 @@ model_definition <- R6::R6Class("model",
     formula = NULL,
     extra = NULL,
     initialize = function(formula, ...){
+      self$formula <- enquo(formula)
+      if(possibly(compose(is.data.frame, eval_tidy), FALSE)(self$formula)){
+        abort("The API for fable models has changed. Read more here: https://github.com/tidyverts/fable/issues/77")
+      }
+      
       # Set `self` and `super` for special functions
       self$specials <- as_environment(
         assign_func_envs(self$specials, self$.__enclos_env__),
         parent = caller_env(2)
       )
-      self$formula <- enquo(formula)
+      
       self$extra <- list2(...)
     },
     train = function(...){
@@ -25,29 +30,3 @@ model_definition <- R6::R6Class("model",
     }
   )
 )
-
-#' Define a model
-#' 
-#' @param train A function used to train the model to data
-#' @param specials A list of functions used to be evaluated from the formula.
-#' If specials is NULL, no specials are computed
-#' 
-#' @export
-define_model <- function(train, specials){
-  force(train)
-  force(specials)
-  function(formula, ...){
-    formula <- enquo(formula)
-    if(possibly(compose(is.data.frame, eval_tidy), FALSE)(formula)){
-      abort("The API for fable models has changed. Read more here: https://github.com/tidyverts/fable/issues/77")
-    }
-    structure(
-      list(
-        formula = formula,
-        train = train, 
-        specials = specials, 
-        dots = list(...)),
-      class = "model_definition"
-    )
-  }
-}
