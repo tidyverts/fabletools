@@ -14,10 +14,10 @@ model_definition <- R6::R6Class("model",
       }
       
       # Set `self` and `super` for special functions
-      self$specials <- as_environment(
+      self$specials <- structure(as_environment(
         assign_func_envs(self$specials, self$.__enclos_env__),
         parent = caller_env(2)
-      )
+      ), required_specials = self$specials%@%"required_specials")
       
       self$extra <- list2(...)
     },
