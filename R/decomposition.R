@@ -31,11 +31,10 @@ train_decomposition <- function(.data, dcmp_fn, dcmp_args, formula,
   )
 }
 
-specials_decomposition <- new_specials_env(
+specials_decomposition <- new_specials(
   xreg = function(...){
     .data
   },
-  .env = caller_env(),
   .required_specials = "xreg"
 )
 

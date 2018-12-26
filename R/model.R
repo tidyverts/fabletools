@@ -17,14 +17,15 @@ model.tbl_ts <- function(.data, ...){
   .data <- nest(group_by(.data, !!!keys), .key = "lst_data")
   
   eval_models <- function(models, lst_data){
-    map(models, function(model_def){
-      model_def$formula <- validate_model(model_def$formula, lst_data[[1]])
+    map(models, function(model){
+      validate_formula(model, lst_data[[1]])
       map(lst_data, function(data){
-        parsed <- parse_model(data, model_def$formula, model_def$specials)
+        model$data <- data
+        parse_model(model)
         data <- transmute(data, !!model_lhs(parsed$model))
         fit <- eval_tidy(
-          expr(model_def$train(.data = data, formula = model_def$formula,
-                               specials = parsed$specials, !!!model_def$dots))
+          expr(model$train(.data = data, formula = model$formula,
+                               specials = parsed$specials, !!!model$extra))
         )
         new_model(fit, parsed$response, parsed$transformation)
       })
@@ -70,43 +71,17 @@ model_sum.model <- function(x){
   model_sum(x$fit)
 }
 
-#' Define a model
-#' 
-#' @param train A function used to train the model to data
-#' @param specials A list of functions used to be evaluated from the formula.
-#' If specials is NULL, no specials are computed
-#' 
-#' @export
-define_model <- function(train, specials){
-  force(train)
-  force(specials)
-  function(formula, ...){
-    formula <- enquo(formula)
-    if(possibly(compose(is.data.frame, eval_tidy), FALSE)(formula)){
-      abort("The API for fable models has changed. Read more here: https://github.com/tidyverts/fable/issues/77")
-    }
-    structure(
-      list(
-        formula = formula,
-        train = train, 
-        specials = specials, 
-        dots = list(...)),
-      class = "model_definition"
-    )
-  }
-}
-
 #' Extract the left hand side of a model
 #' 
 #' @param model A formula
 #' 
 #' @export
 model_lhs <- function(model){
-  if(is_formula(model)){
-    transform_spec <- f_lhs(model)
+  if(is_formula(model$formula)){
+    f_lhs(model$formula)
   }
   else{
-    transform_spec <- model
+    model$formula
   }
 }
 
@@ -116,8 +91,8 @@ model_lhs <- function(model){
 #' 
 #' @export
 model_rhs <- function(model){
-  if(is_formula(model)){
-    f_rhs(model)
+  if(is_formula(model$formula)){
+    f_rhs(model$formula)
   }
   else{
     expr(NULL)

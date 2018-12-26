@@ -73,3 +73,13 @@ bind_new_data <- function(object, new_data){
   }
   object
 }
+
+# From R6
+assign_func_envs <- function(objs, target_env) {
+  if (is.null(target_env)) return(objs)
+  
+  lapply(objs, function(x) {
+    if (is.function(x)) environment(x) <- target_env
+    x
+  })
+}

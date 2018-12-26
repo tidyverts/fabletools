@@ -69,30 +69,28 @@ parse_response <- function(model_lhs){
 #' @param data A dataset used for automatic response selection
 #' 
 #' @export
-validate_model <- function(model, data = NULL){
+validate_formula <- function(model, data = NULL){
   # Clean inputs
-  if(quo_is_missing(model)){
-    model <- guess_response(data)
+  if(quo_is_missing(model$formula)){
+    model$formula <- guess_response(data)
   }
   else{
-    if(possibly(compose(is_formula, eval_tidy), FALSE)(model)){
-      model <- eval_tidy(model)
+    if(possibly(compose(is_formula, eval_tidy), FALSE)(model$formula)){
+      model$formula <- eval_tidy(model$formula)
       
       # Add response if missing
       if(is.null(model_lhs(model))){
-        model <- new_formula(
+        model$formula <- new_formula(
           lhs = guess_response(data),
           rhs = model_rhs(model),
-          env = get_env(model)
+          env = get_env(model$formula)
         )
       }
     }
     else{
-      model <- get_expr(model)
+      model$formula <- get_expr(model$formula)
     }
   }
-  
-  model
 }
 
 #' Parse the model specification for specials
@@ -101,18 +99,16 @@ validate_model <- function(model, data = NULL){
 #' is parsed to extract important modelling components.
 #' 
 #' @param data A dataset
-#' @param model A validated model (from `validate_model`)
-#' @param specials A list of functions used to be evaluated from the formula.
-#' If specials is NULL, no specials are computed
+#' @param model A model definition
 #' 
 #' @importFrom tibble tibble
 #' @export
-parse_model <- function(data, model, specials = NULL){
+parse_model <- function(model){
   # Parse model
   list2(
     model = model,
-    !!!parse_model_lhs(model_lhs(model), data),
-    !!!parse_model_rhs(model_rhs(model), data, specials)
+    !!!parse_model_lhs(model),
+    !!!parse_model_rhs(model)
   )
 }
 
@@ -124,23 +120,17 @@ parse_model <- function(data, model, specials = NULL){
 #' If specials is NULL, no specials are computed
 #' 
 #' @export
-parse_model_rhs <- function(model_rhs, data, specials = NULL){
-  if(is.null(specials)){
+parse_model_rhs <- function(model){
+  if(is.null(model$specials)){
     return(list(specials = NULL))
   }
-  
-  # Bind .specials and .data to specials
-  if(!is.null(specials)){
-    specials_fn_bind(specials, !!!list(.data = data, .specials = specials))
-  }
-  
-  model_rhs %>%
-    parse_specials(specials = specials) %>%
+  model_rhs(model) %>%
+    parse_specials(specials = model$specials) %>%
     map(function(.x){
       .x %>%
           map(
             function(special){
-              eval_tidy(special, data = data, env = specials)
+              eval_tidy(special)
             }
           )
     }) %>%
@@ -153,8 +143,9 @@ parse_model_rhs <- function(model_rhs, data, specials = NULL){
 #' @param data Data to be used to find the response
 #' 
 #' @export
-parse_model_lhs <- function(model_lhs, data){
-  transformation <- as_transformation(model_lhs, data=data)
+parse_model_lhs <- function(model){
+  model_lhs <- model_lhs(model)
+  transformation <- as_transformation(model_lhs, data=model$data)
   response <- fn_fmls(transformation)$x
   list(
     response = response,
