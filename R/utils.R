@@ -76,11 +76,12 @@ bind_new_data <- function(object, new_data){
 
 # From R6
 assign_func_envs <- function(objs, target_env) {
+  required_specials <- objs%@%"required_specials"
   if (!is.null(target_env)){
     objs <- lapply(objs, function(x) {
       if (is.function(x)) environment(x) <- target_env
       x
     })
   }
-  as.environment(objs)
+  structure(as.environment(objs), required_specials = required_specials)
 }
