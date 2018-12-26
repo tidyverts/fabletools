@@ -83,5 +83,5 @@ assign_func_envs <- function(objs, target_env) {
       x
     })
   }
-  structure(as.environment(objs), required_specials = required_specials)
+  structure(objs, required_specials = required_specials)
 }

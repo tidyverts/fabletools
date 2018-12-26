@@ -9,7 +9,10 @@ model_definition <- R6::R6Class("model",
     extra = NULL,
     initialize = function(formula, ...){
       # Set `self` and `super` for special functions
-      self$specials <- assign_func_envs(self$specials, self$.__enclos_env__)
+      self$specials <- as_environment(
+        assign_func_envs(self$specials, self$.__enclos_env__),
+        parent = caller_env(2)
+      )
       self$formula <- enquo(formula)
       self$extra <- list2(...)
     },
