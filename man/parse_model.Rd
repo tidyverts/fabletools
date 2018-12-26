@@ -4,12 +4,12 @@
 \alias{parse_model}
 \title{Parse the model specification for specials}
 \usage{
-parse_model(data, model)
+parse_model(model)
 }
 \arguments{
-\item{data}{A dataset}
-
 \item{model}{A model definition}
+
+\item{data}{A dataset}
 }
 \description{
 Using a list of defined special functions, the user's formula specification and data

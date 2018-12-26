@@ -4,12 +4,12 @@
 \alias{parse_model_lhs}
 \title{Parse the RHS of the model formula for transformations}
 \usage{
-parse_model_lhs(model, data)
+parse_model_lhs(model)
 }
 \arguments{
-\item{data}{Data to be used to find the response}
-
 \item{model_lhs}{The expression for the lhs of the model (from \code{model_lhs()})}
+
+\item{data}{Data to be used to find the response}
 }
 \description{
 Parse the RHS of the model formula for transformations
