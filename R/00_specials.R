@@ -7,7 +7,7 @@
 #' 
 #' @export
 new_specials <- function(..., .required_specials = NULL){
-  structure(list2(...), 
+  structure(squash(list2(...)),
             required_specials = .required_specials,
             class="fable_specials")
 }
