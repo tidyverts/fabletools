@@ -21,7 +21,7 @@ model.tbl_ts <- function(.data, ...){
       validate_formula(model, lst_data[[1]])
       map(lst_data, function(data){
         model$data <- data
-        parse_model(model)
+        parsed <- parse_model(model)
         data <- transmute(data, !!model_lhs(parsed$model))
         fit <- eval_tidy(
           expr(model$train(.data = data, formula = model$formula,
