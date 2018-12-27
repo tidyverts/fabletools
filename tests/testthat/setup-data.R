@@ -4,15 +4,15 @@ UKLungDeaths <- as_tsibble(cbind(mdeaths, fdeaths))
 USAccDeaths <- as_tsibble(USAccDeaths)
 
 mbl <- USAccDeaths %>%
-  fable::ETS(value)
+  model(fable::ETS(value))
 fbl <- mbl %>% forecast
 
 mbl_multi <- UKLungDeaths %>%
-  fable::ETS(value)
+  model(fable::ETS(value))
 fbl_multi <- mbl_multi %>% forecast
 
-dbl <- USAccDeaths %>%
-  tsibblestats::STL(value)
-
-dbl_multi <- UKLungDeaths %>%
-  tsibblestats::STL(value)
+# dbl <- USAccDeaths %>%
+#   tsibblestats::STL(value)
+# 
+# dbl_multi <- UKLungDeaths %>%
+#   tsibblestats::STL(value)
