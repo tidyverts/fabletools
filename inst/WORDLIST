@@ -10,11 +10,12 @@ ggplot
 ggproto
 hilo
 horison
+lifecycle
 mable
 MAPE
 MASE
 MPE
-newdata
 obj
+quosure
 stat
 tsibble

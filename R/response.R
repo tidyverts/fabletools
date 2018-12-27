@@ -1,4 +1,4 @@
-#' Extract the respone data from a model
+#' Extract the response data from a model
 #' 
 #' @param object The object containing response data
 #' @param ... Additional parameters passed on to other methods

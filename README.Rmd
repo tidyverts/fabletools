@@ -23,7 +23,7 @@ The R package *fablelite* provides tools for building modelling packages, with a
 ## Installation
 
 You can install the **development** version from
-[Github](https://github.com/tidyverts/fablelite)
+[GitHub](https://github.com/tidyverts/fablelite)
 
 ```{r gh-installation, eval = FALSE}
 # install.packages("devtools")

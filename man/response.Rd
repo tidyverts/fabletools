@@ -2,7 +2,7 @@
 % Please edit documentation in R/response.R
 \name{response}
 \alias{response}
-\title{Extract the respone data from a model}
+\title{Extract the response data from a model}
 \usage{
 response(object, ...)
 }
@@ -12,5 +12,5 @@ response(object, ...)
 \item{...}{Additional parameters passed on to other methods}
 }
 \description{
-Extract the respone data from a model
+Extract the response data from a model
 }

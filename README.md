@@ -16,7 +16,7 @@ needing to depend on the models supported by *fable*.
 ## Installation
 
 You can install the **development** version from
-[Github](https://github.com/tidyverts/fablelite)
+[GitHub](https://github.com/tidyverts/fablelite)
 
 ``` r
 # install.packages("devtools")
