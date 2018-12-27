@@ -91,6 +91,8 @@ validate_formula <- function(model, data = NULL){
       model$formula <- get_expr(model$formula)
     }
   }
+  
+  invisible(model$formula)
 }
 
 #' Parse the model specification for specials
