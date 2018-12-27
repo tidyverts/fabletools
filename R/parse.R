@@ -130,7 +130,7 @@ parse_model_rhs <- function(model){
       .x %>%
           map(
             function(special){
-              eval_tidy(special, env = model$specials)
+              eval_tidy(special, data = model$data, env = model$specials)
             }
           )
     }) %>%
