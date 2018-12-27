@@ -76,7 +76,9 @@ validate_formula <- function(model, data = NULL){
   }
   else{
     if(possibly(compose(is_formula, eval_tidy), FALSE)(model$formula)){
+      f_env <- get_env(model$formula)
       model$formula <- eval_tidy(model$formula)
+      environment(model$formula) <- f_env
       
       # Add response if missing
       if(is.null(model_lhs(model))){
