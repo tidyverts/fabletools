@@ -51,8 +51,16 @@ tbl_sum.dcmp_ts <- function(x){
 #' @export
 rbind.dcmp_ts <- function(...){
   dots <- dots_list(...)
-  dcmp <- map(dots, function(x) x%@%"dcmp")
-  resp <- map(dots, function(x) x%@%"resp")
+  
+  attrs <- combine_dcmp_attr(dots)
+  
+  as_dable(invoke("rbind", map(dots, as_tsibble)),
+           resp = !!attrs[["response"]], dcmp = !!attrs[["decomposition"]])
+}
+
+combine_dcmp_attr <- function(lst_dcmp){
+  dcmp <- map(lst_dcmp, function(x) x%@%"dcmp")
+  resp <- map(lst_dcmp, function(x) x%@%"resp")
   if(length(resp <- unique(resp)) > 1){
     abort("Decomposition response variables must be the same for all models.")
   }
@@ -60,9 +68,7 @@ rbind.dcmp_ts <- function(...){
     warn("Batch decompositions contain different components. Using decomposition with most variables.")
     vars <- map(dcmp, all.vars)
     
-    dcmp <- dcmp[[which.max(map_dbl(vars, length))]]
+    dcmp <- dcmp[which.max(map_dbl(vars, length))]
   }
-  
-  as_dable(invoke("rbind", map(dots, as_tsibble)),
-           resp = !!resp[[1]], dcmp = !!dcmp)
+  list(response = resp[[1]], decomposition = dcmp[[1]])
 }
