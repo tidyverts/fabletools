@@ -57,9 +57,11 @@ forecast.model <- function(object, new_data, bias_adjust = TRUE, ...){
   }
   transformation(fc[["dist"]]) <- bt
   
-  as_fable(transmute(new_data, 
-                     !!as_string(object$response) := fc[["point"]],
-                     .distribution = fc[["dist"]]),
+  out <- mutate(new_data, 
+                !!as_string(object$response) := fc[["point"]],
+                .distribution = fc[["dist"]])
+  out <- select(out, !!index(out), !!object$response, !!sym(".distribution"), seq_along(out))
+  as_fable(out,
            resp = !!object$response,
            dist = !!sym(".distribution")
   )
