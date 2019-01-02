@@ -33,12 +33,7 @@ simulate.mdl_df <- function(object, new_data = NULL, h = NULL, times = 1, seed =
     if(is.null(h)){
       h <- map_dbl(lst_fits$data, function(.x) get_frequencies("smallest", .x)*2)
     }
-    lst_fits[["new_data"]] <- map2(lst_fits$data, h,
-                                   function(data, h){
-                                     idx <- expr_text(index(data))
-                                     future <- seq(data[[idx]][[NROW(data)]], length.out = h + 1, by = time_unit(interval(data)))[-1]
-                                     build_tsibble(list2(!!idx := future), key = id(), index = idx)
-                                   })
+    lst_fits[["new_data"]] <- map2(lst_fits$data, h, tsibble::new_data)
     new_data <- unnest(lst_fits, new_data, key = key(object))
   }
   
