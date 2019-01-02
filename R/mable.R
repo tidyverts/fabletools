@@ -44,7 +44,7 @@ as_tibble.mdl_df <- function(x, ...){
 #' @importFrom dplyr pull
 #' @export
 tbl_sum.mdl_df <- function(x){
-  out <- c(`A mable` = sprintf("%s model%s", big_mark(NROW(x)), ifelse(NROW(x)==1, "", "s")))
+  out <- c(`A mable` = paste(map_chr(dim(x), big_mark), collapse = " x "))
   
   if(!is_empty(key(x))){
     out <- c(out, c("Key" = sprintf("%s [%i]",

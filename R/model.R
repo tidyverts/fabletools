@@ -49,6 +49,9 @@ new_model <- function(fit, response, transformation){
             class = "model")
 }
 
+type_sum.model <- function(x){
+  model_sum(x[["fit"]])
+}
 
 #' Provide a succinct summary of a model
 #' 

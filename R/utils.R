@@ -84,3 +84,13 @@ assign_func_envs <- function(objs, target_env) {
   }
   objs
 }
+
+# tibble:::big_mark
+big_mark <- function (x, ...) {
+  mark <- if (identical(getOption("OutDec"), ",")) 
+    "."
+  else ","
+  ret <- formatC(x, big.mark = mark, ...)
+  ret[is.na(x)] <- "??"
+  ret
+}
