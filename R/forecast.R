@@ -19,6 +19,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
       h <- map_dbl(lst_fits$data, function(.x) get_frequencies("smallest", .x)*2)
     }
     lst_fits[["new_data"]] <- map2(lst_fits$data, h, tsibble::new_data)
+    lst_fits <- select(lst_fits, !!!key(object), new_data)
     new_data <- unnest(lst_fits, new_data, key = key(object))
   }
   
