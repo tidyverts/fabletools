@@ -29,7 +29,7 @@ tidy.mdl_df <- function(x, ...){
   x <- gather(x, ".model", ".fit", !!!(x%@%"models"))
   keys <- key(x)
   x <- transmute(x, !!!keys, !!sym(".model"), tidied = map(!!sym(".fit"), tidy))
-  unnest(add_class(x, "lst_ts"), !!sym("tidied"), key = keys)
+  unnest(x, !!sym("tidied"))
 }
 
 #' @export
