@@ -46,7 +46,7 @@ validate_fable <- function(fbl){
   }
 }
 
-#' @importFrom tibble tbl_sum
+#' @importFrom tsibble tbl_sum
 #' @export
 tbl_sum.fbl_ts <- function(x){
   out <- NextMethod()

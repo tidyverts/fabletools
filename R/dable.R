@@ -38,7 +38,7 @@ as_tsibble.dcmp_ts <- function(x, ...){
   new_tsibble(x)
 }
 
-#' @importFrom tibble tbl_sum
+#' @importFrom tsibble tbl_sum
 #' @export
 tbl_sum.dcmp_ts <- function(x){
   out <- NextMethod()

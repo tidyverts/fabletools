@@ -104,7 +104,6 @@ validate_formula <- function(model, data = NULL){
 #' 
 #' @param model A model definition
 #' 
-#' @importFrom tibble tibble
 #' @export
 parse_model <- function(model){
   # Parse model
