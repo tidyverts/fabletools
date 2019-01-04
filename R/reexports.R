@@ -13,14 +13,6 @@ tsibble::type_sum
 #' @export
 tibble::obj_sum
 
-#' @importFrom forecast forecast
-#' @export
-forecast::forecast
-
-#' @importFrom forecast getResponse
-#' @export
-forecast::getResponse
-
 #' @importFrom ggplot2 autoplot
 #' @export
 ggplot2::autoplot

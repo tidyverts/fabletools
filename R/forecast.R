@@ -1,3 +1,16 @@
+#' Produce forecasts
+#' 
+#' The forecast function allows you to produce future predictions of a time series
+#' from fitted models.
+#' 
+#' @param object The time series model used to produce the forecasts
+#' @param ... Extra arguments for other methods (such as `new_data` and `h`).
+#' 
+#' @export
+forecast <- function(object, ...){
+  UseMethod("forecast")
+}
+
 #' Forecast a mable
 #' 
 #' @param object A mable containing models used for forecasting.
@@ -9,7 +22,6 @@
 #' @param ... Further arguments to forecast model methods.
 #' 
 #' @export
-#' @importFrom forecast forecast
 #' @importFrom dplyr mutate
 forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
   # Prepare new_data for forecast.model

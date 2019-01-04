@@ -7,8 +7,6 @@
 \alias{as_tsibble}
 \alias{type_sum}
 \alias{obj_sum}
-\alias{forecast}
-\alias{getResponse}
 \alias{autoplot}
 \alias{autolayer}
 \alias{equation}
@@ -24,8 +22,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{forecast}{\code{\link[forecast]{forecast}}, \code{\link[forecast]{getResponse}}}
-
   \item{generics}{\code{\link[generics]{equation}}, \code{\link[generics]{interpolate}}, \code{\link[generics]{components}}, \code{\link[generics]{augment}}, \code{\link[generics]{glance}}, \code{\link[generics]{tidy}}}
 
   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}, \code{\link[ggplot2]{autolayer}}}
