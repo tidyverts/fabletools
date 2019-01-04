@@ -27,7 +27,8 @@ model.tbl_ts <- function(.data, ...){
           expr(model$train(.data = data, formula = model$formula,
                                specials = parsed$specials, !!!model$extra))
         )
-        new_model(fit, parsed$response, parsed$transformation)
+        model$data <- NULL
+        new_model(fit, model, parsed$response, parsed$transformation)
       })
     })
   }
@@ -43,8 +44,8 @@ model.tbl_ts <- function(.data, ...){
     as_mable(keys, syms(names(fits)))
 }
 
-new_model <- function(fit, response, transformation){
-  structure(list(fit = fit, 
+new_model <- function(fit, model, response, transformation){
+  structure(list(fit = fit, model = model,
                  response = response, transformation = transformation),
             class = "model")
 }
