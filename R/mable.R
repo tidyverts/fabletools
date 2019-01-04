@@ -41,7 +41,6 @@ as_tibble.mdl_df <- function(x, ...){
 }
 
 #' @importFrom tibble tbl_sum
-#' @importFrom dplyr pull
 #' @export
 tbl_sum.mdl_df <- function(x){
   out <- c(`A mable` = paste(map_chr(dim(x), big_mark), collapse = " x "))

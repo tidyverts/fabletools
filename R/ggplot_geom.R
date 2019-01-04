@@ -69,7 +69,7 @@ GeomForecast <- ggplot2::ggproto("GeomForecast", ggplot2::Geom,
                                  }, 
                                  
                                  draw_panel = function(data, panel_scales, coord) {
-                                   line_data <- data %>% filter(data$level %in% first(data$level))
+                                   line_data <- data %>% filter(data$level %in% data$level[[1]])
                                    # Intervals have been provided
                                    if(any(!is.na(data[["level"]]))){
                                      # Calculate colour

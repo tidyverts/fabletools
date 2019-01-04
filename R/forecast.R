@@ -22,7 +22,6 @@ forecast <- function(object, ...){
 #' @param ... Further arguments to forecast model methods.
 #' 
 #' @export
-#' @importFrom dplyr mutate
 forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
   # Prepare new_data for forecast.model
   if(is.null(new_data)){

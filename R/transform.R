@@ -1,5 +1,4 @@
 # Lookup table for function inverses
-#' @importFrom dplyr first
 inverse_table <- function() {
   table <- new.env(parent = emptyenv())
   list(
@@ -119,17 +118,17 @@ as_transformation.name <- function(x, ...){
   )
 }
 
-#' @importFrom dplyr last
 as_transformation.call <- function(x, data = NULL){
   transformation_stack <- eval_tidy(expr(traverse_transformation(!!x)), data = data)
   # Iteratively undo transformation stack
-  result <- expr(!!sym("x")) #last(transformation_stack)
+  result <- sym("x")
+  response <- transformation_stack[[length(transformation_stack)]]
   for (i in seq_len(length(transformation_stack) - 1)){
     result <- undo_transformation(transformation_stack[[i]], transformation_stack[[i+1]], result)
   }
-  fmls <- eval_tidy(quo(alist(x = !!get_expr(last(transformation_stack)))))
+  fmls <- eval_tidy(quo(alist(x = !!get_expr(response))))
   new_transformation(
-    new_function(fmls, eval_tidy(expr(substitute(!!x, set_names(list(sym("x")), quo_text(last(transformation_stack))))))),
+    new_function(fmls, eval_tidy(expr(substitute(!!x, set_names(list(sym("x")), quo_text(response)))))),
     inverse = new_function(fmls, result)
   )
 }
