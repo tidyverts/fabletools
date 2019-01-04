@@ -5,9 +5,9 @@
 #' @param dcmp An expression of data columns defining how the variable was decomposed.
 #'
 #' @export
-dable <- function(..., key = id(), index, resp, dcmp, regular = TRUE){
+dable <- function(..., key = id(), index, resp, dcmp, structure = list(), regular = TRUE){
   tsbl <- tsibble(..., key = !!enquo(key), index = !!enexpr(index), regular = regular)
-  as_dable(tsbl, !!enexpr(resp), !!enexpr(dcmp))
+  as_dable(tsbl, !!enexpr(resp), !!enexpr(dcmp), structure = structure)
 }
 
 #' Coerce to a dable object
@@ -26,11 +26,9 @@ as_dable <- function(x, ...){
 #' @inheritParams dable
 #' 
 #' @export
-as_dable.tbl_ts <- function(x, resp, dcmp, ...){
-  fbl <- new_tsibble(x, class = "dcmp_ts",
-                     resp = enexpr(resp),
-                     dcmp = enexpr(dcmp))
-  fbl
+as_dable.tbl_ts <- function(x, resp, dcmp, structure = list(), ...){
+  new_tsibble(x, resp = enexpr(resp), dcmp = enexpr(dcmp),
+              structure = structure, class = "dcmp_ts")
 }
 
 #' @export
