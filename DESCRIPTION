@@ -14,7 +14,6 @@ Imports:
     rlang (>= 0.2.0),
     stats,
     tibble (>= 1.4.1),
-    tidyselect,
     generics
 Suggests:
     colorspace,
