@@ -215,7 +215,8 @@ accuracy.mdl_df <- function(x, measures = list(point_measures, MASE = MASE), ...
       summarise(
         Type = "Training",
         !!!compact(fns)
-      )
+      ) %>% 
+      ungroup()
   )
 }
 
@@ -248,6 +249,7 @@ accuracy.fbl_ts <- function(x, new_data, measures = list(point_measures), ...){
       summarise(
         Type = "Test",
         !!!compact(fns)
-      )
+      ) %>% 
+      ungroup()
   )
 }
