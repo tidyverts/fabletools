@@ -53,12 +53,14 @@ rbind.dcmp_ts <- function(...){
   attrs <- combine_dcmp_attr(dots)
   
   as_dable(invoke("rbind", map(dots, as_tsibble)),
-           resp = !!attrs[["response"]], dcmp = !!attrs[["decomposition"]])
+           resp = !!attrs[["response"]], dcmp = !!attrs[["decomposition"]],
+           structure = attrs[["structure"]])
 }
 
 combine_dcmp_attr <- function(lst_dcmp){
   dcmp <- map(lst_dcmp, function(x) x%@%"dcmp")
   resp <- map(lst_dcmp, function(x) x%@%"resp")
+  strc <- map(lst_dcmp, function(x) x%@%"structure")
   if(length(resp <- unique(resp)) > 1){
     abort("Decomposition response variables must be the same for all models.")
   }
@@ -68,5 +70,7 @@ combine_dcmp_attr <- function(lst_dcmp){
     
     dcmp <- dcmp[which.max(map_dbl(vars, length))]
   }
-  list(response = resp[[1]], decomposition = dcmp[[1]])
+  strc <- unlist(unique(strc), recursive = FALSE)
+  strc <- strc[!duplicated(names(strc))]
+  list(response = resp[[1]], decomposition = dcmp[[1]], structure = strc)
 }
