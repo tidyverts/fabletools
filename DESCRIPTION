@@ -28,7 +28,8 @@ Suggests:
     scales,
     spelling,
     testthat,
-    tsibbledata
+    tsibbledata,
+    lubridate
 Remotes:
     tidyverts/fable,
     tidyverts/tsibble,

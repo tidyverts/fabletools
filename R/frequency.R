@@ -67,7 +67,9 @@ get_frequencies.NULL <- function(period, ...){
 
 #' @export
 get_frequencies.character <- function(period, data, ...){
-  frequencies <- common_periods(data)
+  if(period %in% c("all", "smallest", "largest")){
+    frequencies <- common_periods(data)
+  }
   if(period == "all"){
     return(frequencies)
   }
@@ -78,17 +80,22 @@ get_frequencies.character <- function(period, data, ...){
     return(frequencies[which.max(frequencies)])
   }
   else{
-    out <- frequencies[period]
-    if(any(is.na(out))){
-      bad_freq <- period[which(is.na(out))]
-      warn(sprintf(
-        "Could not find %s for `c(%s)`, possible frequencies for this data are: `c(%s)`.\nUnknown frequencies have been ignored.",
-        ifelse(length(bad_freq)==1, "an appropriate frequency", "appropriate frequencies"),
-        paste0(paste0(paste0('"', bad_freq, '"'), collapse = ", ")),
-        paste0(paste0(paste0('"', names(frequencies), '"'), collapse = ", "))
-        )
-      )
-    }
-    return(out[!is.na(out)])
+    require_package("lubridate")
+    get_frequencies(lubridate::as.period(period), data, ...)
   }
+}
+
+#' @export
+get_frequencies.Period <- function(period, data, ...){
+  require_package("lubridate")
+  
+  interval <- tsibble::interval(data)
+  
+  interval <- with(interval, lubridate::years(year) + 
+    lubridate::period(3*quarter + month, units = "month") + lubridate::weeks(week) +
+    lubridate::days(day) + lubridate::hours(hour) + lubridate::minutes(minute) + 
+    lubridate::seconds(second) + lubridate::milliseconds(millisecond) + 
+    lubridate::microseconds(microsecond) + lubridate::nanoseconds(nanosecond))
+  
+  suppressMessages(period / interval)
 }
