@@ -78,9 +78,9 @@ new_decomposition <- function(defn){
   extra <- set_names(syms(extra), extra)
   new_function(
     fmls,
-    body(function(...){
+    body(function(formula, ...){
       keys <- key(.data)
-      dcmp <- defn$new(!!enquo(!!sym("formula")), !!!extra, ...)
+      dcmp <- defn$new(!!enquo(formula), !!!extra, ...)
       fablelite::validate_formula(dcmp, .data)
       .data <- nest(group_by(.data, !!!keys), .key = "lst_data")
       
