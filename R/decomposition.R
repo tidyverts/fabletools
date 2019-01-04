@@ -58,7 +58,9 @@ decomposition_model <- R6::R6Class("decomposition",
 #' @param .f_args Arguments to be passed to the decomposition function (`.f`)
 #' 
 #' @export
-decomposition <- decomposition_model$new
+decomposition <- function(.f, formula, ..., .f_args){
+  decomposition_model$new(.f, !!enquo(formula), ..., .f_args)
+}
 
 #' @export
 fitted.decomposition_model <- function(object, ...){
