@@ -12,53 +12,54 @@ GeomForecast
 
 geom_forecast(mapping = NULL, data = NULL, stat = "forecast",
   position = "identity", na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE, level = c(80, 95), showgap = TRUE,
-  model = fable::ETS(y), fc.args = list(), ...)
+  inherit.aes = TRUE, level = c(80, 95), model = fable::ETS(y),
+  fc.args = list(), ...)
 
 StatForecast
 }
 \arguments{
-\item{mapping}{Set of aesthetic mappings created by \code{\link{aes}} or
-\code{\link{aes_}}. If specified and \code{inherit.aes = TRUE} (the
+\item{mapping}{Set of aesthetic mappings created by \code{\link[=aes]{aes()}} or
+\code{\link[=aes_]{aes_()}}. If specified and \code{inherit.aes = TRUE} (the
 default), it is combined with the default mapping at the top level of the
 plot. You must supply \code{mapping} if there is no plot mapping.}
 
-\item{data}{The data to be displayed in this layer. There are three options:
+\item{data}{The data to be displayed in this layer. There are three
+options:
 
-If \code{NULL}, the default, the data is inherited from the plot data as
-specified in the call to \code{\link{ggplot}}.
+If \code{NULL}, the default, the data is inherited from the plot
+data as specified in the call to \code{\link[=ggplot]{ggplot()}}.
 
-A \code{data.frame}, or other object, will override the plot data. All
-objects will be fortified to produce a data frame. See \code{\link{fortify}}
-for which variables will be created.
+A \code{data.frame}, or other object, will override the plot
+data. All objects will be fortified to produce a data frame. See
+\code{\link[=fortify]{fortify()}} for which variables will be created.
 
-A \code{function} will be called with a single argument, the plot data. The
-return value must be a \code{data.frame}, and will be used as the layer
-data.}
+A \code{function} will be called with a single argument,
+the plot data. The return value must be a \code{data.frame}, and
+will be used as the layer data.}
 
-\item{stat}{The stat object to use calculate the data.}
+\item{stat}{Use to override the default connection between
+\code{geom_smooth()} and \code{stat_smooth()}.}
 
-\item{position}{Position adjustment, either as a string, or the result of a
-call to a position adjustment function.}
+\item{position}{Position adjustment, either as a string, or the result of
+a call to a position adjustment function.}
 
-\item{na.rm}{If \code{FALSE} (the default), removes missing values with a
-warning.  If \code{TRUE} silently removes missing values.}
+\item{na.rm}{If \code{FALSE}, the default, missing values are removed with
+a warning. If \code{TRUE}, missing values are silently removed.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
-\code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
-never includes, and \code{TRUE} always includes.}
+\code{NA}, the default, includes if any aesthetics are mapped.
+\code{FALSE} never includes, and \code{TRUE} always includes.
+It can also be a named logical vector to finely select the aesthetics to
+display.}
 
-\item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics, rather
-than combining with them. This is most useful for helper functions that
-define both data and aesthetics and shouldn't inherit behaviour from the
-default plot specification, e.g. \code{\link{borders}}.}
+\item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics,
+rather than combining with them. This is most useful for helper functions
+that define both data and aesthetics and shouldn't inherit behaviour from
+the default plot specification, e.g. \code{\link[=borders]{borders()}}.}
 
 \item{level}{A vector of numbers between 0 and 100 which define the confidence
 range to be plotted. If \code{NULL}, confidence intervals will not be plotted,
 giving only the forecast line.}
-
-\item{showgap}{If \code{showgap=FALSE}, the gap between the historical
-observations and the forecasts is removed.}
 
 \item{model}{The time-series model used to produce the forecast. The data
 must be \code{y} (indicating aesthetic \code{y}), and the time index for \code{y} is determined from the
@@ -66,25 +67,18 @@ must be \code{y} (indicating aesthetic \code{y}), and the time index for \code{y
 
 \item{fc.args}{A list of arguments to be used in the \code{\link{forecast}} function}
 
-\item{...}{Additional arguments for \code{\link{forecast.ts}}, other
-arguments are passed on to \code{\link{layer}}. These are often aesthetics,
-used to set an aesthetic to a fixed value, like \code{color = "red"} or
-\code{alpha = .5}. They may also be parameters to the paired geom/stat.}
+\item{...}{Other arguments passed on to \code{\link[=layer]{layer()}}. These are
+often aesthetics, used to set an aesthetic to a fixed value, like
+\code{colour = "red"} or \code{size = 3}. They may also be parameters
+to the paired geom/stat.}
 }
 \value{
 A layer for a ggplot graph.
 }
 \description{
-Generates forecasts from \code{forecast.ts} and adds them to the plot.
-Forecasts can be modified via sending forecast specific arguments above.
+Generates forecasts from the given model and adds them to the plot.
 }
 \details{
-Multivariate forecasting is supported by having each time series on a
-different group.
-
-You can also pass \code{geom_forecast} a \code{forecast} object to add it to
-the plot.
-
 The aesthetics required for the forecasting to work includes forecast
 observations on the y axis, and the \code{time} of the observations on the x
 axis. Refer to the examples below. To automatically set up aesthetics, use

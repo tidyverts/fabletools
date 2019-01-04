@@ -124,64 +124,27 @@ GeomForecast <- ggplot2::ggproto("GeomForecast", ggplot2::Geom,
 )
 
 globalVariables("y")
+
 #' Forecast plot
 #'
-#' Generates forecasts from \code{forecast.ts} and adds them to the plot.
-#' Forecasts can be modified via sending forecast specific arguments above.
-#'
-#' Multivariate forecasting is supported by having each time series on a
-#' different group.
-#'
-#' You can also pass \code{geom_forecast} a \code{forecast} object to add it to
-#' the plot.
+#' Generates forecasts from the given model and adds them to the plot.
 #'
 #' The aesthetics required for the forecasting to work includes forecast
 #' observations on the y axis, and the \code{time} of the observations on the x
 #' axis. Refer to the examples below. To automatically set up aesthetics, use
 #' \code{autoplot}.
 #'
-#' @param mapping Set of aesthetic mappings created by \code{\link{aes}} or
-#' \code{\link{aes_}}. If specified and \code{inherit.aes = TRUE} (the
-#' default), it is combined with the default mapping at the top level of the
-#' plot. You must supply \code{mapping} if there is no plot mapping.
-#' @param data The data to be displayed in this layer. There are three options:
-#'
-#' If \code{NULL}, the default, the data is inherited from the plot data as
-#' specified in the call to \code{\link{ggplot}}.
-#'
-#' A \code{data.frame}, or other object, will override the plot data. All
-#' objects will be fortified to produce a data frame. See \code{\link{fortify}}
-#' for which variables will be created.
-#'
-#' A \code{function} will be called with a single argument, the plot data. The
-#' return value must be a \code{data.frame}, and will be used as the layer
-#' data.
-#' @param stat The stat object to use calculate the data.
-#' @param position Position adjustment, either as a string, or the result of a
-#' call to a position adjustment function.
-#' @param na.rm If \code{FALSE} (the default), removes missing values with a
-#' warning.  If \code{TRUE} silently removes missing values.
-#' @param show.legend logical. Should this layer be included in the legends?
-#' \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
-#' never includes, and \code{TRUE} always includes.
-#' @param inherit.aes If \code{FALSE}, overrides the default aesthetics, rather
-#' than combining with them. This is most useful for helper functions that
-#' define both data and aesthetics and shouldn't inherit behaviour from the
-#' default plot specification, e.g. \code{\link{borders}}.
+#' @inheritParams ggplot2::geom_smooth
 #' @param level A vector of numbers between 0 and 100 which define the confidence 
 #' range to be plotted. If \code{NULL}, confidence intervals will not be plotted, 
 #' giving only the forecast line.
-#' @param showgap If \code{showgap=FALSE}, the gap between the historical
-#' observations and the forecasts is removed.
 #' @param model The time-series model used to produce the forecast. The data
 #' must be \code{y} (indicating aesthetic \code{y}), and the time index for \code{y} is determined from the
 #' \code{x} aesthetic.
 #' @param fc.args A list of arguments to be used in the \code{\link{forecast}} function
-#' @param ... Additional arguments for \code{\link{forecast.ts}}, other
-#' arguments are passed on to \code{\link{layer}}. These are often aesthetics,
-#' used to set an aesthetic to a fixed value, like \code{color = "red"} or
-#' \code{alpha = .5}. They may also be parameters to the paired geom/stat.
+#' 
 #' @return A layer for a ggplot graph.
+#' 
 #' @author Mitchell O'Hara-Wild
 #' @seealso \code{\link{forecast}}, \code{\link[ggplot2]{ggproto}}
 #' @examples
@@ -199,14 +162,14 @@ globalVariables("y")
 #' @export
 geom_forecast <- function(mapping = NULL, data = NULL, stat = "forecast",
                           position = "identity", na.rm = FALSE, show.legend = NA,
-                          inherit.aes = TRUE, level=c(80, 95), showgap=TRUE, 
+                          inherit.aes = TRUE, level=c(80, 95), 
                           model = fable::ETS(y), fc.args = list(), ...) {
   # if (is_tsibble(mapping)) {
   #   data <- data.frame(y = as.numeric(mapping), x = as.numeric(time(mapping)))
   #   mapping <- ggplot2::aes_(y = ~y, x = ~x)
   # }
   if (stat == "forecast") {
-    paramlist <- list(na.rm = na.rm, showgap = showgap, levels = level,
+    paramlist <- list(na.rm = na.rm, levels = level,
                       model = enexpr(model), fc.args = fc.args, ...)
     if (!inherits(mapping, "uneval")) {
       mapping <- ggplot2::aes_()

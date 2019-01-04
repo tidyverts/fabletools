@@ -4,7 +4,7 @@ StatForecast <- ggplot2::ggproto(
   "StatForecast", ggplot2::Stat,
   required_aes = c("x", "y"),
   
-  compute_group = function(data, scales, params, showgap=TRUE, series=NULL,
+  compute_group = function(data, scales, params, series=NULL,
                            model=ETS(y), fc.args = list(), levels = c(80, 95), ...) {
     model <- enexpr(model)
     if(inherits(scales$x, "ScaleContinuousDatetime")){
@@ -31,7 +31,7 @@ StatForecast <- ggplot2::ggproto(
 
     plot_data <- tsibble(x = index, y = data$y, index=x)
 
-    fit <- eval_tidy(quo(plot_data %>% !!model))
+    fit <- eval_tidy(quo(plot_data %>% model(!!model)))
     fcast <- do.call("forecast", append(list(fit), fc.args))
     fcast <- fortify(fcast, level = levels) %>% 
       mutate(x := as.numeric(!!sym("x")))
