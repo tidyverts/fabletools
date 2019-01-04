@@ -61,6 +61,20 @@ custom_error <- function(.f, error){
   }
 }
 
+make_future_data <- function(object, h){
+  lst_fits <- nest(group_by_key(fitted(select(object, !!((object%@%"models")[[1]])))))
+  if(is.null(h)){
+    h <- map_dbl(lst_fits$data, function(.x) get_frequencies("smallest", .x)*2)
+  }
+  if(is.character(h) || inherits(h, "Period")){
+    require_package("lubridate")
+    h <- map_dbl(lst_fits$data, function(.x) get_frequencies(lubridate::as.period(h), .x))
+  }
+  lst_fits[["new_data"]] <- map2(lst_fits$data, h, tsibble::new_data)
+  lst_fits <- select(lst_fits, !!!key(object), new_data)
+  unnest(lst_fits, new_data, key = key(object))
+}
+
 bind_new_data <- function(object, new_data){
   new_data <- new_data %>% 
     group_by(!!!syms(key_vars(object))) %>% 

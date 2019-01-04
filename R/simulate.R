@@ -29,12 +29,7 @@ simulate.mdl_df <- function(object, new_data = NULL, h = NULL, times = 1, seed =
   }
   
   if(is.null(new_data)){
-    lst_fits <- nest(group_by_key(fitted(select(object, !!((object%@%"models")[[1]])))))
-    if(is.null(h)){
-      h <- map_dbl(lst_fits$data, function(.x) get_frequencies("smallest", .x)*2)
-    }
-    lst_fits[["new_data"]] <- map2(lst_fits$data, h, tsibble::new_data)
-    new_data <- unnest(lst_fits, new_data, key = key(object))
+    new_data <- make_future_data(object, h)
   }
   
   if(is.null(new_data[[".rep"]])){
