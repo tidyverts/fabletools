@@ -8,8 +8,6 @@ parse_model(model)
 }
 \arguments{
 \item{model}{A model definition}
-
-\item{data}{A dataset}
 }
 \description{
 Using a list of defined special functions, the user's formula specification and data

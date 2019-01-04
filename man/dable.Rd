@@ -4,7 +4,8 @@
 \alias{dable}
 \title{Create a dable object}
 \usage{
-dable(..., key = id(), index, resp, dcmp, regular = TRUE)
+dable(..., key = id(), index, resp, dcmp, structure = list(),
+  regular = TRUE)
 }
 \arguments{
 \item{...}{A set of name-value pairs. The names of "key" and "index" should
@@ -19,6 +20,9 @@ simply call \code{id()}.}
 \item{resp}{The response variable (given as a bare or unquoted variable).}
 
 \item{dcmp}{An expression of data columns defining how the variable was decomposed.}
+
+\item{structure}{A named list describing the structure of the components
+(such as \code{period}, and \code{base}).}
 
 \item{regular}{Regular time interval (\code{TRUE}) or irregular (\code{FALSE}). The
 interval is determined by the greatest common divisor of index column, if \code{TRUE}.}

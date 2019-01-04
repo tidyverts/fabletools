@@ -7,9 +7,7 @@
 parse_model_lhs(model)
 }
 \arguments{
-\item{model_lhs}{The expression for the lhs of the model (from \code{model_lhs()})}
-
-\item{data}{Data to be used to find the response}
+\item{model}{A model definition}
 }
 \description{
 Parse the RHS of the model formula for transformations

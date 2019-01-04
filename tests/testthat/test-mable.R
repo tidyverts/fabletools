@@ -6,7 +6,7 @@ test_that("Mable classes", {
 })
 
 test_that("Mable print output", {
-  expect_output(print(mbl), "A mable: 1 model")
+  expect_output(print(mbl), "A mable:")
 })
 
 test_that("Mable fitted values", {

@@ -102,7 +102,6 @@ validate_formula <- function(model, data = NULL){
 #' Using a list of defined special functions, the user's formula specification and data
 #' is parsed to extract important modelling components.
 #' 
-#' @param data A dataset
 #' @param model A model definition
 #' 
 #' @importFrom tibble tibble
@@ -118,10 +117,7 @@ parse_model <- function(model){
 
 #' Parse the RHS of the model formula for specials
 #' 
-#' @param model_rhs The expression for the rhs of the model (from `model_rhs()`)
-#' @param data Data provided by the user to evaluate the special functions within
-#' @param specials The environment containing specials (from `new_specials_env()`). 
-#' If specials is NULL, no specials are computed
+#' @inheritParams parse_model
 #' 
 #' @export
 parse_model_rhs <- function(model){
@@ -143,8 +139,7 @@ parse_model_rhs <- function(model){
 
 #' Parse the RHS of the model formula for transformations
 #' 
-#' @param model_lhs The expression for the lhs of the model (from `model_lhs()`)
-#' @param data Data to be used to find the response
+#' @inheritParams parse_model
 #' 
 #' @export
 parse_model_lhs <- function(model){

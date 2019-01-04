@@ -4,14 +4,14 @@
 \alias{decomposition}
 \title{Decomposition modelling}
 \usage{
-decomposition(...)
+decomposition(.f, formula, ..., .f_args)
 }
 \arguments{
-\item{...}{Model definitions used to model the components (such as \code{ETS})}
-
 \item{.f}{The decomposition function (such as \code{STL})}
 
 \item{formula}{The formula used to describe the decomposition}
+
+\item{...}{Model definitions used to model the components (such as \code{ETS})}
 
 \item{.f_args}{Arguments to be passed to the decomposition function (\code{.f})}
 }

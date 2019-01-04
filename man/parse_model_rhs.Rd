@@ -7,12 +7,7 @@
 parse_model_rhs(model)
 }
 \arguments{
-\item{model_rhs}{The expression for the rhs of the model (from \code{model_rhs()})}
-
-\item{data}{Data provided by the user to evaluate the special functions within}
-
-\item{specials}{The environment containing specials (from \code{new_specials_env()}).
-If specials is NULL, no specials are computed}
+\item{model}{A model definition}
 }
 \description{
 Parse the RHS of the model formula for specials

@@ -7,7 +7,7 @@
 \usage{
 as_dable(x, ...)
 
-\method{as_dable}{tbl_ts}(x, resp, dcmp, ...)
+\method{as_dable}{tbl_ts}(x, resp, dcmp, structure = list(), ...)
 }
 \arguments{
 \item{x}{Object to be coerced to a dable (\code{dcmp_ts})}
@@ -17,6 +17,9 @@ as_dable(x, ...)
 \item{resp}{The response variable (given as a bare or unquoted variable).}
 
 \item{dcmp}{An expression of data columns defining how the variable was decomposed.}
+
+\item{structure}{A named list describing the structure of the components
+(such as \code{period}, and \code{base}).}
 }
 \description{
 Coerce to a dable object
