@@ -1,12 +1,11 @@
 globalVariables("self")
 
-train_decomposition <- function(.data, dcmp_fn, dcmp_args, formula,
-                                specials, ...){
+train_decomposition <- function(.data, formula, specials, ...){
   # Extract raw original data
   est <- .data
   .data <- self$data
   
-  dcmp <- do.call(dcmp_fn, list2(.data, formula, !!!dcmp_args))
+  dcmp <- do.call(self$dcmp_fn, list2(.data, formula, !!!self$dcmp_args))
   dcmp_method <- dcmp%@%"dcmp"
   req_vars <- all.vars(dcmp_method)
   
@@ -34,20 +33,20 @@ train_decomposition <- function(.data, dcmp_fn, dcmp_args, formula,
 }
 
 decomposition_model <- R6::R6Class("decomposition",
-                                   inherit = model_definition,
-                                   public = list(
-                                     model = "decomposition",
-                                     train = train_decomposition,
-                                     specials = NULL,
-                                     dcmp_fn = NULL,
-                                     dcmp_args = NULL,
-                                     initialize = function(.f, formula, ..., .f_args){
-                                       self$dcmp_fn <- .f
-                                       self$dcmp_args <- .f_args
-                                       self$formula <- enquo(formula)
-                                       self$extra <- list2(...)
-                                     }
-                                   )
+  inherit = model_definition,
+  public = list(
+    model = "decomposition",
+    train = train_decomposition,
+    specials = NULL,
+    dcmp_fn = NULL,
+    dcmp_args = NULL,
+    initialize = function(.f, formula, ..., .f_args = list()){
+      self$dcmp_fn <- .f
+      self$dcmp_args <- .f_args
+      self$formula <- enquo(formula)
+      self$extra <- list2(...)
+    }
+  )
 )
 
 #' Decomposition modelling
@@ -58,8 +57,8 @@ decomposition_model <- R6::R6Class("decomposition",
 #' @param .f_args Arguments to be passed to the decomposition function (`.f`)
 #' 
 #' @export
-decomposition <- function(.f, formula, ..., .f_args){
-  decomposition_model$new(.f, !!enquo(formula), ..., .f_args)
+decomposition <- function(.f, formula, ..., .f_args = list()){
+  decomposition_model$new(.f, !!enquo(formula), ..., .f_args = .f_args)
 }
 
 #' @export
