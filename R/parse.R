@@ -71,6 +71,10 @@ parse_response <- function(model_lhs){
 #' @export
 validate_formula <- function(model, data = NULL){
   # Clean inputs
+  if(!is_quosure(model$formula)){
+    model$formula <- new_quosure(model$formula)
+  }
+  
   if(quo_is_missing(model$formula)){
     model$formula <- guess_response(data)
   }
