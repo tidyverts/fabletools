@@ -30,6 +30,5 @@ my_scaled_logit <- new_transformation(scaled_logit, inv_scaled_logit)
 
 t_vals <- my_scaled_logit(1:10, 0, 100)
 t_vals
-invert_transformation(my_scaled_logit)(t_vals, 0, 100)
 
 }
