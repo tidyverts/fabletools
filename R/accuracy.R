@@ -190,7 +190,7 @@ build_accuracy_calls <- function(measures, available_args){
 #' @export
 accuracy.mdl_df <- function(x, measures = list(point_measures, MASE = MASE), ...){
   gather(x, ".model", "fit", !!!(x%@%"models")) %>% 
-    unnest(fit = map(!!sym("fit"), accuracy))
+    unnest(fit = map(!!sym("fit"), accuracy, measures, ...))
 }
 
 #' @export
