@@ -189,11 +189,17 @@ build_accuracy_calls <- function(measures, available_args){
 
 #' @export
 accuracy.mdl_df <- function(x, measures = list(point_measures, MASE = MASE), ...){
+  gather(x, ".model", "fit", !!!(x%@%"models")) %>% 
+    unnest(fit = map(fit, accuracy))
+}
+
+#' @export
+accuracy.model <- function(x, measures = list(point_measures, MASE = MASE), ...){
   dots <- dots_list(...)
   
   aug <- augment(x) %>% 
     rename(
-      ".actual" := !!x[[as_string((x%@%"models")[[1]])]][[1]][["response"]],
+      ".actual" := !!x[["response"]],
       ".fc" = ".fitted"
     ) %>% 
     mutate(
@@ -209,14 +215,13 @@ accuracy.mdl_df <- function(x, measures = list(point_measures, MASE = MASE), ...
   fns <- build_accuracy_calls(measures, c(names(dots), names(aug)))
   
   with(dots,
-    aug %>% 
-      as_tibble %>%
-      group_by(!!!key(aug)) %>% 
-      summarise(
-        Type = "Training",
-        !!!compact(fns)
-      ) %>% 
-      ungroup()
+       aug %>% 
+         as_tibble %>%
+         summarise(
+           Type = "Training",
+           !!!compact(fns)
+         ) %>% 
+         ungroup()
   )
 }
 
