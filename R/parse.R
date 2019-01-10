@@ -133,7 +133,8 @@ parse_model_rhs <- function(model){
       .x %>%
           map(
             function(special){
-              eval_tidy(special, data = model$data, env = model$specials)
+              eval_tidy(special, data = model$data,
+                        env = new_environment(as.list(model$specials), model$env))
             }
           )
     }) %>%
@@ -202,7 +203,7 @@ parse_model_lhs <- function(model){
     .g = function(x){
       if(all(names(x) != "response") && !is.null(attr(x, "call"))){
         # parent_len <- length(eval(attr(x, "call") %||% x[[1]], envir = model$data))
-        len <- map_dbl(x, function(y) length(eval(attr(y, "call") %||% y[[1]], envir = model$data)))
+        len <- map_dbl(x, function(y) length(eval(attr(y, "call") %||% y[[1]], envir = model$data, enclos = model$env)))
         if(sum(len == max(len)) == 1){
           names(x)[which.max(len)] <- "response"
         }
@@ -231,7 +232,7 @@ parse_model_lhs <- function(model){
                .h = function(x) {if(x == response) sym(".x") else x},
                base = function(x) is_syntactic_literal(x) || is_symbol(x) || x == response
       )
-      new_function(args = alist(.x = ), x, env = global_env())
+      new_function(args = alist(.x = ), x, env = model$env)
     })
   }
   

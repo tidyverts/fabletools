@@ -29,7 +29,8 @@ model.tbl_ts <- function(.data, ...){
           parsed$response <- parsed$response[[1]]
           parsed$transformation <- parsed$transformation[[1]]
         }
-        data <- transmute(data, !!!parsed$expressions)
+        data <- eval_tidy(expr(transmute(data, !!!parsed$expressions)),
+                          env = env_bury(model$env, data = data))
         fit <- eval_tidy(
           expr(model$train(.data = data, formula = model$formula,
                                specials = parsed$specials, !!!model$extra))
