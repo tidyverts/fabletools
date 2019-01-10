@@ -1,6 +1,6 @@
 context("test-parser.R")
 
-test_that("Model parser", {
+test_that("Model parsing variety", {
   # Parse with no rhs and no specials
   parse1 <- model(as_tsibble(USAccDeaths), no_specials(value))
   expect_equal(parse1[[1]][[1]]$fit, list())
@@ -49,4 +49,51 @@ test_that("Model parser", {
   parse_log3 <- model(as_tsibble(USAccDeaths), specials(log(value) ~ value + log(value) + rnorm(0,1) + log5(value)))
   expect_equal(parse_log1[[1]][[1]]$transformation, parse_log3[[1]][[1]]$transformation)
   expect_equal(parse_log1[[1]][[1]]$response, parse_log3[[1]][[1]]$response)
+})
+
+
+test_that("Model parsing scope", {
+  mdl <- eval({
+    model(as_tsibble(USAccDeaths), no_specials(value))
+  }, envir = new_environment(list(no_specials = no_specials)))
+  expect_equal(mdl[[1]][[1]]$response, sym("value"))
+  
+  expect_error(
+    eval({
+      model(as_tsibble(USAccDeaths), no_specials(nothing))
+    }, envir = new_environment(list(no_specials = no_specials))),
+    "nothing"
+  )
+  
+  # Response variable from env
+  mdl <- eval({
+    something <- 1:72
+    model(as_tsibble(USAccDeaths), no_specials(something))
+  }, envir = new_environment(list(no_specials = no_specials)))
+  
+  expect_equal(mdl[[1]][[1]]$response, sym("something"))
+  
+  # Transformation from scalar
+  mdl <- eval({
+    scale <- pi
+    model(as_tsibble(USAccDeaths), no_specials(value/pi))
+  }, envir = new_environment(list(no_specials = no_specials)))
+  
+  expect_equal(mdl[[1]][[1]]$response, sym("value"))
+  
+  # Specials missing values
+  expect_error(
+    eval({
+      model(as_tsibble(USAccDeaths), specials(value ~ log5(trend)))
+    }, envir = new_environment(list(specials = specials))),
+    "trend"
+  )
+  
+  # Specials with data from scope
+  mdl <- eval({
+    trend <- 1:72
+    model(as_tsibble(USAccDeaths), specials(value ~ log5(trend)))
+  }, envir = new_environment(list(specials = specials)))
+  
+  expect_equal(mdl[[1]][[1]]$fit[[1]][[1]], log(1:72, 5))
 })
