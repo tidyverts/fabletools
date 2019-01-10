@@ -183,19 +183,21 @@ parse_model_lhs <- function(model){
   traversed_lhs <- lapply(traversed_lhs, traverse,
     .f = function(x, y){
       # Capture parent expression of base case
+      cl <- NULL
       if(length(x) == 0){
-        x <- y[1]
-      }
-      if(is.null(attr(y, "call"))){
-        if(is_resp(x[[1]])){
-          x[[1]] <- x[[1]][[2]]
-        }
-        cl <- NULL
+        x <- list(attr(y, "call") %||% y[[1]])
       }
       else{
-        cl <- attr(y,"call")
-        if(any(names(y) == "response")){
-          cl[[which(names(y) == "response")+1]] <- x[[1]][[length(x[[1]])]]
+        if(is.null(attr(y, "call"))){
+          if(is_resp(x[[1]])){
+            x[[1]] <- x[[1]][[2]]
+          }
+        }
+        else{
+          cl <- attr(y,"call")
+          if(any(names(y) == "response")){
+            cl[[which(names(y) == "response")+1]] <- x[[1]][[length(x[[1]])]]
+          }
         }
       }
       c(x[[1]], cl)
