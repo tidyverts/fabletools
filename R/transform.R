@@ -75,7 +75,6 @@ traverse_transformation <- function(transformation){
 #' 
 #' t_vals <- my_scaled_logit(1:10, 0, 100)
 #' t_vals
-#' invert_transformation(my_scaled_logit)(t_vals, 0, 100)
 #' 
 #' @export
 new_transformation <- function(transformation, inverse){
