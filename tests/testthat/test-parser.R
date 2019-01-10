@@ -97,3 +97,38 @@ test_that("Model parsing scope", {
   
   expect_equal(mdl[[1]][[1]]$fit[[1]][[1]], log(1:72, 5))
 })
+
+
+test_that("Model response identification", {
+  dt <- as_tsibble(list(index = Sys.Date() - 1:10, GDP = rnorm(10), CPI = rnorm(10)))
+  
+  # Untransformed response
+  mdl <- model(dt, no_specials(GDP))
+  expect_equal(mdl[[1]][[1]]$response, expr(GDP))
+  mdl <- model(dt, no_specials(resp(GDP)))
+  expect_equal(mdl[[1]][[1]]$response, expr(GDP))
+  
+  # Scalar transformed response
+  mdl <- model(dt, no_specials(GDP/pi))
+  expect_equal(mdl[[1]][[1]]$response, expr(GDP))
+  mdl <- model(dt, no_specials(resp(GDP)/pi))
+  expect_equal(mdl[[1]][[1]]$response, expr(GDP))
+  
+  # Transformation with a tie
+  mdl <- model(dt, no_specials(GDP/CPI))
+  expect_equal(mdl[[1]][[1]]$response, expr(GDP/CPI))
+  mdl <- model(dt, no_specials(resp(GDP)/CPI))
+  expect_equal(mdl[[1]][[1]]$response, expr(GDP))
+  expect_equal(mdl[[1]][[1]]$transformation, 
+               new_transformation(
+                 function(.x) .x/CPI,
+                 function(.x) CPI * .x
+               ))
+  mdl <- model(dt, no_specials(GDP/resp(CPI)))
+  expect_equal(mdl[[1]][[1]]$response, expr(CPI))
+  expect_equal(mdl[[1]][[1]]$transformation, 
+               new_transformation(
+                 function(.x) GDP/.x,
+                 function(.x) GDP/.x
+               ))
+})
