@@ -84,15 +84,15 @@ test_that("Model parsing scope", {
   # Specials missing values
   expect_error(
     eval({
-      model(as_tsibble(USAccDeaths), specials(value ~ log5(trend)))
+      model(as_tsibble(USAccDeaths), specials(value ~ log5(mytrend)))
     }, envir = new_environment(list(specials = specials))),
-    "trend"
+    "mytrend"
   )
   
   # Specials with data from scope
   mdl <- eval({
-    trend <- 1:72
-    model(as_tsibble(USAccDeaths), specials(value ~ log5(trend)))
+    mytrend <- 1:72
+    model(as_tsibble(USAccDeaths), specials(value ~ log5(mytrend)))
   }, envir = new_environment(list(specials = specials)))
   
   expect_equal(mdl[[1]][[1]]$fit[[1]][[1]], log(1:72, 5))
