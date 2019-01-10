@@ -4,7 +4,7 @@
 \alias{decomposition}
 \title{Decomposition modelling}
 \usage{
-decomposition(.f, formula, ..., .f_args)
+decomposition(.f, formula, ..., .f_args = list())
 }
 \arguments{
 \item{.f}{The decomposition function (such as \code{STL})}

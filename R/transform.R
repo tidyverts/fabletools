@@ -82,57 +82,6 @@ new_transformation <- function(transformation, inverse){
   structure(transformation, class = "transformation", inverse = inverse)
 }
 
-#' Extract a transformation from an object
-#' 
-#' @param x An object containing a transformation (such as a `fable_model`)
-#' @param ... Additional arguments passed on to other methods
-#' 
-#' @export
-transformation <- function(x, ...){
-  UseMethod("transformation")
-}
-
-#' @export
-transformation.default <- function(x, ...){
-  as_transformation(x, ...)
-}
-
-as_transformation <- function(x, ...){
-  UseMethod("as_transformation")
-}
-
-as_transformation.default <- function(x, ...){
-  x <- call_args(match.call())$x
-  as_transformation(x, ...)
-}
-
-as_transformation.transformation <- function(x, ...){
-  x
-}
-
-as_transformation.name <- function(x, ...){
-  ident <- `formals<-`(identity, value = list(x = enexpr(x)))
-  new_transformation(
-    ident,
-    ident
-  )
-}
-
-as_transformation.call <- function(x, data = NULL){
-  transformation_stack <- eval_tidy(expr(traverse_transformation(!!x)), data = data)
-  # Iteratively undo transformation stack
-  result <- sym("x")
-  response <- transformation_stack[[length(transformation_stack)]]
-  for (i in seq_len(length(transformation_stack) - 1)){
-    result <- undo_transformation(transformation_stack[[i]], transformation_stack[[i+1]], result)
-  }
-  fmls <- eval_tidy(quo(alist(x = !!get_expr(response))))
-  new_transformation(
-    new_function(fmls, eval_tidy(expr(substitute(!!x, set_names(list(sym("x")), quo_text(response)))))),
-    inverse = new_function(fmls, result)
-  )
-}
-
 #' Bias adjust back-transformation functions
 #' 
 #' To produce forecast means (instead of forecast medians) it is necessary to adjust the back-transformation function relative to the forecast variance.
@@ -189,11 +138,6 @@ invert_transformation <- function(x, ...){
 #' @export
 invert_transformation.transformation <- function(x, ...){
   new_transformation(x%@%"inverse", `attributes<-`(x, NULL))
-}
-
-#' @export
-invert_transformation.call <- function(x, data, ...){
-  x %>% as_transformation %>% invert_transformation
 }
 
 inverse_table <- inverse_table()

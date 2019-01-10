@@ -22,7 +22,14 @@ model.tbl_ts <- function(.data, ...){
       map(lst_data, function(data){
         model$data <- data
         parsed <- parse_model(model)
-        data <- transmute(data, !!model_lhs(parsed$model))
+        if(length(parsed$response) > 1){
+          abort("Multivariate modelling is not yet supported")
+        }
+        else{
+          parsed$response <- parsed$response[[1]]
+          parsed$transformation <- parsed$transformation[[1]]
+        }
+        data <- transmute(data, !!!parsed$expressions)
         fit <- eval_tidy(
           expr(model$train(.data = data, formula = model$formula,
                                specials = parsed$specials, !!!model$extra))
