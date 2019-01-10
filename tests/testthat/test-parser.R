@@ -33,9 +33,9 @@ test_that("Model parser", {
   # Parse lhs transformation with no rhs
   parse_log1 <- model(as_tsibble(USAccDeaths), specials(log(value)))
   log_trans <- new_transformation(
-      function(x = value) log(x),
-      function(x = value) exp(x)
-    )
+    function(.x) log(.x),
+    function(.x) exp(.x)
+  )
   expect_equal(parse_log1[[1]][[1]]$transformation, log_trans)
   expect_equal(parse_log1[[1]][[1]]$response, as.name("value"))
   
