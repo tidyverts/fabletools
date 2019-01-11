@@ -55,15 +55,19 @@ autoplot.mable <- function(object, ...){
 #' @importFrom ggplot2 fortify
 #' @export
 fortify.fbl_ts <- function(object, level = c(80, 95)){
-  object %>%
+  object <- object %>%
     mutate(!!!set_names(map(level, function(.x) expr(hilo(!!(object%@%"dist"), !!.x))), level)) %>%
-    select(!!expr(-!!(object%@%"dist"))) %>% 
-    gather(level, hilo, !!!syms(as.character(level))) %>%
-    mutate(hilo = add_class(hilo, "hilo"),
-           level = level(hilo),
-           lower = lower(hilo),
-           upper = upper(hilo)) %>%
-    select(!!expr(-!!sym("hilo")))
+    select(!!expr(-!!(object%@%"dist")))
+  if(!is.null(level)){
+    object <- object %>% 
+      gather(level, hilo, !!!syms(as.character(level))) %>%
+      mutate(hilo = add_class(hilo, "hilo"),
+             level = level(hilo),
+             lower = lower(hilo),
+             upper = upper(hilo)) %>%
+      select(!!expr(-!!sym("hilo")))
+  }
+  object
 }
 
 #' @export
