@@ -45,9 +45,9 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
 #' @export
 forecast.model <- function(object, new_data, bias_adjust = TRUE, ...){
   # Compute specials with new_data
-  object$model$data <- new_data
+  object$model$add_data(new_data)
   specials <- parse_model_rhs(object$model)$specials
-  object$model$data <- NULL
+  object$model$remove_data()
   
   # Compute forecasts
   fc <- forecast(object$fit, new_data, specials = specials, ...)

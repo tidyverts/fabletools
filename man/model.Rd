@@ -2,7 +2,7 @@
 % Please edit documentation in R/model.R
 \name{model}
 \alias{model}
-\title{Estimate models}
+\title{Estimate multiple models}
 \usage{
 model(.data, ...)
 }
@@ -12,5 +12,5 @@ model(.data, ...)
 \item{...}{Definitions for the models to be used}
 }
 \description{
-Estimate models
+Estimate multiple models
 }

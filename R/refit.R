@@ -26,9 +26,9 @@ refit.mdl_df <- function(object, new_data, ...){
 #' @export
 refit.model <- function(object, new_data, ...){
   # Compute specials with new_data
-  object$model$data <- new_data
+  object$model$add_data(new_data)
   specials <- parse_model_rhs(object$model)$specials
-  object$model$data <- NULL
+  object$model$remove_data()
   
   refit(object[["fit"]], new_data, specials = specials, ...)
 }

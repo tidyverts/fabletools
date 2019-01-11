@@ -1,4 +1,4 @@
-#' Estimate models
+#' Estimate multiple models
 #' 
 #' @param .data A data structure suitable for the models (such as a `tsibble`)
 #' @param ... Definitions for the models to be used
@@ -18,26 +18,7 @@ model.tbl_ts <- function(.data, ...){
   
   eval_models <- function(models, lst_data){
     map(models, function(model){
-      validate_formula(model, lst_data[[1]])
-      map(lst_data, function(data){
-        model$data <- data
-        parsed <- parse_model(model)
-        if(length(parsed$response) > 1){
-          abort("Multivariate modelling is not yet supported")
-        }
-        else{
-          parsed$response <- parsed$response[[1]]
-          parsed$transformation <- parsed$transformation[[1]]
-        }
-        data <- eval_tidy(expr(transmute(data, !!!parsed$expressions)),
-                          env = env_bury(model$env, data = data, transmute = transmute))
-        fit <- eval_tidy(
-          expr(model$train(.data = data, formula = model$formula,
-                               specials = parsed$specials, !!!model$extra))
-        )
-        model$data <- NULL
-        new_model(fit, model, parsed$response, parsed$transformation)
-      })
+      map(lst_data, estimate, model)
     })
   }
   
