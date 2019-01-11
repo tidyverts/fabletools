@@ -53,6 +53,12 @@ test_that("Model parsing variety", {
 
 
 test_that("Model parsing scope", {
+  # Test scoping without provided formula
+  mdl <- eval({
+    model(as_tsibble(USAccDeaths), no_specials())
+  }, envir = new_environment(list(no_specials = no_specials)))
+  expect_equal(mdl[[1]][[1]]$response, sym("value"))
+  
   mdl <- eval({
     model(as_tsibble(USAccDeaths), no_specials(value))
   }, envir = new_environment(list(no_specials = no_specials)))
