@@ -16,7 +16,17 @@ simulate <- function(object, ...){
 }
 
 #' @export
-simulate.mdl_df <- function(object, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
+simulate.mdl_df <- function(object, ...){
+  keys <- c(key(object), sym(".model"))
+  mdls <- object%@%"models"
+  object <- gather(object, ".model", ".fit", !!!mdls)
+  
+  object$.sim <- map(object[[".fit"]], simulate, ...)
+  unnest(add_class(object, "lst_ts"), !!sym(".sim"), key = keys)
+}
+
+#' @export
+simulate.model <- function(object, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
     stats::runif(1)
   if (is.null(seed)) 
@@ -40,16 +50,5 @@ simulate.mdl_df <- function(object, new_data = NULL, h = NULL, times = 1, seed =
       invoke("rbind", .)
   }
   
-  keys <- c(key(object), sym(".model"))
-  mdls <- object%@%"models"
-  object <- bind_new_data(object, new_data)
-  object <- gather(object, ".model", ".fit", !!!mdls)
-  
-  object$.sim <- map2(object[[".fit"]], object[["new_data"]], simulate, ...)
-  unnest(add_class(object, "lst_ts"), !!sym(".sim"), key = keys)
-}
-
-#' @export
-simulate.model <- function(object, ...){
-  simulate(object[["fit"]], ...)
+  simulate(object[["fit"]], new_data = new_data, ...)
 }
