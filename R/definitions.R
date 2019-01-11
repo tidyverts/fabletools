@@ -12,13 +12,17 @@ model_definition <- R6::R6Class("model",
     formula = NULL,
     extra = NULL,
     env = global_env(),
+    check = function(.data){
+    },
+    prepare = function(...){
+    },
     initialize = function(formula, ...){
-      self$formula <- enquo(formula)
-      self$env <- caller_env(n = 2)
-      
       if(possibly(compose(is.data.frame, eval_tidy), FALSE)(self$formula)){
         abort("The API for fable models has changed. Read more here: https://github.com/tidyverts/fable/issues/77")
       }
+      
+      self$formula <- enquo(formula)
+      self$env <- caller_env(n = 2)
       
       # Set `self` and `super` for special functions
       self$specials <- structure(as_environment(
@@ -26,12 +30,21 @@ model_definition <- R6::R6Class("model",
         parent = caller_env(2)
       ), required_specials = self$specials%@%"required_specials")
       
+      self$prepare(formula, ...)
+      
       self$extra <- list2(...)
+    },
+    data = NULL,
+    add_data = function(.data){
+      self$check(.data)
+      self$data <- .data
+    },
+    remove_data = function(){
+      self$data <- NULL
     },
     train = function(...){
       abort("This model has not defined a training method.")
     },
-    data = NULL,
     print = function(...){
       cat("<A model definition>\n", sep = "")
     }
