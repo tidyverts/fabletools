@@ -41,9 +41,10 @@ decomposition_model <- R6::R6Class("decomposition",
     dcmp_fn = NULL,
     dcmp_args = NULL,
     initialize = function(.f, formula, ..., .f_args = list()){
-      self$dcmp_fn <- .f
-      self$dcmp_args <- .f_args
       self$formula <- enquo(formula)
+      self$dcmp_fn <- .f
+      self$env <- caller_env(n = 2)
+      self$dcmp_args <- .f_args
       self$extra <- list2(...)
     }
   )

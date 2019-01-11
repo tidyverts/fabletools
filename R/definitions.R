@@ -14,7 +14,7 @@ model_definition <- R6::R6Class("model",
     env = global_env(),
     initialize = function(formula, ...){
       self$formula <- enquo(formula)
-      self$env <- get_env(self$formula)
+      self$env <- caller_env(n = 2)
       
       if(possibly(compose(is.data.frame, eval_tidy), FALSE)(self$formula)){
         abort("The API for fable models has changed. Read more here: https://github.com/tidyverts/fable/issues/77")
