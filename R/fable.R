@@ -34,12 +34,12 @@ as_fable.tbl_ts <- function(x, resp, dist, ...){
 validate_fable <- function(fbl){
   stopifnot(inherits(fbl, "fbl_ts"))
   if (!(as_string(fbl%@%"response") %in% names(fbl))){
-    abort("Could not find response variable `%s` in the fable.",
-          as_string(fbl%@%"response"))
+    abort(sprintf("Could not find response variable `%s` in the fable.",
+          as_string(fbl%@%"response")))
   }
   if (!(as_string(fbl%@%"dist") %in% names(fbl))){
-    abort("Could not find distribution variable `%s` in the fable.",
-          as_string(fbl%@%"dist"))
+    abort(sprintf("Could not find distribution variable `%s` in the fable.",
+          as_string(fbl%@%"dist")))
   }
   if (!inherits(fbl[[expr_text(fbl%@%"dist")]], "fcdist")){
     abort('Distribution variable must be of class "fcdist"')
@@ -52,4 +52,14 @@ tbl_sum.fbl_ts <- function(x){
   out <- NextMethod()
   names(out)[1] <- "A fable"
   out
+}
+
+#' @export
+select.fbl_ts <- function (.data, ...){
+  as_fable(NextMethod(), !!(.data%@%"response"), !!(.data%@%"dist"))
+}
+
+#' @export
+filter.fbl_ts <- function (.data, ...){
+  as_fable(NextMethod(), !!(.data%@%"response"), !!(.data%@%"dist"))
 }

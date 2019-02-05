@@ -79,6 +79,14 @@ select.mdl_df <- function (.data, ...){
 }
 
 #' @export
+filter.mdl_df <- function (.data, ...){
+  key <- key(.data)
+  mdls <- .data%@%"models"
+  .data <- filter(as_tibble(.data), ...)
+  as_mable(.data, key = key, models = mdls)
+}
+
+#' @export
 key.mdl_df <- function(x){
   x%@%"key"
 }
