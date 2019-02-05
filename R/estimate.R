@@ -20,7 +20,7 @@ estimate.tbl_ts <- function(.data, .model){
     parsed$response <- parsed$response[[1]]
     parsed$transformation <- parsed$transformation[[1]]
   }
-  .data <- eval_tidy(expr(transmute(data, !!!parsed$expressions)),
+  .data <- eval_tidy(expr(transmute(!!sym("data"), !!!parsed$expressions)),
                     env = env_bury(.model$env, data = .data, transmute = transmute))
   fit <- eval_tidy(
     expr(.model$train(.data = .data, formula = .model$formula,
