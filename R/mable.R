@@ -30,7 +30,15 @@ as_mable <- function(x, ...){
 as_mable.tbl_df <- function(x, key = id(), models = id(), ...){
   add_mdl_lst <- map(models, function(model) expr(add_class(!!model, "lst_mdl")))
   x <- mutate(x, !!!set_names(add_mdl_lst, map_chr(models, as_string)))
-  tibble::new_tibble(x, key = key, models = models, subclass = "mdl_df")
+  
+  if (is.data.frame(key)) {
+    key_data <- key
+  }
+  else{
+    key_data <- group_data(group_by(x, !!!unname(key)))
+  }
+  
+  tibble::new_tibble(x, key = key_data, models = models, subclass = "mdl_df")
 }
 
 #' @export
@@ -87,20 +95,17 @@ filter.mdl_df <- function (.data, ...){
 }
 
 #' @export
-key.mdl_df <- function(x){
+key_data.mdl_df <- function(x){
   x%@%"key"
 }
 
 #' @export
 key_vars.mdl_df <- function(x){
-  map_chr(key(x), expr_text)
+  keys <- key_data(x)
+  head(names(keys), -1L)
 }
 
 #' @export
-n_keys.mdl_df <- function(x){
-  key <- key_vars(x)
-  if (is_empty(key)) {
-    return(1L)
-  }
-  NROW(distinct(ungroup(as_tibble(x)), !!!syms(key)))
+key.mdl_df <- function(x){
+  syms(key_vars(x))
 }

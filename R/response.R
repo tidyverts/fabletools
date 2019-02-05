@@ -12,7 +12,7 @@ response <- function(object, ...){
 response.mdl_df <- function(object, ...){
   out <- gather(object, ".model", ".fit", !!!(object%@%"models"))
   keys <- key(out)
-  out <- transmute(out,
+  out <- transmute(as_tibble(out),
                    !!!keys,
                    !!sym(".model"),
                    response = map(!!sym(".fit"), response)
