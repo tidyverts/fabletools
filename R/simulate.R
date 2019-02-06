@@ -25,7 +25,7 @@ simulate.mdl_df <- function(object, new_data = NULL, ...){
   object <- gather(object, ".model", ".fit", !!!mdls)
   
   # Evaluate simulations
-  object$.sim <- map2(object[[".fit"]], possibly(`$`, rep(list(NULL), NROW(object)))(object, new_data), simulate, ...)
+  object$.sim <- map2(object[[".fit"]], possibly(`[[`, rep(list(NULL), NROW(object)))(object, "new_data"), simulate, ...)
   unnest(add_class(object, "lst_ts"), !!sym(".sim"), key = keys)
 }
 
