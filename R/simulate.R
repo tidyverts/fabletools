@@ -16,12 +16,16 @@ simulate <- function(object, ...){
 }
 
 #' @export
-simulate.mdl_df <- function(object, ...){
+simulate.mdl_df <- function(object, new_data = NULL, ...){
   keys <- c(key(object), sym(".model"))
   mdls <- object%@%"models"
+  if(!is.null(new_data)){
+    object <- bind_new_data(object, new_data)
+  }
   object <- gather(object, ".model", ".fit", !!!mdls)
   
-  object$.sim <- map(object[[".fit"]], simulate, ...)
+  # Evaluate simulations
+  object$.sim <- map2(object[[".fit"]], possibly(`$`, rep(list(NULL), NROW(object)))(object, new_data), simulate, ...)
   unnest(add_class(object, "lst_ts"), !!sym(".sim"), key = keys)
 }
 
@@ -39,7 +43,7 @@ simulate.model <- function(object, new_data = NULL, h = NULL, times = 1, seed = 
   }
   
   if(is.null(new_data)){
-    new_data <- make_future_data(object, h)
+    new_data <- make_future_data(object$index, h)
   }
   
   if(is.null(new_data[[".rep"]])){

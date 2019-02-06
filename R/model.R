@@ -33,8 +33,8 @@ model.tbl_ts <- function(.data, ...){
     as_mable(keys, syms(names(fits)))
 }
 
-new_model <- function(fit, model, response, transformation){
-  structure(list(fit = fit, model = model,
+new_model <- function(fit, model, index, response, transformation){
+  structure(list(fit = fit, model = model, index = index,
                  response = response, transformation = transformation),
             class = "model")
 }

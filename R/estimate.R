@@ -27,5 +27,5 @@ estimate.tbl_ts <- function(.data, .model){
                      specials = parsed$specials, !!!.model$extra))
   )
   .model$remove_data()
-  new_model(fit, .model, parsed$response, parsed$transformation)
+  new_model(fit, .model, select(.data, !!index(.data)), parsed$response, parsed$transformation)
 }

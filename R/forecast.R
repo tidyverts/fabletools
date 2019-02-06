@@ -22,19 +22,18 @@ forecast <- function(object, ...){
 #' @param ... Further arguments to forecast model methods.
 #' 
 #' @export
-forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
-  # Prepare new_data for forecast.model
-  if(is.null(new_data)){
-    new_data <- make_future_data(object, h)
-  }
-  
+forecast.mdl_df <- function(object, new_data = NULL, bias_adjust = TRUE, ...){
   keys <- c(key(object), sym(".model"))
   mdls <- object%@%"models"
-  object <- bind_new_data(object, new_data)
+  if(!is.null(new_data)){
+    object <- bind_new_data(object, new_data)
+  }
   object <- gather(object, ".model", ".fit", !!!mdls)
   
   # Evaluate forecasts
-  fc <- map2(object$.fit, object$new_data, forecast, bias_adjust = bias_adjust, ...)
+  fc <- map2(object$.fit,
+             possibly(`$`, rep(list(NULL), NROW(object)))(object, new_data),
+             forecast, bias_adjust = bias_adjust, ...)
   
   # Construct fable
   out <- suppressWarnings(unnest(add_class(object, "lst_ts"), fc, key = keys))
@@ -43,7 +42,11 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
 }
 
 #' @export
-forecast.model <- function(object, new_data, bias_adjust = TRUE, ...){
+forecast.model <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
+  if(is.null(new_data)){
+    new_data <- make_future_data(object$index, h)
+  }
+  
   # Compute specials with new_data
   object$model$add_data(new_data)
   specials <- parse_model_rhs(object$model)$specials

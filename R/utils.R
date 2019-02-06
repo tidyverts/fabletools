@@ -61,18 +61,22 @@ custom_error <- function(.f, error){
   }
 }
 
-make_future_data <- function(object, h){
-  lst_fits <- nest(group_by_key(fitted(select(object, !!((object%@%"models")[[1]])))))
+make_future_data <- function(.data, h = NULL){
   if(is.null(h)){
-    h <- map_dbl(lst_fits$data, function(.x) get_frequencies("smallest", .x)*2)
+    h <- get_frequencies("smallest", .data)*2
   }
-  if(is.character(h) || inherits(h, "Period")){
-    require_package("lubridate")
-    h <- map_dbl(lst_fits$data, function(.x) get_frequencies(lubridate::as.period(h), .x))
+  else{
+    h <- get_frequencies(h, .data)
+    if(length(h) > 1){
+      warn("More than one forecast horizon specified, using the smallest.")
+      h <- min(h)
+    }
+    if(length(h) != 0){
+      warn("Could not identify an appropriate forecast horizon from `h`. Defaulting to `h=NULL`")
+      h <- get_frequencies("smallest", .data)*2
+    }
   }
-  lst_fits[["new_data"]] <- map2(lst_fits$data, h, tsibble::new_data)
-  lst_fits <- select(lst_fits, !!!key(object), new_data)
-  unnest(lst_fits, new_data, key = key(object))
+  tsibble::new_data(.data, h)
 }
 
 bind_new_data <- function(object, new_data){
