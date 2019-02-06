@@ -4,7 +4,6 @@
 #' from fitted models.
 #' 
 #' @param object The time series model used to produce the forecasts
-#' @param ... Extra arguments for other methods (such as `new_data` and `h`).
 #' 
 #' @rdname forecast
 #' @export
@@ -12,13 +11,12 @@ forecast <- function(object, ...){
   UseMethod("forecast")
 }
 
-#' @param object A mable containing models used for forecasting.
 #' @param new_data A `tsibble` containing future information used to forecast.
 #' @param h The forecast horison (can be used instead of `new_data` for regular
 #' time series with no exogenous regressors).
 #' @param bias_adjust Use adjusted back-transformed mean for transformations. 
 #' Refer to `vignette("transformations")` for more details.
-#' @param ... Further arguments to forecast model methods.
+#' @param ... Additional arguments for forecast model methods.
 #' 
 #' @rdname forecast
 #' @export

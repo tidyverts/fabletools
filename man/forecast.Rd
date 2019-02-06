@@ -13,7 +13,7 @@ forecast(object, ...)
 \arguments{
 \item{object}{The time series model used to produce the forecasts}
 
-\item{...}{Extra arguments for other methods (such as \code{new_data} and \code{h}).}
+\item{...}{Additional arguments for forecast model methods.}
 
 \item{new_data}{A \code{tsibble} containing future information used to forecast.}
 
@@ -22,10 +22,6 @@ time series with no exogenous regressors).}
 
 \item{bias_adjust}{Use adjusted back-transformed mean for transformations.
 Refer to \code{vignette("transformations")} for more details.}
-
-\item{object}{A mable containing models used for forecasting.}
-
-\item{...}{Further arguments to forecast model methods.}
 }
 \description{
 The forecast function allows you to produce future predictions of a time series
