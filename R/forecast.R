@@ -30,7 +30,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
   
   # Evaluate forecasts
   fc <- map2(object$.fit,
-             possibly(`[[`, rep(list(NULL), NROW(object)))(object, "new_data"),
+             object[["new_data"]] %||% rep(list(NULL), length.out = NROW(object)),
              forecast, h = h, bias_adjust = bias_adjust, ...)
   
   # Construct fable
