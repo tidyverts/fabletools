@@ -6,13 +6,12 @@
 #' @param object The time series model used to produce the forecasts
 #' @param ... Extra arguments for other methods (such as `new_data` and `h`).
 #' 
+#' @rdname forecast
 #' @export
 forecast <- function(object, ...){
   UseMethod("forecast")
 }
 
-#' Forecast a mable
-#' 
 #' @param object A mable containing models used for forecasting.
 #' @param new_data A `tsibble` containing future information used to forecast.
 #' @param h The forecast horison (can be used instead of `new_data` for regular
@@ -21,8 +20,9 @@ forecast <- function(object, ...){
 #' Refer to `vignette("transformations")` for more details.
 #' @param ... Further arguments to forecast model methods.
 #' 
+#' @rdname forecast
 #' @export
-forecast.mdl_df <- function(object, new_data = NULL, bias_adjust = TRUE, ...){
+forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
   keys <- c(key(object), sym(".model"))
   mdls <- object%@%"models"
   if(!is.null(new_data)){
@@ -33,7 +33,7 @@ forecast.mdl_df <- function(object, new_data = NULL, bias_adjust = TRUE, ...){
   # Evaluate forecasts
   fc <- map2(object$.fit,
              possibly(`$`, rep(list(NULL), NROW(object)))(object, new_data),
-             forecast, bias_adjust = bias_adjust, ...)
+             forecast, h = h, bias_adjust = bias_adjust, ...)
   
   # Construct fable
   out <- suppressWarnings(unnest(add_class(object, "lst_ts"), fc, key = keys))

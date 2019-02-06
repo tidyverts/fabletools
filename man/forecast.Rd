@@ -2,14 +2,30 @@
 % Please edit documentation in R/forecast.R
 \name{forecast}
 \alias{forecast}
+\alias{forecast.mdl_df}
 \title{Produce forecasts}
 \usage{
 forecast(object, ...)
+
+\method{forecast}{mdl_df}(object, new_data = NULL, h = NULL,
+  bias_adjust = TRUE, ...)
 }
 \arguments{
 \item{object}{The time series model used to produce the forecasts}
 
 \item{...}{Extra arguments for other methods (such as \code{new_data} and \code{h}).}
+
+\item{new_data}{A \code{tsibble} containing future information used to forecast.}
+
+\item{h}{The forecast horison (can be used instead of \code{new_data} for regular
+time series with no exogenous regressors).}
+
+\item{bias_adjust}{Use adjusted back-transformed mean for transformations.
+Refer to \code{vignette("transformations")} for more details.}
+
+\item{object}{A mable containing models used for forecasting.}
+
+\item{...}{Further arguments to forecast model methods.}
 }
 \description{
 The forecast function allows you to produce future predictions of a time series
