@@ -71,7 +71,7 @@ make_future_data <- function(.data, h = NULL){
       warn("More than one forecast horizon specified, using the smallest.")
       h <- min(h)
     }
-    if(length(h) != 0){
+    if(length(h) != 1){
       warn("Could not identify an appropriate forecast horizon from `h`. Defaulting to `h=NULL`")
       h <- get_frequencies("smallest", .data)*2
     }
