@@ -6,7 +6,7 @@ fitted.mdl_df <- function(object, ...){
   out <- transmute(as_tibble(out),
     !!!keys,
     !!sym(".model"),
-    fitted = map(!!sym(".fit"), fitted)
+    fitted = map(!!sym(".fit"), fitted, ...)
   )
   unnest(add_class(out, "lst_ts"), key = keys)
 }
