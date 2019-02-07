@@ -12,6 +12,12 @@ residuals.mdl_df <- function(object, ...){
 }
 
 #' @export
-residuals.model <- function(object, ...){
-  mutate(object$index, .resid = residuals(object$fit, ...))
+residuals.model <- function(object, type = "innovation", ...){
+  if(type == "response"){
+    .resid <- response(object)[[".response"]] - fitted(object$fit)
+  }
+  else{
+    .resid <- residuals(object$fit, type = type, ...)
+  }
+  mutate(object$index, .resid = .resid)
 }
