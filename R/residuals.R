@@ -13,5 +13,5 @@ residuals.mdl_df <- function(object, ...){
 
 #' @export
 residuals.model <- function(object, ...){
-  residuals(object$fit, ...)
+  mutate(object$index, .resid = residuals(object$fit, ...))
 }
