@@ -60,8 +60,10 @@ decomposition_definition <- R6::R6Class("decomposition",
     specials = list(),
     formula = NULL,
     extra = NULL,
+    env = global_env(),
     initialize = function(formula, ...){
       self$formula <- enquo(formula)
+      self$env <- caller_env(n = 2)
       
       # Set `self` and `super` for special functions
       self$specials <- structure(as_environment(
