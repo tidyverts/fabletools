@@ -24,7 +24,7 @@ Suggests:
     knitr,
     methods,
     pillar (>= 1.0.1),
-    tsibblestats,
+    feasts,
     rmarkdown,
     scales,
     spelling,
@@ -34,7 +34,7 @@ Suggests:
 Remotes:
     tidyverts/fable,
     tidyverts/tsibble,
-    tidyverts/tsibblestats,
+    tidyverts/feasts,
     tidyverts/tsibbledata
 ByteCompile: true
 VignetteBuilder: knitr
