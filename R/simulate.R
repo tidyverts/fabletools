@@ -1,6 +1,10 @@
-#' Simulate responses from a model
+#' Imitate responses from a model
 #' 
-#' @param object A model (typically a mable)
+#' Use a model's fitted distribution to simulate additional data with similar
+#' behaviour to the response. This is a tidy implementation of 
+#' `\link[stats]{simulate}`.
+#' 
+#' @param object A model
 #' @param ... Additional optional arguments
 #' 
 #' @examples
@@ -8,15 +12,19 @@
 #' library(tsibbledata)
 #' UKLungDeaths %>% 
 #'   model(lm = TSLM(mdeaths ~ fourier("year", K = 4) + fdeaths)) %>% 
-#'   simulate(UKLungDeaths, times = 5)
+#'   imitate(UKLungDeaths, times = 5)
+#' 
+#' @rdname imitate
 #'   
 #' @export
-simulate <- function(object, ...){
-  UseMethod("simulate")
+imitate <- function(object, ...){
+  UseMethod("imitate")
 }
 
+#' @param new_data The data to be imitated (time index and exogenous regressors)
+#' @rdname imitate
 #' @export
-simulate.mdl_df <- function(object, new_data = NULL, ...){
+imitate.mdl_df <- function(object, new_data = NULL, ...){
   keys <- c(key(object), sym(".model"))
   mdls <- object%@%"models"
   if(!is.null(new_data)){
@@ -27,12 +35,18 @@ simulate.mdl_df <- function(object, new_data = NULL, ...){
   # Evaluate simulations
   object$.sim <- map2(object[[".fit"]], 
                       object[["new_data"]] %||% rep(list(NULL), length.out = NROW(object)),
-                      simulate, ...)
+                      imitate, ...)
   unnest(add_class(object, "lst_ts"), !!sym(".sim"), key = keys)
 }
 
+#' @param h The simulation horizon (can be used instead of `new_data` for regular
+#' time series with no exogenous regressors).
+#' @param times The number of replications
+#' @param seed The seed for the random generation from distributions
+#' 
+#' @rdname imitate
 #' @export
-simulate.model <- function(object, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
+imitate.model <- function(object, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
     stats::runif(1)
   if (is.null(seed))
@@ -56,7 +70,7 @@ simulate.model <- function(object, new_data = NULL, h = NULL, times = 1, seed = 
       invoke("rbind", .)
   }
   
-  .sim <- simulate(object[["fit"]], new_data = new_data, ...)
+  .sim <- imitate(object[["fit"]], new_data = new_data, ...)
   .sim[[".sim"]] <- invert_transformation(object$transformation)(.sim[[".sim"]])
   .sim
 }
