@@ -23,7 +23,7 @@ inverse_table <- function() {
           }
         }
         else{
-          abort("No supported inverse for this function")
+          abort(sprintf("No supported inverse for the `%s` transformation.", fn))
         }
       }
       ret
