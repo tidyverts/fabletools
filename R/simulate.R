@@ -35,7 +35,7 @@ simulate.mdl_df <- function(object, new_data = NULL, ...){
 simulate.model <- function(object, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
     stats::runif(1)
-  if (is.null(seed)) 
+  if (is.null(seed))
     RNGstate <- get(".Random.seed", envir = .GlobalEnv)
   else {
     R.seed <- get(".Random.seed", envir = .GlobalEnv)
@@ -56,5 +56,7 @@ simulate.model <- function(object, new_data = NULL, h = NULL, times = 1, seed = 
       invoke("rbind", .)
   }
   
-  simulate(object[["fit"]], new_data = new_data, ...)
+  .sim <- simulate(object[["fit"]], new_data = new_data, ...)
+  .sim[[".sim"]] <- invert_transformation(object$transformation)(.sim[[".sim"]])
+  .sim
 }
