@@ -65,7 +65,7 @@ imitate.model <- function(object, new_data = NULL, h = NULL, times = 1, seed = N
   if(is.null(new_data[[".rep"]])){
     new_data <- map(seq_len(times), function(rep){
       new_data[[".rep"]] <- rep
-      key_by(new_data, !!sym(".rep"), !!!key(new_data))
+      update_tsibble(new_data, key = id(!!!syms(c(".rep", key_vars(new_data)))))
     }) %>% 
       invoke("rbind", .)
   }
