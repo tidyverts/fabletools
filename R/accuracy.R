@@ -226,7 +226,8 @@ accuracy.model <- function(x, measures = list(point_measures, MASE = MASE), ...)
 }
 
 #' @export
-accuracy.fbl_ts <- function(x, new_data, measures = list(point_measures), ...){
+accuracy.fbl_ts <- function(x, new_data, measures = list(point_measures), ...,
+                            join_by = setdiff(key_vars(x), c(".model", ".id"))){
   dots <- dots_list(...)
 
   aug <- x %>% 
@@ -236,7 +237,7 @@ accuracy.fbl_ts <- function(x, new_data, measures = list(point_measures), ...){
     ) %>% 
     left_join(
       transmute(new_data, !!index(new_data), .actual = !!(x%@%"response")),
-      by = c(expr_text(index(x)), key_vars(x)[key_vars(x)!=".model"])
+      by = c(expr_text(index(x)), join_by)
     ) %>% 
     mutate(.resid = !!sym(".actual") - !!sym(".fc"))
   
