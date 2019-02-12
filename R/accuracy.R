@@ -218,7 +218,7 @@ accuracy.model <- function(x, measures = list(point_measures, MASE = MASE), ...)
        aug %>% 
          as_tibble %>%
          summarise(
-           Type = "Training",
+           .type = "Training",
            !!!compact(fns)
          ) %>% 
          ungroup()
@@ -252,7 +252,7 @@ accuracy.fbl_ts <- function(x, new_data, measures = list(point_measures), ...){
       as_tibble %>% 
       group_by(!!!key(aug)) %>% 
       summarise(
-        Type = "Test",
+        .type = "Test",
         !!!compact(fns)
       ) %>% 
       ungroup()
