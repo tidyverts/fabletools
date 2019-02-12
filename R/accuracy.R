@@ -231,13 +231,14 @@ accuracy.fbl_ts <- function(x, new_data, measures = list(point_measures), ...,
   dots <- dots_list(...)
 
   aug <- x %>% 
+    as_tsibble %>% 
     transmute(
       .fc = !!(x%@%"response"),
       .dist = !!(x%@%"dist")
     ) %>% 
     left_join(
       transmute(new_data, !!index(new_data), .actual = !!(x%@%"response")),
-      by = c(expr_text(index(x)), join_by)
+      by = union(expr_text(index(x)), join_by)
     ) %>% 
     mutate(.resid = !!sym(".actual") - !!sym(".fc"))
   
@@ -251,7 +252,7 @@ accuracy.fbl_ts <- function(x, new_data, measures = list(point_measures), ...,
   with(dots,
     aug %>% 
       as_tibble %>% 
-      group_by(!!!key(aug)) %>% 
+      group_by(!!!key(x), !!!groups(x)) %>% 
       summarise(
         .type = "Test",
         !!!compact(fns)
