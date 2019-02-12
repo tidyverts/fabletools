@@ -40,6 +40,16 @@ as_fable.grouped_ts <- function(x, resp, dist, ...){
   fbl
 }
 
+#' @rdname as-fable
+#' @export
+as_fable.tbl_df <- function(x, resp, dist, ...){
+  as_fable(as_tsibble(x, ...), resp = !!enexpr(resp), dist = !!enexpr(dist))
+}
+
+#' @rdname as-fable
+#' @export
+as_fable.grouped_df <- as_fable.tbl_df
+
 validate_fable <- function(fbl){
   stopifnot(inherits(fbl, "fbl_ts"))
   if (!(as_string(fbl%@%"response") %in% names(fbl))){
@@ -69,11 +79,20 @@ select.fbl_ts <- function (.data, ...){
 }
 
 #' @export
+select.grouped_fbl <- select.fbl_ts
+
+#' @export
 filter.fbl_ts <- function (.data, ...){
   as_fable(NextMethod(), !!(.data%@%"response"), !!(.data%@%"dist"))
 }
 
 #' @export
+filter.grouped_fbl <- filter.fbl_ts
+
+#' @export
 group_by.fbl_ts <- function(.data, ..., add = FALSE) {
   as_fable(NextMethod(), !!(.data%@%"response"), !!(.data%@%"dist"))
 }
+
+#' @export
+group_by.grouped_fbl <- group_by.fbl_ts
