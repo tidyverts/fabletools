@@ -3,11 +3,14 @@
 \name{as_fable}
 \alias{as_fable}
 \alias{as_fable.tbl_ts}
+\alias{as_fable.grouped_ts}
 \title{Coerce to a fable object}
 \usage{
 as_fable(x, ...)
 
 \method{as_fable}{tbl_ts}(x, resp, dist, ...)
+
+\method{as_fable}{grouped_ts}(x, resp, dist, ...)
 }
 \arguments{
 \item{x}{Object to be coerced to a fable (\code{fbl_ts})}

@@ -26,6 +26,15 @@ as_fable <- function(x, ...){
 #' @export
 as_fable.tbl_ts <- function(x, resp, dist, ...){
   fbl <- new_tsibble(x, class = "fbl_ts",
+                     response = enexpr(resp), dist = enexpr(dist))
+  validate_fable(fbl)
+  fbl
+}
+
+#' @rdname as-fable
+#' @export
+as_fable.grouped_ts <- function(x, resp, dist, ...){
+  fbl <- structure(x, class = c("grouped_fbl", "grouped_ts", "grouped_df", "fbl_ts", "tbl_ts", "tbl_df", "tbl", "data.frame"),
                    response = enexpr(resp), dist = enexpr(dist))
   validate_fable(fbl)
   fbl
@@ -61,5 +70,10 @@ select.fbl_ts <- function (.data, ...){
 
 #' @export
 filter.fbl_ts <- function (.data, ...){
+  as_fable(NextMethod(), !!(.data%@%"response"), !!(.data%@%"dist"))
+}
+
+#' @export
+group_by.fbl_ts <- function(.data, ..., add = FALSE) {
   as_fable(NextMethod(), !!(.data%@%"response"), !!(.data%@%"dist"))
 }
