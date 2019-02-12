@@ -50,6 +50,17 @@ as_fable.tbl_df <- function(x, resp, dist, ...){
 #' @export
 as_fable.grouped_df <- as_fable.tbl_df
 
+#' @export
+as_tsibble.fbl_ts <- function(x, ...){
+  new_tsibble(x)
+}
+
+#' @export
+as_tsibble.grouped_fbl <- function(x, ...){
+  structure(x, class=setdiff(class(x), c("grouped_fbl", "fbl_ts")),
+            resp = NULL, dist = NULL)
+}
+
 validate_fable <- function(fbl){
   stopifnot(inherits(fbl, "fbl_ts"))
   if (!(as_string(fbl%@%"response") %in% names(fbl))){
