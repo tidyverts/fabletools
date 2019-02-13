@@ -13,18 +13,26 @@
 #' @export
 new_fcdist <- function(f, ..., transformation = identity,
                        format_fn = format_dist(deparse(substitute(f)))){
-  pmap(dots_list(...), list) %>%
-    set_names(NULL) %>% 
-    enclass("fcdist",
-            f = f,
-            t = transformation,
-            format = format_fn,
-            trans = !is.name(body(transformation)))
+  .env <- new_environment(list(f = f, t = transformation,
+    format = format_fn, trans = !is.name(body(transformation))))
+  pmap(dots_list(...), list, .env = .env) %>%
+    structure(class = "fcdist")
 }
 
-`transformation<-` <- function(x, value){
-  attr(x, "t") <- value
-  attr(x, "trans") = !is.name(body(value))
+update_fcdist <- function(x, f = NULL, transformation = NULL, format_fn = NULL){
+  envs <- unique(transpose(x)$.env)
+  for(env in envs){
+    if(!is.null(f)){
+      env$f <- f
+    }
+    if(!is.null(transformation)){
+      env$t <- transformation
+      env$trans <- !is.name(body(transformation))
+    }
+    if(!is.null(format_fn)){
+      env$format_fn <- format_fn
+    }
+  }
   x
 }
 
@@ -73,34 +81,27 @@ format_dist <- function(fn_nm){
 
 #' @export
 format.fcdist <- function(x, ...){
-  out <- (x%@%"format")(x, ...)
-  
-  # Add transformation indicator t()
-  if(attr(x, "trans")){
-    out <- paste0("t(", out, ")")
-  }
-  
-  out
+  .env_ids <- map_chr(transpose(x)$.env, env_label)
+  split(x, .env_ids) %>% 
+    set_names(NULL) %>% 
+    map(function(x){
+      out <- x[[1]]$.env$format(map(x, function(x) x[-length(x)]))
+      if(x[[1]]$.env$trans){
+        out <- paste0("t(", out, ")")
+      }
+      out
+    }) %>% 
+    unsplit(.env_ids)
 }
 
 #' @export
 `[.fcdist` <- function(x, ...){
-  enclass(NextMethod(), "fcdist", 
-          !!!attributes(x))
+  structure(NextMethod(), class = "fcdist")
 }
 
 #' @export
 c.fcdist <- function(...){
-  sameAttr <- dots_list(...) %>%
-    map(function(.x) if(!inherits(.x, "fcdist")) {abort("Only combining fcdist objects is supported")} else {attributes(.x)}) %>%
-    duplicated %>%
-    .[-1]
-  if(any(!sameAttr)){
-    abort("Cannot combine fcdist objects of different types.")
-  }
-    
-  enclass(NextMethod(), "fcdist", 
-          !!!attributes(..1))
+  structure(NextMethod(), class = "fcdist")
 }
 
 #' @export
@@ -123,10 +124,21 @@ hilo.fcdist <- function(x, level = 95, ...){
   if (level < 0 || level > 100) {
     abort("'level' can't be negative or greater than 100.")
   }
-  args <- merge_pos_list(!!!as_list(x))
+  
+  .env_ids <- map_chr(transpose(x)$.env, env_label)
+  split(x, .env_ids) %>% 
+    set_names(NULL) %>% 
+    map(hilo_fcdist, level = level) %>% 
+    unsplit(.env_ids)
+}
+
+hilo_fcdist <- function(level, x){
+  env <- x[[1]][[length(x[[1]])]]
+  args <- transpose(x)[-length(x[[1]])] %>% 
+    map(unlist, recursive = FALSE)
   list(lower = 50-level/2, upper = 50+level/2) %>%
     map(function(level){
-      attr(x,"t")(do.call(attr(x, "f"), c(list(level/100), as.list(args))))
+      env$t(do.call(env$f, c(list(level/100), as.list(args))))
     }) %>%
     append(list(level = level)) %>%
     invoke("new_hilo", .)
