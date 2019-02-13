@@ -94,7 +94,7 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   if(!is.null(series)){
     mapping$colour <- series
   }
-  if(!is_empty(key_vars(object))){
+  else if(!is_empty(key_vars(object))){
     mapping$colour <- expr(interaction(!!!syms(key_vars(object))))
   }
   geom_forecast(mapping = mapping, stat = "identity", data = data)
