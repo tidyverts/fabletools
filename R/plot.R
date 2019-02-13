@@ -84,7 +84,7 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
 
 #' @export
 autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
-  data <- fortify(object, level = level, ...)
+  data <- fortify(object, level = level)
   mapping <- eval_tidy(quo(aes(x = !!index(data), y = !!(object%@%"response"))))
   if(!is.null(level)){
     mapping$level <- sym("level")
@@ -97,5 +97,5 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   else if(!is_empty(key_vars(object))){
     mapping$colour <- expr(interaction(!!!syms(key_vars(object))))
   }
-  geom_forecast(mapping = mapping, stat = "identity", data = data)
+  geom_forecast(mapping = mapping, stat = "identity", data = data, ...)
 }
