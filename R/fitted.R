@@ -13,5 +13,6 @@ fitted.mdl_df <- function(object, ...){
 
 #' @export
 fitted.model <- function(object, ...){
-  mutate(object$index, .fitted = fitted(object$fit, ...))
+  bt <- invert_transformation(object$transformation)
+  mutate(object$index, .fitted = bt(fitted(object$fit, ...)))
 }
