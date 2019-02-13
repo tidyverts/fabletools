@@ -91,3 +91,8 @@ model_rhs <- function(model){
     expr(NULL)
   }
 }
+
+#' @export
+formula.model <- function(x, ...){
+  x$formula
+}
