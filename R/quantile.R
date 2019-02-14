@@ -1,22 +1,37 @@
 #' Create a forecast distribution object
 #'  
-#' @param f A distribution function producing quantiles (such as `qnorm`)
 #' @param ... Arguments for `f` function
-#' @param transformation Transformation to be applied to resulting quantiles from `f`
-#' @param format_fn Function that is used to format the distribution display
+#' @param .env An environment produced using `new_fcdist_env`
 #' 
 #' @examples 
+#' tnorm <- new_fcdist_env(qnorm, exp)
 #' mydist <- new_fcdist(qnorm, transformation = exp,
 #'  mean = rep(3, 10), sd = seq(0, 1, length.out=10))
 #' mydist
 #' hilo(mydist, 95)
+#' 
+#' @rdname fcdist
 #' @export
-new_fcdist <- function(f, ..., transformation = identity,
-                       format_fn = format_dist(deparse(substitute(f)))){
-  .env <- new_environment(list(f = f, t = transformation,
-    format = format_fn, trans = !is.name(body(transformation))))
+new_fcdist <- function(..., .env){
   pmap(dots_list(...), list, .env = .env) %>%
     structure(class = "fcdist")
+}
+
+#' @param quantile A distribution function producing quantiles (such as `qnorm`)
+#' @param transformation Transformation to be applied to resulting quantiles 
+#' from `quantile`
+#' @param display Function that is used to format the distribution display
+#' 
+#' @rdname fcdist
+#' @export
+new_fcdist_env <- function(quantile, transformation = identity, display = NULL){
+  if(is.null(display)){
+    display <- format_dist(as_string(enexpr(quantile)))
+  }
+  new_environment(
+    list(f = quantile, t = transformation, format = display,
+         trans = !is.name(body(transformation)))
+  )
 }
 
 update_fcdist <- function(x, f = NULL, transformation = NULL, format_fn = NULL){
@@ -152,11 +167,6 @@ quantile.fcdist <- function(x, probs = seq(0, 1, 0.25), ...){
   })
 }
 
-#' @importFrom stats quantile
-qsample <- function(p, x = list(), ...){
-  map_dbl(x, function(x) as.numeric(stats::quantile(x, p, ...)))
-}
-
 format_dist_normal <- function(x, ...){
   args <- transpose(x) %>% 
     map(unlist)
@@ -167,6 +177,8 @@ format_dist_normal <- function(x, ...){
           format(args$sd^2, digits = 2, ...)
   )
 }
+
+env_dist_normal <- new_fcdist_env(qnorm, display = format_dist_normal)
 
 #' Distributions for intervals
 #' 
@@ -182,8 +194,15 @@ format_dist_normal <- function(x, ...){
 #' 
 #' @export
 dist_normal <- function(mean, sd, ...){
-  new_fcdist(stats::qnorm, mean = mean, sd = sd, ..., format_fn = format_dist_normal)
+  new_fcdist(mean = mean, sd = sd, ..., .env = env_dist_normal)
 }
+
+#' @importFrom stats quantile
+qsample <- function(p, x = list(), ...){
+  map_dbl(x, function(x) as.numeric(stats::quantile(x, p, ...)))
+}
+
+env_dist_sim <- new_fcdist_env(qsample, display = format_dist("sim"))
 
 #' @rdname distributions
 #' 
@@ -191,5 +210,5 @@ dist_normal <- function(mean, sd, ...){
 #' 
 #' @export
 dist_sim <- function(sample, ...){
-  new_fcdist(qsample, map(sample, list), ..., format_fn = format_dist("sim"))
+  new_fcdist(map(sample, list), ..., .env = env_dist_sim)
 }
