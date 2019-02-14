@@ -81,7 +81,7 @@ format_dist <- function(fn_nm){
 
 #' @export
 format.fcdist <- function(x, ...){
-  .env_ids <- map_chr(transpose(x)$.env, env_label)
+  .env_ids <- map_chr(x, function(x) env_label(x[[length(x)]]))
   split(x, .env_ids) %>% 
     set_names(NULL) %>% 
     map(function(x){
@@ -144,7 +144,6 @@ hilo_fcdist <- function(level, x){
     invoke("new_hilo", .)
 }
 
-#' @importFrom stats quantile
 #' @export
 quantile.fcdist <- function(x, probs = seq(0, 1, 0.25), ...){
   args <- merge_pos_list(!!!as_list(x))
@@ -153,6 +152,7 @@ quantile.fcdist <- function(x, probs = seq(0, 1, 0.25), ...){
   })
 }
 
+#' @importFrom stats quantile
 qsample <- function(p, x = list(), ...){
   map_dbl(x, function(x) as.numeric(stats::quantile(x, p, ...)))
 }
