@@ -60,14 +60,22 @@ Ops.fcdist <- function(e1, e2){
     warn(sprintf("`%s` not meaningful for distributions", .Generic))
     return(rep.int(NA, max(length(e1), if (!missing(e2)) length(e2))))
   }
+  if(.Generic == "/" && inherits(e2, "fcdist")){
+    warn(sprintf("Cannot divide by a distribution"))
+    return(rep.int(NA, max(length(e1), if (!missing(e2)) length(e2))))
+  }
   if(.Generic %in% c("-", "+") && missing(e2)){
     e2 <- e1
     .Generic <- "*"
     e1 <- 1
   }
-  if(inherits(e1, "fcdist") && inherits(e2, "fcdist")){
-    warn("Combinations of forecast distributions is not yet supported.")
-    return(rep.int(NA, max(length(e1), if (!missing(e2)) length(e2))))
+  if(.Generic == "-"){
+    .Generic <- "+"
+    e2 <- -e2
+  }
+  else if(.Generic == "/"){
+    .Generic <- "*"
+    e2 <- 1/e2
   }
   e_len <- c(length(e1), length(e2))
   if(max(e_len) %% min(e_len) != 0){
@@ -81,6 +89,39 @@ Ops.fcdist <- function(e1, e2){
       e2 <- rep_len(e2, e_len[[1]])
     }
   }
+  
+  is_dist_normal <- function(dist){
+    identical(dist[[1]]$.env$f, qnorm) && !dist[[1]]$.env$trans
+  }
+  
+  if(inherits(e1, "fcdist") && inherits(e2, "fcdist")){
+    if(.Generic == "*"){
+      warn(sprintf("Multipling forecast distributions is not supported"))
+      return(rep.int(NA, length(e1)))
+    }
+    
+    grps <- paste(sep = "-",
+      map_chr(e1, function(x) env_label(x[[length(x)]])),
+      map_chr(e2, function(x) env_label(x[[length(x)]]))
+    )
+    
+    e1 <- map2(split(e1, grps), split(e2, grps), function(x, y){
+      if(!is_dist_normal(x) || !is_dist_normal(y)){
+        warn("Combinations of non-normal forecast distributions is not supported")
+        return(rep.int(NA, length(x)))
+      }
+      x <- transpose(x) %>% map(unlist, recursive = FALSE)
+      y <- transpose(y) %>% map(unlist, recursive = FALSE)
+      if(.Generic == "+"){
+        x$mean <- x$mean + y$mean
+        x$sd <- sqrt(x$sd^2 + y$sd^2)
+      }
+      transpose(x)
+    })
+    
+    return(structure(unsplit(e1, grps), class = "fcdist"))
+  }
+
   if(inherits(e1, "fcdist")){
     dist <- e1
     scalar <- e2
@@ -91,25 +132,12 @@ Ops.fcdist <- function(e1, e2){
   if(!is.numeric(scalar)){
     warn(sprintf("Cannot %s a `%s` with a distribution", switch(.Generic, 
       `+` = "add", `-` = "subtract", `*` = "multiply", `/` = "divide"), class(scalar)))
-    return(rep.int(NA, max(length(e1), if (!missing(e2)) length(e2))))
-  }
-  if(.Generic == "/" && inherits(e2, "fcdist")){
-    warn(sprintf("Cannot divide by a distribution"))
-    return(rep.int(NA, max(length(e1), if (!missing(e2)) length(e2))))
-  }
-  
-  if(.Generic == "-"){
-    .Generic <- "+"
-    scalar <- -scalar
-  }
-  else if(.Generic == "/"){
-    .Generic <- "*"
-    scalar <- 1/scalar
+    return(rep.int(NA, length(e1)))
   }
   
   .env_ids <- map_chr(dist, function(x) env_label(x[[length(x)]]))
   dist <- map2(split(dist, .env_ids), split(scalar, .env_ids), function(x, y){
-    if(!identical(x[[1]]$.env$f, qnorm) || x[[1]]$.env$trans){
+    if(!is_dist_normal(x)){
       warn("Cannot perform calculations with this non-normal distributions")
       return(rep.int(NA, length(x)))
     }
