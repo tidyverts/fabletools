@@ -109,7 +109,7 @@ Ops.fcdist <- function(e1, e2){
   
   .env_ids <- map_chr(dist, function(x) env_label(x[[length(x)]]))
   dist <- map2(split(dist, .env_ids), split(scalar, .env_ids), function(x, y){
-    if(!identical(x[[1]]$.env$f, qnorm) && !x[[1]]$.env$trans){
+    if(!identical(x[[1]]$.env$f, qnorm) || x[[1]]$.env$trans){
       warn("Cannot perform calculations with this non-normal distributions")
       return(rep.int(NA, length(x)))
     }
