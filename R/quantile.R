@@ -34,11 +34,12 @@ new_fcdist_env <- function(quantile, transformation = identity, display = NULL){
   )
 }
 
-update_fcdist <- function(x, f = NULL, transformation = NULL, format_fn = NULL){
-  envs <- unique(transpose(x)$.env)
-  for(env in envs){
-    if(!is.null(f)){
-      env$f <- f
+update_fcdist <- function(x, quantile = NULL, transformation = NULL, format_fn = NULL){
+  .env_ids <- map_chr(x, function(x) env_label(x[[length(x)]]))
+  x <- map(split(x, .env_ids), function(dist){
+    env <- env_clone(dist[[1]][[length(dist[[1]])]])
+    if(!is.null(quantile)){
+      env$f <- quantile
     }
     if(!is.null(transformation)){
       env$t <- transformation
@@ -47,8 +48,9 @@ update_fcdist <- function(x, f = NULL, transformation = NULL, format_fn = NULL){
     if(!is.null(format_fn)){
       env$format_fn <- format_fn
     }
-  }
-  x
+    map(dist, function(x){x[[length(x)]] <- env; x})
+  })
+  structure(unsplit(x, .env_ids), class = "fcdist")
 }
 
 #' @export
