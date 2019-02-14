@@ -54,6 +54,79 @@ update_fcdist <- function(x, quantile = NULL, transformation = NULL, format_fn =
 }
 
 #' @export
+Ops.fcdist <- function(e1, e2){
+  ok <- switch(.Generic, `+` = , `-` = , `*` = , `/` = TRUE, FALSE)
+  if (!ok) {
+    warn(sprintf("`%s` not meaningful for distributions", .Generic))
+    return(rep.int(NA, max(length(e1), if (!missing(e2)) length(e2))))
+  }
+  if(.Generic %in% c("-", "+") && missing(e2)){
+    e2 <- e1
+    .Generic <- "*"
+    e1 <- 1
+  }
+  if(inherits(e1, "fcdist") && inherits(e2, "fcdist")){
+    warn("Combinations of forecast distributions is not yet supported.")
+    return(rep.int(NA, max(length(e1), if (!missing(e2)) length(e2))))
+  }
+  e_len <- c(length(e1), length(e2))
+  if(max(e_len) %% min(e_len) != 0){
+    warn("longer object length is not a multiple of shorter object length")
+  }
+  if(e_len[[1]] != e_len[[2]]){
+    if(which.min(e_len) == 1){
+      e1 <- rep_len(e1, e_len[[2]])
+    }
+    else{
+      e2 <- rep_len(e2, e_len[[1]])
+    }
+  }
+  if(inherits(e1, "fcdist")){
+    dist <- e1
+    scalar <- e2
+  } else {
+    dist <- e2
+    scalar <- e1
+  }
+  if(!is.numeric(scalar)){
+    warn(sprintf("Cannot %s a `%s` with a distribution", switch(.Generic, 
+      `+` = "add", `-` = "subtract", `*` = "multiply", `/` = "divide"), class(scalar)))
+    return(rep.int(NA, max(length(e1), if (!missing(e2)) length(e2))))
+  }
+  if(.Generic == "/" && inherits(e2, "fcdist")){
+    warn(sprintf("Cannot divide by a distribution"))
+    return(rep.int(NA, max(length(e1), if (!missing(e2)) length(e2))))
+  }
+  
+  if(.Generic == "-"){
+    .Generic <- "+"
+    scalar <- -scalar
+  }
+  else if(.Generic == "/"){
+    .Generic <- "*"
+    scalar <- 1/scalar
+  }
+  
+  .env_ids <- map_chr(dist, function(x) env_label(x[[length(x)]]))
+  dist <- map2(split(dist, .env_ids), split(scalar, .env_ids), function(x, y){
+    if(!identical(x[[1]]$.env$f, qnorm) && !x[[1]]$.env$trans){
+      warn("Cannot perform calculations with this non-normal distributions")
+      return(rep.int(NA, length(x)))
+    }
+    x <- transpose(x) %>% map(unlist, recursive = FALSE)
+    if(.Generic == "+"){
+      x$mean <- x$mean + y
+    }
+    else if(.Generic == "*"){
+      x$mean <- x$mean * y
+      x$sd <- x$sd * y
+    }
+    transpose(x)
+  })
+  structure(unsplit(dist, .env_ids), class = "fcdist")
+}
+
+#' @export
 type_sum.fcdist <- function(x){
   "dist"
 }
