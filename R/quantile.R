@@ -83,10 +83,18 @@ Ops.fcdist <- function(e1, e2){
   }
   if(e_len[[1]] != e_len[[2]]){
     if(which.min(e_len) == 1){
+      is_dist <- inherits(e1, "fcdist")
       e1 <- rep_len(e1, e_len[[2]])
+      if(is_dist){
+        e1 <- structure(e1, class = "fcdist")
+      }
     }
     else{
+      is_dist <- inherits(e2, "fcdist")
       e2 <- rep_len(e2, e_len[[1]])
+      if(is_dist){
+        e2 <- structure(e2, class = "fcdist")
+      }
     }
   }
   
