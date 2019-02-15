@@ -38,7 +38,10 @@ new_model <- function(fit, model, index, response, transformation){
                  response = response, transformation = transformation),
             class = "model")
 }
-
+#' Is the object a model
+#' 
+#' @param x An object.
+#' 
 #' @export
 is_model <- function(x){
   inherits(x, "model")
