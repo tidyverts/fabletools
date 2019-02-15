@@ -72,7 +72,7 @@ as_tsibble.grouped_fbl <- function(x, ...){
 
 validate_fable <- function(fbl){
   stopifnot(inherits(fbl, "fbl_ts"))
-  if (!(as_string(fbl%@%"response") %in% names(fbl))){
+  if (!(expr_text(fbl%@%"response") %in% names(fbl))){
     abort(sprintf("Could not find response variable `%s` in the fable.",
           as_string(fbl%@%"response")))
   }

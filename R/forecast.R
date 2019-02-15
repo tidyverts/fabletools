@@ -69,10 +69,10 @@ forecast.model <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE
     units_since(max(object$index[[as_string(index(object$index))]]))/time_unit(interval(new_data))
   
   out <- mutate(new_data, 
-                !!as_string(object$response) := fc[["point"]],
+                !!expr_text(object$response) := fc[["point"]],
                 .distribution = fc[["dist"]],
                 .h = new_h)
-  out <- select(out, !!index(out), !!sym(".h"), !!object$response, !!sym(".distribution"), seq_along(out))
+  out <- select(out, !!index(out), !!sym(".h"), expr_text(object$response), !!sym(".distribution"), seq_along(out))
   as_fable(out,
            resp = !!object$response,
            dist = !!sym(".distribution")
