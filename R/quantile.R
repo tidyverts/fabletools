@@ -53,6 +53,7 @@ update_fcdist <- function(x, quantile = NULL, transformation = NULL, format_fn =
   structure(unsplit(x, .env_ids), class = "fcdist")
 }
 
+#' @importFrom stats qnorm
 #' @export
 Ops.fcdist <- function(e1, e2){
   ok <- switch(.Generic, `+` = , `-` = , `*` = , `/` = TRUE, FALSE)
