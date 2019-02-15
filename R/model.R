@@ -39,6 +39,11 @@ new_model <- function(fit, model, index, response, transformation){
             class = "model")
 }
 
+#' @export
+is_model <- function(x){
+  inherits_any(x, c("model", "combination_model"))
+}
+
 type_sum.model <- function(x){
   model_sum(x[["fit"]])
 }
