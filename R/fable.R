@@ -10,6 +10,15 @@ fable <- function(..., key = id(), index, resp, dist, regular = TRUE){
   as_fable(tsbl)
 }
 
+#' Is the object a fable
+#' 
+#' @param x An object.
+#' 
+#' @export
+is_fable <- function(x){
+  inherits(x, "fbl_ts")
+}
+
 #' Coerce to a fable object
 #' 
 #' @inheritParams fable
