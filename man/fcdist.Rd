@@ -24,11 +24,3 @@ from \code{quantile}}
 \description{
 Create a forecast distribution object
 }
-\examples{
-tnorm <- new_fcdist_env(qnorm, exp)
-mydist <- new_fcdist(qnorm, transformation = exp,
- mean = rep(3, 10), sd = seq(0, 1, length.out=10))
-mydist
-hilo(mydist, 95)
-
-}

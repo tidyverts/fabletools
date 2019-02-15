@@ -3,13 +3,6 @@
 #' @param ... Arguments for `f` function
 #' @param .env An environment produced using `new_fcdist_env`
 #' 
-#' @examples 
-#' tnorm <- new_fcdist_env(qnorm, exp)
-#' mydist <- new_fcdist(qnorm, transformation = exp,
-#'  mean = rep(3, 10), sd = seq(0, 1, length.out=10))
-#' mydist
-#' hilo(mydist, 95)
-#' 
 #' @rdname fcdist
 #' @export
 new_fcdist <- function(..., .env){
