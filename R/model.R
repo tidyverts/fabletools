@@ -41,7 +41,7 @@ new_model <- function(fit, model, index, response, transformation){
 
 #' @export
 is_model <- function(x){
-  inherits_any(x, c("model", "combination_model"))
+  inherits(x, "model")
 }
 
 type_sum.model <- function(x){
@@ -101,3 +101,6 @@ model_rhs <- function(model){
 formula.model <- function(x, ...){
   x$formula
 }
+
+#' @export
+length.model <- function(x) 1
