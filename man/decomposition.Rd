@@ -4,16 +4,16 @@
 \alias{decomposition}
 \title{Decomposition modelling}
 \usage{
-decomposition(.f, formula, ..., .f_args = list())
+decomposition(dcmp, formula, ..., dcmp_args = list())
 }
 \arguments{
-\item{.f}{The decomposition function (such as \code{STL})}
+\item{dcmp}{The decomposition function (such as \code{STL})}
 
 \item{formula}{The formula used to describe the decomposition}
 
 \item{...}{Model definitions used to model the components (such as \code{ETS})}
 
-\item{.f_args}{Arguments to be passed to the decomposition function (\code{.f})}
+\item{dcmp_args}{Arguments to be passed to the decomposition function (\code{.f})}
 }
 \description{
 Decomposition modelling

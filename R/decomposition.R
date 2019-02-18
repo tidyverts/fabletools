@@ -88,14 +88,14 @@ forecast.decomposition_model <- function(object, new_data, specials = NULL,  ...
 
 #' Decomposition modelling
 #' 
-#' @param .f The decomposition function (such as `STL`)
+#' @param dcmp The decomposition function (such as `STL`)
 #' @param formula The formula used to describe the decomposition
 #' @param ... Model definitions used to model the components (such as `ETS`)
-#' @param .f_args Arguments to be passed to the decomposition function (`.f`)
+#' @param dcmp_args Arguments to be passed to the decomposition function (`.f`)
 #' 
 #' @export
-decomposition <- function(.f, formula, ..., .f_args = list()){
-  decomposition_model$new(.f, !!enquo(formula), ..., .f_args = .f_args)
+decomposition <- function(dcmp, formula, ..., dcmp_args = list()){
+  decomposition_model$new(dcmp, !!enquo(formula), ..., dcmp_args = dcmp_args)
 }
 
 #' @export
