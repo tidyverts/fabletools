@@ -85,7 +85,8 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
 #' @export
 autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   data <- fortify(object, level = level)
-  mapping <- eval_tidy(quo(aes(x = !!index(data), y = !!(object%@%"response"))))
+  mapping <- eval_tidy(quo(aes(x = !!index(data),
+                               y = !!sym(expr_text(object%@%"response")))))
   if(!is.null(level)){
     mapping$level <- sym("level")
     mapping$ymin <- sym("lower")
