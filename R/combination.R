@@ -74,9 +74,10 @@ forecast.model_combination <- function(object, ...){
   # Compute residual covariance to adjust the forecast variance
   # Assumes correlation across h is identical
   if(all(mdls)){
-    fc_cov <- cov(
+    fc_cov <- var(
       residuals(object[[1]], type = "response")[[".resid"]],
-      residuals(object[[2]], type = "response")[[".resid"]]
+      residuals(object[[2]], type = "response")[[".resid"]],
+      na.rm = TRUE
     )
   }
   else{
@@ -84,10 +85,10 @@ forecast.model_combination <- function(object, ...){
   }
   
   object[mdls] <- map(object[mdls], forecast, ...)
-  get_attr_col <- function(x, col) if(is_fable(x)) x[[as_string(attr(x, col))]] else x 
+  get_attr_col <- function(x, col) if(is_fable(x)) x[[expr_text(attr(x, col))]] else x 
   fbl <- object[[which(mdls)[[1]]]] 
-  fbl[[as_string(attr(fbl, "dist"))]] <- eval_tidy(expr, map(object, get_attr_col, "dist")) + dist_normal(0, sqrt(2*fc_cov))
-  fbl[[as_string(attr(fbl, "response"))]] <- eval_tidy(expr, map(object, get_attr_col, "response"))
+  fbl[[expr_text(attr(fbl, "dist"))]] <- eval_tidy(expr, map(object, get_attr_col, "dist")) + dist_normal(0, sqrt(2*fc_cov))
+  fbl[[expr_text(attr(fbl, "response"))]] <- eval_tidy(expr, map(object, get_attr_col, "response"))
   fbl
 }
 
