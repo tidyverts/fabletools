@@ -63,7 +63,7 @@ forecast.model <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE
   else{
     fc[["point"]] <- bt(fc[["point"]])
   }
-  update_fcdist(fc[["dist"]], transformation = bt)
+  fc[["dist"]] <- update_fcdist(fc[["dist"]], transformation = bt)
   
   new_h <- units_since(new_data[[as_string(index(new_data))]])/time_unit(interval(new_data)) - 
     units_since(max(object$index[[as_string(index(object$index))]]))/time_unit(interval(new_data))
