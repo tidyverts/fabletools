@@ -94,7 +94,7 @@ forecast.decomposition_model <- function(object, new_data, specials = NULL,  ...
 #' @param dcmp_args Arguments to be passed to the decomposition function (`.f`)
 #' 
 #' @export
-decomposition <- function(dcmp, formula, ..., dcmp_args = list()){
+dcmp_model <- function(dcmp, formula, ..., dcmp_args = list()){
   decomposition_model$new(dcmp, !!enquo(formula), ..., dcmp_args = dcmp_args)
 }
 
