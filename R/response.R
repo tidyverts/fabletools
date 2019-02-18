@@ -23,5 +23,5 @@ response.mdl_df <- function(object, ...){
 #' @export
 response.model <- function(object, ...){
   aug <- augment(object, ...)
-  select(aug, !!index(aug), !!!list(.response = object$response))
+  select(aug, !!index(aug), !!!list(.response = expr_text(object$response)))
 }
