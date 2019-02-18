@@ -38,7 +38,7 @@ autolayer.tbl_ts <- function(object, var = NULL, series = NULL, ...){
   
   aes_spec <- list(x = index(object), y = var)
   if(!is.null(series)){
-    mapping$colour <- series
+    aes_spec$colour <- series
   }
   else if(n_keys(object) > 1){
     aes_spec["colour"] <- list(expr(interaction(!!!syms(key_vars(object)), sep = "/")))
