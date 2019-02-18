@@ -7,32 +7,62 @@ train_decomposition <- function(.data, formula, specials, ...){
   
   dcmp <- do.call(self$dcmp_fn, list2(.data, formula, !!!self$dcmp_args))
   dcmp_method <- dcmp%@%"dcmp"
+  structure <- dcmp%@%"structure"
   req_vars <- all.vars(dcmp_method)
   
-  mdls <- model(dcmp, ...)
+  dcmp_ops <- traverse(dcmp_method,
+    .f = function(x, y) c(y, x[[1]]),
+    .g = function(x) x[-1],
+    .h = function(x) if(is_call(x)) x[[1]] else NULL
+  )
   
-  mdl_cols <- map_chr(mdls%@%"models", as_string)
+  if(any(map_chr(dcmp_ops, as_string) != "+")){
+    abort("Only modelling of additive decompositions is supported.")
+  }
   
-  available_vars <- map_chr(mdl_cols, function(cn){
-    all.vars(mdls[[cn]][[1]]$response)
-  })
+  mdls <- dots_list(...) %>% 
+    map(function(x) estimate(dcmp, x))
+  
+  mdl_vars <- map(mdls, function(mdl){
+    all.vars(mdl$response)
+  }) %>% 
+    invoke(c, .)
+  
+  miss_vars <- setdiff(req_vars, mdl_vars)
+  
+  if(!all(miss_vars %in% names(structure))) {
+    abort(sprintf(
+"Suitable defaults for these decomposition elements are not available: %s.
+Please specify an appropriate model for these components",
+      paste0(setdiff(miss_vars, names(structure)), collapse = ", "))
+    )
+  }
+  
+  mdls_default <- structure[miss_vars] %>% 
+    imap(function(x, nm){
+      estimate(dcmp, 
+        SNAIVE(new_formula(lhs = sym(nm), rhs = expr(lag(!!x[["period"]]))))
+      )
+    })
+  
+  model <- reduce(c(mdls, mdls_default), `+`)
   
   structure(
     list(
       est = est %>% 
         mutate(
-          #.fitted = fitted,
-          #.resid = residuals
+          .fitted = fitted(model)[[".fitted"]],
+          .resid = !!sym(measured_vars(est)) - !!sym(".fitted")
         ),
       fit = tibble(method = "Decomposition model",
                    decomposition = list(dcmp_method)),
-      models = mdls
+      model = model
     ),
     class = "decomposition_model"
   )
 }
 
-decomposition_model <- R6::R6Class("decomposition",
+decomposition_model <- R6::R6Class(NULL,
   inherit = model_definition,
   public = list(
     model = "decomposition",
@@ -49,6 +79,12 @@ decomposition_model <- R6::R6Class("decomposition",
     }
   )
 )
+
+#' @export
+forecast.decomposition_model <- function(object, new_data, specials = NULL,  ...){
+  fc <- forecast(object$model)
+  construct_fc(fc[[expr_text(fc%@%"response")]], rep(0, NROW(fc)), fc[[expr_text(fc%@%"dist")]])
+}
 
 #' Decomposition modelling
 #' 
