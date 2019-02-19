@@ -48,12 +48,21 @@ Please specify an appropriate model for these components",
     )
   }
   
-  mdls_default <- structure[miss_vars] %>% 
-    imap(function(x, nm){
-      estimate(dcmp, 
-        SNAIVE(new_formula(lhs = sym(nm), rhs = expr(lag(!!x[["period"]]))))
-      )
-    })
+  mdls_default <- if(!is_empty(miss_vars)){
+    requireNamespace("fable")
+    lag <- NULL
+    
+    structure[miss_vars] %>% 
+      imap(function(x, nm){
+        estimate(dcmp, fable::SNAIVE(
+          new_formula(lhs = sym(nm), rhs = expr(lag(!!x[["period"]])))
+        ))
+      })
+  }
+  else{
+    list()
+  }
+
   
   model <- reduce(c(mdls, mdls_default), `+`)
   
