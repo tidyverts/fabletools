@@ -112,7 +112,7 @@ autoplot.dcmp_ts <- function(object, components = NULL, range_bars = TRUE, ...){
   idx <- index(object)
   
   if(is.null(components)){
-    components <- c(syms(all.vars(dcmp)))
+    components <- c(resp, syms(all.vars(dcmp)))
   }
   
   object <- object %>% 
