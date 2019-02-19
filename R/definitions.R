@@ -117,8 +117,8 @@ new_decomposition <- function(defn){
       
       attrs <- combine_dcmp_attr(out[["dcmp"]])
       out <- unnest(out, !!sym("dcmp"), key = keys)
-      as_dable(out, resp = !!attrs[["response"]], dcmp = !!attrs[["decomposition"]],
-               structure = attrs[["structure"]])
+      as_dable(out, resp = !!attrs[["response"]],
+               seasons = attrs[["seasons"]], aliases = attrs[["aliases"]])
     }),
     env = environment()
   )

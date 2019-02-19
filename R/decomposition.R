@@ -6,8 +6,11 @@ train_decomposition <- function(.data, formula, specials, ...){
   .data <- self$data
   
   dcmp <- do.call(self$dcmp_fn, list2(.data, formula, !!!self$dcmp_args))
-  dcmp_method <- dcmp%@%"dcmp"
-  structure <- dcmp%@%"structure"
+  
+  dcmp_method <- (dcmp%@%"aliases")[[expr_text(dcmp%@%"resp")]]
+  structure <- dcmp%@%"seasons"
+  aliases <- dcmp%@%"aliases"
+  
   req_vars <- all.vars(dcmp_method)
   
   dcmp_ops <- traverse(dcmp_method,

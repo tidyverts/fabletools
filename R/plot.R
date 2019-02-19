@@ -107,8 +107,8 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
 #' @importFrom ggplot2 ggplot geom_line geom_rect facet_grid vars ylab labs
 #' @export
 autoplot.dcmp_ts <- function(object, components = NULL, range_bars = TRUE, ...){
-  dcmp <- object%@%"dcmp"
   resp <- object%@%"resp"
+  dcmp <- (object%@%"aliases")[[expr_text(resp)]]
   idx <- index(object)
   keys <- key(object)
   
