@@ -7,7 +7,8 @@
 \usage{
 as_dable(x, ...)
 
-\method{as_dable}{tbl_ts}(x, resp, dcmp, structure = list(), ...)
+\method{as_dable}{tbl_ts}(x, resp, dcmp, seasons = list(),
+  aliases = list(), ...)
 }
 \arguments{
 \item{x}{Object to be coerced to a dable (\code{dcmp_ts})}
@@ -18,8 +19,11 @@ as_dable(x, ...)
 
 \item{dcmp}{An expression of data columns defining how the variable was decomposed.}
 
-\item{structure}{A named list describing the structure of the components
+\item{seasons}{A named list describing the structure of seasonal components
 (such as \code{period}, and \code{base}).}
+
+\item{aliases}{A named list of calls describing common aliases computed from
+components.}
 }
 \description{
 Coerce to a dable object

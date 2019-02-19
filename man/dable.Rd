@@ -4,8 +4,8 @@
 \alias{dable}
 \title{Create a dable object}
 \usage{
-dable(..., key = id(), index, resp, dcmp, structure = list(),
-  regular = TRUE)
+dable(..., key = id(), index, resp, dcmp, seasons = list(),
+  aliases = list(), regular = TRUE)
 }
 \arguments{
 \item{...}{A set of name-value pairs. The names of "key" and "index" should
@@ -21,8 +21,11 @@ simply call \code{id()}.}
 
 \item{dcmp}{An expression of data columns defining how the variable was decomposed.}
 
-\item{structure}{A named list describing the structure of the components
+\item{seasons}{A named list describing the structure of seasonal components
 (such as \code{period}, and \code{base}).}
+
+\item{aliases}{A named list of calls describing common aliases computed from
+components.}
 
 \item{regular}{Regular time interval (\code{TRUE}) or irregular (\code{FALSE}). The
 interval is determined by the greatest common divisor of index column, if \code{TRUE}.}

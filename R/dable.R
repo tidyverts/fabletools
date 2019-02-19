@@ -3,8 +3,10 @@
 #' @inheritParams tsibble::tsibble
 #' @inheritParams fable
 #' @param dcmp An expression of data columns defining how the variable was decomposed.
-#' @param structure A named list describing the structure of the components
+#' @param seasons A named list describing the structure of seasonal components
 #' (such as `period`, and `base`).
+#' @param aliases A named list of calls describing common aliases computed from
+#' components.
 #'
 #' @export
 dable <- function(..., key = id(), index, resp, dcmp, 
