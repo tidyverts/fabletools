@@ -65,7 +65,7 @@ Ops.model <- function(e1, e2){
   )
 }
 
-#' @importFrom stats cov
+#' @importFrom stats var
 #' @export
 forecast.model_combination <- function(object, ...){
   mdls <- map_lgl(object, is_model)
