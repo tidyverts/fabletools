@@ -4,7 +4,7 @@
 \alias{dable}
 \title{Create a dable object}
 \usage{
-dable(..., key = id(), index, resp, seasons = list(),
+dable(..., key = id(), index, resp, method = NULL, seasons = list(),
   aliases = list(), regular = TRUE)
 }
 \arguments{
@@ -18,6 +18,8 @@ simply call \code{id()}.}
 \item{index}{A bare (or unquoted) variable to specify the time index variable.}
 
 \item{resp}{The response variable (given as a bare or unquoted variable).}
+
+\item{method}{The name of the decomposition method.}
 
 \item{seasons}{A named list describing the structure of seasonal components
 (such as \code{period}, and \code{base}).}
