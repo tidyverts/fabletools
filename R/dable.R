@@ -7,9 +7,10 @@
 #' (such as `period`, and `base`).
 #'
 #' @export
-dable <- function(..., key = id(), index, resp, dcmp, structure = list(), regular = TRUE){
+dable <- function(..., key = id(), index, resp, dcmp, 
+                  seasons = list(), aliases = list(), regular = TRUE){
   tsbl <- tsibble(..., key = !!enquo(key), index = !!enexpr(index), regular = regular)
-  as_dable(tsbl, !!enexpr(resp), !!enexpr(dcmp), structure = structure)
+  as_dable(tsbl, !!enexpr(resp), !!enexpr(dcmp), seasons = seasons, aliases = aliases)
 }
 
 #' Coerce to a dable object
@@ -28,9 +29,9 @@ as_dable <- function(x, ...){
 #' @inheritParams dable
 #' 
 #' @export
-as_dable.tbl_ts <- function(x, resp, dcmp, structure = list(), ...){
+as_dable.tbl_ts <- function(x, resp, dcmp, seasons = list(), aliases = list(), ...){
   new_tsibble(x, resp = enexpr(resp), dcmp = enexpr(dcmp),
-              structure = structure, class = "dcmp_ts")
+              seasons = seasons, aliases = aliases, class = "dcmp_ts")
 }
 
 #' @export
@@ -56,7 +57,7 @@ rbind.dcmp_ts <- function(...){
   
   as_dable(invoke("rbind", map(dots, as_tsibble)),
            resp = !!attrs[["response"]], dcmp = !!attrs[["decomposition"]],
-           structure = attrs[["structure"]])
+           seasons = attrs[["seasons"]], aliases = attrs[["aliases"]])
 }
 
 combine_dcmp_attr <- function(lst_dcmp){
