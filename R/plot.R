@@ -120,7 +120,9 @@ autoplot.dcmp_ts <- function(object, components = NULL, range_bars = TRUE, ...){
   object <- object %>% 
     transmute(!!!components) %>% 
     gather(".var", ".val", !!!syms(measured_vars(.))) %>% 
-    mutate(.var = factor(.var, levels = map_chr(components, function(x) expr_text(get_expr(x)))))
+    mutate(.var = factor(!!sym(".var"),
+      levels = map_chr(components, function(x) expr_text(get_expr(x))))
+    )
   
   line_aes <- aes(x = !!idx, y = !!sym(".val"))
   if(!is_empty(keys)){
@@ -141,6 +143,9 @@ autoplot.dcmp_ts <- function(object, components = NULL, range_bars = TRUE, ...){
   if (range_bars) {
     xranges <- range(object[[expr_text(idx)]])
     barwidth <- pmax(1, round((1 / 64) * diff(units_since(xranges))))
+    
+    # Avoid issues with visible bindings
+    ymin <- ymax <- center <- diff <- NULL
     
     range_data <- object %>%
       as_tibble %>% 
