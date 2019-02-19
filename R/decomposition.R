@@ -26,11 +26,18 @@ train_decomposition <- function(.data, formula, specials, ...){
   mdls <- dots_list(...) %>% 
     map(function(x) estimate(dcmp, x))
   
-  mdl_vars <- map(mdls, function(mdl){
-    all.vars(mdl$response)
-  }) %>% 
-    invoke(c, .)
+  alias_vars <- function(expr, aliases){
+    vars <- all.vars(expr)
+    alias_vars <- aliases[intersect(vars, names(aliases))] %>% 
+      map(alias_vars, aliases = aliases) %>% 
+      invoke(c, .)
+    unname(c(setdiff(vars, names(aliases)), alias_vars))
+  }
   
+  mdl_vars <- map(mdls, `[[`, "response") %>% 
+    map(alias_vars, aliases = aliases) %>% 
+    invoke(c, .)
+                  
   miss_vars <- setdiff(req_vars, mdl_vars)
   
   if(!all(miss_vars %in% names(structure))) {
@@ -49,6 +56,12 @@ Please specify an appropriate model for these components",
     })
   
   model <- reduce(c(mdls, mdls_default), `+`)
+  
+  if(!isTRUE(all.equal(response(model)[[".response"]], est[[measured_vars(est)]]))){
+    abort(
+"The models specified do not combine to give the correct response.
+Please check that you have specified the decomposition models appropriately.")
+  }
   
   structure(
     list(
