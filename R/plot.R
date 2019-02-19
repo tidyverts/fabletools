@@ -76,7 +76,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 #' @export
 autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
   if (!is.null(data)){
-    p <- autoplot(data, !!(object%@%"response"))
+    p <- autoplot.tbl_ts(data, !!(object%@%"response"))
   }
   else{
     p <- ggplot()
