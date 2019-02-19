@@ -110,6 +110,7 @@ autoplot.dcmp_ts <- function(object, components = NULL, range_bars = TRUE, ...){
   dcmp <- object%@%"dcmp"
   resp <- object%@%"resp"
   idx <- index(object)
+  keys <- key(object)
   
   if(is.null(components)){
     components <- c(resp, syms(all.vars(dcmp)))
@@ -117,12 +118,17 @@ autoplot.dcmp_ts <- function(object, components = NULL, range_bars = TRUE, ...){
   
   object <- object %>% 
     transmute(!!!components) %>% 
-    gather(".var", ".val") %>% 
+    gather(".var", ".val", !!!syms(measured_vars(.))) %>% 
     mutate(.var = factor(.var, levels = map_chr(components, function(x) expr_text(get_expr(x)))))
+  
+  line_aes <- aes(x = !!idx, y = !!sym(".val"))
+  if(!is_empty(keys)){
+    line_aes$colour <- expr(interaction(!!!keys, sep = "/"))
+  }
   
   p <- object %>% 
     ggplot() + 
-    geom_line(aes(x = !!idx, y = !!sym(".val"))) + 
+    geom_line(line_aes) + 
     facet_grid(vars(!!sym(".var")), scales = "free_y") + 
     ylab(NULL) + 
     labs(
@@ -151,6 +157,10 @@ autoplot.dcmp_ts <- function(object, components = NULL, range_bars = TRUE, ...){
           xmin = !!sym("xmin"), xmax = !!sym("xmax")),
       fill = "gray75", colour = "black", size = 1 / 3
     )
+  }
+  
+  if(!is_empty(keys)){
+    p <- p + guides(colour = guide_legend(paste0(map_chr(keys, expr_text), collapse = "/")))
   }
   
   p
