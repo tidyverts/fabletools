@@ -2,16 +2,17 @@
 #'
 #' @inheritParams tsibble::tsibble
 #' @inheritParams fable
+#' @param method The name of the decomposition method.
 #' @param seasons A named list describing the structure of seasonal components
 #' (such as `period`, and `base`).
 #' @param aliases A named list of calls describing common aliases computed from
 #' components.
 #'
 #' @export
-dable <- function(..., key = id(), index, resp, seasons = list(), aliases = list(),
-                  regular = TRUE){
+dable <- function(..., key = id(), index, resp, method = NULL,
+                  seasons = list(), aliases = list(), regular = TRUE){
   tsbl <- tsibble(..., key = !!enquo(key), index = !!enexpr(index), regular = regular)
-  as_dable(tsbl, !!enexpr(resp), seasons = seasons, aliases = aliases)
+  as_dable(tsbl, !!enexpr(resp), method = method, seasons = seasons, aliases = aliases)
 }
 
 #' Coerce to a dable object
@@ -30,9 +31,9 @@ as_dable <- function(x, ...){
 #' @inheritParams dable
 #' 
 #' @export
-as_dable.tbl_ts <- function(x, resp, seasons = list(), aliases = list(), ...){
-  new_tsibble(x, resp = enexpr(resp), seasons = seasons, aliases = aliases,
-              class = "dcmp_ts")
+as_dable.tbl_ts <- function(x, resp, method = NULL, seasons = list(), aliases = list(), ...){
+  new_tsibble(x, method = method, resp = enexpr(resp), 
+              seasons = seasons, aliases = aliases, class = "dcmp_ts")
 }
 
 #' @export
@@ -48,8 +49,8 @@ tbl_sum.dcmp_ts <- function(x){
   
   out <- NextMethod()
   names(out)[1] <- "A dable"
-  append(out,
-         c("Decomposition" = paste(response, method, sep = " = ")))
+  append(out, set_names(paste(response, method, sep = " = "),
+                        paste(x%@%"method", "Decomposition")))
 }
 
 #' @export
@@ -58,12 +59,14 @@ rbind.dcmp_ts <- function(...){
   
   attrs <- combine_dcmp_attr(dots)
   
-  as_dable(invoke("rbind", map(dots, as_tsibble)), resp = !!attrs[["response"]], 
+  as_dable(invoke("rbind", map(dots, as_tsibble)), 
+           method = attrs[["method"]], resp = !!attrs[["response"]], 
            seasons = attrs[["seasons"]], aliases = attrs[["aliases"]])
 }
 
 combine_dcmp_attr <- function(lst_dcmp){
   resp <- map(lst_dcmp, function(x) x%@%"resp")
+  method <- map(lst_dcmp, function(x) x%@%"method")
   strc <- map(lst_dcmp, function(x) x%@%"seasons")
   aliases <- map(lst_dcmp, function(x) x%@%"aliases")
   if(length(resp <- unique(resp)) > 1){
@@ -80,5 +83,6 @@ combine_dcmp_attr <- function(lst_dcmp){
       x[[which.max(map_dbl(vars, length))]]
     })
   
-  list(response = resp[[1]], seasons = strc, aliases = aliases)
+  list(response = resp[[1]], method = paste0(unique(method), collapse = " & "),
+       seasons = strc, aliases = aliases)
 }

@@ -108,6 +108,7 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
 #' @export
 autoplot.dcmp_ts <- function(object, components = NULL, range_bars = TRUE, ...){
   resp <- object%@%"resp"
+  method <- object%@%"method"
   dcmp <- (object%@%"aliases")[[expr_text(resp)]]
   idx <- index(object)
   keys <- key(object)
@@ -132,7 +133,7 @@ autoplot.dcmp_ts <- function(object, components = NULL, range_bars = TRUE, ...){
     facet_grid(vars(!!sym(".var")), scales = "free_y") + 
     ylab(NULL) + 
     labs(
-      title = "A decomposition", 
+      title = paste(method%||%"A", "decomposition"), 
       subtitle = paste(expr_text(resp), expr_text(dcmp), sep = " = ")
     )
   

@@ -70,7 +70,7 @@ Please check that you have specified the decomposition models appropriately.")
           .fitted = fitted(model)[[".fitted"]],
           .resid = !!sym(measured_vars(est)) - !!sym(".fitted")
         ),
-      fit = tibble(method = "Decomposition model",
+      fit = tibble(method = dcmp%@%"method",
                    decomposition = list(dcmp_method)),
       model = model
     ),
@@ -141,5 +141,5 @@ tidy.decomposition_model <- function(x, ...){
 
 #' @export
 model_sum.decomposition_model <- function(x){
-  x$fit$method
+  paste(x$fit$method, "decomposition model")
 }

@@ -55,8 +55,8 @@ model_definition <- R6::R6Class("model",
 #' @rdname definitions 
 #' @export
 decomposition_definition <- R6::R6Class("decomposition",
-  public = list(
-    method = "Unknown decomposition",
+                                        public = list(
+                                          method = "Unknown decomposition",
     specials = list(),
     formula = NULL,
     extra = NULL,
@@ -117,7 +117,7 @@ new_decomposition <- function(defn){
       
       attrs <- combine_dcmp_attr(out[["dcmp"]])
       out <- unnest(out, !!sym("dcmp"), key = keys)
-      as_dable(out, resp = !!attrs[["response"]],
+      as_dable(out, method = attrs[["method"]], resp = !!attrs[["response"]],
                seasons = attrs[["seasons"]], aliases = attrs[["aliases"]])
     }),
     env = environment()
