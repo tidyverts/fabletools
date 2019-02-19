@@ -49,7 +49,7 @@ Please specify an appropriate model for these components",
   }
   
   mdls_default <- if(!is_empty(miss_vars)){
-    requireNamespace("fable")
+    require_package("fable")
     lag <- NULL
     
     structure[miss_vars] %>% 
