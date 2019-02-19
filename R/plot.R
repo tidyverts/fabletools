@@ -103,3 +103,55 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   }
   geom_forecast(mapping = mapping, stat = "identity", data = data, ...)
 }
+
+#' @importFrom ggplot2 ggplot geom_line geom_rect facet_grid vars ylab labs
+#' @export
+autoplot.dcmp_ts <- function(object, components = NULL, range_bars = TRUE, ...){
+  dcmp <- object%@%"dcmp"
+  resp <- object%@%"resp"
+  idx <- index(object)
+  
+  if(is.null(components)){
+    components <- c(syms(all.vars(dcmp)))
+  }
+  
+  object <- object %>% 
+    transmute(!!!components) %>% 
+    gather(".var", ".val") %>% 
+    mutate(.var = factor(.var, levels = map_chr(components, function(x) expr_text(get_expr(x)))))
+  
+  p <- object %>% 
+    ggplot() + 
+    geom_line(aes(x = !!idx, y = !!sym(".val"))) + 
+    facet_grid(vars(!!sym(".var")), scales = "free_y") + 
+    ylab(NULL) + 
+    labs(
+      title = "A decomposition", 
+      subtitle = paste(expr_text(resp), expr_text(dcmp), sep = " = ")
+    )
+  
+  # Rangebars
+  if (range_bars) {
+    xranges <- range(object[[expr_text(idx)]])
+    barwidth <- pmax(1, round((1 / 64) * diff(units_since(xranges))))
+    
+    range_data <- object %>%
+      as_tibble %>% 
+      group_by(!!sym(".var")) %>% 
+      summarise(ymin = min(!!sym(".val"), na.rm = TRUE), ymax = max(!!sym(".val"), na.rm = TRUE)) %>% 
+      mutate(
+        center = (ymin + ymax) / 2,
+        diff = min(ymax - ymin),
+        xmin = xranges[2] + barwidth, xmax = xranges[2] + barwidth * 2,
+        ymin = center - diff/2, ymax = center + diff/2
+      )
+    
+    p <- p + geom_rect(data = range_data,
+      aes(ymin = !!sym("ymin"), ymax = !!sym("ymax"),
+          xmin = !!sym("xmin"), xmax = !!sym("xmax")),
+      fill = "gray75", colour = "black", size = 1 / 3
+    )
+  }
+  
+  p
+}
