@@ -14,6 +14,7 @@ refit.mdl_df <- function(object, new_data, ...){
   object %>%
     bind_new_data(new_data) %>% 
     gather(".model", ".fit", !!!(object%@%"models")) %>% 
+    as_tibble %>% 
     transmute(
       !!!key(object),
       !!sym(".model"),
@@ -30,5 +31,7 @@ refit.model <- function(object, new_data, ...){
   specials <- parse_model_rhs(object$model)$specials
   object$model$remove_data()
   
-  refit(object[["fit"]], new_data, specials = specials, ...)
+  object$fit <- refit(object[["fit"]], new_data, specials = specials, ...)
+  object$index <- select(new_data, !!index(new_data))
+  object
 }

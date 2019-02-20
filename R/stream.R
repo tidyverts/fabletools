@@ -13,6 +13,7 @@ stream.mdl_df <- function(object, new_data, ...){
   object %>%
     bind_new_data(new_data) %>% 
     gather(".model", ".fit", !!!(object%@%"models")) %>% 
+    as_tibble %>% 
     transmute(
       !!!key(object),
       !!sym(".model"),
@@ -29,5 +30,7 @@ stream.model <- function(object, new_data, ...){
   specials <- parse_model_rhs(object$model)$specials
   object$model$remove_data()
   
-  stream(object[["fit"]], new_data, specials = specials, ...)
+  object$fit <- stream(object[["fit"]], new_data, specials = specials, ...)
+  object$index <- rbind(object$index, select(new_data, !!index(new_data)))
+  object
 }
