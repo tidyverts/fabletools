@@ -75,32 +75,60 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 
 #' @export
 autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
+  fc_key <- syms(setdiff(key_vars(object), ".model"))
+  
   if (!is.null(data)){
-    p <- autoplot.tbl_ts(data, !!(object%@%"response"))
+    if(!identical(fc_key, key(data))){
+      abort("Provided data contains a different key structure to the forecasts.")
+    }
+    if(!is_empty(key(data))){
+      data <- semi_join(data, object, by = key_vars(data))
+    }
+    
+    p <- ggplot(data, aes(x = !!index(data), y = !!(object%@%"response"))) + 
+      geom_line()
   }
   else{
     p <- ggplot()
   }
-  p +
+  
+  p <- p +
     autolayer(object, level = level, ...)
+  
+  if(!is_empty(fc_key)){
+    p <- p + facet_grid(vars(!!!key(data)), scales = "free_y")
+  }
+  
+  p
 }
 
 #' @export
 autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
+  fc_key <- syms(setdiff(key_vars(object), ".model"))
+  
   data <- fortify(object, level = level)
-  mapping <- eval_tidy(quo(aes(x = !!index(data),
-                               y = !!sym(expr_text(object%@%"response")))))
+  mapping <- aes(
+    x = !!index(data),
+    y = !!sym(expr_text(object%@%"response"))
+  )
+  
   if(!is.null(level)){
     mapping$level <- sym("level")
     mapping$ymin <- sym("lower")
     mapping$ymax <- sym("upper")
   }
+  
+  if(!is_empty(fc_key)){
+    mapping$group <- expr(interaction(!!!fc_key, sep = "/"))
+  }
+  
   if(!is.null(series)){
     mapping$colour <- series
   }
-  else if(!is_empty(key_vars(object))){
-    mapping$colour <- expr(interaction(!!!syms(key_vars(object))))
+  else if(length(unique(key_data(object)[[".model"]])) > 1){
+    mapping$colour <- sym(".model")
   }
+  
   geom_forecast(mapping = mapping, stat = "identity", data = data, ...)
 }
 
