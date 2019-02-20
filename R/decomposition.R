@@ -7,7 +7,7 @@ train_decomposition <- function(.data, formula, specials, ...){
   
   dcmp <- do.call(self$dcmp_fn, list2(.data, formula, !!!self$dcmp_args))
   
-  dcmp_method <- (dcmp%@%"aliases")[[expr_text(dcmp%@%"resp")]]
+  dcmp_method <- (dcmp%@%"aliases")[[as_string(dcmp%@%"resp")]]
   structure <- dcmp%@%"seasons"
   aliases <- dcmp%@%"aliases"
   
@@ -63,7 +63,6 @@ Please specify an appropriate model for these components",
     list()
   }
 
-  
   model <- reduce(c(mdls, mdls_default), `+`)
   
   if(!isTRUE(all.equal(response(model)[[".response"]], est[[measured_vars(est)]]))){
