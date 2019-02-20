@@ -70,9 +70,8 @@ forecast.model <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE
   
   out <- mutate(new_data, 
                 !!expr_text(object$response) := fc[["point"]],
-                .distribution = fc[["dist"]],
-                .h = new_h)
-  out <- select(out, !!index(out), !!sym(".h"), expr_text(object$response), !!sym(".distribution"), seq_along(out))
+                .distribution = fc[["dist"]])
+  out <- select(out, !!index(out), expr_text(object$response), !!sym(".distribution"), seq_along(out))
   as_fable(out,
            resp = !!object$response,
            dist = !!sym(".distribution")
