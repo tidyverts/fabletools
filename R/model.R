@@ -72,6 +72,11 @@ model_sum.model <- function(x){
   model_sum(x$fit)
 }
 
+#' @export
+print.model <- function(x){
+  sprintf("A %s model", model_sum(x[["fit"]]))
+}
+
 #' Extract the left hand side of a model
 #' 
 #' @param model A formula
