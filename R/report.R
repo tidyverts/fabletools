@@ -16,7 +16,7 @@ report.mdl_df <- function(object, ...){
     glance(object)
   }
   else{
-    report(object[[expr_text((object%@%"models")[[1]])]][[1]])
+    report(object[[as_string((object%@%"models")[[1]])]][[1]])
   }
 }
 
