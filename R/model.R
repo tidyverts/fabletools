@@ -73,7 +73,7 @@ model_sum.model <- function(x){
 }
 
 #' @export
-print.model <- function(x){
+print.model <- function(x, ...){
   sprintf("A %s model", model_sum(x[["fit"]]))
 }
 
