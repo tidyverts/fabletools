@@ -23,5 +23,8 @@ response.mdl_df <- function(object, ...){
 #' @export
 response.model <- function(object, ...){
   aug <- augment(object, ...)
-  select(aug, !!index(aug), !!!list(.response = expr_text(object$response)))
+  bt <- invert_transformation(object$transformation)
+  transmute(aug, !!index(aug), 
+            .response = bt(!!sym(expr_text(model_lhs(object$model))))
+  )
 }
