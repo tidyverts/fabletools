@@ -134,7 +134,7 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
 
 #' @importFrom ggplot2 ggplot geom_line geom_rect facet_grid vars ylab labs
 #' @export
-autoplot.dcmp_ts <- function(object, components = NULL, range_bars = TRUE, ...){
+autoplot.dcmp_ts <- function(object, components = NULL, scale_bars = TRUE, ...){
   resp <- object%@%"resp"
   method <- object%@%"method"
   dcmp <- (object%@%"aliases")[[expr_text(resp)]]
@@ -169,7 +169,7 @@ autoplot.dcmp_ts <- function(object, components = NULL, range_bars = TRUE, ...){
     )
   
   # Rangebars
-  if (range_bars) {
+  if (scale_bars) {
     xranges <- range(object[[expr_text(idx)]])
     barwidth <- pmax(1, round((1 / 64) * diff(units_since(xranges))))
     
@@ -183,7 +183,7 @@ autoplot.dcmp_ts <- function(object, components = NULL, range_bars = TRUE, ...){
       mutate(
         center = (ymin + ymax) / 2,
         diff = min(ymax - ymin),
-        xmin = xranges[2] + barwidth, xmax = xranges[2] + barwidth * 2,
+        xmin = xranges[1] - barwidth * 2, xmax = xranges[1] - barwidth,
         ymin = center - diff/2, ymax = center + diff/2
       )
     
