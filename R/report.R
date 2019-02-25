@@ -23,6 +23,7 @@ report.mdl_df <- function(object, ...){
 #' @export
 report.model <- function(object, ...){
   cat(paste("Series:", expr_text(object$response), "\n"))
+  cat(paste("Model:", model_sum(object), "\n"))
   if(!is_symbol(body(object$transformation))){
     cat(paste("Transformation:", expr_text(body(object$transformation)), "\n"))
   }
