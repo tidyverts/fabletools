@@ -140,6 +140,7 @@ autoplot.dcmp_ts <- function(object, components = NULL, range_bars = TRUE, ...){
   dcmp <- (object%@%"aliases")[[expr_text(resp)]]
   idx <- index(object)
   keys <- key(object)
+  n_keys <- n_keys(object)
   
   if(is.null(components)){
     components <- c(resp, syms(all.vars(dcmp)))
@@ -153,7 +154,7 @@ autoplot.dcmp_ts <- function(object, components = NULL, range_bars = TRUE, ...){
     )
   
   line_aes <- aes(x = !!idx, y = !!sym(".val"))
-  if(!is_empty(keys)){
+  if(n_keys > 1){
     line_aes$colour <- expr(interaction(!!!keys, sep = "/"))
   }
   
