@@ -13,6 +13,7 @@ summary.model <- function(object, ...){
 
 #' @export
 summary.fbl_ts <- function(object, level=c(80,95), ...){
+  .Deprecated("Please use report()")
   object %>%
     transmute(
       !!(object%@%"response"),

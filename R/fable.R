@@ -94,6 +94,15 @@ tbl_sum.fbl_ts <- function(x){
 }
 
 #' @export
+report.fbl_ts <- function(object, level = c(80, 95), ...){
+  object %>%
+    transmute(
+      !!(object%@%"response"),
+      !!!set_names(map(level,function(.x) expr(hilo(!!(object%@%"dist"), !!.x))),
+                   paste0(level, "%")))
+}
+
+#' @export
 select.fbl_ts <- function (.data, ...){
   as_fable(NextMethod(), !!(.data%@%"response"), !!(.data%@%"dist"))
 }
