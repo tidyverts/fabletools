@@ -9,7 +9,7 @@ accuracy(x, ...)
 \arguments{
 \item{x}{A model or forecast object}
 
-\item{...}{Additional arguments to be passed to other methods
+\item{...}{Additional arguments to be passed to measures that use it.
 
 The measures calculated are:
 \itemize{

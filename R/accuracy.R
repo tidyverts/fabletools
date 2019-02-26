@@ -141,7 +141,7 @@ distribution_measures <- list(percentile = percentile_score)
 #' Evaluate model/forecast accuracy
 #' 
 #' @param x A model or forecast object
-#' @param ... Additional arguments to be passed to other methods
+#' @param ... Additional arguments to be passed to measures that use it.
 #' 
 #' The measures calculated are:
 #' \itemize{
