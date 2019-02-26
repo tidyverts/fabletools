@@ -16,16 +16,19 @@ common_periods <- function(x){
   UseMethod("common_periods")
 }
 
+#' @rdname freq_tools
 #' @export
 common_periods.default <- function(x){
   common_periods(pull_interval(x))
 }
 
+#' @rdname freq_tools
 #' @export
 common_periods.tbl_ts <- function(x){
   common_periods(tsibble::interval(x))
 }
 
+#' @rdname freq_tools
 #' @export
 common_periods.interval <- function(x){
   freq_sec <- c(year = 31557600, week = 604800, day = 86400, hour = 3600, minute = 60, second = 1,
@@ -55,13 +58,20 @@ get_frequencies <- function(period, ...){
   UseMethod("get_frequencies")
 }
 
+#' @rdname freq_tools
 #' @export
 get_frequencies.numeric <- function(period, ...){
   period
 }
 
+#' @rdname freq_tools
+#' @param data A tsibble
+#' @param .auto The method used to automatically select the appropriate seasonal
+#' periods
 #' @export
-get_frequencies.NULL <- function(period, ..., .auto = "smallest"){
+get_frequencies.NULL <- function(period, data, ...,
+                                 .auto = c("smallest", "largest", "all")){
+  .auto <- match.arg(.auto)
   frequencies <- common_periods(data)
   if(.auto == "smallest") {
     return(frequencies[which.min(frequencies)])
@@ -74,12 +84,14 @@ get_frequencies.NULL <- function(period, ..., .auto = "smallest"){
   }
 }
 
+#' @rdname freq_tools
 #' @export
 get_frequencies.character <- function(period, data, ...){
   require_package("lubridate")
   get_frequencies(lubridate::as.period(period), data, ...)
 }
 
+#' @rdname freq_tools
 #' @export
 get_frequencies.Period <- function(period, data, ...){
   require_package("lubridate")

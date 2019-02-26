@@ -62,21 +62,13 @@ custom_error <- function(.f, error){
 }
 
 make_future_data <- function(.data, h = NULL){
-  if(is.null(h)){
-    h <- get_frequencies("smallest", .data)*2
+  n <- get_frequencies(h, .data, .auto = "smallest")
+  if(length(n) > 1){
+    warn("More than one forecast horizon specified, using the smallest.")
+    n <- min(n)
   }
-  else{
-    h <- get_frequencies(h, .data)
-    if(length(h) > 1){
-      warn("More than one forecast horizon specified, using the smallest.")
-      h <- min(h)
-    }
-    if(length(h) != 1){
-      warn("Could not identify an appropriate forecast horizon from `h`. Defaulting to `h=NULL`")
-      h <- get_frequencies("smallest", .data)*2
-    }
-  }
-  tsibble::new_data(.data, h)
+  if(is.null(h)) n <- n*2
+  tsibble::new_data(.data, n)
 }
 
 bind_new_data <- function(object, new_data){
