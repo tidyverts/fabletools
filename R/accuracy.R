@@ -210,7 +210,7 @@ accuracy.model <- function(x, measures = list(point_measures, MASE = MASE), ...)
   measures <- squash(measures)
   
   if(is.null(dots$.period)){
-    dots$.period <- get_frequencies("smallest", aug)
+    dots$.period <- get_frequencies(NULL, aug, .auto = "smallest")
   }
   
   fns <- build_accuracy_calls(measures, c(names(dots), names(aug)))
@@ -227,7 +227,7 @@ accuracy.model <- function(x, measures = list(point_measures, MASE = MASE), ...)
 }
 
 #' @export
-accuracy.fbl_ts <- function(x, new_data, measures = list(point_measures), ...,
+accuracy.fbl_ts <- function(x, data, measures = list(point_measures), ...,
                             join_by = setdiff(key_vars(x), c(".model", ".id"))){
   dots <- dots_list(...)
 
@@ -246,7 +246,7 @@ accuracy.fbl_ts <- function(x, new_data, measures = list(point_measures), ...,
   measures <- squash(measures)
   
   if(is.null(dots$.period)){
-    dots$.period <- get_frequencies("smallest", aug)
+    dots$.period <- get_frequencies(NULL, aug, .auto = "smallest")
   }
   
   fns <- build_accuracy_calls(measures, c(names(dots), names(aug)))
