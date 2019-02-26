@@ -76,7 +76,7 @@ get_frequencies.NULL <- function(period, data, ...,
   if(.auto == "smallest") {
     return(frequencies[which.min(frequencies)])
   }
-  else if(period == "largest"){
+  else if(.auto == "largest"){
     return(frequencies[which.max(frequencies)])
   }
   else {
