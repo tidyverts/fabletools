@@ -61,28 +61,23 @@ get_frequencies.numeric <- function(period, ...){
 }
 
 #' @export
-get_frequencies.NULL <- function(period, ...){
-  NULL
-}
-
-#' @export
-get_frequencies.character <- function(period, data, ...){
-  if(period %in% c("all", "smallest", "largest")){
-    frequencies <- common_periods(data)
-  }
-  if(period == "all"){
-    return(frequencies)
-  }
-  else if(period == "smallest"){
+get_frequencies.NULL <- function(period, ..., .auto = "smallest"){
+  frequencies <- common_periods(data)
+  if(.auto == "smallest") {
     return(frequencies[which.min(frequencies)])
   }
   else if(period == "largest"){
     return(frequencies[which.max(frequencies)])
   }
-  else{
-    require_package("lubridate")
-    get_frequencies(lubridate::as.period(period), data, ...)
+  else {
+    return(frequencies)
   }
+}
+
+#' @export
+get_frequencies.character <- function(period, data, ...){
+  require_package("lubridate")
+  get_frequencies(lubridate::as.period(period), data, ...)
 }
 
 #' @export
