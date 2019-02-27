@@ -103,8 +103,8 @@ new_model_class <- function(model = "Unknown model",
 }
 
 #' @export
-new_model_definition <- function(class, ...){
-  class$new(...)
+new_model_definition <- function(.class, ...){
+  .class$new(...)
 }
 
 #' @rdname definitions 
