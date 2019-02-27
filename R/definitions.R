@@ -23,9 +23,11 @@ model_definition <- R6::R6Class(NULL,
       
       self$formula <- enquo(formula)
       
+      self$.__enclos_env__ <- env_clone(self$.__enclos_env__, self$env)
+
       # Set `self` and `super` for special functions
       self$specials <- structure(as_environment(
-        assign_func_envs(self$specials, env_clone(self$.__enclos_env__, self$env)),
+        assign_func_envs(self$specials, self$.__enclos_env__),
         parent = self$env
       ), required_specials = self$specials%@%"required_specials")
       
@@ -79,6 +81,7 @@ model_definition <- R6::R6Class(NULL,
 #' [`fable::common_xregs`], an `origin` element in the model is used to store
 #' the origin for `trend()` and `fourier()` specials. To use these specials, you
 #' must add an `origin` element to the object (say with `origin = NULL`).
+#' @param env The environment from which functions should inherit from.
 #' @param .inherit A model class to inherit from.
 #' 
 #' @rdname new-model-class
@@ -101,7 +104,8 @@ new_model_class <- function(model = "Unknown model",
       prepare = prepare,
       env = env,
       ...
-    )
+    ),
+    parent_env = env_bury(env, .inherit = .inherit)
   )
 }
 
