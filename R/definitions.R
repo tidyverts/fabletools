@@ -22,7 +22,7 @@ model_definition <- R6::R6Class(NULL,
       }
       
       self$formula <- enquo(formula)
-      self$env <- caller_env(n = 2)
+      self$env <- caller_env(n = 3)
       
       # Set `self` and `super` for special functions
       self$specials <- structure(as_environment(
