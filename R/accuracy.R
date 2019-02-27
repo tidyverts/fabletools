@@ -82,7 +82,7 @@ ACF1 <- function(.resid, na.action = stats::na.pass, ...){
 #' @rdname point-accuracy-measures
 #' @export
 point_measures <- list(ME = ME, RMSE = RMSE, MAE = MAE,
-                       MPE = MPE, MAPE = MAPE, ACF1 = ACF1)
+                       MPE = MPE, MAPE = MAPE, MASE = MASE, ACF1 = ACF1)
 
 #' Interval estimate accuracy measures
 #' 
@@ -188,7 +188,7 @@ build_accuracy_calls <- function(measures, available_args){
 }
 
 #' @export
-accuracy.mdl_df <- function(x, measures = list(point_measures, MASE = MASE), ...){
+accuracy.mdl_df <- function(x, measures = point_measures, ...){
   as_tibble(x) %>% 
     gather(".model", "fit", !!!(x%@%"models")) %>% 
     unnest(fit = map(!!sym("fit"), accuracy, measures, ...))
@@ -227,7 +227,7 @@ accuracy.model <- function(x, measures = list(point_measures, MASE = MASE), ...)
 }
 
 #' @export
-accuracy.fbl_ts <- function(x, data, measures = list(point_measures), ...,
+accuracy.fbl_ts <- function(x, data, measures = point_measures, ...,
                             join_by = setdiff(key_vars(x), c(".model", ".id"))){
   dots <- dots_list(...)
 
