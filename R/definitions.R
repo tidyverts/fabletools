@@ -22,12 +22,11 @@ model_definition <- R6::R6Class(NULL,
       }
       
       self$formula <- enquo(formula)
-      self$env <- caller_env(n = 3)
       
       # Set `self` and `super` for special functions
       self$specials <- structure(as_environment(
-        assign_func_envs(self$specials, self$.__enclos_env__),
-        parent = caller_env(2)
+        assign_func_envs(self$specials, env_clone(self$.__enclos_env__, self$env)),
+        parent = self$env
       ), required_specials = self$specials%@%"required_specials")
       
       self$prepare(formula, ...)
@@ -91,6 +90,7 @@ new_model_class <- function(model = "Unknown model",
                             check = function(.data){},
                             prepare = function(...){},
                             ...,
+                            env = caller_env(),
                             .inherit = model_definition){
   R6::R6Class(NULL, inherit = .inherit,
     public = list(
@@ -99,6 +99,7 @@ new_model_class <- function(model = "Unknown model",
       specials = specials,
       check = check,
       prepare = prepare,
+      env = env,
       ...
     )
   )
