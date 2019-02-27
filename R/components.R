@@ -5,7 +5,10 @@ components.mdl_df <- function(object, ...){
   object <- transmute(as_tibble(object),
                       !!!keys, !!sym(".model"),
                       cmp = map(!!sym(".fit"), components))
-  unnest(add_class(object, "lst_ts"), key = keys)
+  attrs <- combine_dcmp_attr(object[["cmp"]])
+  object <- unnest(add_class(object, "lst_ts"), key = keys)
+  as_dable(object, method = attrs[["method"]], resp = !!attrs[["response"]],
+           seasons = attrs[["seasons"]], aliases = attrs[["aliases"]])
 }
 
 #' @export
