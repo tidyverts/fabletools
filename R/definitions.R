@@ -52,6 +52,59 @@ model_definition <- R6::R6Class(NULL,
   lock_objects = FALSE
 )
 
+#' Create a new class of models
+#' 
+#' Suitable for extension packages to create new models for fable.
+#' 
+#' This function produces a new R6 model definition. An understanding of R6 is
+#' not required, however could be useful to provide more sophisticated model
+#' interfaces. All functions have access to `self`, allowing the functions for 
+#' training the model and evaluating specials to access the model class itself.
+#' This can be useful to obtain elements set in the %TODO
+#' 
+#' @param model The name of the model
+#' @param train A function that trains the model to a dataset. `.data` is a tsibble
+#' containing the data's index and response variables only. `formula` is the 
+#' user's provided formula. `specials` is the evaluated specials used in the formula.
+#' @param specials Special functions produced using [new_specials()]
+#' @param check A function that is used to check the data for suitability with 
+#' the model. This can be used to check for missing values (both implicit and 
+#' explicit), regularity of observations, ordered time index, and univariate
+#' responses.
+#' @param prepare This allows you to modify the model class according to user
+#' inputs. `...` is the arguments passed to `new_model_definition`, allowing
+#' you to perform different checks or training procedures according to different
+#' user inputs.
+#' @param ... Further arguments to [R6::R6Class()]. This can be useful to set up
+#' additional elements used in the other functions. For example, to use 
+#' [`fable::common_xregs`], an `origin` element in the model is used to store
+#' the origin for `trend()` and `fourier()` specials. To use these specials, you
+#' must add an `origin` element to the object (say with `origin = NULL`).
+#' 
+#' @export
+new_model_class <- function(model = "Unknown model", 
+                            train = function(.data, formula, specials, ...) abort("This model has not defined a training method."),
+                            specials = new_specials(),
+                            check = function(.data){},
+                            prepare = function(...){},
+                            ...){
+  R6::R6Class(NULL, inherit = model_definition,
+    public = list(
+      model = model,
+      train = train,
+      specials = specials,
+      check = check,
+      prepare = prepare,
+      ...
+    )
+  )
+}
+
+#' @export
+new_model_definition <- function(class, ...){
+  class$new(...)
+}
+
 #' @rdname definitions 
 #' @export
 decomposition_definition <- R6::R6Class(NULL,
