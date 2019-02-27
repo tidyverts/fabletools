@@ -82,6 +82,8 @@ model_definition <- R6::R6Class(NULL,
 #' must add an `origin` element to the object (say with `origin = NULL`).
 #' @param .inherit A model class to inherit from.
 #' 
+#' @rdname new-model-class
+#' 
 #' @export
 new_model_class <- function(model = "Unknown model", 
                             train = function(.data, formula, specials, ...) abort("This model has not defined a training method."),
@@ -102,6 +104,8 @@ new_model_class <- function(model = "Unknown model",
   )
 }
 
+#' @rdname new-model-class
+#' @param .class A model class (typically created with [new_model_class()])
 #' @export
 new_model_definition <- function(.class, ...){
   .class$new(...)

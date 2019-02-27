@@ -2,6 +2,7 @@
 % Please edit documentation in R/definitions.R
 \name{new_model_class}
 \alias{new_model_class}
+\alias{new_model_definition}
 \title{Create a new class of models}
 \usage{
 new_model_class(model = "Unknown model", train = function(.data,
@@ -9,6 +10,8 @@ new_model_class(model = "Unknown model", train = function(.data,
   abort("This model has not defined a training method."),
   specials = new_specials(), check = function(.data) { },
   prepare = function(...) { }, ..., .inherit = model_definition)
+
+new_model_definition(.class, ...)
 }
 \arguments{
 \item{model}{The name of the model}
@@ -36,6 +39,8 @@ the origin for \code{trend()} and \code{fourier()} specials. To use these specia
 must add an \code{origin} element to the object (say with \code{origin = NULL}).}
 
 \item{.inherit}{A model class to inherit from.}
+
+\item{.class}{A model class (typically created with \code{\link[=new_model_class]{new_model_class()}})}
 }
 \description{
 Suitable for extension packages to create new models for fable.
