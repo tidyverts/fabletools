@@ -14,7 +14,8 @@ Imports:
     rlang (>= 0.2.0),
     stats,
     tibble (>= 1.4.1),
-    generics
+    generics,
+    R6
 Suggests:
     colorspace,
     covr,
