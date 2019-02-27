@@ -245,6 +245,15 @@ accuracy.fbl_ts <- function(x, data, measures = point_measures, ...,
     ) %>% 
     mutate(.resid = !!sym(".actual") - !!sym(".fc"))
   
+  if(NROW(missing_test <- anti_join(x, data, by = join_by)) > 0){
+    warn(sprintf(
+"The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
+%i observations are missing between %s and %s", NROW(missing_test), 
+      format(min(missing_test[[expr_text(index(missing_test))]])),
+      format(max(missing_test[[expr_text(index(missing_test))]])))
+    )
+  }
+  
   measures <- squash(measures)
   
   if(is.null(dots$.period)){
