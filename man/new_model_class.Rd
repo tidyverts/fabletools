@@ -8,7 +8,7 @@ new_model_class(model = "Unknown model", train = function(.data,
   formula, specials, ...)
   abort("This model has not defined a training method."),
   specials = new_specials(), check = function(.data) { },
-  prepare = function(...) { })
+  prepare = function(...) { }, ..., .inherit = model_definition)
 }
 \arguments{
 \item{model}{The name of the model}
@@ -34,6 +34,8 @@ additional elements used in the other functions. For example, to use
 \code{\link[fable:common_xregs]{fable::common_xregs}}, an \code{origin} element in the model is used to store
 the origin for \code{trend()} and \code{fourier()} specials. To use these specials, you
 must add an \code{origin} element to the object (say with \code{origin = NULL}).}
+
+\item{.inherit}{A model class to inherit from.}
 }
 \description{
 Suitable for extension packages to create new models for fable.

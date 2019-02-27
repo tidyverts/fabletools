@@ -80,6 +80,7 @@ model_definition <- R6::R6Class(NULL,
 #' [`fable::common_xregs`], an `origin` element in the model is used to store
 #' the origin for `trend()` and `fourier()` specials. To use these specials, you
 #' must add an `origin` element to the object (say with `origin = NULL`).
+#' @param .inherit A model class to inherit from.
 #' 
 #' @export
 new_model_class <- function(model = "Unknown model", 
@@ -87,8 +88,9 @@ new_model_class <- function(model = "Unknown model",
                             specials = new_specials(),
                             check = function(.data){},
                             prepare = function(...){},
-                            ...){
-  R6::R6Class(NULL, inherit = model_definition,
+                            ...,
+                            .inherit = model_definition){
+  R6::R6Class(NULL, inherit = .inherit,
     public = list(
       model = model,
       train = train,
