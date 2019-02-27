@@ -231,6 +231,8 @@ accuracy.fbl_ts <- function(x, data, measures = list(point_measures), ...,
                             join_by = setdiff(key_vars(x), c(".model", ".id"))){
   dots <- dots_list(...)
 
+  join_by <- union(expr_text(index(x)), join_by)
+  
   aug <- x %>% 
     as_tsibble %>% 
     transmute(
@@ -238,8 +240,8 @@ accuracy.fbl_ts <- function(x, data, measures = list(point_measures), ...,
       .dist = !!(x%@%"dist")
     ) %>% 
     left_join(
-      transmute(new_data, !!index(new_data), .actual = !!(x%@%"response")),
-      by = union(expr_text(index(x)), join_by)
+      transmute(data, !!index(data), .actual = !!(x%@%"response")),
+      by = join_by
     ) %>% 
     mutate(.resid = !!sym(".actual") - !!sym(".fc"))
   
@@ -247,6 +249,10 @@ accuracy.fbl_ts <- function(x, data, measures = list(point_measures), ...,
   
   if(is.null(dots$.period)){
     dots$.period <- get_frequencies(NULL, aug, .auto = "smallest")
+  }
+  if(is.null(dots$.train)){
+    orig_data <- anti_join(data, x, by = join_by)
+    dots$.train <- eval_tidy(x%@%"response", data = orig_data)
   }
   
   fns <- build_accuracy_calls(measures, c(names(dots), names(aug)))
