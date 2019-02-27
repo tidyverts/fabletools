@@ -5,7 +5,7 @@
 #' @rdname definitions
 #' 
 #' @export
-model_definition <- R6::R6Class("model",
+model_definition <- R6::R6Class(NULL,
   public = list(
     model = "Unknown model",
     specials = list(),
@@ -54,9 +54,9 @@ model_definition <- R6::R6Class("model",
 
 #' @rdname definitions 
 #' @export
-decomposition_definition <- R6::R6Class("decomposition",
-                                        public = list(
-                                          method = "Unknown decomposition",
+decomposition_definition <- R6::R6Class(NULL,
+  public = list(
+    method = "Unknown decomposition",
     specials = list(),
     formula = NULL,
     extra = NULL,
