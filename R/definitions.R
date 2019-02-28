@@ -16,7 +16,7 @@ model_definition <- R6::R6Class(NULL,
     },
     prepare = function(...){
     },
-    initialize = function(formula, ...){
+    initialize = function(formula, ..., .env){
       if(possibly(compose(is.data.frame, eval_tidy), FALSE)(self$formula)){
         abort("The API for fable models has changed. Read more here: https://github.com/tidyverts/fable/issues/77")
       }
@@ -24,12 +24,14 @@ model_definition <- R6::R6Class(NULL,
       self$formula <- enquo(formula)
       
       self$.__enclos_env__ <- env_clone(self$.__enclos_env__, self$env)
-
+      
       # Set `self` and `super` for special functions
       self$specials <- structure(as_environment(
         assign_func_envs(self$specials, self$.__enclos_env__),
         parent = self$env
       ), required_specials = self$specials%@%"required_specials")
+      
+      self$env <- .env
       
       self$prepare(formula, ...)
       
@@ -112,8 +114,8 @@ new_model_class <- function(model = "Unknown model",
 #' @rdname new-model-class
 #' @param .class A model class (typically created with [new_model_class()])
 #' @export
-new_model_definition <- function(.class, ...){
-  .class$new(...)
+new_model_definition <- function(.class, ..., .env = caller_env(n = 2)){
+  .class$new(..., .env = .env)
 }
 
 #' @rdname definitions 

@@ -82,7 +82,7 @@ test_that("Model parsing scope", {
   # Transformation from scalar
   mdl <- eval({
     scale <- pi
-    model(as_tsibble(USAccDeaths), no_specials(value/pi))
+    model(as_tsibble(USAccDeaths), no_specials(value/scale))
   }, envir = new_environment(list(no_specials = no_specials)))
   
   expect_equal(mdl[[1]][[1]]$response, sym("value"))
