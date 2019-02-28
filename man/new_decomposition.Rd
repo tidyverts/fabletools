@@ -4,7 +4,7 @@
 \alias{new_decomposition}
 \title{Helper to create a new decomposition function}
 \usage{
-new_decomposition(defn)
+new_decomposition(.class, .data, formula, ..., .env = caller_env(n = 2))
 }
 \arguments{
 \item{defn}{R6 decomposition definition}

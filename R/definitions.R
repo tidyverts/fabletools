@@ -123,31 +123,15 @@ new_model_definition <- function(.class, ..., .env = caller_env(n = 2)){
 decomposition_definition <- R6::R6Class(NULL,
   public = list(
     method = "Unknown decomposition",
-    specials = list(),
-    formula = NULL,
-    extra = NULL,
-    env = global_env(),
-    initialize = function(formula, ...){
-      self$formula <- enquo(formula)
-      self$env <- caller_env(n = 2)
-      
-      # Set `self` and `super` for special functions
-      self$specials <- structure(as_environment(
-        assign_func_envs(self$specials, self$.__enclos_env__),
-        parent = caller_env(2)
-      ), required_specials = self$specials%@%"required_specials")
-      
-      self$extra <- list2(...)
-    },
     train = function(...){
       abort("This decomposition has not defined a training method.")
     },
-    data = NULL,
     print = function(...){
       cat("<A decomposition definition>\n", sep = "")
     }
   ),
-  lock_objects = FALSE
+  lock_objects = FALSE,
+  inherit = model_definition
 )
 
 #' Helper to create a new decomposition function
@@ -155,37 +139,77 @@ decomposition_definition <- R6::R6Class(NULL,
 #' @param defn R6 decomposition definition
 #' 
 #' @export
-new_decomposition <- function(defn){
-  fmls <- formals(defn$public_methods$train)
-  fmls <- fmls[names(fmls) != "specials"]
-  extra <- names(fmls)[!(names(fmls) %in% c(".data", "formula", "..."))]
-  extra <- set_names(syms(extra), extra)
-  new_function(
-    fmls,
-    body(function(formula, ...){
-      keys <- key(.data)
-      dcmp <- defn$new(!!enquo(formula), !!!extra, ...)
-      fablelite::validate_formula(dcmp, .data)
-      .data <- nest(group_by(.data, !!!keys), .key = "lst_data")
-      
-      eval_dcmp <- function(lst_data){
-        map(lst_data, function(data){
-          dcmp$data <- data
-          parsed <- fablelite::parse_model(dcmp)
-          data <- transmute(data, !!model_lhs(parsed$model))
-          eval_tidy(
-            expr(dcmp$train(.data = data, formula = dcmp$formula,
-                            specials = parsed$specials, !!!dcmp$extra))
-          )
-        })
-      }
-      out <- mutate(.data, dcmp = eval_dcmp(!!sym("lst_data")))
-      
-      attrs <- combine_dcmp_attr(out[["dcmp"]])
-      out <- unnest(out, !!sym("dcmp"), key = keys)
-      as_dable(out, method = attrs[["method"]], resp = !!attrs[["response"]],
-               seasons = attrs[["seasons"]], aliases = attrs[["aliases"]])
-    }),
-    env = environment()
+new_decomposition <- function(.class, .data, formula, ..., .env = caller_env(n = 2)){
+  
+  dcmp <- new_model_definition(.class, !!enquo(formula), ..., .env = .env)
+  
+  keys <- key(.data)
+  .data <- nest(group_by(.data, !!!keys), .key = "lst_data")
+  
+  out <- mutate(.data,
+                dcmp = map(!!sym("lst_data"), function(data, dcmp){
+                  estimate(data, dcmp)[["fit"]]
+                }, dcmp))
+  
+  attrs <- combine_dcmp_attr(out[["dcmp"]])
+  out <- unnest(out, !!sym("dcmp"), key = keys)
+  as_dable(out, method = attrs[["method"]], resp = !!attrs[["response"]],
+           seasons = attrs[["seasons"]], aliases = attrs[["aliases"]])
+}
+
+
+#' Create a new class of decomposition
+#' 
+#' Suitable for extension packages to create new decompositions for fable.
+#' 
+#' This function produces a new R6 decomposition definition. An understanding of R6 is
+#' not required, however could be useful to provide more sophisticated model
+#' interfaces. All functions have access to `self`, allowing the functions for 
+#' training the model and evaluating specials to access the model class itself.
+#' This can be useful to obtain elements set in the %TODO
+#' 
+#' @param method The name of the decomposition method
+#' @param train A function that trains the model to a dataset. `.data` is a tsibble
+#' containing the data's index and response variables only. `formula` is the 
+#' user's provided formula. `specials` is the evaluated specials used in the formula.
+#' @param specials Special functions produced using [new_specials()]
+#' @param check A function that is used to check the data for suitability with 
+#' the model. This can be used to check for missing values (both implicit and 
+#' explicit), regularity of observations, ordered time index, and univariate
+#' responses.
+#' @param prepare This allows you to modify the model class according to user
+#' inputs. `...` is the arguments passed to `new_model_definition`, allowing
+#' you to perform different checks or training procedures according to different
+#' user inputs.
+#' @param ... Further arguments to [R6::R6Class()]. This can be useful to set up
+#' additional elements used in the other functions. For example, to use 
+#' [`fable::common_xregs`], an `origin` element in the model is used to store
+#' the origin for `trend()` and `fourier()` specials. To use these specials, you
+#' must add an `origin` element to the object (say with `origin = NULL`).
+#' @param .env The environment from which functions should inherit from.
+#' @param .inherit A model class to inherit from.
+#' 
+#' @rdname new-dcmp-class
+#' 
+#' @export
+new_decomposition_class <- function(method = "Unknown model", 
+                            train = function(.data, formula, specials, ...) abort("This decomposition has not defined a training method."),
+                            specials = new_specials(),
+                            check = function(.data){},
+                            prepare = function(...){},
+                            ...,
+                            .env = caller_env(),
+                            .inherit = decomposition_definition){
+  R6::R6Class(NULL, inherit = .inherit,
+              public = list(
+                method = method,
+                train = train,
+                specials = specials,
+                check = check,
+                prepare = prepare,
+                env = .env,
+                ...
+              ),
+              parent_env = env_bury(.env, .inherit = .inherit)
   )
 }
