@@ -2,14 +2,19 @@
 % Please edit documentation in R/estimate.R
 \name{estimate}
 \alias{estimate}
+\alias{estimate.tbl_ts}
 \title{Estimate a model}
 \usage{
-estimate(.data, .model)
+estimate(.data, ...)
+
+\method{estimate}{tbl_ts}(.data, .model, ...)
 }
 \arguments{
-\item{.data}{A data structure suitable for the models (such as a \code{tsibble})}
+\item{.data}{A data structure suitable for the models (such as a \code{tsibble}).}
 
-\item{.model}{Definition for the model to be used}
+\item{...}{Further arguments passed to methods.}
+
+\item{.model}{Definition for the model to be used.}
 }
 \description{
 Estimate a model

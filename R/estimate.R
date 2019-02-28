@@ -1,15 +1,20 @@
 #' Estimate a model
 #' 
-#' @param .data A data structure suitable for the models (such as a `tsibble`)
-#' @param .model Definition for the model to be used
+#' @param .data A data structure suitable for the models (such as a `tsibble`).
+#' @param ... Further arguments passed to methods.
+#' 
+#' @rdname estimate
 #' 
 #' @export
-estimate <- function(.data, .model){
+estimate <- function(.data, ...){
   UseMethod("estimate")
 }
 
+#' @param .model Definition for the model to be used.
+#' 
+#' @rdname estimate
 #' @export
-estimate.tbl_ts <- function(.data, .model){
+estimate.tbl_ts <- function(.data, .model, ...){
   .model$add_data(.data)
   validate_formula(.model, .data)
   parsed <- parse_model(.model)
