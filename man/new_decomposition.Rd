@@ -4,10 +4,16 @@
 \alias{new_decomposition}
 \title{Helper to create a new decomposition function}
 \usage{
-new_decomposition(.class, .data, formula, ..., .env = caller_env(n = 2))
+new_decomposition(.class, .data, ..., .env = caller_env(n = 2))
 }
 \arguments{
-\item{defn}{R6 decomposition definition}
+\item{.class}{A decomposition class (typically created with \code{\link[=new_decomposition_class]{new_decomposition_class()}}).}
+
+\item{.data}{A tsibble.}
+
+\item{...}{The user inputs, such as the formula and any control parameters.}
+
+\item{.env}{The environment from which the user's objects can be found.}
 }
 \description{
 Helper to create a new decomposition function

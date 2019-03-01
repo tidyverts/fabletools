@@ -136,12 +136,14 @@ decomposition_definition <- R6::R6Class(NULL,
 
 #' Helper to create a new decomposition function
 #' 
-#' @param defn R6 decomposition definition
+#' @param .class A decomposition class (typically created with [new_decomposition_class()]).
+#' @param .data A tsibble.
+#' @param ... The user inputs, such as the formula and any control parameters.
+#' @param .env The environment from which the user's objects can be found.
 #' 
 #' @export
-new_decomposition <- function(.class, .data, formula, ..., .env = caller_env(n = 2)){
-  
-  dcmp <- new_model_definition(.class, !!enquo(formula), ..., .env = .env)
+new_decomposition <- function(.class, .data, ..., .env = caller_env(n = 2)){
+  dcmp <- new_model_definition(.class, ..., .env = .env)
   
   keys <- key(.data)
   .data <- nest(group_by(.data, !!!keys), .key = "lst_data")
