@@ -111,7 +111,8 @@ print.transformation <- function(x, ...){
 }
 
 #' @rdname new_transformation
-#' @param x A transformation (such as one created with `new_transformation`)
+#' @param x A transformation (such as one created with `new_transformation`).
+#' @param ... Further arguments passed to other methods.
 #' @export
 invert_transformation <- function(x, ...){
   UseMethod("invert_transformation")

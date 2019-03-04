@@ -14,7 +14,9 @@ invert_transformation(x, ...)
 
 \item{inverse}{A function which is the inverse of a transformation}
 
-\item{x}{A transformation (such as one created with \code{new_transformation})}
+\item{x}{A transformation (such as one created with \code{new_transformation}).}
+
+\item{...}{Further arguments passed to other methods.}
 }
 \description{
 Produces a new transformation for fable modelling functions which will be used to transform, back-transform, and adjust forecasts.
