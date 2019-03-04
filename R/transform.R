@@ -201,7 +201,12 @@ inverse_table$add("base", "^",
                   function(operation, target, result){
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
-                    call2("^", !!!exprs(!!result, !!call2("/", !!!exprs(1, !!args[[2]]))))
+                    if(target_pos == 1){
+                      call2("^", !!!exprs(!!result, !!call2("/", !!!exprs(1, !!args[[2]]))))
+                    }
+                    else{
+                      expr(log(!!result) / log(!!args[[1]]))
+                    }
                   }
 )
 
