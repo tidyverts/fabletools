@@ -175,7 +175,7 @@ inverse_table$add("base", "exp",
                   }
 )
 
-inverse_table$add("fable", "BoxCox", 
+inverse_table$add("fablelite", "BoxCox", 
                   function(operation, target, result){
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
@@ -183,7 +183,7 @@ inverse_table$add("fable", "BoxCox",
                   }
 )
 
-inverse_table$add("fable", "InvBoxCox", 
+inverse_table$add("fablelite", "InvBoxCox", 
                   function(operation, target, result){
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
