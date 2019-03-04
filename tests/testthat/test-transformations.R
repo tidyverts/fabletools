@@ -7,7 +7,7 @@ test_transformation <- function(..., dt = simple_data){
   resp <- mdl$response
   expect_equal(
     dt[[expr_text(resp)]],
-    invert_transformation(trans)(trans(dt[[expr_text(resp)]]))
+    fablelite:::invert_transformation(trans)(trans(dt[[expr_text(resp)]]))
   )
 }
 
