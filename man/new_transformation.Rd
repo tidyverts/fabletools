@@ -2,14 +2,19 @@
 % Please edit documentation in R/transform.R
 \name{new_transformation}
 \alias{new_transformation}
+\alias{invert_transformation}
 \title{Create a new modelling transformation}
 \usage{
 new_transformation(transformation, inverse)
+
+invert_transformation(x, ...)
 }
 \arguments{
 \item{transformation}{A function which transforms the data}
 
 \item{inverse}{A function which is the inverse of a transformation}
+
+\item{x}{A transformation (such as one created with \code{new_transformation})}
 }
 \description{
 Produces a new transformation for fable modelling functions which will be used to transform, back-transform, and adjust forecasts.

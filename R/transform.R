@@ -110,10 +110,14 @@ print.transformation <- function(x, ...){
       "Backtransformation: ", expr_text(body(x%@%"inverse")), sep="")
 }
 
+#' @rdname new_transformation
+#' @param x A transformation (such as one created with `new_transformation`)
+#' @export
 invert_transformation <- function(x, ...){
   UseMethod("invert_transformation")
 }
 
+#' @export
 invert_transformation.transformation <- function(x, ...){
   new_transformation(x%@%"inverse", `attributes<-`(x, NULL))
 }
