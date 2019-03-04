@@ -95,3 +95,8 @@ construct_fc <- function(point, sd, dist){
   stopifnot(inherits(dist, "fcdist"))
   list(point = point, sd = sd, dist = dist)
 }
+
+#' @export
+forecast.fbl_ts <- function(object, ...){
+  abort("Did you try to forecast a fable? Forecasts can only be computed from model objects (such as a mable).")
+}
