@@ -254,7 +254,9 @@ parse_model_lhs <- function(model){
       invert_transformation(trans)(trans(dt[[expr_text(resp)]]))
     )
     if(!isTRUE(valid)){
-      abort("Could not identify a valid back-transformation for this transformation. Please specify a valid form of your transformation using `new_transformation()`.")
+      abort(
+"Could not identify a valid back-transformation for this transformation.
+Please specify a valid form of your transformation using `new_transformation()`.")
     }
   })
   
