@@ -202,6 +202,9 @@ inverse_table$add("base", "^",
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
                     if(target_pos == 1){
+                      if(args[[2]] == 0){
+                        abort(sprintf("Cannot invert %s.", expr_text(operation)))
+                      }
                       expr((!!result) ^ (1 / !!args[[2]]))
                     }
                     else{
