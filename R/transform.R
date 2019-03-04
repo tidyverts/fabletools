@@ -159,6 +159,14 @@ inverse_table$add("base", "log1p",
                   }
 )
 
+inverse_table$add("base", "expm1",
+                  function(operation, target, result){
+                    args <- call_args(operation)
+                    target_pos <- match(list(target), args)
+                    call2("log1p", !!!exprs(!!result))
+                  }
+)
+
 inverse_table$add("base", "exp", 
                   function(operation, target, result){
                     args <- call_args(operation)
