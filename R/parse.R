@@ -220,10 +220,12 @@ parse_model_lhs <- function(model){
   transform_exprs <- lapply(traversed_lhs, function(x) x[[length(x)]])
   
   inverse_exprs <- lapply(traversed_lhs, function(x){
+    x <- rev(x)
+    result <- x[[length(x)]]
     for (i in seq_len(length(x) - 1)){
-      x[[1]] <- undo_transformation(x[[i+1]], x[[i]], x[[1]])
+      result <- undo_transformation(x[[i]], x[[i + 1]], result)
     }
-    x[[1]]
+    result
   })
   
   make_transforms <- function(exprs, responses){
