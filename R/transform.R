@@ -126,10 +126,10 @@ map(c("log", "logb"),
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
                     if(length(args) == 1){
-                      call2("exp", !!!replace(args, target_pos, list(result)))
+                      expr(exp(!!result))
                     }
                     else{
-                      call2("^", !!!exprs(!!args[[-target_pos]], !!result))
+                      expr((!!args[[2]]) ^ !!result)
                     }
                   }
     )
@@ -139,7 +139,7 @@ inverse_table$add("base", "log10",
                   function(operation, target, result){
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
-                    call2("^", !!!exprs(10, !!result))
+                    expr(10^!!result)
                   }
 )
 
@@ -147,7 +147,7 @@ inverse_table$add("base", "log2",
                   function(operation, target, result){
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
-                    call2("^", !!!exprs(2, !!result))
+                    expr(2^!!result)
                   }
 )
 
@@ -155,7 +155,7 @@ inverse_table$add("base", "log1p",
                   function(operation, target, result){
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
-                    call2("expm1", !!!exprs(!!result))
+                    expr(expm1(!!result))
                   }
 )
 
@@ -163,7 +163,7 @@ inverse_table$add("base", "expm1",
                   function(operation, target, result){
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
-                    call2("log1p", !!!exprs(!!result))
+                    expr(log1p(!!result))
                   }
 )
 
@@ -171,7 +171,7 @@ inverse_table$add("base", "exp",
                   function(operation, target, result){
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
-                    call2("log", !!!replace(args, target_pos, list(result)))
+                    expr(log(!!!replace(args, target_pos, list(result))))
                   }
 )
 
@@ -179,7 +179,7 @@ inverse_table$add("fablelite", "BoxCox",
                   function(operation, target, result){
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
-                    call2("InvBoxCox", !!!replace(args, target_pos, list(result)))
+                    expr(InvBoxCox(!!!replace(args, target_pos, list(result))))
                   }
 )
 
@@ -187,13 +187,13 @@ inverse_table$add("fablelite", "InvBoxCox",
                   function(operation, target, result){
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
-                    call2("BoxCox", !!!replace(args, target_pos, list(result)))
+                    expr(BoxCox(!!!replace(args, target_pos, list(result))))
                   }
 )
 
 inverse_table$add("base", "sqrt", 
                   function(operation, target, result){
-                    call2("^", !!!exprs(!!result, 2))
+                    expr((!!result) ^ 2)
                   }
 )
 
@@ -202,7 +202,7 @@ inverse_table$add("base", "^",
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
                     if(target_pos == 1){
-                      call2("^", !!!exprs(!!result, !!call2("/", !!!exprs(1, !!args[[2]]))))
+                      expr((!!result) ^ (1 / !!args[[2]]))
                     }
                     else{
                       expr(log(!!result) / log(!!args[[1]]))
@@ -215,10 +215,10 @@ inverse_table$add("base", "+",
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
                     if(length(args) == 1){
-                      call2("+", !!!exprs(!!result))
+                      result
                     }
                     else{
-                      call2("-", !!!exprs(!!result, !!args[[-target_pos]]))
+                      expr(!!result - !!args[[-target_pos]])
                     }
                   }
 )
@@ -228,14 +228,14 @@ inverse_table$add("base", "-",
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
                     if(length(args) == 1){
-                      call2("-", !!!exprs(!!result))
+                      expr(-!!result)
                     }
                     else{
                       if(target_pos == 1){
-                        call2("+", !!!exprs(!!result, !!args[[2]]))
+                        expr(!!result + !!args[[2]])
                       }
                       else{
-                        call2("-", !!!exprs(!!args[[1]], !!result))
+                        expr(!!args[[1]] - !!result)
                       }
                     }
                   }
@@ -246,10 +246,10 @@ inverse_table$add("base", "/",
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
                     if(target_pos == 1){
-                      call2("*", !!!exprs(!!args[[2]], !!result))
+                      expr(!!args[[2]] * !!result)
                     }
                     else{
-                      call2("/", !!!exprs(!!args[[1]], !!result))
+                      expr(!!args[[1]] / !!result)
                     }
                   }
 )
@@ -258,7 +258,7 @@ inverse_table$add("base", "*",
                   function(operation, target, result){
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
-                    call2("/", !!!exprs(!!result, !!args[[-target_pos]]))
+                    expr(!!result / !!args[[-target_pos]])
                   }
 )
 
