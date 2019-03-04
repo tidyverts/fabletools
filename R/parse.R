@@ -249,10 +249,11 @@ parse_model_lhs <- function(model){
   # Test transformations to see if they are valid
   map2(transformations, responses, function(trans, resp){
     dt <- model$data
-    valid <- all.equal(
-      dt[[expr_text(resp)]],
-      invert_transformation(trans)(trans(dt[[expr_text(resp)]]))
-    )
+    environment(trans) <- new_environment(dt, get_env(trans))
+    inv <- invert_transformation(trans)
+    environment(inv) <- new_environment(dt, get_env(inv))
+    
+    valid <- all.equal(dt[[expr_text(resp)]], inv(trans(dt[[expr_text(resp)]])))
     if(!isTRUE(valid)){
       abort(
 "Could not identify a valid back-transformation for this transformation.
