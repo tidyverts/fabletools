@@ -191,11 +191,11 @@ build_accuracy_calls <- function(measures, available_args){
 accuracy.mdl_df <- function(x, measures = point_measures, ...){
   as_tibble(x) %>% 
     gather(".model", "fit", !!!(x%@%"models")) %>% 
-    unnest(fit = map(!!sym("fit"), accuracy, measures, ...))
+    unnest(fit = map(!!sym("fit"), accuracy, measures = measures, ...))
 }
 
 #' @export
-accuracy.model <- function(x, measures = list(point_measures, MASE = MASE), ...){
+accuracy.model <- function(x, measures = point_measures, ...){
   dots <- dots_list(...)
   
   aug <- augment(x) %>% 
