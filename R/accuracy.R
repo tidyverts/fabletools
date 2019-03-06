@@ -227,11 +227,11 @@ accuracy.model <- function(x, measures = list(point_measures, MASE = MASE), ...)
 }
 
 #' @export
-accuracy.fbl_ts <- function(x, data, measures = point_measures, ...,
-                            join_by = setdiff(key_vars(x), c(".model", ".id"))){
+accuracy.fbl_ts <- function(x, data, measures = point_measures, ..., 
+                            by = c(".model", key_vars(data))){
   dots <- dots_list(...)
-
-  join_by <- union(expr_text(index(x)), join_by)
+  
+  by <- union(expr_text(index(x)), by)
   
   aug <- x %>% 
     as_tsibble %>% 
@@ -241,17 +241,18 @@ accuracy.fbl_ts <- function(x, data, measures = point_measures, ...,
     ) %>% 
     left_join(
       transmute(data, !!index(data), .actual = !!(x%@%"response")),
-      by = join_by
+      by = intersect(colnames(data), by)
     ) %>% 
     mutate(.resid = !!sym(".actual") - !!sym(".fc"))
   
-  if(NROW(missing_test <- anti_join(x, data, by = join_by)) > 0){
+  if(NROW(missing_test <- anti_join(x, data, by = intersect(colnames(data), by))) > 0){
     warn(sprintf(
 "The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
-%i observations are missing between %s and %s", NROW(missing_test), 
-      format(min(missing_test[[expr_text(index(missing_test))]])),
-      format(max(missing_test[[expr_text(index(missing_test))]])))
-    )
+%i %s %s", 
+      NROW(missing_test), 
+      ifelse(NROW(missing_test)==1, "observation is missing at", "observations are missing between"),
+      paste(unique(range(missing_test[[expr_text(index(missing_test))]])), collapse = "and")
+    ))
   }
   
   measures <- squash(measures)
@@ -260,7 +261,7 @@ accuracy.fbl_ts <- function(x, data, measures = point_measures, ...,
     dots$.period <- get_frequencies(NULL, aug, .auto = "smallest")
   }
   if(is.null(dots$.train)){
-    orig_data <- anti_join(data, x, by = join_by)
+    orig_data <- anti_join(data, x, by = intersect(colnames(data), by))
     dots$.train <- eval_tidy(x%@%"response", data = orig_data)
   }
   
@@ -268,7 +269,7 @@ accuracy.fbl_ts <- function(x, data, measures = point_measures, ...,
   with(dots,
     aug %>% 
       as_tibble %>% 
-      group_by(!!!key(x), !!!groups(x)) %>% 
+      group_by(!!!syms(setdiff(by, expr_text(index(x)))), !!!groups(x)) %>% 
       summarise(
         .type = "Test",
         !!!compact(fns)
