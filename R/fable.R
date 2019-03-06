@@ -131,9 +131,18 @@ filter.fbl_ts <- function (.data, ...){
 filter.grouped_fbl <- filter.fbl_ts
 
 #' @export
-group_by.fbl_ts <- function(.data, ..., add = FALSE) {
+group_by.fbl_ts <- function(.data, ...) {
   as_fable(NextMethod(), !!(.data%@%"response"), !!(.data%@%"dist"))
 }
 
 #' @export
 group_by.grouped_fbl <- group_by.fbl_ts
+
+
+#' @export
+mutate.fbl_ts <- function(.data, ...) {
+  as_fable(NextMethod(), !!(.data%@%"response"), !!(.data%@%"dist"))
+}
+
+#' @export
+mutate.grouped_fbl <- mutate.fbl_ts
