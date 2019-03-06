@@ -106,7 +106,6 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
 #' @export
 autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   fc_key <- syms(setdiff(key_vars(object), ".model"))
-  
   data <- fortify(object, level = level)
   mapping <- aes(
     x = !!index(data),
@@ -125,9 +124,11 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   
   if(!is.null(series)){
     mapping$colour <- series
+    mapping$group <- expr(interaction(!!series, !!sym(".model")))
   }
   else if(length(unique(key_data(object)[[".model"]])) > 1){
     mapping$colour <- sym(".model")
+    mapping$group <- sym(".model")
   }
   
   geom_forecast(mapping = mapping, stat = "identity", data = data, ...)
