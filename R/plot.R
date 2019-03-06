@@ -9,7 +9,7 @@ autoplot.tbl_ts <- function(object, var = NULL, ...){
     var <- sym(measured_vars(object)[1])
   }
   else{
-    var <- enexpr(var)
+    var <- enquo(var)
   }
   
   aes_spec <- list(x = index(object), y = var)
