@@ -76,6 +76,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 #' @export
 autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
   fc_key <- syms(setdiff(key_vars(object), ".model"))
+  has_keys <- any(duplicated(key_data(object)$.model))
   
   if (!is.null(data)){
     if(!identical(fc_key, key(data))){
@@ -95,8 +96,8 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
   p <- p +
     autolayer(object, level = level, ...)
   
-  if(!is_empty(fc_key)){
-    p <- p + facet_grid(vars(!!!key(data)), scales = "free_y")
+  if(has_keys){
+    p <- p + facet_grid(vars(!!!fc_key), scales = "free_y")
   }
   
   p
