@@ -9,7 +9,7 @@
 #' 
 #' @examples
 #' library(fable)
-#' library(tsibbledata)
+#' UKLungDeaths <- as_tsibble(cbind(mdeaths, fdeaths), gather = FALSE)
 #' UKLungDeaths %>% 
 #'   model(lm = TSLM(mdeaths ~ fourier("year", K = 4) + fdeaths)) %>% 
 #'   imitate(UKLungDeaths, times = 5)
