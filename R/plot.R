@@ -59,6 +59,7 @@ autoplot.mable <- function(object, ...){
 #' @export
 fortify.fbl_ts <- function(object, level = c(80, 95)){
   object <- object %>%
+    as_tsibble %>% 
     mutate(!!!set_names(map(level, function(.x) expr(hilo(!!(object%@%"dist"), !!.x))), level)) %>%
     select(!!expr(-!!(object%@%"dist")))
   if(!is.null(level)){
