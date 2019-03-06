@@ -108,7 +108,6 @@ tbl_sum.fbl_ts <- function(x){
 #' @export
 report.fbl_ts <- function(object, level = c(80, 95), ...){
   object %>%
-    as_tsibble %>% 
     transmute(
       !!(object%@%"response"),
       !!!set_names(map(level,function(.x) expr(hilo(!!(object%@%"dist"), !!.x))),
