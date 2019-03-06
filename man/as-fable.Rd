@@ -5,6 +5,7 @@
 \alias{as_fable.tbl_ts}
 \alias{as_fable.grouped_ts}
 \alias{as_fable.tbl_df}
+\alias{as_fable.fbl_ts}
 \alias{as_fable.grouped_df}
 \title{Coerce to a fable object}
 \usage{
@@ -15,6 +16,8 @@ as_fable(x, ...)
 \method{as_fable}{grouped_ts}(x, resp, dist, ...)
 
 \method{as_fable}{tbl_df}(x, resp, dist, ...)
+
+\method{as_fable}{fbl_ts}(x, resp, dist, ...)
 
 \method{as_fable}{grouped_df}(x, resp, dist, ...)
 }

@@ -57,6 +57,18 @@ as_fable.tbl_df <- function(x, resp, dist, ...){
 
 #' @rdname as-fable
 #' @export
+as_fable.fbl_ts <- function(x, resp, dist, ...){
+  if(!missing(resp)){
+    x%@%"resp" <- enexpr(resp)
+  }
+  if(!missing(dist)){
+    x%@%"dist" <- enexpr(dist)
+  }
+  validate_fable(x)
+}
+
+#' @rdname as-fable
+#' @export
 as_fable.grouped_df <- as_fable.tbl_df
 
 #' @export
