@@ -31,7 +31,7 @@ new_hilo <- function(lower, upper, level = NULL) {
     }
   }
   
-  pmap(list(lower = lower, upper = upper, level = level), list) %>%
+  pmap(list(lower = lower, upper = upper, level = level), tibble) %>%
     enclass("hilo")
 }
 
