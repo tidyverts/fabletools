@@ -241,7 +241,8 @@ accuracy.fbl_ts <- function(x, data, measures = point_measures, ...,
     ) %>% 
     left_join(
       transmute(data, !!index(data), .actual = !!(x%@%"response")),
-      by = intersect(colnames(data), by)
+      by = intersect(colnames(data), by),
+      suffix = c("", ".y")
     ) %>% 
     mutate(.resid = !!sym(".actual") - !!sym(".fc"))
   
