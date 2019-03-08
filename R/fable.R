@@ -138,6 +138,11 @@ group_by.fbl_ts <- function(.data, ...) {
 #' @export
 group_by.grouped_fbl <- group_by.fbl_ts
 
+#' @export
+ungroup.fbl_ts <- group_by.fbl_ts
+
+#' @export
+ungroup.grouped_fbl <- group_by.fbl_ts
 
 #' @export
 mutate.fbl_ts <- function(.data, ...) {
