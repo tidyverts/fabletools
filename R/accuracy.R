@@ -237,7 +237,8 @@ accuracy.fbl_ts <- function(x, data, measures = point_measures, ...,
     as_tsibble %>% 
     transmute(
       .fc = !!(x%@%"response"),
-      .dist = !!(x%@%"dist")
+      .dist = !!(x%@%"dist"),
+      !!!syms(by)
     ) %>% 
     left_join(
       transmute(data, !!index(data), .actual = !!(x%@%"response")),
