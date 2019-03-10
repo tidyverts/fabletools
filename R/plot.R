@@ -153,7 +153,7 @@ autoplot.dcmp_ts <- function(object, components = NULL, scale_bars = TRUE, ...){
     transmute(!!!components) %>% 
     gather(".var", ".val", !!!syms(measured_vars(.))) %>% 
     mutate(.var = factor(!!sym(".var"),
-      levels = map_chr(components, function(x) expr_text(get_expr(x))))
+      levels = map_chr(components, function(x) as_string(get_expr(x))))
     )
   
   line_aes <- aes(x = !!idx, y = !!sym(".val"))
