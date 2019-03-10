@@ -34,7 +34,8 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
              forecast, h = h, bias_adjust = bias_adjust, ...)
   
   # Construct fable
-  out <- suppressWarnings(unnest(add_class(object, "lst_ts"), fc, key = keys))
+  out <- add_class(select(as_tibble(object), !!!keys), "lst_ts")
+  out <- suppressWarnings(unnest(out, fc, key = keys))
   out[[expr_text(fc[[1]]%@%"dist")]] <- fc %>% map(function(x) x[[expr_text(x%@%"dist")]]) %>% invoke(c, .)
   as_fable(out, resp = !!(fc[[1]]%@%"response"), dist = !!(fc[[1]]%@%"dist"))
 }
