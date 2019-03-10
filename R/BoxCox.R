@@ -1,7 +1,7 @@
 #' Box Cox Transformation
 #'
-#' `BoxCox()` returns a transformation of the input variable using a Box-Cox
-#' transformation. `InvBoxCox()` reverses the transformation.
+#' `box_cox()` returns a transformation of the input variable using a Box-Cox
+#' transformation. `inv_box_cox()` reverses the transformation.
 #'
 #' The Box-Cox transformation is given by \deqn{f_\lambda(x) =\frac{x^\lambda -
 #' 1}{\lambda}}{f(x;lambda)=(x^lambda - 1)/lambda} if \eqn{\lambda\ne0}{lambda
@@ -20,10 +20,10 @@
 #' library(tsibble)
 #' airmiles %>% 
 #'   as_tsibble() %>% 
-#'   mutate(BoxCox = BoxCox(value, lambda = 0.3))
+#'   mutate(box_cox = box_cox(value, lambda = 0.3))
 #'
 #' @export
-BoxCox <- function(x, lambda) {
+box_cox <- function(x, lambda) {
   if (lambda < 0) {
     x[x < 0] <- NA
   }
@@ -34,9 +34,9 @@ BoxCox <- function(x, lambda) {
   }
 }
 
-#' @rdname BoxCox
+#' @rdname box_cox
 #' @export
-InvBoxCox <- function(x, lambda) {
+inv_box_cox <- function(x, lambda) {
   if (lambda < 0) {
     x[x > -1 / lambda] <- NA
   }

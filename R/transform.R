@@ -180,19 +180,19 @@ inverse_table$add("base", "exp",
                   }
 )
 
-inverse_table$add("fablelite", "BoxCox", 
+inverse_table$add("fablelite", "box_cox", 
                   function(operation, target, result){
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
-                    expr(InvBoxCox(!!!replace(args, target_pos, list(result))))
+                    expr(inv_box_cox(!!!replace(args, target_pos, list(result))))
                   }
 )
 
-inverse_table$add("fablelite", "InvBoxCox", 
+inverse_table$add("fablelite", "inv_box_cox", 
                   function(operation, target, result){
                     args <- call_args(operation)
                     target_pos <- match(list(target), args)
-                    expr(BoxCox(!!!replace(args, target_pos, list(result))))
+                    expr(box_cox(!!!replace(args, target_pos, list(result))))
                   }
 )
 
