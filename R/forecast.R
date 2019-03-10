@@ -51,6 +51,7 @@ forecast.model <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE
   specials <- parse_model_rhs(object$model)$specials
   object$model$remove_data()
   
+  
   # Compute forecasts
   fc <- forecast(object$fit, new_data, specials = specials, ...)
   
@@ -65,9 +66,6 @@ forecast.model <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE
     fc[["point"]] <- bt(fc[["point"]])
   }
   fc[["dist"]] <- update_fcdist(fc[["dist"]], transformation = bt)
-  
-  new_h <- units_since(new_data[[as_string(index(new_data))]])/time_unit(interval(new_data)) - 
-    units_since(max(object$index[[as_string(index(object$index))]]))/time_unit(interval(new_data))
   
   out <- mutate(new_data, 
                 !!expr_text(object$response) := fc[["point"]],
