@@ -56,7 +56,7 @@ tbl_sum.mdl_df <- function(x){
   if(!is_empty(key(x))){
     out <- c(out, c("Key" = sprintf("%s [%i]",
                                     paste0(key_vars(x), collapse = ", "),
-                                    n_keys(x))))
+                                    map_chr(n_keys(x), big_mark))))
   }
   
   out
