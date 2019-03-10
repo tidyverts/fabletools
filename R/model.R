@@ -12,13 +12,19 @@ model <- function(.data, ...){
 model.tbl_ts <- function(.data, ...){
   nm <- map(enexprs(...), expr_text)
   models <- dots_list(...)
+  pb <- progress_estimated(length(models) * n_keys(.data))
   
   keys <- key(.data)
   .data <- nest(group_by(.data, !!!keys), .key = "lst_data")
   
+  
   eval_models <- function(models, lst_data){
     map(models, function(model){
-      map(lst_data, estimate, model)
+      map(lst_data, function(dt, mdl){
+        out <- estimate(dt, mdl)
+        pb$tick()$print()
+        out
+      }, model)
     })
   }
   

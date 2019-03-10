@@ -4,6 +4,13 @@
   register_s3_method("pillar", "pillar_shaft", "fcdist")
   register_s3_method("pillar", "pillar_shaft", "hilo")
   
+  op <- options()
+  op.fable <- list(
+    fable.show_progress = TRUE
+  )
+  toset <- !(names(op.fable) %in% names(op))
+  if (any(toset)) options(op.fable[toset])
+  
   invisible()
 }
 
