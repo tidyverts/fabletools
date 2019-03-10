@@ -1,40 +1,4 @@
-#' Progress bar with estimated time.
-#'
-#' Adapted from dplyr to suit the purpose of modelling.
-#' This reference class represents a text progress bar displayed estimated
-#' time remaining. When finished, it displays the total duration.  The
-#' automatic progress bar can be disabled by setting option
-#' `fable.show_progress` to `FALSE`.
-#'
-#' @param n Total number of items
-#' @param min_time Progress bar will wait until at least `min_time`
-#'   seconds have elapsed before displaying any results.
-#' @return A ref class with methods `tick()`, `print()`,
-#'   `pause()`, and `stop()`.
-#' @keywords internal
-#' @export
-#' @examples
-#' p <- progress_estimated(3)
-#' p$tick()
-#' p$tick()
-#' p$tick()
-#'
-#' p <- progress_estimated(3)
-#' for (i in 1:3) p$pause(0.1)$tick()$print()
-#'
-#' p <- progress_estimated(3)
-#' p$tick()$print()$
-#'  pause(1)$stop()
-#'
-#' # If min_time is set, progress bar not shown until that many
-#' # seconds have elapsed
-#' p <- progress_estimated(3, min_time = 3)
-#' for (i in 1:3) p$pause(0.1)$tick()$print()
-#'
-#' \dontrun{
-#' p <- progress_estimated(10, min_time = 3)
-#' for (i in 1:10) p$pause(0.5)$tick()$print()
-#' }
+# Adapted from dplyr to suit the purpose of modelling.
 progress_estimated <- function(n, min_time = 0) {
   Progress$new(n, min_time = min_time)
 }
