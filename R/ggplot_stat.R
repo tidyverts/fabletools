@@ -52,6 +52,7 @@ StatForecast <- ggplot2::ggproto(
         }
       )
     fcast %>%
-      mutate(!!!extra_vars)
+      mutate(!!!extra_vars) %>% 
+      as_tibble()
   }
 )
