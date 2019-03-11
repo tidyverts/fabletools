@@ -30,8 +30,8 @@ test_that("single transformations", {
   test_transformation(log1p(y))
   test_transformation(expm1(y))
   test_transformation(exp(y))
-  test_transformation(BoxCox(y, 0.4))
-  test_transformation(InvBoxCox(y, 0.4))
+  test_transformation(box_cox(y, 0.4))
+  test_transformation(inv_box_cox(y, 0.4))
   test_transformation(sqrt(y))
   test_transformation(y^2)
   test_transformation(2^y)
@@ -46,12 +46,12 @@ test_that("transformation chains", {
   test_transformation(y^2 + 3)
   test_transformation(log(sqrt(y)))
   test_transformation(log(y + 1))
-  test_transformation(BoxCox(y^2,0.3))
-  test_transformation(BoxCox(y,0.3) + 1)
+  test_transformation(box_cox(y^2,0.3))
+  test_transformation(box_cox(y,0.3) + 1)
   
   # Something too complex
   expect_error(
-    test_transformation(BoxCox(y,0.3)^2),
+    test_transformation(box_cox(y,0.3)^2),
     "Could not identify a valid back-transformation"
   )
   
