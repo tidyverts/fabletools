@@ -90,6 +90,10 @@ Progress <- R6::R6Class("Progress",
                               "~", show_time(time_left), " remaining"
                             )
                             
+                            if(self$i == self$n){
+                              cat("\n")
+                            }
+                            
                             invisible(self)
                           }
                         )
