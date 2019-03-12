@@ -12,7 +12,7 @@ model <- function(.data, ...){
 model.tbl_ts <- function(.data, ...){
   nm <- map(enexprs(...), expr_text)
   models <- dots_list(...)
-  pb <- progress_estimated(length(models) * n_keys(.data))
+  pb <- progress_estimated(length(models) * n_keys(.data), min_time = 5)
   
   keys <- key(.data)
   .data <- nest(group_by(.data, !!!keys), .key = "lst_data")
