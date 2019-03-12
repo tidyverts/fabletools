@@ -44,9 +44,8 @@ as_tsibble.dcmp_ts <- function(x, ...){
 #' @importFrom tsibble tbl_sum
 #' @export
 tbl_sum.dcmp_ts <- function(x){
-  response <- expr_text(x%@%"resp")
+  response <- as_string(x%@%"resp")
   method <- expr_text((x%@%"aliases")[[response]])
-  
   out <- NextMethod()
   names(out)[1] <- "A dable"
   append(out, set_names(paste(response, method, sep = " = "),

@@ -140,7 +140,7 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
 autoplot.dcmp_ts <- function(object, components = NULL, scale_bars = TRUE, ...){
   resp <- object%@%"resp"
   method <- object%@%"method"
-  dcmp <- (object%@%"aliases")[[expr_text(resp)]]
+  dcmp <- (object%@%"aliases")[[as_string(resp)]]
   idx <- index(object)
   keys <- key(object)
   n_keys <- n_keys(object)
