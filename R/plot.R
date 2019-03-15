@@ -1,18 +1,18 @@
 #' @importFrom ggplot2 ggplot aes geom_line guides guide_legend xlab
 #' @export
-autoplot.tbl_ts <- function(object, var = NULL, ...){
-  if(quo_is_null(enquo(var))){
+autoplot.tbl_ts <- function(object, y = NULL, ...){
+  if(quo_is_null(enquo(y))){
     inform(sprintf(
-      "Plot variable not specified, automatically selected `var = %s`",
+      "Plot variable not specified, automatically selected `y = %s`",
       measured_vars(object)[1]
     ))
-    var <- sym(measured_vars(object)[1])
+    y <- sym(measured_vars(object)[1])
   }
   else{
-    var <- enquo(var)
+    y <- enquo(y)
   }
   
-  aes_spec <- list(x = index(object), y = var)
+  aes_spec <- list(x = index(object), y = y)
   if(n_keys(object) > 1){
     aes_spec["colour"] <- list(expr(interaction(!!!syms(key_vars(object)), sep = "/")))
   }
@@ -24,19 +24,19 @@ autoplot.tbl_ts <- function(object, var = NULL, ...){
 
 #' @importFrom ggplot2 ggplot aes geom_line guides guide_legend xlab
 #' @export
-autolayer.tbl_ts <- function(object, var = NULL, series = NULL, ...){
-  if(quo_is_null(enquo(var))){
+autolayer.tbl_ts <- function(object, y = NULL, series = NULL, ...){
+  if(quo_is_null(enquo(y))){
     inform(sprintf(
-      "Plot variable not specified, automatically selected `var = %s`",
+      "Plot variable not specified, automatically selected `y = %s`",
       measured_vars(object)[1]
     ))
-    var <- sym(measured_vars(object)[1])
+    y <- sym(measured_vars(object)[1])
   }
   else{
-    var <- enexpr(var)
+    y <- enexpr(y)
   }
   
-  aes_spec <- list(x = index(object), y = var)
+  aes_spec <- list(x = index(object), y = y)
   if(!is.null(series)){
     aes_spec$colour <- series
   }
