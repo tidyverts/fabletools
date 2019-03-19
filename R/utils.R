@@ -72,6 +72,9 @@ make_future_data <- function(.data, h = NULL){
 }
 
 bind_new_data <- function(object, new_data){
+  if(!is.data.frame(new_data)){
+    abort(sprintf("`new_data` requires a data frame. Perhaps you intended to specify the forecast horizon? If so, use `h = %s`.", deparse(new_data)))
+  }
   new_data <- new_data %>% 
     group_by(!!!syms(key_vars(object))) %>% 
     nest(.key = "new_data")
