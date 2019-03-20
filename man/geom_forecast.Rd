@@ -91,10 +91,8 @@ axis. Refer to the examples below. To automatically set up aesthetics, use
 
 \dontrun{
 library(ggplot2)
-library(tidyr)
-library(tsibbledata)
-UKLungDeaths \%>\%
- gather(Gender, Deaths, -index) \%>\%
+library(tsibble)
+as_tsibble(cbind(mdeaths, fdeaths)) \%>\%
  autoplot() + 
  geom_forecast()
 }

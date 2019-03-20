@@ -151,10 +151,8 @@ globalVariables("y")
 #'
 #' \dontrun{
 #' library(ggplot2)
-#' library(tidyr)
-#' library(tsibbledata)
-#' UKLungDeaths %>%
-#'  gather(Gender, Deaths, -index) %>%
+#' library(tsibble)
+#' as_tsibble(cbind(mdeaths, fdeaths)) %>%
 #'  autoplot() + 
 #'  geom_forecast()
 #' }
