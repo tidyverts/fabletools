@@ -37,7 +37,6 @@ GeomForecast <- ggplot2::ggproto("GeomForecast", ggplot2::Geom,
                                  
                                  draw_key = function(data, params, size) { 
                                    lwd <- min(data$size, min(size) / 4)
-                                   
                                    # Calculate and set colour 
                                    linecol <- blendHex(data$col, "gray30", 1) 
                                    fillcol <- blendHex(data$col, "#BBBBBB", 0.7) 
@@ -111,11 +110,11 @@ GeomForecast <- ggplot2::ggproto("GeomForecast", ggplot2::Geom,
                                      line_data$colour <- blendHex(line_data$colour, "gray30", 1)
                                      if (NROW(line_data) == 1) { # Point
                                        GeomForecastPointGeom <- ggplot2::GeomPoint$draw_panel
-                                       pointpred <- transform(line_data, fill = NA, size = size*2)
+                                       pointpred <- mutate(line_data, fill = NA, size = size*2, shape = 19, stroke = 1)
                                      }
                                      else { # Line
                                        GeomForecastPointGeom <- ggplot2::GeomLine$draw_panel
-                                       pointpred <- transform(line_data, fill = NA)
+                                       pointpred <- mutate(line_data, fill = NA)
                                      }
                                      GrobList <- append(GrobList, list(GeomForecastPointGeom(pointpred, panel_scales, coord)))
                                    }
