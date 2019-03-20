@@ -59,8 +59,13 @@ forecast.model <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE
   bt <- invert_transformation(object$transformation)
   if(isTRUE(bias_adjust)){
     # Faster version of bias_adjust(bt, fc[["sd"]]^2)(fc[["mean"]]) 
-    fc[["point"]] <- bt(fc[["point"]]) +
-      fc[["sd"]]^2/2*map_dbl(as.numeric(fc[["point"]]), hessian, func = bt)
+    adjustment <- map_dbl(as.numeric(fc[["point"]]), hessian, func = bt)
+    if(any(is.na(adjustment))){
+      warning("Could not bias adjust the point forecasts as the back-transformation's hessian is not well behaved. Consider using a different transformation.")
+    }
+    else{
+    fc[["point"]] <- bt(fc[["point"]]) + fc[["sd"]]^2/2*adjustment
+    }
   }
   else{
     fc[["point"]] <- bt(fc[["point"]])
