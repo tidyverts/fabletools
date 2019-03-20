@@ -12,8 +12,8 @@ GeomForecast
 
 geom_forecast(mapping = NULL, data = NULL, stat = "forecast",
   position = "identity", na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE, level = c(80, 95), model = fable::ETS(y),
-  fc.args = list(), ...)
+  inherit.aes = TRUE, level = c(80, 95), h = NULL,
+  model = fable::ETS(y), fc.args = list(), ...)
 
 StatForecast
 }
@@ -60,6 +60,9 @@ the default plot specification, e.g. \code{\link[=borders]{borders()}}.}
 \item{level}{A vector of numbers between 0 and 100 which define the confidence
 range to be plotted. If \code{NULL}, confidence intervals will not be plotted,
 giving only the forecast line.}
+
+\item{h}{The forecast horison (can be used instead of \code{new_data} for regular
+time series with no exogenous regressors).}
 
 \item{model}{The time-series model used to produce the forecast. The data
 must be \code{y} (indicating aesthetic \code{y}), and the time index for \code{y} is determined from the

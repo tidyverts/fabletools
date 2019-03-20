@@ -134,6 +134,7 @@ globalVariables("y")
 #' \code{autoplot}.
 #'
 #' @inheritParams ggplot2::geom_smooth
+#' @inheritParams forecast
 #' @param level A vector of numbers between 0 and 100 which define the confidence 
 #' range to be plotted. If \code{NULL}, confidence intervals will not be plotted, 
 #' giving only the forecast line.
@@ -161,12 +162,11 @@ globalVariables("y")
 #' @export
 geom_forecast <- function(mapping = NULL, data = NULL, stat = "forecast",
                           position = "identity", na.rm = FALSE, show.legend = NA,
-                          inherit.aes = TRUE, level=c(80, 95), 
+                          inherit.aes = TRUE, level=c(80, 95), h = NULL,
                           model = fable::ETS(y), fc.args = list(), ...) {
-  # if (is_tsibble(mapping)) {
-  #   data <- data.frame(y = as.numeric(mapping), x = as.numeric(time(mapping)))
-  #   mapping <- ggplot2::aes_(y = ~y, x = ~x)
-  # }
+  if(is.null(fc.args$h)){
+    fc.args$h <- h
+  }
   if (stat == "forecast") {
     paramlist <- list(na.rm = na.rm, levels = level,
                       model = enexpr(model), fc.args = fc.args, ...)
