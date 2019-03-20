@@ -141,7 +141,7 @@ globalVariables("y")
 #' @param model The time-series model used to produce the forecast. The data
 #' must be \code{y} (indicating aesthetic \code{y}), and the time index for \code{y} is determined from the
 #' \code{x} aesthetic.
-#' @param fc.args A list of arguments to be used in the \code{\link{forecast}} function
+#' @param fc_args A list of arguments to be used in the \code{\link{forecast}} function
 #' 
 #' @return A layer for a ggplot graph.
 #' 
@@ -163,13 +163,13 @@ globalVariables("y")
 geom_forecast <- function(mapping = NULL, data = NULL, stat = "forecast",
                           position = "identity", na.rm = FALSE, show.legend = NA,
                           inherit.aes = TRUE, level=c(80, 95), h = NULL,
-                          model = fable::ETS(y), fc.args = list(), ...) {
-  if(is.null(fc.args$h)){
-    fc.args$h <- h
+                          model = fable::ETS(y), fc_args = list(), ...) {
+  if(is.null(fc_args$h)){
+    fc_args$h <- h
   }
   if (stat == "forecast") {
     paramlist <- list(na.rm = na.rm, levels = level,
-                      model = enexpr(model), fc.args = fc.args, ...)
+                      model = enexpr(model), fc_args = fc_args, ...)
     if (!inherits(mapping, "uneval")) {
       mapping <- ggplot2::aes_()
     }

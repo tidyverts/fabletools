@@ -13,7 +13,7 @@ GeomForecast
 geom_forecast(mapping = NULL, data = NULL, stat = "forecast",
   position = "identity", na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE, level = c(80, 95), h = NULL,
-  model = fable::ETS(y), fc.args = list(), ...)
+  model = fable::ETS(y), fc_args = list(), ...)
 
 StatForecast
 }
@@ -68,7 +68,7 @@ time series with no exogenous regressors).}
 must be \code{y} (indicating aesthetic \code{y}), and the time index for \code{y} is determined from the
 \code{x} aesthetic.}
 
-\item{fc.args}{A list of arguments to be used in the \code{\link{forecast}} function}
+\item{fc_args}{A list of arguments to be used in the \code{\link{forecast}} function}
 
 \item{...}{Other arguments passed on to \code{\link[=layer]{layer()}}. These are
 often aesthetics, used to set an aesthetic to a fixed value, like
