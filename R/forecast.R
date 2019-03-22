@@ -62,10 +62,9 @@ forecast.model <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE
     adjustment <- map_dbl(as.numeric(fc[["point"]]), hessian, func = bt)
     if(any(is.na(adjustment))){
       warning("Could not bias adjust the point forecasts as the back-transformation's hessian is not well behaved. Consider using a different transformation.")
+      adjustment <- 0
     }
-    else{
     fc[["point"]] <- bt(fc[["point"]]) + fc[["sd"]]^2/2*adjustment
-    }
   }
   else{
     fc[["point"]] <- bt(fc[["point"]])
