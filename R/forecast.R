@@ -48,7 +48,15 @@ forecast.model <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE
   
   # Compute specials with new_data
   object$model$add_data(new_data)
-  specials <- parse_model_rhs(object$model)$specials
+  specials <- tryCatch(parse_model_rhs(object$model)$specials,
+                       error = function(e){
+                         abort(sprintf(
+"%s
+Unable to compute required variables from provided `new_data`.
+Does your model require extra variables to produce forecasts?", e$message))
+                       }, interrupt = function(e) {
+                         stop("Terminated by user", call. = FALSE)
+                       })
   object$model$remove_data()
   
   
