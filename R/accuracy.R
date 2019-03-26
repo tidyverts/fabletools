@@ -200,7 +200,7 @@ accuracy.model <- function(x, measures = point_measures, ...){
   
   aug <- augment(x) %>% 
     rename(
-      ".actual" := !!x[["response"]],
+      ".actual" := !!sym(deparse(model_lhs(x[["model"]]))),
       ".fc" = ".fitted"
     ) %>% 
     mutate(
