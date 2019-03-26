@@ -162,6 +162,11 @@ type_sum.fcdist <- function(x){
 }
 
 #' @export
+is_vector_s3.fcdist <- function(x){
+  TRUE
+}
+
+#' @export
 obj_sum.fcdist <- function(x) {
   rep("dist", length(x))
 }

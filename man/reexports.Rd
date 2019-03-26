@@ -7,6 +7,7 @@
 \alias{as_tsibble}
 \alias{type_sum}
 \alias{obj_sum}
+\alias{is_vector_s3}
 \alias{autoplot}
 \alias{autolayer}
 \alias{equation}
@@ -26,7 +27,7 @@ below to see their documentation.
 
   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}, \code{\link[ggplot2]{autolayer}}}
 
-  \item{tibble}{\code{\link[tibble]{obj_sum}}}
+  \item{tibble}{\code{\link[tibble]{obj_sum}}, \code{\link[tibble]{is_vector_s3}}}
 
   \item{tsibble}{\code{\link[tsibble]{\%>\%}}, \code{\link[tsibble]{as_tsibble}}, \code{\link[tsibble]{type_sum}}}
 }}
