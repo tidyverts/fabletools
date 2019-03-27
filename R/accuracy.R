@@ -197,7 +197,9 @@ accuracy.model <- function(x, measures = point_measures, ...){
     ) %>% 
     unnest(
       .type = "Training",
-      map(.accuracy_inputs, function(measures, inputs) as_tibble(map(measures, do.call, inputs)), measures = measures),
+      map(.accuracy_inputs, 
+          function(measures, inputs) as_tibble(map(measures, do.call, inputs)),
+          measures = measures),
       .drop = TRUE
     )
 }
@@ -262,7 +264,9 @@ accuracy.fbl_ts <- function(x, data, measures = point_measures, ...,
     ) %>% 
     unnest(
       .type = "Test",
-      map(.accuracy_inputs, function(measures, inputs) as_tibble(map(measures, do.call, inputs)), measures = measures),
+      map(.accuracy_inputs, 
+          function(measures, inputs) as_tibble(map(measures, do.call, inputs)),
+          measures = measures),
       .drop = TRUE
     )
 }
