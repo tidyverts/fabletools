@@ -229,27 +229,12 @@ accuracy.model <- function(x, measures = point_measures, ...){
 #' @export
 accuracy.fbl_ts <- function(x, data, measures = point_measures, ..., 
                             by = c(".model", key_vars(data))){
-  dots <- dots_list(...)
-  
   by <- union(expr_text(index(x)), by)
-  
-  aug <- x %>% 
-    as_tsibble %>% 
-    transmute(
-      .fc = !!(x%@%"response"),
-      .dist = !!(x%@%"dist"),
-      !!!syms(by)
-    ) %>% 
-    left_join(
-      transmute(data, !!index(data), .actual = !!(x%@%"response")),
-      by = intersect(colnames(data), by),
-      suffix = c("", ".y")
-    ) %>% 
-    mutate(.resid = !!sym(".actual") - !!sym(".fc"))
+  grp <- c(syms(setdiff(by, expr_text(index(x)))), groups(x))
   
   if(NROW(missing_test <- anti_join(x, data, by = intersect(colnames(data), by))) > 0){
     warn(sprintf(
-"The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
+      "The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
 %i %s %s", 
       NROW(missing_test), 
       ifelse(NROW(missing_test)==1, "observation is missing at", "observations are missing between"),
@@ -257,25 +242,51 @@ accuracy.fbl_ts <- function(x, data, measures = point_measures, ...,
     ))
   }
   
+  # Compute .fc, .dist, .actual and .resid
+  aug <- transmute(x, .fc = !!(x%@%"response"), .dist = !!(x%@%"dist"), !!!syms(by))
+  aug <- left_join(aug,
+      transmute(data, !!index(data), .actual = !!(x%@%"response")),
+      by = intersect(colnames(data), by),
+      suffix = c("", ".y")
+    )
+  aug <- summarise(group_by(as_tibble(aug), !!!grp),
+                   .resid = list(!!sym(".actual") - !!sym(".fc")),
+                   .fc = list(!!sym(".fc")), .dist = list(!!sym(".dist")), 
+                   .actual = list(!!sym(".actual")))
+  
+  # Extract training data (min key index, max grp index)
+  extract_train <- function(idx, ...){
+    cnds <- dots_list(...)
+    cnds <- map2(syms(names(cnds)), cnds, call2, .fn = "==")
+    eval_tidy(x%@%"response", data = filter(data, !!index(data) < idx, !!!cnds))
+  }
+  mutual_keys <- intersect(key(data), key(x))
+  mutual_keys <- set_names(mutual_keys, map_chr(mutual_keys, as_string))
+  .train <- x %>% 
+    filter(!!index(x) == min(!!index(x))) %>% 
+    group_by(!!!grp) %>% 
+    filter(!!index(x) == max(!!index(x))) %>% 
+    transmute(.train = pmap(list2(!!index(x), !!!mutual_keys), extract_train))
+  aug <- left_join(aug, .train, by = map_chr(grp, as_string))
+
+  # Add user inputs
+  aug <- mutate(aug, ...)
+  
+  if(is.null(aug[[".period"]])){
+    aug <- mutate(aug, .period = get_frequencies(NULL, x, .auto = "smallest"))
+  }
+  
   measures <- squash(measures)
   
-  if(is.null(dots$.period)){
-    dots$.period <- get_frequencies(NULL, aug, .auto = "smallest")
-  }
-  if(is.null(dots$.train)){
-    orig_data <- anti_join(data, x, by = intersect(colnames(data), by))
-    dots$.train <- eval_tidy(x%@%"response", data = orig_data)
-  }
-  
-  fns <- build_accuracy_calls(measures, c(names(dots), names(aug)))
-  with(dots,
-    aug %>% 
-      as_tibble %>% 
-      group_by(!!!syms(setdiff(by, expr_text(index(x)))), !!!groups(x)) %>% 
-      summarise(
-        .type = "Test",
-        !!!compact(fns)
-      ) %>% 
-      ungroup()
-  )
+  aug %>% 
+    group_by(!!!grp) %>% 
+    nest(.key = ".accuracy_inputs") %>% 
+    mutate(
+      .accuracy_inputs = map(.accuracy_inputs, compose(flatten, transpose))
+    ) %>% 
+    unnest(
+      .type = "Test",
+      map(.accuracy_inputs, function(measures, inputs) as_tibble(map(measures, do.call, inputs)), measures = measures),
+      .drop = TRUE
+    )
 }
