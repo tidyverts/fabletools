@@ -23,36 +23,36 @@ NULL
 #' @rdname point-accuracy-measures
 #' @export
 ME <- function(.resid, na.rm = TRUE, ...){
-  mean(.resid, na.rm = na.rm, ...)
+  mean(.resid, na.rm = na.rm)
 }
 
 #' @rdname point-accuracy-measures
 #' @export
 MSE <- function(.resid, na.rm = TRUE, ...){
-  mean(.resid ^ 2, na.rm = na.rm, ...)
+  mean(.resid ^ 2, na.rm = na.rm)
 }
 
 #' @rdname point-accuracy-measures
 #' @export
 RMSE <- function(.resid, na.rm = TRUE, ...){
-  sqrt(MSE(.resid, na.rm = na.rm, ...))
+  sqrt(MSE(.resid, na.rm = na.rm))
 }
 
 #' @rdname point-accuracy-measures
 #' @export
 MAE <- function(.resid, na.rm = TRUE, ...){
-  mean(abs(.resid), na.rm = na.rm, ...)
+  mean(abs(.resid), na.rm = na.rm)
 }
 
 #' @rdname point-accuracy-measures
 #' @export
 MPE <- function(.resid, .actual, na.rm = TRUE, ...){
-  mean(.resid / .actual * 100, na.rm = TRUE, ...)
+  mean(.resid / .actual * 100, na.rm = na.rm)
 }
 #' @rdname point-accuracy-measures
 #' @export
 MAPE <- function(.resid, .actual, na.rm = TRUE, ...){
-  mean(abs(.resid / .actual * 100), na.rm = TRUE, ...)
+  mean(abs(.resid / .actual * 100), na.rm = na.rm)
 }
 
 #' @rdname point-accuracy-measures
@@ -65,18 +65,19 @@ MASE <- function(.resid, .train, demean = FALSE, na.rm = TRUE, .period, d = .per
     .train <- diff(.train, differences = d)
   }
   if(demean){
-    scale <- mean(abs(.train - mean(.train, na.rm = na.rm, ...)), na.rm = na.rm, ...)
+    scale <- mean(abs(.train - mean(.train, na.rm = na.rm)), na.rm = na.rm)
   }
   else{
-    scale <- mean(abs(.train), na.rm = na.rm, ...)
+    scale <- mean(abs(.train), na.rm = na.rm)
   }
-  mase <- mean(abs(.resid / scale), na.rm = na.rm, ...)
+  mase <- mean(abs(.resid / scale), na.rm = na.rm)
 }
 
 #' @rdname point-accuracy-measures
 #' @export
-ACF1 <- function(.resid, na.action = stats::na.pass, ...){
-  stats::acf(.resid, plot = FALSE, lag.max = 2, na.action = na.action, ...)$acf[2, 1, 1]
+ACF1 <- function(.resid, na.action = stats::na.pass, demean = TRUE, ...){
+  stats::acf(.resid, plot = FALSE, lag.max = 2, na.action = na.action, 
+             demean = demean)$acf[2, 1, 1]
 }
 
 #' @rdname point-accuracy-measures
@@ -95,7 +96,7 @@ NULL
 
 #' @rdname interval-accuracy-measures
 #' @export
-winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE){
+winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
   interval <- hilo(.dist, level)
   alpha <- 1-level/100
   lt <- interval$lower
@@ -124,7 +125,7 @@ NULL
 
 #' @rdname dist-accuracy-measures
 #' @export
-percentile_score <- function(.dist, .actual, na.rm = TRUE){
+percentile_score <- function(.dist, .actual, na.rm = TRUE, ...){
   probs <- seq(0.01, 0.99, 0.01)
   percentiles <- quantile(.dist, probs)
   map2_dbl(percentiles, probs, function(percentile, prob){

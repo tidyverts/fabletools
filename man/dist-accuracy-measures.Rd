@@ -5,7 +5,7 @@
 \alias{percentile_score}
 \title{Distribution accuracy measures}
 \usage{
-percentile_score(.dist, .actual, na.rm = TRUE)
+percentile_score(.dist, .actual, na.rm = TRUE, ...)
 }
 \arguments{
 \item{.dist}{The distribution of fitted values from the model, or forecasted values from the forecast.}
@@ -14,6 +14,8 @@ percentile_score(.dist, .actual, na.rm = TRUE)
 (for forecast accuracy, \code{new_data} must be provided).}
 
 \item{na.rm}{Remove the missing values before calculating the accuracy measure}
+
+\item{...}{Additional arguments for each measure.}
 }
 \description{
 Distribution accuracy measures

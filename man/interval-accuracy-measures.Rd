@@ -9,7 +9,7 @@
 \title{Interval estimate accuracy measures}
 \format{An object of class \code{list} of length 1.}
 \usage{
-winkler_score(.dist, .actual, level = 95, na.rm = TRUE)
+winkler_score(.dist, .actual, level = 95, na.rm = TRUE, ...)
 
 interval_measures
 
@@ -24,6 +24,8 @@ distribution_measures
 \item{level}{The level of the forecast interval.}
 
 \item{na.rm}{Remove the missing values before calculating the accuracy measure}
+
+\item{...}{Additional arguments for each measure.}
 }
 \description{
 Interval estimate accuracy measures
