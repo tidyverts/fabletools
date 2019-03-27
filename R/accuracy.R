@@ -159,34 +159,6 @@ accuracy <- function(x, ...){
   UseMethod("accuracy")
 }
 
-build_accuracy_calls <- function(measures, available_args){
-  # Build measure calls  
-  missing_args <- chr()
-  fns <- map(measures, function(fn){
-    args <- formals(fn)
-    args <- args[names(args) != "..."]
-    req_args <- names(args)[map_lgl(args, is_missing)]
-    if(!all(match_req <- req_args %in% available_args)){
-      missing_args <<- c(missing_args, req_args[!match_req])
-      return(NULL)
-    }
-    
-    # Function call
-    inputs <- available_args[available_args%in%names(args)]
-    call2(fn, !!!set_names(syms(inputs), inputs))
-  })
-  
-  if(!is_empty(missing_args)){
-    warn(
-      sprintf("Could not estimate all measures as the following arguments are missing: %s",
-              paste0(missing_args, collapse = ", "))
-    )
-  }
-  
-  names(fns) <- names(fns) %||% seq_along(fns)
-  fns
-}
-
 #' @export
 accuracy.mdl_df <- function(x, measures = point_measures, ...){
   as_tibble(x) %>% 
@@ -198,32 +170,35 @@ accuracy.mdl_df <- function(x, measures = point_measures, ...){
 accuracy.model <- function(x, measures = point_measures, ...){
   dots <- dots_list(...)
   
-  aug <- augment(x) %>% 
+  aug <- as_tibble(augment(x)) %>% 
     rename(
       ".actual" := !!sym(deparse(model_lhs(x[["model"]]))),
-      ".fc" = ".fitted"
     ) %>% 
-    mutate(
-      .resid = !!sym(".actual") - !!sym(".fc"),
+    summarise(
+      .resid = list(!!sym(".actual") - !!sym(".fitted")),
+      .actual = list(!!sym(".actual")), .fc = list(!!sym(".fitted")),
       .train = !!sym(".actual")
     )
-  measures <- squash(measures)
   
-  if(is.null(dots$.period)){
-    dots$.period <- get_frequencies(NULL, aug, .auto = "smallest")
+  # Add user inputs
+  aug <- mutate(aug, ...)
+  
+  if(is.null(aug[[".period"]])){
+    aug <- mutate(aug, .period = get_frequencies(NULL, x[["index"]], .auto = "smallest"))
   }
   
-  fns <- build_accuracy_calls(measures, c(names(dots), names(aug)))
+  measures <- squash(measures)
   
-  with(dots,
-       aug %>% 
-         as_tibble %>%
-         summarise(
-           .type = "Training",
-           !!!compact(fns)
-         ) %>% 
-         ungroup()
-  )
+  aug %>% 
+    nest(.key = ".accuracy_inputs") %>% 
+    mutate(
+      .accuracy_inputs = map(.accuracy_inputs, compose(flatten, transpose))
+    ) %>% 
+    unnest(
+      .type = "Training",
+      map(.accuracy_inputs, function(measures, inputs) as_tibble(map(measures, do.call, inputs)), measures = measures),
+      .drop = TRUE
+    )
 }
 
 #' @export
