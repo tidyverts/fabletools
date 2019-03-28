@@ -241,6 +241,7 @@ accuracy.fbl_ts <- function(x, data, measures = point_measures, ...,
   mutual_keys <- intersect(key(data), key(x))
   mutual_keys <- set_names(mutual_keys, map_chr(mutual_keys, as_string))
   .train <- x %>% 
+    group_by(!!!key(x)) %>% 
     filter(!!index(x) == min(!!index(x))) %>% 
     group_by(!!!grp) %>% 
     filter(!!index(x) == max(!!index(x))) %>% 
