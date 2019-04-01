@@ -4,7 +4,7 @@ augment.mdl_df <- function(x, ...){
   keys <- key(x)
   x <- transmute(as_tibble(x),
                  !!!keys, !!sym(".model"), aug = map(!!sym(".fit"), augment))
-  unnest(add_class(x, "lst_ts"), !!sym("aug"), key = keys)
+  unnest(add_class(x, "lst_ts"), !!sym("aug"), key = !!keys)
 }
 
 #' @export

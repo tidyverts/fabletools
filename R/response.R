@@ -17,7 +17,7 @@ response.mdl_df <- function(object, ...){
                    !!sym(".model"),
                    response = map(!!sym(".fit"), response)
   )
-  unnest(add_class(out, "lst_ts"), key = keys)
+  unnest(add_class(out, "lst_ts"), key = !!keys)
 }
 
 #' @export

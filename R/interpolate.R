@@ -13,7 +13,7 @@ Please use select() to choose the model to interpolate with.")
       interpolated = map2(!!!(object%@%"models"), new_data, interpolate, ...)
     ) %>% 
     add_class("lst_ts") %>% 
-    unnest(key = keys)
+    unnest(key = !!keys)
 }
 
 #' @export

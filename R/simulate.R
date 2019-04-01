@@ -36,7 +36,7 @@ imitate.mdl_df <- function(object, new_data = NULL, ...){
   object$.sim <- map2(object[[".fit"]], 
                       object[["new_data"]] %||% rep(list(NULL), length.out = NROW(object)),
                       imitate, ...)
-  unnest(add_class(object, "lst_ts"), !!sym(".sim"), key = keys)
+  unnest(add_class(object, "lst_ts"), !!sym(".sim"), key = !!keys)
 }
 
 #' @param h The simulation horizon (can be used instead of `new_data` for regular
