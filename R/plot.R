@@ -16,10 +16,14 @@ autoplot.tbl_ts <- function(object, y = NULL, ...){
   if(n_keys(object) > 1){
     aes_spec["colour"] <- list(expr(interaction(!!!syms(key_vars(object)), sep = "/")))
   }
-  ggplot(object, eval_tidy(expr(aes(!!!aes_spec)))) + 
+  p <- ggplot(object, eval_tidy(expr(aes(!!!aes_spec)))) + 
     geom_line() +
-    guides(colour = guide_legend(paste0(map(syms(key_vars(object)), expr_text), collapse = "/"))) + 
     xlab(paste0(expr_text(index(object)), " [", format(interval(object)), "]"))
+  if(n_keys(object) > 1){
+    p <- p + 
+      guides(colour = guide_legend(paste0(map(syms(key_vars(object)), expr_text), collapse = "/")))
+  }
+  p
 }
 
 #' @importFrom ggplot2 ggplot aes geom_line guides guide_legend xlab
