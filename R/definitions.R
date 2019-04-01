@@ -154,7 +154,7 @@ new_decomposition <- function(.class, .data, ..., .env = caller_env(n = 2)){
                 }, dcmp))
   
   attrs <- combine_dcmp_attr(out[["dcmp"]])
-  out <- unnest(out, !!sym("dcmp"), key = keys)
+  out <- unnest(out, !!sym("dcmp"), key = !!keys)
   as_dable(out, method = attrs[["method"]], resp = !!attrs[["response"]],
            seasons = attrs[["seasons"]], aliases = attrs[["aliases"]])
 }
