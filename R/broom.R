@@ -1,10 +1,10 @@
 #' @export
 augment.mdl_df <- function(x, ...){
   x <- gather(x, ".model", ".fit", !!!(x%@%"models"))
-  keys <- key(x)
+  kv <- key_vars(x)
   x <- transmute(as_tibble(x),
-                 !!!keys, !!sym(".model"), aug = map(!!sym(".fit"), augment))
-  unnest(add_class(x, "lst_ts"), !!sym("aug"), key = !!keys)
+                 !!!syms(kv), !!sym(".model"), aug = map(!!sym(".fit"), augment))
+  unnest(add_class(x, "lst_ts"), !!sym("aug"), key = kv)
 }
 
 #' @export
