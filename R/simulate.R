@@ -25,7 +25,7 @@ imitate <- function(object, ...){
 #' @rdname imitate
 #' @export
 imitate.mdl_df <- function(object, new_data = NULL, ...){
-  keys <- c(key(object), sym(".model"))
+  kv <- c(key_vars(object), ".model")
   mdls <- object%@%"models"
   if(!is.null(new_data)){
     object <- bind_new_data(object, new_data)
@@ -36,7 +36,7 @@ imitate.mdl_df <- function(object, new_data = NULL, ...){
   object$.sim <- map2(object[[".fit"]], 
                       object[["new_data"]] %||% rep(list(NULL), length.out = NROW(object)),
                       imitate, ...)
-  unnest(add_class(object, "lst_ts"), !!sym(".sim"), key = !!keys)
+  unnest(add_class(object, "lst_ts"), !!sym(".sim"), key = kv)
 }
 
 #' @param h The simulation horizon (can be used instead of `new_data` for regular
@@ -65,7 +65,7 @@ imitate.model <- function(object, new_data = NULL, h = NULL, times = 1, seed = N
   if(is.null(new_data[[".rep"]])){
     new_data <- map(seq_len(times), function(rep){
       new_data[[".rep"]] <- rep
-      update_tsibble(new_data, key = id(!!!syms(c(".rep", key_vars(new_data)))),
+      update_tsibble(new_data, key = c(".rep", key_vars(new_data)),
                      validate = FALSE)
     }) %>% 
       invoke("rbind", .)

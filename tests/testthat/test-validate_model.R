@@ -13,8 +13,7 @@ test_that("validate_model", {
   
   tsbl1 <- tsibble::tsibble(
     date = seq(as.Date("2017-01-01"), as.Date("2017-01-10"), by = 1),
-    value = rnorm(10),
-    key = id(), index = date
+    value = rnorm(10), index = date
   )
   
   # Test automatic response selection
