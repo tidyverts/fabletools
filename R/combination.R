@@ -74,11 +74,11 @@ forecast.model_combination <- function(object, ...){
   # Compute residual covariance to adjust the forecast variance
   # Assumes correlation across h is identical
   if(all(mdls)){
-    fc_cov <- var(
+    fc_cov <- max(0, var(
       residuals(object[[1]], type = "response")[[".resid"]],
       residuals(object[[2]], type = "response")[[".resid"]],
       na.rm = TRUE
-    )
+    ))
   }
   else{
     fc_cov <- 0
