@@ -193,11 +193,11 @@ accuracy.model <- function(x, measures = point_measures, ...){
   aug %>% 
     nest(.key = ".accuracy_inputs") %>% 
     mutate(
-      .accuracy_inputs = map(.accuracy_inputs, compose(flatten, transpose))
+      .accuracy_inputs = map(!!sym(".accuracy_inputs"), compose(flatten, transpose))
     ) %>% 
     unnest(
       .type = "Training",
-      map(.accuracy_inputs, 
+      map(!!sym(".accuracy_inputs"), 
           function(measures, inputs) as_tibble(map(measures, do.call, inputs)),
           measures = measures),
       .drop = TRUE
@@ -261,11 +261,11 @@ accuracy.fbl_ts <- function(x, data, measures = point_measures, ...,
     group_by(!!!grp) %>% 
     nest(.key = ".accuracy_inputs") %>% 
     mutate(
-      .accuracy_inputs = map(.accuracy_inputs, compose(flatten, transpose))
+      .accuracy_inputs = map(!!sym(".accuracy_inputs"), compose(flatten, transpose))
     ) %>% 
     unnest(
       .type = "Test",
-      map(.accuracy_inputs, 
+      map(!!sym(".accuracy_inputs"), 
           function(measures, inputs) as_tibble(map(measures, do.call, inputs)),
           measures = measures),
       .drop = TRUE
