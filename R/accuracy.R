@@ -216,7 +216,7 @@ accuracy.fbl_ts <- function(x, data, measures = point_measures, ...,
 %i %s %s", 
       NROW(missing_test), 
       ifelse(NROW(missing_test)==1, "observation is missing at", "observations are missing between"),
-      paste(unique(range(missing_test[[expr_text(index(missing_test))]])), collapse = "and")
+      paste(unique(range(missing_test[[expr_text(index(missing_test))]])), collapse = " and ")
     ))
   }
   
