@@ -2,13 +2,13 @@
 #' @export
 residuals.mdl_df <- function(object, ...){
   out <- gather(object, ".model", ".fit", !!!(object%@%"models"))
-  keys <- key(out)
+  kv <- key_vars(out)
   out <- transmute(as_tibble(out),
-    !!!keys,
+    !!!syms(kv),
     !!sym(".model"),
     residuals = map(!!sym(".fit"), residuals, ...)
   )
-  unnest(add_class(out, "lst_ts"), key = !!keys)
+  unnest(add_class(out, "lst_ts"), key = kv)
 }
 
 #' @export

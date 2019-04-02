@@ -145,8 +145,8 @@ decomposition_definition <- R6::R6Class(NULL,
 new_decomposition <- function(.class, .data, ..., .env = caller_env(n = 2)){
   dcmp <- new_model_definition(.class, ..., .env = .env)
   
-  keys <- key(.data)
-  .data <- nest(group_by(.data, !!!keys), .key = "lst_data")
+  kv <- key_vars(.data)
+  .data <- nest(group_by(.data, !!!syms(kv)), .key = "lst_data")
   
   out <- mutate(.data,
                 dcmp = map(!!sym("lst_data"), function(data, dcmp){
@@ -154,7 +154,7 @@ new_decomposition <- function(.class, .data, ..., .env = caller_env(n = 2)){
                 }, dcmp))
   
   attrs <- combine_dcmp_attr(out[["dcmp"]])
-  out <- unnest(out, !!sym("dcmp"), key = !!keys)
+  out <- unnest(out, !!sym("dcmp"), key = kv)
   as_dable(out, method = attrs[["method"]], resp = !!attrs[["response"]],
            seasons = attrs[["seasons"]], aliases = attrs[["aliases"]])
 }

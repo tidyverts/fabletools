@@ -2,13 +2,13 @@
 #' @export
 fitted.mdl_df <- function(object, ...){
   out <- gather(object, ".model", ".fit", !!!(object%@%"models"))
-  keys <- key(out)
+  kv <- key_vars(out)
   out <- transmute(as_tibble(out),
-    !!!keys,
+    !!!syms(kv),
     !!sym(".model"),
     fitted = map(!!sym(".fit"), fitted, ...)
   )
-  unnest(add_class(out, "lst_ts"), key = !!keys)
+  unnest(add_class(out, "lst_ts"), key = kv)
 }
 
 #' @export

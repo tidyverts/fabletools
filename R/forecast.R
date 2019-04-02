@@ -21,7 +21,7 @@ forecast <- function(object, ...){
 #' @rdname forecast
 #' @export
 forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
-  keys <- c(key(object), sym(".model"))
+  kv <- c(key_vars(object), ".model")
   mdls <- object%@%"models"
   if(!is.null(new_data)){
     object <- bind_new_data(object, new_data)
@@ -34,8 +34,8 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
              forecast, h = h, bias_adjust = bias_adjust, ...)
   
   # Construct fable
-  out <- add_class(select(as_tibble(object), !!!keys), "lst_ts")
-  out <- suppressWarnings(unnest(out, fc, key = !!keys))
+  out <- add_class(select(as_tibble(object), !!!syms(kv)), "lst_ts")
+  out <- suppressWarnings(unnest(out, fc, key = kv))
   out[[expr_text(fc[[1]]%@%"dist")]] <- fc %>% map(function(x) x[[expr_text(x%@%"dist")]]) %>% invoke(c, .)
   as_fable(out, resp = !!(fc[[1]]%@%"response"), dist = !!(fc[[1]]%@%"dist"))
 }
