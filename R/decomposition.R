@@ -106,7 +106,7 @@ decomposition_model <- R6::R6Class(NULL,
 
 #' @export
 forecast.decomposition_model <- function(object, new_data, specials = NULL,  ...){
-  fc <- forecast(object$model)
+  fc <- forecast(object$model, new_data, ...)
   construct_fc(fc[[expr_text(fc%@%"response")]], 
                map_dbl(fc[[expr_text(fc%@%"dist")]], function(x) x[["sd"]]),
                fc[[expr_text(fc%@%"dist")]])
