@@ -148,6 +148,10 @@ new_decomposition <- function(.class, .data, ..., .env = caller_env(n = 2)){
   kv <- key_vars(.data)
   .data <- nest(group_by(.data, !!!syms(kv)), .key = "lst_data")
   
+  if(NROW(.data) == 0){
+    abort("There is no data to decompose!")
+  }
+  
   out <- mutate(.data,
                 dcmp = map(!!sym("lst_data"), function(data, dcmp){
                   estimate(data, dcmp)[["fit"]]
@@ -197,7 +201,7 @@ new_decomposition <- function(.class, .data, ..., .env = caller_env(n = 2)){
 new_decomposition_class <- function(method = "Unknown model", 
                             train = function(.data, formula, specials, ...) abort("This decomposition has not defined a training method."),
                             specials = new_specials(),
-                            check = function(.data){},
+                            check = function(.data){if(NROW(.data)==0) abort("There is no data to decompose!")},
                             prepare = function(...){},
                             ...,
                             .env = caller_env(),
