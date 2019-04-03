@@ -7,11 +7,11 @@
 dcmp_model(dcmp_fn, formula, ..., dcmp_args = list())
 }
 \arguments{
-\item{dcmp_fn}{The decomposition function (such as \code{STL})}
+\item{dcmp_fn}{The decomposition function (such as \code{\link[feasts:STL]{feasts::STL()}})}
 
 \item{formula}{The formula used to describe the decomposition}
 
-\item{...}{Model definitions used to model the components (such as \code{ETS})}
+\item{...}{Model definitions used to model the components (such as \code{\link[fable:ETS]{fable::ETS()}})}
 
 \item{dcmp_args}{Arguments to be passed to the decomposition function (\code{.f})}
 }
@@ -22,7 +22,7 @@ decomposition method provided to \code{dcmp_fn} with the given formula. Then, ea
 of the components resulting from this decomposition are fitted with secondary
 models provided as \code{...}. All non-seasonal decomposition components must be
 specified, and any unspecified seasonal components will be forecasted using
-\code{fable::SNAIVE}. These component models will be combined according to the
+\code{\link[fable:SNAIVE]{fable::SNAIVE()}}. These component models will be combined according to the
 decomposition method, giving a combination model for the response of the
 decomposition.
 }

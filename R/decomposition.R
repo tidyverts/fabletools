@@ -103,13 +103,13 @@ forecast.decomposition_model <- function(object, new_data, specials = NULL,  ...
 #' of the components resulting from this decomposition are fitted with secondary
 #' models provided as `...`. All non-seasonal decomposition components must be
 #' specified, and any unspecified seasonal components will be forecasted using
-#' `fable::SNAIVE`. These component models will be combined according to the 
+#' [fable::SNAIVE()]. These component models will be combined according to the 
 #' decomposition method, giving a combination model for the response of the
 #' decomposition.
 #' 
-#' @param dcmp_fn The decomposition function (such as `STL`)
+#' @param dcmp_fn The decomposition function (such as [feasts::STL()])
 #' @param formula The formula used to describe the decomposition
-#' @param ... Model definitions used to model the components (such as `ETS`)
+#' @param ... Model definitions used to model the components (such as [fable::ETS()])
 #' @param dcmp_args Arguments to be passed to the decomposition function (`.f`)
 #' 
 #' @examples 
