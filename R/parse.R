@@ -124,7 +124,7 @@ parse_model <- function(model){
 #' 
 #' @export
 parse_model_rhs <- function(model){
-  if(is.null(model$specials)){
+  if(length(model$specials) == 0){
     return(list(specials = NULL))
   }
   model_rhs(model) %>%
@@ -156,7 +156,6 @@ parse_model_lhs <- function(model){
   else{
     model_lhs <- list(model_lhs)
   }
-  
   is_resp <- function(x) is_call(x) && x[[1]] == sym("resp")
   
   traversed_lhs <- lapply(model_lhs, traverse,
