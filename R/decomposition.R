@@ -1,11 +1,12 @@
 globalVariables("self")
 
-train_decomposition <- function(.data, formula, specials, ...){
+train_decomposition <- function(.data, formula, specials, ..., dcmp_fn, 
+                                dcmp_args = list()){
   # Extract raw original data
   est <- .data
   .data <- self$data
   
-  dcmp <- do.call(self$dcmp_fn, list2(.data, formula, !!!self$dcmp_args))
+  dcmp <- do.call(dcmp_fn, list2(.data, formula, !!!dcmp_args))
   
   dcmp_method <- (dcmp%@%"aliases")[[as_string(dcmp%@%"resp")]]
   structure <- dcmp%@%"seasons"
@@ -86,24 +87,6 @@ Please check that you have specified the decomposition models appropriately.")
   )
 }
 
-decomposition_model <- R6::R6Class(NULL,
-  inherit = model_definition,
-  public = list(
-    model = "decomposition",
-    train = train_decomposition,
-    specials = NULL,
-    dcmp_fn = NULL,
-    dcmp_args = NULL,
-    initialize = function(.f, formula, ..., dcmp_args = list()){
-      self$formula <- enquo(formula)
-      self$dcmp_fn <- .f
-      self$env <- caller_env(n = 2)
-      self$dcmp_args <- dcmp_args
-      self$extra <- list2(...)
-    }
-  )
-)
-
 #' @export
 forecast.decomposition_model <- function(object, new_data, specials = NULL,  ...){
   fc <- forecast(object$model, new_data, ...)
@@ -114,14 +97,17 @@ forecast.decomposition_model <- function(object, new_data, specials = NULL,  ...
 
 #' Decomposition modelling
 #' 
-#' @param dcmp The decomposition function (such as `STL`)
+#' @param dcmp_fn The decomposition function (such as `STL`)
 #' @param formula The formula used to describe the decomposition
 #' @param ... Model definitions used to model the components (such as `ETS`)
 #' @param dcmp_args Arguments to be passed to the decomposition function (`.f`)
 #' 
 #' @export
-dcmp_model <- function(dcmp, formula, ..., dcmp_args = list()){
-  decomposition_model$new(dcmp, !!enquo(formula), ..., dcmp_args = dcmp_args)
+dcmp_model <- function(dcmp_fn, formula, ..., dcmp_args = list()){
+  dcmp_model <- new_model_class("dcmp_mdl",
+                                train = train_decomposition, specials = NULL)
+  new_model_definition(dcmp_model, !!enquo(formula), ..., 
+                       dcmp_fn = dcmp_fn, dcmp_args = dcmp_args)
 }
 
 #' @export

@@ -4,10 +4,10 @@
 \alias{dcmp_model}
 \title{Decomposition modelling}
 \usage{
-dcmp_model(dcmp, formula, ..., dcmp_args = list())
+dcmp_model(dcmp_fn, formula, ..., dcmp_args = list())
 }
 \arguments{
-\item{dcmp}{The decomposition function (such as \code{STL})}
+\item{dcmp_fn}{The decomposition function (such as \code{STL})}
 
 \item{formula}{The formula used to describe the decomposition}
 
