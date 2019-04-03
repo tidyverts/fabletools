@@ -12,6 +12,11 @@ model <- function(.data, ...){
 model.tbl_ts <- function(.data, ...){
   nm <- map(enexprs(...), expr_text)
   models <- dots_list(...)
+  
+  if(length(models) == 0){
+    abort("At least one model must be specified.")
+  }
+  
   pb <- progress_estimated(length(models) * n_keys(.data), min_time = 5)
   
   keys <- key(.data)
