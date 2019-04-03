@@ -52,5 +52,5 @@ vic_food \%>\%
 
 }
 \seealso{
-https://otexts.com/fpp3/forecasting-decomposition.html
+\href{https://otexts.com/fpp3/forecasting-decomposition.html}{Forecasting: Principles and Practice - Forecasting Decomposition}
 }

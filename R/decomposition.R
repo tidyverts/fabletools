@@ -136,7 +136,8 @@ forecast.decomposition_model <- function(object, new_data, specials = NULL,  ...
 #'   forecast(h="5 years") %>% 
 #'   autoplot(vic_food)
 #' 
-#' @seealso https://otexts.com/fpp3/forecasting-decomposition.html
+#' @seealso 
+#' [*Forecasting: Principles and Practice* - Forecasting Decomposition](https://otexts.com/fpp3/forecasting-decomposition.html)
 #' 
 #' @export
 dcmp_model <- function(dcmp_fn, formula, ..., dcmp_args = list()){
