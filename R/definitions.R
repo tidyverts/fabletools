@@ -115,7 +115,7 @@ new_model_class <- function(model = "Unknown model",
 #' @param .class A model class (typically created with [new_model_class()])
 #' @export
 new_model_definition <- function(.class, ..., .env = caller_env(n = 2)){
-  .class$new(..., .env = .env)
+  add_class(.class$new(..., .env = .env), "mdl_defn")
 }
 
 #' @rdname definitions 
