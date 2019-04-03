@@ -97,10 +97,46 @@ forecast.decomposition_model <- function(object, new_data, specials = NULL,  ...
 
 #' Decomposition modelling
 #' 
+#' This function allows you to specify a decomposition combination model using 
+#' any additive decomposition. It works by first decomposing the data using the
+#' decomposition method provided to `dcmp_fn` with the given formula. Then, each
+#' of the components resulting from this decomposition are fitted with secondary
+#' models provided as `...`. All non-seasonal decomposition components must be
+#' specified, and any unspecified seasonal components will be forecasted using
+#' `fable::SNAIVE`. These component models will be combined according to the 
+#' decomposition method, giving a combination model for the response of the
+#' decomposition.
+#' 
 #' @param dcmp_fn The decomposition function (such as `STL`)
 #' @param formula The formula used to describe the decomposition
 #' @param ... Model definitions used to model the components (such as `ETS`)
 #' @param dcmp_args Arguments to be passed to the decomposition function (`.f`)
+#' 
+#' @examples 
+#' library(fable)
+#' library(tsibble)
+#' library(feasts)
+#' vic_food <- tsibbledata::aus_retail %>% 
+#'   filter(State == "Victoria", Industry == "Food retailing")
+#'   
+#' # Identify an appropriate decomposition
+#' vic_food %>% 
+#'   STL(log(Turnover) ~ season(window = Inf)) %>% 
+#'   autoplot()
+#'   
+#' # Use an ARIMA model to seasonally adjusted data, and SNAIVE to season_year
+#' # Any model can be used, and seasonal components will default to use SNAIVE.
+#' my_dcmp_spec <- dcmp_model(
+#'   STL, log(Turnover) ~ season(window = Inf),
+#'   ARIMA(seas_adjust), SNAIVE(season_year)
+#' )
+#' 
+#' vic_food %>%
+#'   model(my_dcmp_spec) %>% 
+#'   forecast(h="5 years") %>% 
+#'   autoplot(vic_food)
+#' 
+#' @seealso https://otexts.com/fpp3/forecasting-decomposition.html
 #' 
 #' @export
 dcmp_model <- function(dcmp_fn, formula, ..., dcmp_args = list()){

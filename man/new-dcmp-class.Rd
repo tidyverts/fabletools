@@ -7,7 +7,8 @@
 new_decomposition_class(method = "Unknown model",
   train = function(.data, formula, specials, ...)
   abort("This decomposition has not defined a training method."),
-  specials = new_specials(), check = function(.data) { },
+  specials = new_specials(), check = function(.data) {     if
+  (NROW(.data) == 0)          abort("There is no data to decompose!") },
   prepare = function(...) { }, ..., .env = caller_env(),
   .inherit = decomposition_definition)
 }
