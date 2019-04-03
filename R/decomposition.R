@@ -99,13 +99,13 @@ forecast.decomposition_model <- function(object, new_data, specials = NULL,  ...
 #' 
 #' This function allows you to specify a decomposition combination model using 
 #' any additive decomposition. It works by first decomposing the data using the
-#' decomposition method provided to `dcmp_fn` with the given formula. Then, each
-#' of the components resulting from this decomposition are fitted with secondary
-#' models provided as `...`. All non-seasonal decomposition components must be
-#' specified, and any unspecified seasonal components will be forecasted using
-#' [fable::SNAIVE()]. These component models will be combined according to the 
-#' decomposition method, giving a combination model for the response of the
-#' decomposition.
+#' decomposition method provided to `dcmp_fn` with the given formula. Secondary
+#' models are used to fit each of the components from the resulting 
+#' decomposition. These models are specified after the decomposition formula.
+#' All non-seasonal decomposition components must be specified, and any
+#' unspecified seasonal components will be forecasted using [fable::SNAIVE()]. 
+#' These component models will be combined according to the decomposition 
+#' method, giving a combination model for the response of the decomposition.
 #' 
 #' @param dcmp_fn The decomposition function (such as [feasts::STL()])
 #' @param formula The formula used to describe the decomposition

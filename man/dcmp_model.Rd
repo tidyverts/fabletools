@@ -18,13 +18,13 @@ dcmp_model(dcmp_fn, formula, ..., dcmp_args = list())
 \description{
 This function allows you to specify a decomposition combination model using
 any additive decomposition. It works by first decomposing the data using the
-decomposition method provided to \code{dcmp_fn} with the given formula. Then, each
-of the components resulting from this decomposition are fitted with secondary
-models provided as \code{...}. All non-seasonal decomposition components must be
-specified, and any unspecified seasonal components will be forecasted using
-\code{\link[fable:SNAIVE]{fable::SNAIVE()}}. These component models will be combined according to the
-decomposition method, giving a combination model for the response of the
-decomposition.
+decomposition method provided to \code{dcmp_fn} with the given formula. Secondary
+models are used to fit each of the components from the resulting
+decomposition. These models are specified after the decomposition formula.
+All non-seasonal decomposition components must be specified, and any
+unspecified seasonal components will be forecasted using \code{\link[fable:SNAIVE]{fable::SNAIVE()}}.
+These component models will be combined according to the decomposition
+method, giving a combination model for the response of the decomposition.
 }
 \examples{
 library(fable)
