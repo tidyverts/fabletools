@@ -141,24 +141,21 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
 
 #' @importFrom ggplot2 ggplot geom_line geom_rect facet_grid vars ylab labs
 #' @export
-autoplot.dcmp_ts <- function(object, components = NULL, scale_bars = TRUE, ...){
+autoplot.dcmp_ts <- function(object, component = NULL, scale_bars = TRUE, ...){
   resp <- object%@%"resp"
   method <- object%@%"method"
-  dcmp <- (object%@%"aliases")[[as_string(resp)]]
   idx <- index(object)
   keys <- key(object)
   n_keys <- n_keys(object)
   
-  if(is.null(components)){
-    components <- c(resp, syms(all.vars(dcmp)))
+  component <- enquo(component)
+  if(quo_is_null(component)){
+    component <- resp
   }
-  
+  dcmp <- (object%@%"aliases")[[as_string(get_expr(component))]]
   object <- object %>% 
-    transmute(!!!components) %>% 
-    gather(".var", ".val", !!!syms(measured_vars(.))) %>% 
-    mutate(.var = factor(!!sym(".var"),
-      levels = map_chr(components, function(x) as_string(get_expr(x))))
-    )
+    transmute(!!component, !!!syms(all.vars(dcmp))) %>% 
+    gather(".var", ".val", !!!syms(measured_vars(.)), factor_key = TRUE)
   
   line_aes <- aes(x = !!idx, y = !!sym(".val"))
   if(n_keys > 1){
