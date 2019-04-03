@@ -141,20 +141,22 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
 
 #' @importFrom ggplot2 ggplot geom_line geom_rect facet_grid vars ylab labs
 #' @export
-autoplot.dcmp_ts <- function(object, component = NULL, scale_bars = TRUE, ...){
-  resp <- object%@%"resp"
+autoplot.dcmp_ts <- function(object, y = NULL, scale_bars = TRUE, ...){
   method <- object%@%"method"
   idx <- index(object)
   keys <- key(object)
   n_keys <- n_keys(object)
   
-  component <- enquo(component)
-  if(quo_is_null(component)){
-    component <- resp
+  y <- enquo(y)
+  if(quo_is_null(y)){
+    y <- object%@%"resp"
   }
-  dcmp <- (object%@%"aliases")[[as_string(get_expr(component))]]
+  dcmp_str <- dcmp <- (object%@%"aliases")[[as_string(get_expr(y))]]
+  if(!is.null(dcmp_str)){
+    dcmp_str <- expr_text(dcmp_str)
+  }
   object <- object %>% 
-    transmute(!!component, !!!syms(all.vars(dcmp))) %>% 
+    transmute(!!y, !!!syms(all.vars(dcmp))) %>% 
     gather(".var", ".val", !!!syms(measured_vars(.)), factor_key = TRUE)
   
   line_aes <- aes(x = !!idx, y = !!sym(".val"))
@@ -169,7 +171,7 @@ autoplot.dcmp_ts <- function(object, component = NULL, scale_bars = TRUE, ...){
     ylab(NULL) + 
     labs(
       title = paste(method%||%"A", "decomposition"), 
-      subtitle = paste(expr_text(resp), expr_text(dcmp), sep = " = ")
+      subtitle = paste(c(expr_text(get_expr(y)), dcmp_str), collapse = " = ")
     )
   
   # Rangebars
