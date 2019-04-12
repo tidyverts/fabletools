@@ -4,10 +4,10 @@
 \alias{accuracy}
 \title{Evaluate model/forecast accuracy}
 \usage{
-accuracy(x, ...)
+accuracy(object, ...)
 }
 \arguments{
-\item{x}{A model or forecast object}
+\item{object}{A model or forecast object}
 
 \item{...}{Additional arguments to be passed to measures that use it.
 

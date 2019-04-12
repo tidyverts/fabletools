@@ -141,7 +141,7 @@ distribution_measures <- list(percentile = percentile_score)
 
 #' Evaluate model/forecast accuracy
 #' 
-#' @param x A model or forecast object
+#' @param object A model or forecast object
 #' @param ... Additional arguments to be passed to measures that use it.
 #' 
 #' The measures calculated are:
@@ -156,24 +156,24 @@ distribution_measures <- list(percentile = percentile_score)
 #' }
 #' 
 #' @export
-accuracy <- function(x, ...){
+accuracy <- function(object, ...){
   UseMethod("accuracy")
 }
 
 #' @export
-accuracy.mdl_df <- function(x, measures = point_measures, ...){
-  as_tibble(x) %>% 
-    gather(".model", "fit", !!!(x%@%"models")) %>% 
+accuracy.mdl_df <- function(object, measures = point_measures, ...){
+  as_tibble(object) %>% 
+    gather(".model", "fit", !!!(object%@%"models")) %>% 
     unnest(fit = map(!!sym("fit"), accuracy, measures = measures, ...))
 }
 
 #' @export
-accuracy.model <- function(x, measures = point_measures, ...){
+accuracy.model <- function(object, measures = point_measures, ...){
   dots <- dots_list(...)
   
-  aug <- as_tibble(augment(x)) %>% 
+  aug <- as_tibble(augment(object)) %>% 
     rename(
-      ".actual" := !!sym(deparse(model_lhs(x[["model"]]))),
+      ".actual" := !!sym(deparse(model_lhs(object[["model"]]))),
     ) %>% 
     summarise(
       .resid = list(!!sym(".actual") - !!sym(".fitted")),
@@ -185,7 +185,7 @@ accuracy.model <- function(x, measures = point_measures, ...){
   aug <- mutate(aug, ...)
   
   if(is.null(aug[[".period"]])){
-    aug <- mutate(aug, .period = get_frequencies(NULL, x[["index"]], .auto = "smallest"))
+    aug <- mutate(aug, .period = get_frequencies(NULL, object[["index"]], .auto = "smallest"))
   }
   
   measures <- squash(measures)
@@ -205,12 +205,12 @@ accuracy.model <- function(x, measures = point_measures, ...){
 }
 
 #' @export
-accuracy.fbl_ts <- function(x, data, measures = point_measures, ..., 
+accuracy.fbl_ts <- function(object, data, measures = point_measures, ..., 
                             by = c(".model", key_vars(data))){
-  by <- union(expr_text(index(x)), by)
-  grp <- c(syms(setdiff(by, expr_text(index(x)))), groups(x))
+  by <- union(expr_text(index(object)), by)
+  grp <- c(syms(setdiff(by, expr_text(index(object)))), groups(object))
   
-  if(NROW(missing_test <- anti_join(x, data, by = intersect(colnames(data), by))) > 0){
+  if(NROW(missing_test <- anti_join(object, data, by = intersect(colnames(data), by))) > 0){
     warn(sprintf(
       "The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
 %i %s %s", 
@@ -221,9 +221,9 @@ accuracy.fbl_ts <- function(x, data, measures = point_measures, ...,
   }
   
   # Compute .fc, .dist, .actual and .resid
-  aug <- transmute(x, .fc = !!(x%@%"response"), .dist = !!(x%@%"dist"), !!!syms(by))
+  aug <- transmute(object, .fc = !!(object%@%"response"), .dist = !!(object%@%"dist"), !!!syms(by))
   aug <- left_join(aug,
-      transmute(data, !!index(data), .actual = !!(x%@%"response")),
+      transmute(data, !!index(data), .actual = !!(object%@%"response")),
       by = intersect(colnames(data), by),
       suffix = c("", ".y")
     )
@@ -236,23 +236,23 @@ accuracy.fbl_ts <- function(x, data, measures = point_measures, ...,
   extract_train <- function(idx, ...){
     cnds <- dots_list(...)
     cnds <- map2(syms(names(cnds)), cnds, call2, .fn = "==")
-    eval_tidy(x%@%"response", data = filter(data, !!index(data) < idx, !!!cnds))
+    eval_tidy(object%@%"response", data = filter(data, !!index(data) < idx, !!!cnds))
   }
-  mutual_keys <- intersect(key(data), key(x))
+  mutual_keys <- intersect(key(data), key(object))
   mutual_keys <- set_names(mutual_keys, map_chr(mutual_keys, as_string))
-  .train <- x %>% 
-    group_by(!!!key(x), !!!grp) %>% 
-    filter(!!index(x) == min(!!index(x))) %>% 
+  .train <- object %>% 
+    group_by(!!!key(object), !!!grp) %>% 
+    filter(!!index(object) == min(!!index(object))) %>% 
     group_by(!!!grp) %>% 
-    filter(!!index(x) == max(!!index(x))) %>% 
-    transmute(.train = pmap(list2(!!index(x), !!!mutual_keys), extract_train))
+    filter(!!index(object) == max(!!index(object))) %>% 
+    transmute(.train = pmap(list2(!!index(object), !!!mutual_keys), extract_train))
   aug <- left_join(aug, .train, by = map_chr(grp, as_string))
 
   # Add user inputs
   aug <- mutate(aug, ...)
   
   if(is.null(aug[[".period"]])){
-    aug <- mutate(aug, .period = get_frequencies(NULL, x, .auto = "smallest"))
+    aug <- mutate(aug, .period = get_frequencies(NULL, object, .auto = "smallest"))
   }
   
   measures <- squash(measures)
