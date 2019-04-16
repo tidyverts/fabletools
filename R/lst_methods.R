@@ -20,8 +20,7 @@ c.lst_mdl <- function(x, ...){
 
 #' @export
 print.lst_mdl <- function(x, ...){
-  class(x) <- "list"
-  print(x)
+  print(map_chr(x, model_sum), quote = FALSE)
 }
 
 #' @export
