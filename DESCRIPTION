@@ -14,6 +14,8 @@ Imports:
     rlang (>= 0.2.0),
     stats,
     tibble (>= 1.4.1),
+    dplyr (>= 0.8.0),
+    tidyr (>= 0.8.3),
     generics,
     R6
 Suggests:

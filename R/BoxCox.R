@@ -18,6 +18,7 @@
 #' 
 #' @examples
 #' library(tsibble)
+#' library(dplyr)
 #' airmiles %>% 
 #'   as_tsibble() %>% 
 #'   mutate(box_cox = box_cox(value, lambda = 0.3))

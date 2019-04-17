@@ -55,15 +55,16 @@ test_that("Mable residuals", {
 })
 
 test_that("mable dplyr verbs", {
-  expect_output(mbl_complex %>% tsibble::select(key, ets) %>% print, "mable: 2 x 2") %>% 
+  library(dplyr)
+  expect_output(mbl_complex %>% select(key, ets) %>% print, "mable: 2 x 2") %>% 
     colnames %>% 
     expect_identical(c("key", "ets"))
   
-  expect_output(mbl_complex %>% tsibble::select(key, ets) %>% print, "mable: 2 x 2") %>% 
+  expect_output(mbl_complex %>% select(key, ets) %>% print, "mable: 2 x 2") %>% 
     colnames %>% 
     expect_identical(c("key", "ets"))
   
-  expect_output(mbl_complex %>% tsibble::filter(key == "mdeaths") %>% print, "mable") %>% 
+  expect_output(mbl_complex %>% filter(key == "mdeaths") %>% print, "mable") %>% 
     .[["key"]] %>% 
     expect_identical("mdeaths")
 })

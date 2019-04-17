@@ -115,7 +115,9 @@ forecast.decomposition_model <- function(object, new_data, specials = NULL,  ...
 #' @examples 
 #' library(fable)
 #' library(tsibble)
+#' library(dplyr)
 #' library(feasts)
+#' 
 #' vic_food <- tsibbledata::aus_retail %>% 
 #'   filter(State == "Victoria", Industry == "Food retailing")
 #'   

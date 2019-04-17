@@ -124,9 +124,9 @@ parse_model <- function(model){
 #' 
 #' @export
 parse_model_rhs <- function(model){
-  if(length(model$specials) == 0){
-    return(list(specials = NULL))
-  }
+  # if(length(model$specials) == 0){
+  #   return(list(specials = NULL))
+  # }
   model_rhs(model) %>%
     parse_specials(specials = model$specials) %>%
     map(function(.x){

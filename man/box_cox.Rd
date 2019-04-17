@@ -29,6 +29,7 @@ is not equal to 0}. For \eqn{\lambda=0}{lambda=0},
 }
 \examples{
 library(tsibble)
+library(dplyr)
 airmiles \%>\% 
   as_tsibble() \%>\% 
   mutate(box_cox = box_cox(value, lambda = 0.3))

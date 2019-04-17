@@ -29,7 +29,9 @@ method, giving a combination model for the response of the decomposition.
 \examples{
 library(fable)
 library(tsibble)
+library(dplyr)
 library(feasts)
+
 vic_food <- tsibbledata::aus_retail \%>\% 
   filter(State == "Victoria", Industry == "Food retailing")
   
