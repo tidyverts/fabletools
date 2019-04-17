@@ -143,8 +143,8 @@ forecast.decomposition_model <- function(object, new_data, specials = NULL,  ...
 #' 
 #' @export
 dcmp_model <- function(dcmp_fn, formula, ..., dcmp_args = list()){
-  dcmp_model <- new_model_class("dcmp_mdl",
-                                train = train_decomposition, specials = NULL)
+  dcmp_model <- new_model_class("dcmp_mdl", train = train_decomposition, 
+                                specials = new_specials(xreg = function(...) NULL))
   new_model_definition(dcmp_model, !!enquo(formula), ..., 
                        dcmp_fn = dcmp_fn, dcmp_args = dcmp_args)
 }
