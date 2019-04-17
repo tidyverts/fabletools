@@ -22,17 +22,3 @@ c.lst_mdl <- function(x, ...){
 print.lst_mdl <- function(x, ...){
   print(map_chr(x, model_sum), quote = FALSE)
 }
-
-#' @export
-c.lst_fc <- function(x, ...){
-  add_class(NextMethod(), "lst_fc")
-}
-
-#' @export
-`[.lst_fc` <- c.lst_fc
-
-#' @export
-print.lst_fc <- function(x, ...){
-  class(x) <- "list"
-  print(x)
-}
