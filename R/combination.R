@@ -3,6 +3,11 @@ new_model_combination <- function(x, combination){
 }
 
 #' @export
+model_sum.model_combination <- function(x){
+  "COMBINATION"
+}
+
+#' @export
 Ops.model <- function(e1, e2){
   e1_expr <- enexpr(e1)
   e2_expr <- enexpr(e2)
@@ -63,6 +68,11 @@ Ops.model <- function(e1, e2){
     list(e1 = e1, e2 = e2),
     combination = call2(.Generic, sym("e1"), sym("e2"))
   )
+}
+
+#' @export
+Ops.lst_mdl <- function(e1, e2){
+  add_class(map2(e1, e2, .Generic), "lst_mdl")
 }
 
 #' @importFrom stats var
