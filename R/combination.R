@@ -1,11 +1,29 @@
 new_model_combination <- function(x, combination){
   mdls <- map_lgl(x, inherits, "model")
   
+  mdls_response <- map(x, function(x) if(is_model(x)) x[["response"]] else x)
+  comb_response <- eval(expr(substitute(!!combination, mdls_response)))
+  
+  # Try to simplify the response
+  if(any(!mdls)){
+    op <- deparse(combination[[1]])
+    if(op == "*" || (op == "/" && mdls[1])){
+      num <- x[[which(!mdls)]]
+      num <- switch(op, `*` = 1/num, `/` = num)
+      if(num%%1 == 0){
+        cmp <- all.names(x[[which(mdls)]][["response"]])
+        if(length(unique(cmp)) == 2 && sum(cmp == "+") + 1 == num){
+          comb_response <- sym(cmp[cmp != "+"][1])
+        }
+      }
+    }
+  }
+  
   new_model(
     structure(x, combination = combination, class = c("model_combination")),
     model = x[[which(mdls)[1]]][["model"]],
     index = x[[which(mdls)[1]]][["index"]],
-    response = eval(expr(substitute(!!combination, map(x, function(x) x[["response"]])))),
+    response = comb_response,
     transformation = new_transformation(identity, identity)
   )
 }
