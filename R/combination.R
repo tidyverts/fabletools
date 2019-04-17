@@ -1,5 +1,13 @@
 new_model_combination <- function(x, combination){
-  structure(x, combination = combination, class = c("model_combination", "model"))
+  mdls <- map_lgl(x, inherits, "model")
+  
+  new_model(
+    structure(x, combination = combination, class = c("model_combination")),
+    model = x[[which(mdls)[1]]][["model"]],
+    index = x[[which(mdls)[1]]][["index"]],
+    response = eval(expr(substitute(!!combination, map(x, function(x) x[["response"]])))),
+    transformation = new_transformation(identity, identity)
+  )
 }
 
 #' @export
@@ -77,10 +85,9 @@ Ops.lst_mdl <- function(e1, e2){
 
 #' @importFrom stats var
 #' @export
-forecast.model_combination <- function(object, ...){
+forecast.model_combination <- function(object, new_data, specials, ...){
   mdls <- map_lgl(object, is_model)
   expr <- attr(object, "combination")
-  
   # Compute residual covariance to adjust the forecast variance
   # Assumes correlation across h is identical
   if(all(mdls)){
@@ -93,13 +100,14 @@ forecast.model_combination <- function(object, ...){
   else{
     fc_cov <- 0
   }
+  object[mdls] <- map(object[mdls], forecast, new_data = new_data, ...)
   
-  object[mdls] <- map(object[mdls], forecast, ...)
   get_attr_col <- function(x, col) if(is_fable(x)) x[[expr_text(attr(x, col))]] else x 
-  fbl <- object[[which(mdls)[[1]]]] 
-  fbl[[expr_text(attr(fbl, "dist"))]] <- eval_tidy(expr, map(object, get_attr_col, "dist")) + dist_normal(0, sqrt(2*fc_cov))
-  fbl[[expr_text(attr(fbl, "response"))]] <- eval_tidy(expr, map(object, get_attr_col, "response"))
-  fbl
+  construct_fc(
+    point = eval_tidy(expr, map(object, get_attr_col, "response")),
+    sd = rep(0, NROW(object[[which(mdls)[[1]]]])),
+    dist = eval_tidy(expr, map(object, get_attr_col, "dist")) + dist_normal(0, sqrt(2*fc_cov))
+  )
 }
 
 #' @export
