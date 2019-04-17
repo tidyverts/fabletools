@@ -4,6 +4,10 @@
   register_s3_method("pillar", "pillar_shaft", "fcdist")
   register_s3_method("pillar", "pillar_shaft", "hilo")
   
+  register_s3_method("dplyr", "filter", "fbl_ts")
+  register_s3_method("dplyr", "filter", "grouped_fbl")
+  register_s3_method("dplyr", "filter", "mdl_df")
+  
   op <- options()
   op.fable <- list(
     fable.show_progress = TRUE

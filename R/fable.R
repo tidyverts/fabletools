@@ -122,12 +122,10 @@ select.fbl_ts <- function (.data, ...){
 #' @export
 select.grouped_fbl <- select.fbl_ts
 
-#' @export
 filter.fbl_ts <- function (.data, ...){
   as_fable(NextMethod(), !!(.data%@%"response"), !!(.data%@%"dist"))
 }
 
-#' @export
 filter.grouped_fbl <- filter.fbl_ts
 
 #' @export
