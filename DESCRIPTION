@@ -8,7 +8,7 @@ Authors@R: c(
 Depends:
     R (>= 3.1.3),
 Imports:
-    tsibble (>= 0.7.0.9900),
+    tsibble (>= 0.7.9.9100),
     ggplot2 (>= 3.0.0),
     numDeriv,
     rlang (>= 0.2.0),
