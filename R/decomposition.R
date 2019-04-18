@@ -151,12 +151,12 @@ dcmp_model <- function(dcmp_fn, formula, ..., dcmp_args = list()){
 
 #' @export
 fitted.decomposition_model <- function(object, ...){
-  select(object$est, ".fitted")
+  object$est[[".fitted"]]
 }
 
 #' @export
 residuals.decomposition_model <- function(object, ...){
-  select(object$est, ".resid")
+  object$est[[".resid"]]
 }
 
 #' @export

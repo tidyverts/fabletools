@@ -134,9 +134,7 @@ fitted.model_combination <- function(object, ...){
   expr <- attr(object, "combination")
   object[mdls] <- map(object[mdls], fitted, ...)
   fits <- map(object, function(x) if(is_tsibble(x)) x[[".fitted"]] else x)
-  out <- object[[which(mdls)[[1]]]]
-  out[[".fitted"]] <- eval_tidy(expr, fits)
-  out
+  eval_tidy(expr, fits)
 }
 
 #' @export
@@ -145,7 +143,6 @@ response.model_combination <- function(object, ...){
   expr <- attr(object, "combination")
   object[mdls] <- map(object[mdls], response, ...)
   resp <- map(object, function(x) if(is_tsibble(x)) x[[".response"]] else x)
-  out <- object[[which(mdls)[[1]]]]
   eval_tidy(expr, resp)
 }
 
@@ -158,5 +155,5 @@ residuals.model_combination <- function(object, type = "response", ...){
   }
   resp <- response(object)
   fit <- fitted(object)
-  transmute(resp, .resid = resp[[measured_vars(resp)]] - fit[[".fitted"]])
+  resp[[measured_vars(resp)]] - fit[[".fitted"]]
 }
