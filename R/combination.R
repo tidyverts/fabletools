@@ -153,7 +153,5 @@ residuals.model_combination <- function(object, type = "response", ...){
                  Defaulting to `type="response"`', type))
     type <- "response"
   }
-  resp <- response(object)
-  fit <- fitted(object)
-  resp[[measured_vars(resp)]] - fit[[".fitted"]]
+  response(object) - fitted(object)
 }
