@@ -146,8 +146,7 @@ response.model_combination <- function(object, ...){
   object[mdls] <- map(object[mdls], response, ...)
   resp <- map(object, function(x) if(is_tsibble(x)) x[[".response"]] else x)
   out <- object[[which(mdls)[[1]]]]
-  out[[".response"]] <- eval_tidy(expr, resp)
-  out
+  eval_tidy(expr, resp)
 }
 
 #' @export

@@ -22,9 +22,13 @@ response.mdl_df <- function(object, ...){
 
 #' @export
 response.model <- function(object, ...){
-  aug <- augment(object, ...)
+  resp <- safely(response)(object[["fit"]], ...)
+  if(!is.null(resp[["result"]])){
+    return(mutate(object$index, .response = resp[["result"]]))
+  }
+  resp <- augment(object, ...)
   bt <- invert_transformation(object$transformation)
-  transmute(aug, !!index(aug), 
+  transmute(resp, !!index(resp), 
             .response = bt(!!sym(expr_text(model_lhs(object$model))))
   )
 }
