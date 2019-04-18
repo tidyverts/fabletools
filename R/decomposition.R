@@ -72,27 +72,8 @@ Please specify an appropriate model for these components",
 Please check that you have specified the decomposition models appropriately.")
   }
   
-  structure(
-    list(
-      est = est %>% 
-        mutate(
-          .fitted = fitted(model)[[".fitted"]],
-          .resid = !!sym(measured_vars(est)) - !!sym(".fitted")
-        ),
-      fit = tibble(method = dcmp%@%"method",
-                   decomposition = list(dcmp_method)),
-      model = model
-    ),
-    class = "decomposition_model"
-  )
-}
-
-#' @export
-forecast.decomposition_model <- function(object, new_data, specials = NULL,  ...){
-  fc <- forecast(object$model, new_data, ...)
-  construct_fc(fc[[expr_text(fc%@%"response")]], 
-               map_dbl(fc[[expr_text(fc%@%"dist")]], function(x) x[["sd"]]),
-               fc[[expr_text(fc%@%"dist")]])
+  structure(model[["fit"]], dcmp_method = dcmp%@%"method",
+            class = union("decomposition_model", class(model[["fit"]])))
 }
 
 #' Decomposition modelling
@@ -150,31 +131,6 @@ dcmp_model <- function(dcmp_fn, formula, ..., dcmp_args = list()){
 }
 
 #' @export
-fitted.decomposition_model <- function(object, ...){
-  object$est[[".fitted"]]
-}
-
-#' @export
-residuals.decomposition_model <- function(object, ...){
-  object$est[[".resid"]]
-}
-
-#' @export
-augment.decomposition_model <- function(x, ...){
-  x$est
-}
-
-#' @export
-glance.decomposition_model <- function(x, ...){
-  x$fit
-}
-
-#' @export
-tidy.decomposition_model <- function(x, ...){
-  x$par
-}
-
-#' @export
 model_sum.decomposition_model <- function(x){
-  paste(x$fit$method, "decomposition model")
+  paste(x%@%"dcmp_method", "decomposition model")
 }
