@@ -97,8 +97,6 @@ validate_fable <- function(fbl){
   }
 }
 
-#' @importFrom tsibble tbl_sum
-#' @export
 tbl_sum.fbl_ts <- function(x){
   out <- NextMethod()
   names(out)[1] <- "A fable"

@@ -155,13 +155,10 @@ type_sum.hilo <- function(x) {
   "hilo"
 }
 
-#' @export
 obj_sum.hilo <- function(x) {
   rep("hilo", length(x))
 }
 
-#' @importFrom tibble is_vector_s3
-#' @export
 is_vector_s3.hilo <- function(x) {
   TRUE
 }

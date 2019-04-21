@@ -156,17 +156,14 @@ Ops.fcdist <- function(e1, e2){
   structure(unsplit(dist, .env_ids), class = "fcdist")
 }
 
-#' @export
 type_sum.fcdist <- function(x){
   "dist"
 }
 
-#' @export
 is_vector_s3.fcdist <- function(x){
   TRUE
 }
 
-#' @export
 obj_sum.fcdist <- function(x) {
   rep("dist", length(x))
 }

@@ -48,8 +48,6 @@ as_tibble.mdl_df <- function(x, ...){
   as_tibble(x, ...)
 }
 
-#' @importFrom tsibble tbl_sum
-#' @export
 tbl_sum.mdl_df <- function(x){
   out <- c(`A mable` = paste(map_chr(dim(x), big_mark), collapse = " x "))
   

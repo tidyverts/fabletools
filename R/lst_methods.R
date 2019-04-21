@@ -1,6 +1,5 @@
 ### lst_mdl ###
 
-#' @export
 type_sum.lst_mdl <- function(x){
   "model"
 }

@@ -5,14 +5,6 @@ tsibble::`%>%`
 #' @export
 tsibble::as_tsibble
 
-#' @importFrom tsibble type_sum
-#' @export
-tsibble::type_sum
-
-#' @importFrom tibble obj_sum
-#' @export
-tibble::obj_sum
-
 #' @importFrom tibble is_vector_s3
 #' @export
 tibble::is_vector_s3

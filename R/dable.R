@@ -41,8 +41,6 @@ as_tsibble.dcmp_ts <- function(x, ...){
   new_tsibble(x)
 }
 
-#' @importFrom tsibble tbl_sum
-#' @export
 tbl_sum.dcmp_ts <- function(x){
   response <- as_string(x%@%"resp")
   method <- expr_text((x%@%"aliases")[[response]])
