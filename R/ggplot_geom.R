@@ -84,7 +84,7 @@ GeomForecast <- ggplot2::ggproto("GeomForecast", ggplot2::Geom,
                                            x <- transform(x, colour = fillcol, fill = NA, size = size*2)
                                          }
                                          else { # Ribbon
-                                           if(all(x[["ymin"]] == x[["ymax"]])){
+                                           if(all(x[["ymin"]] == x[["ymax"]], na.rm = TRUE)){
                                              GeomForecastIntervalGeom <- ggplot2::GeomLine$draw_panel
                                              x <- transform(x, y = ymin, ymin = NA, ymax = NA, colour = fillcol, fill = NA)
                                            }
