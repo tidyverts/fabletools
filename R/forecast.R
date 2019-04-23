@@ -43,7 +43,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
 #' @export
 forecast.model <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
   if(is.null(new_data)){
-    new_data <- make_future_data(object$index, h)
+    new_data <- make_future_data(object$data, h)
   }
   
   # Compute specials with new_data

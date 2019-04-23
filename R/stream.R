@@ -31,6 +31,6 @@ stream.model <- function(object, new_data, ...){
   object$model$remove_data()
   
   object$fit <- stream(object[["fit"]], new_data, specials = specials, ...)
-  object$index <- rbind(object$index, select(new_data, !!index(new_data)))
+  object$data <- rbind(object$data, select(new_data, !!!syms(colnames(object$data))))
   object
 }

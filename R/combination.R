@@ -19,10 +19,14 @@ new_model_combination <- function(x, combination){
     }
   }
   
+  # Compute new response data
+  resp <- map2(x, mdls, function(x, is_mdl) if(is_mdl) response(x)[[".response"]] else x)
+  resp <- eval_tidy(combination, resp)
+  
   new_model(
     structure(x, combination = combination, class = c("model_combination")),
     model = x[[which(mdls)[1]]][["model"]],
-    index = x[[which(mdls)[1]]][["index"]],
+    data = transmute(x[[which(mdls)[1]]][["data"]], !!expr_text(comb_response) := resp),
     response = comb_response,
     transformation = new_transformation(identity, identity)
   )
@@ -135,23 +139,4 @@ fitted.model_combination <- function(object, ...){
   object[mdls] <- map(object[mdls], fitted, ...)
   fits <- map(object, function(x) if(is_tsibble(x)) x[[".fitted"]] else x)
   eval_tidy(expr, fits)
-}
-
-#' @export
-response.model_combination <- function(object, ...){
-  mdls <- map_lgl(object, is_model)
-  expr <- attr(object, "combination")
-  object[mdls] <- map(object[mdls], response, ...)
-  resp <- map(object, function(x) if(is_tsibble(x)) x[[".response"]] else x)
-  eval_tidy(expr, resp)
-}
-
-#' @export
-residuals.model_combination <- function(object, type = "response", ...){
-  if(type != "response"){
-    warn(sprintf('Residuals of type `%s` are not supported for model combinations.
-                 Defaulting to `type="response"`', type))
-    type <- "response"
-  }
-  response(object) - fitted(object)
 }

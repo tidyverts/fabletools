@@ -14,5 +14,5 @@ fitted.mdl_df <- function(object, ...){
 #' @export
 fitted.model <- function(object, ...){
   bt <- invert_transformation(object$transformation)
-  mutate(object$index, .fitted = bt(fitted(object$fit, ...)))
+  transmute(object$data, .fitted = bt(fitted(object$fit, ...)))
 }

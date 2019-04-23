@@ -18,6 +18,12 @@ residuals.model <- function(object, type = "innovation", ...){
   }
   else{
     .resid <- residuals(object$fit, type = type, ...)
+    if(is.null(.resid)){
+        warn(sprintf(
+'Residuals of type `%s` are not supported for %s models.
+Defaulting to `type="response"`', type, model_sum(object)))
+        .resid <- response(object)[[".response"]] - fitted(object$fit)
+    }
   }
-  mutate(object$index, .resid = .resid)
+  transmute(object$data, .resid = .resid)
 }
