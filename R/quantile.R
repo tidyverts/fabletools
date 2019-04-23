@@ -187,7 +187,7 @@ format_dist <- function(fn_nm){
           out <- format(arg, digits = 2, ...)
         }
         else{
-          out <- sprintf("%s[%i]", map_chr(arg, type_sum), map_int(arg, length))
+          out <- sprintf("%s[%i]", map_chr(arg, tibble::type_sum), map_int(arg, length))
         }
         if(is_character(nm)){
           out <- paste0(nm, "=", out)

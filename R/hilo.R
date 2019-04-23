@@ -150,7 +150,6 @@ rep.hilo <- function(x, ...) {
   enclass(NextMethod(), "hilo")
 }
 
-#' @export
 type_sum.hilo <- function(x) {
   "hilo"
 }

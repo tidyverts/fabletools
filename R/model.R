@@ -76,7 +76,7 @@ model_sum <- function(x){
 
 #' @export
 model_sum.default <- function(x){
-  type_sum(x)
+  tibble::type_sum(x)
 }
 
 #' @export
