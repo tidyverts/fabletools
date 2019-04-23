@@ -5,7 +5,6 @@
 \alias{reexports}
 \alias{\%>\%}
 \alias{as_tsibble}
-\alias{is_vector_s3}
 \alias{autoplot}
 \alias{autolayer}
 \alias{equation}
@@ -24,8 +23,6 @@ below to see their documentation.
   \item{generics}{\code{\link[generics]{equation}}, \code{\link[generics]{interpolate}}, \code{\link[generics]{components}}, \code{\link[generics]{augment}}, \code{\link[generics]{glance}}, \code{\link[generics]{tidy}}}
 
   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}, \code{\link[ggplot2]{autolayer}}}
-
-  \item{tibble}{\code{\link[tibble]{is_vector_s3}}}
 
   \item{tsibble}{\code{\link[tsibble]{\%>\%}}, \code{\link[tsibble]{as_tsibble}}}
 }}

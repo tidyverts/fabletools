@@ -5,10 +5,6 @@ tsibble::`%>%`
 #' @export
 tsibble::as_tsibble
 
-#' @importFrom tibble is_vector_s3
-#' @export
-tibble::is_vector_s3
-
 #' @importFrom ggplot2 autoplot
 #' @export
 ggplot2::autoplot
