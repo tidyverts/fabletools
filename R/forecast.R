@@ -68,11 +68,13 @@ Does your model require extra variables to produce forecasts?", e$message))
   if(isTRUE(bias_adjust)){
     # Faster version of bias_adjust(bt, fc[["sd"]]^2)(fc[["mean"]]) 
     adjustment <- map_dbl(as.numeric(fc[["point"]]), hessian, func = bt)
-    if(any(is.na(adjustment))){
+    fc[["point"]] <- bt(fc[["point"]])
+    if(any(!is.na(fc[["point"]]) & is.na(adjustment))){
       warning("Could not bias adjust the point forecasts as the back-transformation's hessian is not well behaved. Consider using a different transformation.")
-      adjustment <- 0
     }
-    fc[["point"]] <- bt(fc[["point"]]) + fc[["sd"]]^2/2*adjustment
+    else{
+      fc[["point"]] <- fc[["point"]] + fc[["sd"]]^2/2*adjustment
+    }
   }
   else{
     fc[["point"]] <- bt(fc[["point"]])
