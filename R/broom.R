@@ -9,7 +9,13 @@ augment.mdl_df <- function(x, ...){
 
 #' @export
 augment.model <- function(x, ...){
-  augment(x$fit, ...)
+  tryCatch(augment(x[["fit"]], ...),
+           error = function(e){
+             idx <- as_string(index(x$data))
+             x$data %>% 
+               left_join(fitted(x, ...), by = idx) %>% 
+               left_join(residuals(x, ...), by = idx)
+           })
 }
 
 #' @export

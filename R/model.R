@@ -44,11 +44,12 @@ model.tbl_ts <- function(.data, ...){
     as_mable(keys, syms(names(fits)))
 }
 
-new_model <- function(fit, model, index, response, transformation){
-  structure(list(fit = fit, model = model, index = index,
+new_model <- function(fit, model, data, response, transformation){
+  structure(list(fit = fit, model = model, data = data,
                  response = response, transformation = transformation),
             class = "model")
 }
+
 #' Is the object a model
 #' 
 #' @param x An object.

@@ -59,7 +59,7 @@ imitate.model <- function(object, new_data = NULL, h = NULL, times = 1, seed = N
   }
   
   if(is.null(new_data)){
-    new_data <- make_future_data(object$index, h)
+    new_data <- make_future_data(object$data, h)
   }
   
   if(is.null(new_data[[".rep"]])){
