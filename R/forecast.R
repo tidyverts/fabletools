@@ -70,7 +70,10 @@ Does your model require extra variables to produce forecasts?", e$message))
     adjustment <- map_dbl(as.numeric(fc[["point"]]), hessian, func = bt)
     fc[["point"]] <- bt(fc[["point"]])
     if(any(!is.na(fc[["point"]]) & is.na(adjustment))){
-      warning("Could not bias adjust the point forecasts as the back-transformation's hessian is not well behaved. Consider using a different transformation.")
+      warn("Could not bias adjust the point forecasts as the back-transformation's hessian is not well behaved. Consider using a different transformation.")
+    }
+    else if(any(is.na(fc[["sd"]]))){
+      warn("Could not bias adjust the point forecasts as the forecast standard deviation is unknown. Perhaps your series is too short.")
     }
     else{
       fc[["point"]] <- fc[["point"]] + fc[["sd"]]^2/2*adjustment
