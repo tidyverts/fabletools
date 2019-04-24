@@ -33,6 +33,7 @@ behaviour to the response. This is a tidy implementation of
 \code{\link[stats]{simulate}}.
 }
 \examples{
+library(dplyr)
 library(fable)
 UKLungDeaths <- as_tsibble(cbind(mdeaths, fdeaths), gather = FALSE)
 UKLungDeaths \%>\% 

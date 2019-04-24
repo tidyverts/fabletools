@@ -8,6 +8,7 @@
 #' @param ... Additional optional arguments
 #' 
 #' @examples
+#' library(dplyr)
 #' library(fable)
 #' UKLungDeaths <- as_tsibble(cbind(mdeaths, fdeaths), gather = FALSE)
 #' UKLungDeaths %>% 
