@@ -185,7 +185,7 @@ accuracy.model <- function(object, measures = point_measures, ...){
   aug <- mutate(aug, ...)
   
   if(is.null(aug[[".period"]])){
-    aug <- mutate(aug, .period = get_frequencies(NULL, object[["index"]], .auto = "smallest"))
+    aug <- mutate(aug, .period = get_frequencies(NULL, object[["data"]], .auto = "smallest"))
   }
   
   measures <- squash(measures)
