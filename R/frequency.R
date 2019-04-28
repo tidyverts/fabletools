@@ -19,7 +19,7 @@ common_periods <- function(x){
 #' @rdname freq_tools
 #' @export
 common_periods.default <- function(x){
-  common_periods(pull_interval(x))
+  common_periods(interval_pull(x))
 }
 
 #' @rdname freq_tools
