@@ -210,6 +210,10 @@ accuracy.fbl_ts <- function(object, data, measures = point_measures, ...,
   by <- union(expr_text(index(object)), by)
   grp <- c(syms(setdiff(by, expr_text(index(object)))), groups(object))
   
+  if(!(".model" %in% by)){
+    warn('Accuracy measures should be computed separately for each model, have you forgotten to add ".model" to your `by` argument?')
+  }
+  
   if(NROW(missing_test <- anti_join(object, data, by = intersect(colnames(data), by))) > 0){
     warn(sprintf(
       "The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
