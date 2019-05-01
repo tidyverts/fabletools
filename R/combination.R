@@ -113,11 +113,11 @@ forecast.model_combination <- function(object, new_data, specials, ...){
   # Compute residual covariance to adjust the forecast variance
   # Assumes correlation across h is identical
   if(all(mdls)){
-    fc_cov <- max(0, var(
+    fc_cov <- var(
       residuals(object[[1]], type = "response")[[".resid"]],
       residuals(object[[2]], type = "response")[[".resid"]],
       na.rm = TRUE
-    ))
+    )
   }
   else{
     fc_cov <- 0
@@ -125,10 +125,15 @@ forecast.model_combination <- function(object, new_data, specials, ...){
   object[mdls] <- map(object[mdls], forecast, new_data = new_data, ...)
   
   get_attr_col <- function(x, col) if(is_fable(x)) x[[expr_text(attr(x, col))]] else x 
+  
+  # var(x) + var(y) + 2*cov(x,y)
+  .dist <- eval_tidy(expr, map(object, get_attr_col, "dist"))
+  .dist <- add_class(map(.dist, function(x) {x$sd <- sqrt(x$sd^2 + 2*fc_cov); x}), "fcdist")
+  
   construct_fc(
     point = eval_tidy(expr, map(object, get_attr_col, "response")),
     sd = rep(0, NROW(object[[which(mdls)[[1]]]])),
-    dist = eval_tidy(expr, map(object, get_attr_col, "dist")) + dist_normal(0, sqrt(2*fc_cov))
+    dist = .dist
   )
 }
 
