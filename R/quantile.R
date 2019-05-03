@@ -318,7 +318,7 @@ dist_mv_normal <- function(mean, sd, ...){
 
 #' @importFrom stats quantile
 qsample <- function(p, x = list(), ...){
-  map_dbl(x, function(x) as.numeric(stats::quantile(x, p, ...)))
+  map_dbl(x, function(x) as.numeric(stats::quantile(unlist(x), p, ...)))
 }
 
 env_dist_sim <- new_fcdist_env(qsample, display = format_dist("sim"))
