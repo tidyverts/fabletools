@@ -2,9 +2,12 @@
 % Please edit documentation in R/model.R
 \name{model}
 \alias{model}
-\title{Estimate multiple models}
+\alias{model.tbl_ts}
+\title{Estimate models}
 \usage{
 model(.data, ...)
+
+\method{model}{tbl_ts}(.data, ...)
 }
 \arguments{
 \item{.data}{A data structure suitable for the models (such as a \code{tsibble})}
@@ -12,5 +15,5 @@ model(.data, ...)
 \item{...}{Definitions for the models to be used}
 }
 \description{
-Estimate multiple models
+Trains specified model definitions to a dataset.
 }

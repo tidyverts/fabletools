@@ -298,7 +298,6 @@ env_dist_normal <- new_fcdist_env(qnorm, display = format_dist_normal)
 #' 
 #' @examples
 #' dist_normal(rep(3, 10), seq(0, 1, length.out=10))
-#' dist_sim(list(rnorm(100), rnorm(100), rnorm(100)))
 #' 
 #' @export
 dist_normal <- function(mean, sd, ...){
@@ -315,6 +314,9 @@ env_dist_sim <- new_fcdist_env(qsample, display = format_dist("sim"))
 #' @rdname distributions
 #' 
 #' @param sample a list of simulated values
+#' 
+#' @examples 
+#' dist_sim(list(rnorm(100), rnorm(100), rnorm(100)))
 #' 
 #' @export
 dist_sim <- function(sample, ...){

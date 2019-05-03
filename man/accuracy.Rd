@@ -2,25 +2,27 @@
 % Please edit documentation in R/accuracy.R
 \name{accuracy}
 \alias{accuracy}
+\alias{accuracy.mdl_df}
+\alias{accuracy.fbl_ts}
 \title{Evaluate model/forecast accuracy}
 \usage{
 accuracy(object, ...)
+
+\method{accuracy}{mdl_df}(object, measures = point_measures, ...)
+
+\method{accuracy}{fbl_ts}(object, data, measures = point_measures, ...,
+  by = c(".model", key_vars(data)))
 }
 \arguments{
 \item{object}{A model or forecast object}
 
-\item{...}{Additional arguments to be passed to measures that use it.
+\item{...}{Additional arguments to be passed to measures that use it.}
 
-The measures calculated are:
-\itemize{
-\item ME: Mean Error
-\item RMSE: Root Mean Squared Error
-\item MAE: Mean Absolute Error
-\item MPE: Mean Percentage Error
-\item MAPE: Mean Absolute Percentage Error
-\item MASE: Mean Absolute Scaled Error
-\item ACF1: Autocorrelation of errors at lag 1.
-}}
+\item{measures}{A list of accuracy measures to compute (such as \code{\link{point_measures}}, \code{\link{interval_measures}}, or \code{\link{distribution_measures}})}
+
+\item{data}{A dataset containing the complete model dataset (both training and test data). The training portion of the data will be used in the computation of some accuracy measures, and the test data is used to compute the forecast errors.}
+
+\item{by}{}
 }
 \description{
 Evaluate model/forecast accuracy

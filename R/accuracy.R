@@ -141,25 +141,20 @@ distribution_measures <- list(percentile = percentile_score)
 
 #' Evaluate model/forecast accuracy
 #' 
+#' 
+#' 
 #' @param object A model or forecast object
 #' @param ... Additional arguments to be passed to measures that use it.
-#' 
-#' The measures calculated are:
-#' \itemize{
-#'   \item ME: Mean Error
-#'   \item RMSE: Root Mean Squared Error
-#'   \item MAE: Mean Absolute Error
-#'   \item MPE: Mean Percentage Error
-#'   \item MAPE: Mean Absolute Percentage Error
-#'   \item MASE: Mean Absolute Scaled Error
-#'   \item ACF1: Autocorrelation of errors at lag 1.
-#' }
 #' 
 #' @export
 accuracy <- function(object, ...){
   UseMethod("accuracy")
 }
 
+#' @rdname accuracy
+#' 
+#' @param measures A list of accuracy measures to compute (such as [`point_measures`], [`interval_measures`], or [`distribution_measures`])
+#' 
 #' @export
 accuracy.mdl_df <- function(object, measures = point_measures, ...){
   as_tibble(object) %>% 
@@ -204,6 +199,10 @@ accuracy.model <- function(object, measures = point_measures, ...){
     )
 }
 
+#' @param data A dataset containing the complete model dataset (both training and test data). The training portion of the data will be used in the computation of some accuracy measures, and the test data is used to compute the forecast errors.
+#' @param by 
+#' 
+#' @rdname accuracy
 #' @export
 accuracy.fbl_ts <- function(object, data, measures = point_measures, ..., 
                             by = c(".model", key_vars(data))){

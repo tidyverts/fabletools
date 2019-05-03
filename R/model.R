@@ -1,13 +1,17 @@
-#' Estimate multiple models
+#' Estimate models
+#' 
+#' Trains specified model definitions to a dataset.
 #' 
 #' @param .data A data structure suitable for the models (such as a `tsibble`)
 #' @param ... Definitions for the models to be used
-#' 
+#'
+#' @rdname model
 #' @export
 model <- function(.data, ...){
   UseMethod("model")
 }
 
+#' @rdname model
 #' @export
 model.tbl_ts <- function(.data, ...){
   nm <- map(enexprs(...), expr_text)
