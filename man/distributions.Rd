@@ -2,10 +2,13 @@
 % Please edit documentation in R/quantile.R
 \name{dist_normal}
 \alias{dist_normal}
+\alias{dist_mv_normal}
 \alias{dist_sim}
 \title{Distributions for intervals}
 \usage{
 dist_normal(mean, sd, ...)
+
+dist_mv_normal(mean, sd, ...)
 
 dist_sim(sample, ...)
 }
@@ -23,6 +26,7 @@ Distributions for intervals
 }
 \examples{
 dist_normal(rep(3, 10), seq(0, 1, length.out=10))
+
 dist_sim(list(rnorm(100), rnorm(100), rnorm(100)))
 
 }

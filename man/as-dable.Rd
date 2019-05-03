@@ -15,7 +15,7 @@ as_dable(x, ...)
 
 \item{...}{Additional arguments passed to methods}
 
-\item{resp}{The response variable (given as a bare or unquoted variable).}
+\item{resp}{The response variable (a list of expressions).}
 
 \item{method}{The name of the decomposition method.}
 

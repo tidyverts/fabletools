@@ -3,8 +3,8 @@ context("test-transformations")
 simple_data <- tsibble(idx = 1:10, y = abs(rnorm(10)), x = 1:10, index = idx)
 test_transformation <- function(..., dt = simple_data){
   mdl <- estimate(dt, no_specials(...))
-  trans <- mdl$transformation
-  resp <- mdl$response
+  trans <- mdl$transformation[[1]]
+  resp <- mdl$response[[1]]
   expect_equal(
     dt[[expr_text(resp)]],
     fablelite:::invert_transformation(trans)(trans(dt[[expr_text(resp)]]))

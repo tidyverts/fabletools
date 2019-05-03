@@ -13,6 +13,12 @@ fitted.mdl_df <- function(object, ...){
 
 #' @export
 fitted.model <- function(object, ...){
-  bt <- invert_transformation(object$transformation)
-  transmute(object$data, .fitted = bt(fitted(object$fit, ...)))
+  bt <- map(object$transformation, invert_transformation)
+  
+  fits <- as.matrix(fitted(object$fit, ...))
+  fits <- map2(bt, split(fits, col(fits)), function(bt, fit) bt(fit))
+  
+  nm <- if(length(fits) == 1) ".fitted" else map_chr(object$response, expr_text)
+  
+  transmute(object$data, !!!set_names(fits, nm))
 }

@@ -17,13 +17,13 @@ new_fcdist <- function(..., .env){
 #' 
 #' @rdname fcdist
 #' @export
-new_fcdist_env <- function(quantile, transformation = identity, display = NULL){
+new_fcdist_env <- function(quantile, transformation = list(identity), display = NULL){
   if(is.null(display)){
     display <- format_dist(as_string(enexpr(quantile)))
   }
   new_environment(
     list(f = quantile, t = transformation, format = display,
-         trans = !is.name(body(transformation)))
+         trans = any(map_lgl(transformation, compose(`!`, is.name, body))))
   )
 }
 
@@ -36,7 +36,7 @@ update_fcdist <- function(x, quantile = NULL, transformation = NULL, format_fn =
     }
     if(!is.null(transformation)){
       env$t <- transformation
-      env$trans <- !is.name(body(transformation))
+      env$trans <- any(map_lgl(transformation, compose(`!`, is.name, body)))
     }
     if(!is.null(format_fn)){
       env$format_fn <- format_fn
@@ -257,11 +257,10 @@ hilo.fcdist <- function(x, level = 95, ...){
 
 hilo_fcdist <- function(level, x){
   env <- x[[1]][[length(x[[1]])]]
-  args <- transpose(x)[-length(x[[1]])] %>% 
-    map(unlist, recursive = FALSE)
+  args <- transpose(x)[-length(x[[1]])]
   list(lower = 50-level/2, upper = 50+level/2) %>%
     map(function(level){
-      env$t(do.call(env$f, c(list(level/100), as.list(args))))
+      env$t[[1]](do.call(env$f, c(list(level/100), as.list(args))))
     }) %>%
     append(list(level = level)) %>%
     invoke("new_hilo", .)
@@ -286,7 +285,9 @@ format_dist_normal <- function(x, ...){
   )
 }
 
-env_dist_normal <- new_fcdist_env(qnorm, display = format_dist_normal)
+env_dist_normal <- new_fcdist_env(function(mean, sd, ...){
+    qnorm(..., mean = unlist(mean), sd = unlist(sd))
+  }, display = format_dist_normal)
 
 #' Distributions for intervals
 #' 
@@ -302,6 +303,17 @@ env_dist_normal <- new_fcdist_env(qnorm, display = format_dist_normal)
 #' @export
 dist_normal <- function(mean, sd, ...){
   new_fcdist(mean = mean, sd = sd, ..., .env = env_dist_normal)
+}
+
+env_dist_mv_normal <- new_fcdist_env(function(p, mean, sd){
+  abort("Multivariate normal intervals are not currently supported.")
+  qnorm(p, mean, diag(sd))
+}, display = function(x, ...) rep("MVN", length(x)))
+
+#' @rdname distributions
+#' @export
+dist_mv_normal <- function(mean, sd, ...){
+  new_fcdist(mean = mean, sd = sd, ..., .env = env_dist_mv_normal)
 }
 
 #' @importFrom stats quantile

@@ -36,19 +36,19 @@ test_that("Model parsing variety", {
     function(.x) log(.x),
     function(.x) exp(.x)
   )
-  expect_equal(parse_log1[[1]][[1]]$transformation, log_trans)
-  expect_equal(parse_log1[[1]][[1]]$response, as.name("value"))
+  expect_equal(parse_log1[[1]][[1]]$transformation[[1]], log_trans)
+  expect_equal(parse_log1[[1]][[1]]$response[[1]], as.name("value"))
   
   
   # Parse lhs transformation with rhs
   parse_log2 <- model(as_tsibble(USAccDeaths), specials(log(value) ~ 1))
-  expect_equal(parse_log1[[1]][[1]]$transformation, parse_log2[[1]][[1]]$transformation)
-  expect_equal(parse_log1[[1]][[1]]$response, parse_log2[[1]][[1]]$response)
+  expect_equal(parse_log1[[1]][[1]]$transformation[[1]], parse_log2[[1]][[1]]$transformation[[1]])
+  expect_equal(parse_log1[[1]][[1]]$response[[1]], parse_log2[[1]][[1]]$response[[1]])
   
   # Parse lhs transformation with specials
   parse_log3 <- model(as_tsibble(USAccDeaths), specials(log(value) ~ value + log(value) + rnorm(0,1) + log5(value)))
-  expect_equal(parse_log1[[1]][[1]]$transformation, parse_log3[[1]][[1]]$transformation)
-  expect_equal(parse_log1[[1]][[1]]$response, parse_log3[[1]][[1]]$response)
+  expect_equal(parse_log1[[1]][[1]]$transformation[[1]], parse_log3[[1]][[1]]$transformation[[1]])
+  expect_equal(parse_log1[[1]][[1]]$response[[1]], parse_log3[[1]][[1]]$response[[1]])
 })
 
 
@@ -57,12 +57,12 @@ test_that("Model parsing scope", {
   mdl <- eval({
     model(as_tsibble(USAccDeaths), no_specials())
   }, envir = new_environment(list(no_specials = no_specials)))
-  expect_equal(mdl[[1]][[1]]$response, sym("value"))
+  expect_equal(mdl[[1]][[1]]$response[[1]], sym("value"))
   
   mdl <- eval({
     model(as_tsibble(USAccDeaths), no_specials(value))
   }, envir = new_environment(list(no_specials = no_specials)))
-  expect_equal(mdl[[1]][[1]]$response, sym("value"))
+  expect_equal(mdl[[1]][[1]]$response[[1]], sym("value"))
   
   expect_error(
     eval({
@@ -77,7 +77,7 @@ test_that("Model parsing scope", {
     model(as_tsibble(USAccDeaths), no_specials(something))
   }, envir = new_environment(list(no_specials = no_specials)))
   
-  expect_equal(mdl[[1]][[1]]$response, sym("something"))
+  expect_equal(mdl[[1]][[1]]$response[[1]], sym("something"))
   
   # Transformation from scalar
   mdl <- eval({
@@ -85,7 +85,7 @@ test_that("Model parsing scope", {
     model(as_tsibble(USAccDeaths), no_specials(value/scale))
   }, envir = new_environment(list(no_specials = no_specials)))
   
-  expect_equal(mdl[[1]][[1]]$response, sym("value"))
+  expect_equal(mdl[[1]][[1]]$response[[1]], sym("value"))
   
   # Specials missing values
   expect_error(
@@ -110,29 +110,29 @@ test_that("Model response identification", {
   
   # Untransformed response
   mdl <- model(dt, no_specials(GDP))
-  expect_equal(mdl[[1]][[1]]$response, expr(GDP))
+  expect_equal(mdl[[1]][[1]]$response[[1]], expr(GDP))
   mdl <- model(dt, no_specials(resp(GDP)))
-  expect_equal(mdl[[1]][[1]]$response, expr(GDP))
+  expect_equal(mdl[[1]][[1]]$response[[1]], expr(GDP))
   
   # Scalar transformed response
   mdl <- model(dt, no_specials(GDP/pi))
-  expect_equal(mdl[[1]][[1]]$response, expr(GDP))
+  expect_equal(mdl[[1]][[1]]$response[[1]], expr(GDP))
   mdl <- model(dt, no_specials(resp(GDP)/pi))
-  expect_equal(mdl[[1]][[1]]$response, expr(GDP))
+  expect_equal(mdl[[1]][[1]]$response[[1]], expr(GDP))
   
   # Transformation with a tie
   mdl <- model(dt, no_specials(GDP/CPI))
-  expect_equal(mdl[[1]][[1]]$response, expr(GDP/CPI))
+  expect_equal(mdl[[1]][[1]]$response[[1]], expr(GDP/CPI))
   mdl <- model(dt, no_specials(resp(GDP)/CPI))
-  expect_equal(mdl[[1]][[1]]$response, expr(GDP))
-  expect_equal(mdl[[1]][[1]]$transformation, 
+  expect_equal(mdl[[1]][[1]]$response[[1]], expr(GDP))
+  expect_equal(mdl[[1]][[1]]$transformation[[1]], 
                new_transformation(
                  function(.x) .x/CPI,
                  function(.x) CPI * .x
                ))
   mdl <- model(dt, no_specials(GDP/resp(CPI)))
-  expect_equal(mdl[[1]][[1]]$response, expr(CPI))
-  expect_equal(mdl[[1]][[1]]$transformation, 
+  expect_equal(mdl[[1]][[1]]$response[[1]], expr(CPI))
+  expect_equal(mdl[[1]][[1]]$transformation[[1]], 
                new_transformation(
                  function(.x) GDP/.x,
                  function(.x) GDP/.x

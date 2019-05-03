@@ -37,7 +37,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
   out <- add_class(select(as_tibble(object), !!!syms(kv)), "lst_ts")
   out <- suppressWarnings(unnest(out, fc, key = kv))
   out[[expr_text(fc[[1]]%@%"dist")]] <- fc %>% map(function(x) x[[expr_text(x%@%"dist")]]) %>% invoke(c, .)
-  as_fable(out, resp = !!(fc[[1]]%@%"response"), dist = !!(fc[[1]]%@%"dist"))
+  as_fable(out, resp = fc[[1]]%@%"response", dist = !!(fc[[1]]%@%"dist"))
 }
 
 #' @export
@@ -64,32 +64,36 @@ Does your model require extra variables to produce forecasts?", e$message))
   fc <- forecast(object$fit, new_data, specials = specials, ...)
   
   # Modify forecasts with transformations / bias_adjust
-  bt <- invert_transformation(object$transformation)
+  bt <- map(object$transformation, invert_transformation)
   if(isTRUE(bias_adjust)){
     # Faster version of bias_adjust(bt, fc[["sd"]]^2)(fc[["mean"]]) 
-    adjustment <- map_dbl(as.numeric(fc[["point"]]), hessian, func = bt)
-    fc[["point"]] <- bt(fc[["point"]])
-    if(any(!is.na(fc[["point"]]) & is.na(adjustment))){
+    adjustment <- map2(fc[["point"]], bt, function(fc, bt) map_dbl(fc, hessian, func = bt))
+
+    fc[["point"]] <- map2(fc[["point"]], bt, function(fc, bt) bt(fc))
+    if(any(map2_lgl(fc[["point"]], adjustment, function(fc, adj) any(!is.na(fc) & is.na(adj))))){
       warn("Could not bias adjust the point forecasts as the back-transformation's hessian is not well behaved. Consider using a different transformation.")
     }
-    else if(any(is.na(fc[["sd"]]))){
+    else if(any(map_lgl(fc[["sd"]], compose(any, is.na)))){
       warn("Could not bias adjust the point forecasts as the forecast standard deviation is unknown. Perhaps your series is too short.")
     }
     else{
-      fc[["point"]] <- fc[["point"]] + fc[["sd"]]^2/2*adjustment
+      adjustment <- map2(fc[["sd"]], adjustment, function(sd, adj) sd^2/2*adj)
+      fc[["point"]] <- map2(fc[["point"]], adjustment, "+")
     }
   }
   else{
-    fc[["point"]] <- bt(fc[["point"]])
+    fc[["point"]] <- map2(fc[["point"]], bt, function(fc, bt) bt(fc))
   }
+  
   fc[["dist"]] <- update_fcdist(fc[["dist"]], transformation = bt)
+  fc[["point"]] <- set_names(fc[["point"]], map_chr(object$response, expr_text))
   
   out <- mutate(new_data, 
-                !!expr_text(object$response) := fc[["point"]],
+                !!!(fc[["point"]]),
                 .distribution = fc[["dist"]])
-  out <- select(out, !!index(out), expr_text(object$response), !!sym(".distribution"), seq_along(out))
+  out <- select(out, !!index(out), names(fc[["point"]]), !!sym(".distribution"), seq_along(out))
   as_fable(out,
-           resp = !!object$response,
+           resp = object$response,
            dist = !!sym(".distribution")
   )
 }
@@ -107,8 +111,11 @@ Does your model require extra variables to produce forecasts?", e$message))
 #' 
 #' @export
 construct_fc <- function(point, sd, dist){
-  stopifnot(is.numeric(point))
   stopifnot(inherits(dist, "fcdist"))
+  if(is.numeric(point) && is.numeric(sd)){
+    point <- list(point)
+    sd <- list(sd)
+  }
   list(point = point, sd = sd, dist = dist)
 }
 

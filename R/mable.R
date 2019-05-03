@@ -38,7 +38,8 @@ as_mable.tbl_df <- function(x, key = id(), models = id(), ...){
     key_data <- group_data(group_by(x, !!!unname(key)))
   }
   
-  tibble::new_tibble(x, key = key_data, models = models, subclass = "mdl_df")
+  tibble::new_tibble(x, key = key_data, models = models,
+                     nrow = NROW(x), subclass = "mdl_df")
 }
 
 #' @export

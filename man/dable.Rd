@@ -16,7 +16,7 @@ empty key, and works with tidy selector (e.g. \code{starts_with()}).}
 
 \item{index}{A bare (or unquoted) variable to specify the time index variable.}
 
-\item{resp}{The response variable (given as a bare or unquoted variable).}
+\item{resp}{The response variable (a list of expressions).}
 
 \item{method}{The name of the decomposition method.}
 

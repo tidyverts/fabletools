@@ -22,6 +22,12 @@ response.mdl_df <- function(object, ...){
 
 #' @export
 response.model <- function(object, ...){
-  bt <- invert_transformation(object$transformation)
-  transmute(object$data, .response = bt(!!sym(measured_vars(object$data))))
+  bt <- map(object$transformation, invert_transformation)
+  
+  resp <- as.list(object$data)[measured_vars(object$data)]
+  resp <- map2(bt, resp, function(bt, fit) bt(fit))
+  
+  nm <- if(length(resp) == 1) ".response" else map_chr(object$response, expr_text)
+  
+  transmute(object$data, !!!resp)
 }

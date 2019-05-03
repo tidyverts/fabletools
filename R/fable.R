@@ -1,13 +1,13 @@
 #' Create a fable object
 #'
 #' @inheritParams tsibble::tsibble
-#' @param resp The response variable (given as a bare or unquoted variable).
+#' @param resp The response variable (a list of expressions).
 #' @param dist The distribution variable (given as a bare or unquoted variable).
 #'
 #' @export
 fable <- function(..., key = id(), index, resp, dist, regular = TRUE){
   tsbl <- tsibble(..., key = !!enquo(key), index = !!enexpr(index), regular = regular)
-  as_fable(tsbl)
+  as_fable(tsbl, resp, !!enquo(dist))
 }
 
 #' Is the object a fable
@@ -35,7 +35,7 @@ as_fable <- function(x, ...){
 #' @export
 as_fable.tbl_ts <- function(x, resp, dist, ...){
   fbl <- new_tsibble(x, class = "fbl_ts",
-                     response = enexpr(resp), dist = enexpr(dist))
+                     response = resp, dist = enexpr(dist))
   validate_fable(fbl)
   fbl
 }
@@ -43,8 +43,9 @@ as_fable.tbl_ts <- function(x, resp, dist, ...){
 #' @rdname as-fable
 #' @export
 as_fable.grouped_ts <- function(x, resp, dist, ...){
-  fbl <- structure(x, class = c("grouped_fbl", "grouped_ts", "grouped_df", "fbl_ts", "tbl_ts", "tbl_df", "tbl", "data.frame"),
-                   response = enexpr(resp), dist = enexpr(dist))
+  fbl <- structure(x, class = c("grouped_fbl", "grouped_ts", "grouped_df", 
+                                "fbl_ts", "tbl_ts", "tbl_df", "tbl", "data.frame"),
+                   response = resp, dist = enexpr(dist))
   validate_fable(fbl)
   fbl
 }
@@ -52,14 +53,14 @@ as_fable.grouped_ts <- function(x, resp, dist, ...){
 #' @rdname as-fable
 #' @export
 as_fable.tbl_df <- function(x, resp, dist, ...){
-  as_fable(as_tsibble(x, ...), resp = !!enexpr(resp), dist = !!enexpr(dist))
+  as_fable(as_tsibble(x, ...), resp = resp, dist = !!enexpr(dist))
 }
 
 #' @rdname as-fable
 #' @export
 as_fable.fbl_ts <- function(x, resp, dist, ...){
   if(!missing(resp)){
-    x%@%"resp" <- enexpr(resp)
+    x%@%"resp" <- resp
   }
   if(!missing(dist)){
     x%@%"dist" <- enexpr(dist)
@@ -84,9 +85,10 @@ as_tsibble.grouped_fbl <- function(x, ...){
 
 validate_fable <- function(fbl){
   stopifnot(inherits(fbl, "fbl_ts"))
-  if (!(expr_text(fbl%@%"response") %in% names(fbl))){
-    abort(sprintf("Could not find response variable `%s` in the fable.",
-          as_string(fbl%@%"response")))
+  if (!all(map_chr(fbl%@%"response", expr_text) %in% names(fbl))){
+    bad_resp <- map_chr(fbl%@%"response", expr_text)
+    bad_resp <- paste0(setdiff(bad_resp, names(fbl)), collapse = ", ")
+    abort(sprintf("Could not find response variable(s) in the fable: %s", bad_resp))
   }
   if (!(as_string(fbl%@%"dist") %in% names(fbl))){
     abort(sprintf("Could not find distribution variable `%s` in the fable.",
@@ -107,28 +109,28 @@ tbl_sum.fbl_ts <- function(x){
 report.fbl_ts <- function(object, level = c(80, 95), ...){
   object %>%
     transmute(
-      !!(object%@%"response"),
+      !!!(object%@%"response"),
       !!!set_names(map(level,function(.x) expr(hilo(!!(object%@%"dist"), !!.x))),
                    paste0(level, "%")))
 }
 
 #' @export
 select.fbl_ts <- function (.data, ...){
-  as_fable(NextMethod(), !!(.data%@%"response"), !!(.data%@%"dist"))
+  as_fable(NextMethod(), .data%@%"response", !!(.data%@%"dist"))
 }
 
 #' @export
 select.grouped_fbl <- select.fbl_ts
 
 filter.fbl_ts <- function (.data, ...){
-  as_fable(NextMethod(), !!(.data%@%"response"), !!(.data%@%"dist"))
+  as_fable(NextMethod(), .data%@%"response", !!(.data%@%"dist"))
 }
 
 filter.grouped_fbl <- filter.fbl_ts
 
 #' @export
 group_by.fbl_ts <- function(.data, ...) {
-  as_fable(NextMethod(), !!(.data%@%"response"), !!(.data%@%"dist"))
+  as_fable(NextMethod(), .data%@%"response", !!(.data%@%"dist"))
 }
 
 #' @export
@@ -142,7 +144,7 @@ ungroup.grouped_fbl <- group_by.fbl_ts
 
 #' @export
 mutate.fbl_ts <- function(.data, ...) {
-  as_fable(NextMethod(), !!(.data%@%"response"), !!(.data%@%"dist"))
+  as_fable(NextMethod(), .data%@%"response", !!(.data%@%"dist"))
 }
 
 #' @export

@@ -73,6 +73,7 @@ imitate.model <- function(object, new_data = NULL, h = NULL, times = 1, seed = N
   }
   
   .sim <- imitate(object[["fit"]], new_data = new_data, ...)
-  .sim[[".sim"]] <- invert_transformation(object$transformation)(.sim[[".sim"]])
+  if(length(object$transformation) > 1) abort("Imitating multivariate models is not yet supported")
+  .sim[[".sim"]] <- invert_transformation(object$transformation[[1]])(.sim[[".sim"]])
   .sim
 }

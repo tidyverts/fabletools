@@ -25,5 +25,10 @@ Defaulting to `type="response"`', type, model_sum(object)))
         .resid <- response(object)[[".response"]] - fitted(object$fit)
     }
   }
-  transmute(object$data, .resid = .resid)
+  
+  resid <- as.matrix(fitted(object$fit, ...))
+  resid <- split(resid, col(resid))
+  nm <- if(length(resid) == 1) ".resid" else map_chr(object$response, expr_text)
+  
+  transmute(object$data, !!!set_names(resid, nm))
 }
