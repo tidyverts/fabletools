@@ -29,5 +29,5 @@ response.model <- function(object, ...){
   
   nm <- if(length(resp) == 1) ".response" else map_chr(object$response, expr_text)
   
-  transmute(object$data, !!!resp)
+  transmute(object$data, !!!set_names(resp, nm))
 }
