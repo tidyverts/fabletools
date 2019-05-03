@@ -83,6 +83,9 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
   fc_key <- syms(setdiff(key_vars(object), ".model"))
   has_keys <- any(duplicated(key_data(object)$.model))
   
+  if(length(object%@%"response") > 1){
+    abort("Plotting multivariate forecasts is not yet supported.")
+  }
   if (!is.null(data)){
     if(!identical(fc_key, key(data))){
       abort("Provided data contains a different key structure to the forecasts.")
@@ -91,7 +94,7 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
       data <- semi_join(data, object, by = key_vars(data))
     }
     
-    p <- ggplot(data, aes(x = !!index(data), y = !!(object%@%"response"))) + 
+    p <- ggplot(data, aes(x = !!index(data), y = !!((object%@%"response")[[1]]))) + 
       geom_line()
   }
   else{
@@ -112,9 +115,13 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
 autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   fc_key <- syms(setdiff(key_vars(object), ".model"))
   data <- fortify(object, level = level)
+  
+  if(length(object%@%"response") > 1){
+    abort("Plotting multivariate forecasts is not yet supported.")
+  }
   mapping <- aes(
     x = !!index(data),
-    y = !!sym(expr_text(object%@%"response"))
+    y = !!sym(expr_text((object%@%"response")[[1]]))
   )
   
   if(!is.null(level)){
