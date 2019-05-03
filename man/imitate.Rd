@@ -35,7 +35,7 @@ behaviour to the response. This is a tidy implementation of
 \examples{
 library(dplyr)
 library(fable)
-UKLungDeaths <- as_tsibble(cbind(mdeaths, fdeaths), gather = FALSE)
+UKLungDeaths <- as_tsibble(cbind(mdeaths, fdeaths), pivot_longer = FALSE)
 UKLungDeaths \%>\% 
   model(lm = TSLM(mdeaths ~ fourier("year", K = 4) + fdeaths)) \%>\% 
   imitate(UKLungDeaths, times = 5)
