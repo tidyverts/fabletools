@@ -2,7 +2,8 @@ new_model_combination <- function(x, combination){
   mdls <- map_lgl(x, inherits, "model")
   
   mdls_response <- map(x, function(x) if(is_model(x)) x[["response"]] else x)
-  comb_response <- eval(expr(substitute(!!combination, mdls_response)))
+  comb_response <- map(transpose(mdls_response),
+                       function(x) eval(expr(substitute(!!combination, x))))
   
   # Try to simplify the response
   if(any(!mdls)){
@@ -19,6 +20,8 @@ new_model_combination <- function(x, combination){
     }
   }
   
+  if(length(comb_response) > 1) abort("Combining multivariate models is not yet supported.")
+  
   # Compute new response data
   resp <- map2(x, mdls, function(x, is_mdl) if(is_mdl) response(x)[[".response"]] else x)
   resp <- eval_tidy(combination, resp)
@@ -26,9 +29,9 @@ new_model_combination <- function(x, combination){
   new_model(
     structure(x, combination = combination, class = c("model_combination")),
     model = x[[which(mdls)[1]]][["model"]],
-    data = transmute(x[[which(mdls)[1]]][["data"]], !!expr_text(comb_response) := resp),
+    data = transmute(x[[which(mdls)[1]]][["data"]], !!expr_text(comb_response[[1]]) := resp),
     response = comb_response,
-    transformation = new_transformation(identity, identity)
+    transformation = list(new_transformation(identity, identity))
   )
 }
 
@@ -112,6 +115,7 @@ forecast.model_combination <- function(object, new_data, specials, ...){
   expr <- attr(object, "combination")
   # Compute residual covariance to adjust the forecast variance
   # Assumes correlation across h is identical
+  
   if(all(mdls)){
     fc_cov <- var(
       residuals(object[[1]], type = "response")[[".resid"]],
@@ -130,8 +134,11 @@ forecast.model_combination <- function(object, new_data, specials, ...){
   .dist <- eval_tidy(expr, map(object, get_attr_col, "dist"))
   .dist <- add_class(map(.dist, function(x) {x$sd <- sqrt(x$sd^2 + 2*fc_cov); x}), "fcdist")
   
+  .fc <- eval_tidy(expr, map(object, function(x) 
+    if(is_fable(x)) x[[expr_text(attr(x, "response")[[1]])]] else x))
+  
   construct_fc(
-    point = eval_tidy(expr, map(object, get_attr_col, "response")),
+    point = .fc,
     sd = rep(0, NROW(object[[which(mdls)[[1]]]])),
     dist = .dist
   )

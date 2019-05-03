@@ -93,7 +93,7 @@ Ops.fcdist <- function(e1, e2){
   }
   
   is_dist_normal <- function(dist){
-    identical(dist[[1]]$.env$f, qnorm) && !dist[[1]]$.env$trans
+    identical(dist[[1]]$.env$f, env_dist_normal$f) && !dist[[1]]$.env$trans
   }
   
   if(inherits(e1, "fcdist") && inherits(e2, "fcdist")){

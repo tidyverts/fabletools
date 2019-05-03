@@ -36,6 +36,7 @@ train_decomposition <- function(.data, formula, specials, ..., dcmp_fn,
   }
   
   mdl_vars <- map(mdls, `[[`, "response") %>% 
+    squash() %>% 
     map(alias_vars, aliases = aliases) %>% 
     invoke(c, .)
                   
@@ -63,7 +64,7 @@ Please specify an appropriate model for these components",
   else{
     list()
   }
-
+  
   model <- reduce(c(mdls, mdls_default), `+`)
   
   if(!isTRUE(all.equal(response(model)[[".response"]], est[[measured_vars(est)]]))){
