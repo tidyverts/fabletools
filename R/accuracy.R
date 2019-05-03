@@ -209,6 +209,10 @@ accuracy.fbl_ts <- function(object, data, measures = point_measures, ...,
   by <- union(expr_text(index(object)), by)
   grp <- c(syms(setdiff(by, expr_text(index(object)))), groups(object))
   
+  if(length(object%@%"response") > 1){
+    abort("Accuracy evaluation is not yet supported for multivariate forecasts.")
+  }
+  
   if(!(".model" %in% by)){
     warn('Accuracy measures should be computed separately for each model, have you forgotten to add ".model" to your `by` argument?')
   }
@@ -224,9 +228,9 @@ accuracy.fbl_ts <- function(object, data, measures = point_measures, ...,
   }
   
   # Compute .fc, .dist, .actual and .resid
-  aug <- transmute(object, .fc = !!(object%@%"response"), .dist = !!(object%@%"dist"), !!!syms(by))
+  aug <- transmute(object, .fc = !!(object%@%"response")[[1]], .dist = !!(object%@%"dist"), !!!syms(by))
   aug <- left_join(aug,
-      transmute(data, !!index(data), .actual = !!(object%@%"response")),
+      transmute(data, !!index(data), .actual = !!(object%@%"response")[[1]]),
       by = intersect(colnames(data), by),
       suffix = c("", ".y")
     )
@@ -239,7 +243,7 @@ accuracy.fbl_ts <- function(object, data, measures = point_measures, ...,
   extract_train <- function(idx, ...){
     cnds <- dots_list(...)
     cnds <- map2(syms(names(cnds)), cnds, call2, .fn = "==")
-    eval_tidy(object%@%"response", data = filter(data, !!index(data) < idx, !!!cnds))
+    eval_tidy((object%@%"response")[[1]], data = filter(data, !!index(data) < idx, !!!cnds))
   }
   mutual_keys <- intersect(key(data), key(object))
   mutual_keys <- set_names(mutual_keys, map_chr(mutual_keys, as_string))
