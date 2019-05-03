@@ -22,7 +22,7 @@ accuracy(object, ...)
 
 \item{data}{A dataset containing the complete model dataset (both training and test data). The training portion of the data will be used in the computation of some accuracy measures, and the test data is used to compute the forecast errors.}
 
-\item{by}{}
+\item{by}{Variables over which the accuracy is computed (useful for computing across forecast horizons in cross-validation).}
 }
 \description{
 Evaluate model/forecast accuracy
