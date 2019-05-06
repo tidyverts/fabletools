@@ -12,9 +12,26 @@ augment.model <- function(x, ...){
   tryCatch(augment(x[["fit"]], ...),
            error = function(e){
              idx <- as_string(index(x$data))
-             x$data %>% 
-               left_join(fitted(x, ...), by = idx) %>% 
-               left_join(residuals(x, ...), by = idx)
+             resp <- x$response
+             if(length(resp) > 1){
+               x$data %>% 
+                 gather(".response", "value", !!!resp, factor_key = TRUE) %>% 
+                 left_join(
+                   gather(fitted(x, ...), ".response", ".fitted",
+                          !!!resp, factor_key = TRUE),
+                   by = c(".response", idx)
+                 ) %>% 
+                 left_join(
+                   gather(residuals(x, ...), ".response", ".resid",
+                          !!!resp, factor_key = TRUE),
+                   by = c(".response", idx)
+                 )
+             } else {
+               x$data %>% 
+                 left_join(fitted(x, ...), by = idx) %>% 
+                 left_join(residuals(x, ...), by = idx)
+             }
+             
            })
 }
 
