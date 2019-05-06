@@ -135,32 +135,43 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 
 #' @export
 autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
-  fc_key <- syms(setdiff(key_vars(object), ".model"))
+  fc_resp <- object%@%"response"
+  fc_key <- setdiff(key_vars(object), ".model")
   has_keys <- any(duplicated(key_data(object)$.model))
   
-  if(length(object%@%"response") > 1){
-    abort("Plotting multivariate forecasts is not yet supported.")
+  aes_y <- if(length(fc_resp) > 1){
+    sym("value")
   }
+  else{
+    sym(expr_text(fc_resp[[1]]))
+  }
+
   if (!is.null(data)){
-    if(!identical(fc_key, key(data))){
+    if(!identical(fc_key, key_vars(data))){
       abort("Provided data contains a different key structure to the forecasts.")
     }
+    
     if(!is_empty(key(data))){
       data <- semi_join(data, object, by = key_vars(data))
     }
     
-    p <- ggplot(data, aes(x = !!index(data), y = !!((object%@%"response")[[1]]))) + 
-      geom_line()
+    if(length(fc_resp) > 1){
+      data <- gather(data, ".response", "value", !!!fc_resp)
+    }
   }
-  else{
-    p <- ggplot()
-  }
-  
-  p <- p +
+
+  p <- ggplot(data, aes(x = !!index(object), y = !!aes_y)) + 
     autolayer(object, level = level, ...)
+  if(!is.null(data)){
+    p <- p + geom_line()
+  }
   
-  if(has_keys){
-    p <- p + facet_grid(vars(!!!fc_key), scales = "free_y")
+  if(length(fc_resp) > 1){
+    p <- p + facet_wrap(vars(!!!syms(c(".response", fc_key))),
+                        ncol = length(fc_resp), scales = "free_y")
+  } else if(has_keys){
+    p <- p + facet_wrap(vars(!!!syms(fc_key)),
+                        ncol = 1, scales = "free_y")
   }
   
   p
