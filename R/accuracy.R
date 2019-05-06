@@ -200,14 +200,18 @@ accuracy.model <- function(object, measures = point_measures, ...){
 }
 
 #' @param data A dataset containing the complete model dataset (both training and test data). The training portion of the data will be used in the computation of some accuracy measures, and the test data is used to compute the forecast errors.
-#' @param by Variables over which the accuracy is computed (useful for computing across forecast horizons in cross-validation).
+#' @param by Variables over which the accuracy is computed (useful for computing across forecast horizons in cross-validation). If `by` is NULL, groups will be chosen automatically from the key structure.
 #' 
 #' @rdname accuracy
 #' @export
 accuracy.fbl_ts <- function(object, data, measures = point_measures, ..., 
-                            by = c(".model", key_vars(data))){
+                            by = NULL){
+  if(is.null(by)){
+    by <- c(".model", ".response", key_vars(data))
+  }
+  
+  grp <- c(syms(by), groups(object))
   by <- union(expr_text(index(object)), by)
-  grp <- c(syms(setdiff(by, expr_text(index(object)))), groups(object))
   
   if(length(object%@%"response") > 1){
     abort("Accuracy evaluation is not yet supported for multivariate forecasts.")
@@ -216,7 +220,7 @@ accuracy.fbl_ts <- function(object, data, measures = point_measures, ...,
   if(!(".model" %in% by)){
     warn('Accuracy measures should be computed separately for each model, have you forgotten to add ".model" to your `by` argument?')
   }
-  
+
   if(NROW(missing_test <- anti_join(object, data, by = intersect(colnames(data), by))) > 0){
     warn(sprintf(
       "The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
