@@ -165,16 +165,29 @@ accuracy.mdl_df <- function(object, measures = point_measures, ...){
 #' @export
 accuracy.model <- function(object, measures = point_measures, ...){
   dots <- dots_list(...)
+  resp <- if(length(object$response) > 1) sym("value") else object$response[[1]]
   
-  aug <- as_tibble(augment(object)) %>% 
+  aug <- as_tibble(augment(object))
+  
+  # Compute inputs for each response variable
+  if(length(object$response) > 1){
+    aug <- group_by(aug, !!sym(".response"))
+  }
+  
+  aug <- aug %>% 
     rename(
-      ".actual" := !!sym(deparse(model_lhs(object[["model"]]))),
+      ".actual" := !!resp,
     ) %>% 
     summarise(
       .resid = list(!!sym(".actual") - !!sym(".fitted")),
       .actual = list(!!sym(".actual")), .fc = list(!!sym(".fitted")),
-      .train = !!sym(".actual")
+      .train = list(!!sym(".actual"))
     )
+  
+  # Re-group after summarise
+  if(length(object$response) > 1){
+    aug <- group_by(aug, !!sym(".response"))
+  }
   
   # Add user inputs
   aug <- mutate(aug, ...)
