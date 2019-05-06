@@ -18,7 +18,7 @@ autoplot.tbl_ts <- function(object, .vars = NULL, ...){
   }
   
   if(length(.vars) > 1){
-    object <- gather(object, ".response", "value", !!!.vars)
+    object <- gather(object, ".response", "value", !!!.vars, factor_key = TRUE)
     y <- sym("value")
   }
   else{
@@ -89,7 +89,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
   if(length(resp) > 1){
     object <- object %>%
       mutate(
-        .response = rep(list(map_chr(resp, expr_text)), NROW(object)),
+        .response = rep(list(factor(map_chr(resp, expr_text))), NROW(object)),
         value = transpose_dbl(list2(!!!resp))
       )
   }
@@ -156,7 +156,7 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
     }
     
     if(length(fc_resp) > 1){
-      data <- gather(data, ".response", "value", !!!fc_resp)
+      data <- gather(data, ".response", "value", !!!fc_resp, factor_key = TRUE)
     }
   }
 
