@@ -18,10 +18,14 @@ new_hilo <- function(lower, upper, level = NULL) {
   if (missing(lower) || missing(upper)) {
     abort("no default for `lower` or `upper`.")
   }
-  if (any(upper < lower, na.rm = TRUE)) {
+  if(!is.list(lower) && !is.list(upper)){
+    lower <- list(lower)
+    upper <- list(upper)
+  }
+  if (any(unlist(upper) < unlist(lower), na.rm = TRUE)) {
     abort("'upper' can't be lower than 'lower'.")
   }
-  len <- length(lower)
+  len <- length(lower[[1]])
   
   if(!is.null(level)){
     if (any(level < 0 | level > 100, na.rm = TRUE)) {
@@ -31,7 +35,8 @@ new_hilo <- function(lower, upper, level = NULL) {
     }
   }
   
-  pmap(list(lower = lower, upper = upper, level = level), tibble) %>%
+  list(lower = transpose_dbl(lower), upper = transpose_dbl(upper), level = level) %>% 
+    pmap(tibble) %>%
     enclass("hilo")
 }
 
@@ -177,6 +182,14 @@ underline <- function(...){
 }
 
 compact_hilo <- function(x, digits = NULL) {
+  if(NROW(x[[1]]) > 1){
+    out <- sprintf("<hilo [%s]>",
+      map_chr(map(x, dim), function(x) paste(big_mark(x), collapse = " x ")))
+    if(requireNamespace("crayon")){
+      out <- crayon::style(out, crayon::make_style("#999999", grey = TRUE))
+    }
+    return(out)
+  }
   limit <- paste(
     format(x$lower, justify = "right", digits = digits),
     format(x$upper, justify = "right", digits = digits),

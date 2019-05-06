@@ -124,6 +124,16 @@ transpose <- function(.l) {
   set_names(result, inner_names)
 }
 
+transpose_dbl <- function(.l) {
+  inner_names <- names(.l[[1]])
+  
+  result <- map(seq_along(.l[[1]]), function(i) {
+    map_dbl(.l, .subset2, i)
+  })
+  
+  set_names(result, inner_names)
+}
+
 every <- function(.x, .p, ...) {
   for (i in seq_along(.x)) {
     if (!rlang::is_true(.p(.x[[i]], ...))) return(FALSE)
