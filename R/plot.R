@@ -179,7 +179,7 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
 
 #' @export
 autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
-  fc_key <- syms(setdiff(key_vars(object), ".model"))
+  fc_key <- setdiff(key_vars(object), ".model")
   data <- fortify(object, level = level)
 
   if(length(object%@%"response") > 1){
@@ -203,9 +203,8 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   }
   
   if(!is_empty(fc_key)){
-    mapping$group <- expr(interaction(!!!fc_key, sep = "/"))
+    grp <- c(grp, fc_key)
   }
-  
   if(!is.null(series)){
     mapping$colour <- series
     grp <- c(grp, series, ".model")
@@ -214,7 +213,7 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
     mapping$colour <- sym(".model")
     grp <- c(grp, ".model")
   }
-  mapping$group <- expr(interaction(!!!syms(grp)))
+  mapping$group <- expr(interaction(!!!syms(grp), sep = "/"))
   
   geom_forecast(mapping = mapping, stat = "identity", data = data, ...)
 }
