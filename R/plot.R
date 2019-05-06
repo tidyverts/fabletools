@@ -148,14 +148,19 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
 autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   fc_key <- syms(setdiff(key_vars(object), ".model"))
   data <- fortify(object, level = level)
-  
+
   if(length(object%@%"response") > 1){
-    abort("Plotting multivariate forecasts is not yet supported.")
+    resp <- sym("value")
+    grp <- ".response"
+  }
+  else{
+    resp <- sym(expr_text((object%@%"response")[[1]]))
+    grp <- NULL
   }
   
   mapping <- aes(
     x = !!index(data),
-    y = !!sym(expr_text((object%@%"response")[[1]]))
+    y = !!resp
   )
   
   if(!is.null(level)){
@@ -170,12 +175,13 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   
   if(!is.null(series)){
     mapping$colour <- series
-    mapping$group <- expr(interaction(!!series, !!sym(".model")))
+    grp <- c(grp, series, ".model")
   }
   else if(length(unique(key_data(object)[[".model"]])) > 1){
     mapping$colour <- sym(".model")
-    mapping$group <- sym(".model")
+    grp <- c(grp, ".model")
   }
+  mapping$group <- expr(interaction(!!!syms(grp)))
   
   geom_forecast(mapping = mapping, stat = "identity", data = data, ...)
 }
