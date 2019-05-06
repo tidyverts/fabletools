@@ -62,20 +62,53 @@ autoplot.mable <- function(object, ...){
 #' @importFrom ggplot2 fortify
 #' @export
 fortify.fbl_ts <- function(object, level = c(80, 95)){
-  object <- object %>%
-    as_tsibble %>% 
-    mutate(!!!set_names(map(level, function(.x) expr(hilo(!!(object%@%"dist"), !!.x))), level)) %>%
-    select(!!expr(-!!(object%@%"dist")))
+  resp <- object%@%"response"
+  
+  if(length(resp) > 1){
+    object <- object %>%
+      mutate(
+        .response = rep(list(map_chr(resp, expr_text)), NROW(object)),
+        value = transpose_dbl(list2(!!!resp))
+      )
+  }
+  
   if(!is.null(level)){
     object <- object %>% 
-      gather(level, hilo, !!!syms(as.character(level))) %>%
-      mutate(hilo = add_class(hilo, "hilo"),
-             level = level(hilo),
-             lower = lower(hilo),
-             upper = upper(hilo)) %>%
-      select(!!expr(-!!sym("hilo")))
+      mutate(
+        !!!set_names(
+          map(level, function(.x) expr(hilo(!!(object%@%"dist"), !!.x))), 
+          level
+        )
+      )
+    
+    object <- gather(object, ".rm", "hilo", !!!syms(as.character(level)))
+    
+    if(length(resp) > 1){
+      object <- unnest(object, !!!syms(c(".response", "value", "hilo")),
+                       key = ".response")
+      resp <- syms("value")
+    }
+    else{
+      object <- unnest(object, !!sym("hilo"))
+    }
+    
+    # Fix level in key structure
+    kv <- key_vars(object)
+    kv[kv==".rm"] <- "level"
+    object <- select(update_tsibble(object, key = kv), !!expr(-!!sym(".rm")))
   }
-  object
+  else if (length(resp) > 1) {
+    resp <- syms("value")
+    
+    object <- object %>% 
+      unnest(.response, value, key = ".response")
+  }
+  
+  as_tsibble(
+    select(object, !!!syms(setdiff(key_vars(object), "level")),
+           !!index(object), !!!resp, 
+           !!!syms(intersect(c("level", "lower", "upper"), names(object))))
+  )
 }
 
 #' @export
@@ -119,6 +152,7 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   if(length(object%@%"response") > 1){
     abort("Plotting multivariate forecasts is not yet supported.")
   }
+  
   mapping <- aes(
     x = !!index(data),
     y = !!sym(expr_text((object%@%"response")[[1]]))
