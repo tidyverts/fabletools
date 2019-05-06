@@ -30,10 +30,15 @@ parse_specials <- function(call = NULL, specials = NULL, xreg = TRUE){
     parsed <- list()
   }
   
+  # Wrap xreg inputs into xreg()
+  if(!is.null(parsed$xreg)){
+    parsed$xreg <- list(call2("xreg", !!!parsed$xreg))
+  }
   
   # Add required_specials
   missing_specials <- attr(specials, "required_specials") %>% 
     .[!(.%in%names(parsed))]
+  
   parsed <- parsed %>%
     append(
       missing_specials %>%
@@ -41,9 +46,6 @@ parse_specials <- function(call = NULL, specials = NULL, xreg = TRUE){
         set_names(missing_specials)
     )
   
-  if(!is.null(parsed$xreg)){
-    parsed$xreg <- list(call2("xreg", !!!parsed$xreg))
-  }
   parsed
 }
 
