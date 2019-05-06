@@ -1,28 +1,50 @@
 #' @importFrom ggplot2 ggplot aes geom_line guides guide_legend xlab
 #' @export
-autoplot.tbl_ts <- function(object, y = NULL, ...){
-  if(quo_is_null(enquo(y))){
+autoplot.tbl_ts <- function(object, .vars = NULL, ...){
+  quo_vars <- enquo(.vars)
+  
+  kv <- key_vars(object)
+  nk <- n_keys(object)
+  
+  if(quo_is_null(quo_vars)){
     inform(sprintf(
-      "Plot variable not specified, automatically selected `y = %s`",
+      "Plot variable not specified, automatically selected `.vars = %s`",
       measured_vars(object)[1]
     ))
-    y <- sym(measured_vars(object)[1])
+    .vars <- as_quosures(syms(measured_vars(object)[1]), env = empty_env())
+  }
+  else if(!possibly(compose(is_quosures, eval_tidy), FALSE)(.vars)){
+    .vars <- new_quosures(list(quo_vars))
+  }
+  
+  if(length(.vars) > 1){
+    object <- gather(object, ".response", "value", !!!.vars)
+    y <- sym("value")
   }
   else{
-    y <- enquo(y)
+    y <- .vars[[1]]
   }
   
   aes_spec <- list(x = index(object), y = y)
-  if(n_keys(object) > 1){
-    aes_spec["colour"] <- list(expr(interaction(!!!syms(key_vars(object)), sep = "/")))
+  
+  if(nk > 1){
+    aes_spec["colour"] <- list(expr(interaction(!!!syms(kv), sep = "/")))
   }
+  
   p <- ggplot(object, eval_tidy(expr(aes(!!!aes_spec)))) + 
     geom_line() +
     xlab(paste0(expr_text(index(object)), " [", format(interval(object)), "]"))
-  if(n_keys(object) > 1){
+  
+  if(nk > 1){
     p <- p + 
-      guides(colour = guide_legend(paste0(map(syms(key_vars(object)), expr_text), collapse = "/")))
+      guides(colour = guide_legend(paste0(kv, collapse = "/")))
   }
+  
+  if(length(.vars) > 1){
+    p <- p + facet_wrap(vars(!!sym(".response")), scales = "free_y", 
+                        ncol = length(.vars))
+  }
+  
   p
 }
 
