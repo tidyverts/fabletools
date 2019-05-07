@@ -99,11 +99,16 @@ print.model <- function(x, ...){
 #' 
 #' @export
 model_lhs <- function(model){
-  if(is_formula(model$formula)){
-    f_lhs(model$formula)
+  f <- model$formula
+  if(is_quosure(f)){
+    f <- get_expr(f)
+  }
+  
+  if(is_formula(f)){
+    f_lhs(f)
   }
   else{
-    model$formula
+    f
   }
 }
 
