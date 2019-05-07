@@ -126,11 +126,10 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
       unnest(.response, value, key = ".response")
   }
   
-  as_tsibble(
-    select(object, !!!syms(setdiff(key_vars(object), "level")),
+  as_tsibble(object) %>% 
+    select(!!!syms(setdiff(key_vars(object), "level")),
            !!index(object), !!!resp, 
            !!!syms(intersect(c("level", "lower", "upper"), names(object))))
-  )
 }
 
 #' @export
