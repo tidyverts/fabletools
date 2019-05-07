@@ -220,7 +220,7 @@ accuracy.model <- function(object, measures = point_measures, ...){
 accuracy.fbl_ts <- function(object, data, measures = point_measures, ..., 
                             by = NULL){
   if(is.null(by)){
-    by <- c(".model", ".response", key_vars(data))
+    by <- intersect(c(".model", ".response", key_vars(data)), colnames(object))
   }
   
   grp <- c(syms(by), groups(object))
