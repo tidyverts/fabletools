@@ -49,6 +49,7 @@ model.tbl_ts <- function(.data, ...){
 }
 
 new_model <- function(fit, model, data, response, transformation){
+  if(is_model(fit)) return(fit)
   structure(list(fit = fit, model = model, data = data,
                  response = response, transformation = transformation),
             class = "model")

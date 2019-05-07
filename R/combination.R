@@ -1,3 +1,38 @@
+train_combination <- function(.data, formula, specials, ..., cmbn_fn){
+  mdls <- dots_list(...) %>% 
+    map(function(x) estimate(self$data, x))
+  
+  do.call(cmbn_fn, mdls)
+}
+
+#' Combination modelling
+#' 
+#' @param ... Model definitions used in the combination (such as [fable::ETS()])
+#' @param cmbn_fn A function used to produce the combination
+#' 
+#' @export
+cmbn_model <- function(..., cmbn_fn = cmbn_ensemble){
+  mdls <- dots_list(...)
+  if(any(!map_lgl(mdls, inherits, "mdl_defn"))){
+    abort("All models provided to `cmbn_model()` must be valid model definitions.")
+  }
+  
+  cmbn_model <- new_model_class("cmbn_mdl", train = train_combination, 
+                                specials = new_specials(xreg = function(...) NULL))
+  new_model_definition(cmbn_model, !!quo(!!model_lhs(mdls[[1]])), ..., 
+                       cmbn_fn = cmbn_fn)
+}
+
+#' Ensemble combination
+#' 
+#' @param ... Estimated models used in the ensemble.
+#' 
+#' @export
+cmbn_ensemble <- function(...){
+  mdls <- dots_list(...)
+  reduce(mdls, `+`)/length(mdls)
+}
+
 new_model_combination <- function(x, combination){
   mdls <- map_lgl(x, inherits, "model")
   
