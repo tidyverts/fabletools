@@ -180,8 +180,9 @@ accuracy.model <- function(object, measures = point_measures, ...){
     ) %>% 
     summarise(
       .resid = list(!!sym(".actual") - !!sym(".fitted")),
-      .actual = list(!!sym(".actual")), .fc = list(!!sym(".fitted")),
-      .train = list(!!sym(".actual"))
+      .train = list(!!sym(".actual")),
+      .actual = list(!!sym(".actual")), 
+      .fc = list(!!sym(".fitted")),
     )
   
   # Re-group after summarise
