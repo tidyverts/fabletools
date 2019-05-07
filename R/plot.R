@@ -213,7 +213,9 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
     mapping$colour <- sym(".model")
     grp <- c(grp, ".model")
   }
-  mapping$group <- expr(interaction(!!!syms(grp), sep = "/"))
+  if(length(grp) > 0){
+    mapping$group <- expr(interaction(!!!syms(grp), sep = "/"))
+  }
   
   geom_forecast(mapping = mapping, stat = "identity", data = data, ...)
 }
