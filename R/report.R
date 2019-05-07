@@ -26,7 +26,7 @@ report.model <- function(object, ...){
   cat(paste("Series:", paste0(map(object$response, expr_text), collapse = ", "), "\n"))
   cat(paste("Model:", model_sum(object), "\n"))
   if(!is_symbol(body(object$transformation[[1]])) && length(object$response) == 1){
-    cat(paste("Transformation:", expr_text(body(object$transformation)), "\n"))
+    cat(paste("Transformation:", expr_text(body(object$transformation[[1]])), "\n"))
   }
   report(object[["fit"]])
 }
