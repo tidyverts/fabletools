@@ -183,7 +183,7 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
 
   if(length(object%@%"response") > 1){
     resp <- sym("value")
-    grp <- ".response"
+    grp <- sym(".response")
   }
   else{
     resp <- sym(expr_text((object%@%"response")[[1]]))
@@ -202,18 +202,18 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   }
   
   if(!is_empty(fc_key)){
-    grp <- c(grp, fc_key)
+    grp <- c(grp, syms(fc_key))
   }
   if(!is.null(series)){
     mapping$colour <- series
-    grp <- c(grp, series, ".model")
+    grp <- c(grp, series, sym(".model"))
   }
   else if(length(unique(key_data(object)[[".model"]])) > 1){
     mapping$colour <- sym(".model")
-    grp <- c(grp, ".model")
+    grp <- c(grp, sym(".model"))
   }
   if(length(grp) > 0){
-    mapping$group <- expr(interaction(!!!syms(grp), sep = "/"))
+    mapping$group <- expr(interaction(!!!grp, sep = "/"))
   }
   
   geom_forecast(mapping = mapping, stat = "identity", data = data, ...)
