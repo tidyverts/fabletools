@@ -132,6 +132,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
            !!!syms(intersect(c("level", "lower", "upper"), names(object))))
 }
 
+#' @importFrom ggplot2 facet_wrap
 #' @export
 autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
   fc_resp <- object%@%"response"
