@@ -184,7 +184,7 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
 
   if(length(object%@%"response") > 1){
     resp <- sym("value")
-    grp <- sym(".response")
+    grp <- syms(".response")
   }
   else{
     resp <- sym(expr_text((object%@%"response")[[1]]))
@@ -207,11 +207,11 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   }
   if(!is.null(series)){
     mapping$colour <- series
-    grp <- c(grp, series, sym(".model"))
+    grp <- c(grp, series, syms(".model"))
   }
   else if(length(unique(key_data(object)[[".model"]])) > 1){
     mapping$colour <- sym(".model")
-    grp <- c(grp, sym(".model"))
+    grp <- c(grp, syms(".model"))
   }
   if(length(grp) > 0){
     mapping$group <- expr(interaction(!!!grp, sep = "/"))
