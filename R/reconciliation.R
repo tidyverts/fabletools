@@ -33,7 +33,7 @@ expand_keys.tbl_ts <- function(data, ...){
   
   # Aggregate variables
   agg_dt$.rows <- map(agg_dt$.rows, function(comb_rows){
-    as_tibble(c(
+    as_tsibble(c(
       set_names(list(idx[comb_rows[[1]]]), idx_chr),
       map(vars, function(x){
         possibly(reduce, rep(NA, length(comb_rows[[1]])))(
@@ -42,9 +42,10 @@ expand_keys.tbl_ts <- function(data, ...){
           .init = x[comb_rows[[1]]]
         )
       })
-    ))
+    ), index = idx_chr)
   })
   
   # Return tsibble
-  as_tsibble(unnest(agg_dt, .rows), key = kv, index = idx_chr)
+  unnest(add_class(agg_dt, "lst_ts"), .rows, key = kv)
+}
 }
