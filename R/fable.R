@@ -66,6 +66,7 @@ as_fable.fbl_ts <- function(x, resp, dist, ...){
     x%@%"dist" <- enexpr(dist)
   }
   validate_fable(x)
+  x
 }
 
 #' @rdname as-fable
