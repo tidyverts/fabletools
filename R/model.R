@@ -29,11 +29,14 @@ model.tbl_ts <- function(.data, ...){
   
   eval_models <- function(models, lst_data){
     map(models, function(model){
-      map(lst_data, function(dt, mdl){
-        out <- estimate(dt, mdl)
-        pb$tick()$print()
-        out
-      }, model)
+      structure(
+        map(lst_data, function(dt, mdl){
+          out <- estimate(dt, mdl)
+          pb$tick()$print()
+          out
+        }, model),
+        class = "lst_mdl"
+      )
     })
   }
   

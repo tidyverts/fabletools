@@ -28,9 +28,6 @@ as_mable <- function(x, ...){
 #' 
 #' @export
 as_mable.tbl_df <- function(x, key = id(), models = id(), ...){
-  add_mdl_lst <- map(models, function(model) expr(add_class(!!model, "lst_mdl")))
-  x <- mutate(x, !!!set_names(add_mdl_lst, map_chr(models, as_string)))
-  
   if (is.data.frame(key)) {
     key_data <- key
   }
