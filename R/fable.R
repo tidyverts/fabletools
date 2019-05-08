@@ -149,3 +149,18 @@ mutate.fbl_ts <- function(.data, ...) {
 
 #' @export
 mutate.grouped_fbl <- mutate.fbl_ts
+
+#' @export
+rbind.fbl_ts <- function(...){
+  fbls <- dots_list(...)
+  response <- map(fbls, attr, "response")
+  dist <- map(fbls, attr, "dist")
+  if(length(response <- unique(response)) > 1){
+    abort("Cannot combine fables with different response variables.")
+  }
+  if(length(dist <- unique(dist)) > 1){
+    abort("Cannot combine fables with different distribution names.")
+  }
+  out <- NextMethod("rbind")
+  as_fable(out, response, !!dist[[1]])
+}
