@@ -251,16 +251,20 @@ hilo.fcdist <- function(x, level = 95, ...){
   .env_ids <- map_chr(transpose(x)$.env, env_label)
   split(x, .env_ids) %>% 
     set_names(NULL) %>% 
-    map(hilo_fcdist, level = level) %>% 
+    map(hilo_fcdist, level = level, ...) %>% 
     unsplit(.env_ids)
 }
 
-hilo_fcdist <- function(level, x){
+hilo_fcdist <- function(level, x, ...){
   env <- x[[1]][[length(x[[1]])]]
   args <- transpose(x)[-length(x[[1]])]
   list(lower = 50-level/2, upper = 50+level/2) %>%
     map(function(level){
-      env$t[[1]](do.call(env$f, c(list(level/100), as.list(args))))
+      intr <- do.call(env$f, c(list(level/100), as.list(args), dots_list(...)))
+      if(!is.list(intr)){
+        intr <- list(intr)
+      }
+      map2(env$t, intr, calc)
     }) %>%
     append(list(level = level)) %>%
     invoke("new_hilo", .)
@@ -268,9 +272,14 @@ hilo_fcdist <- function(level, x){
 
 #' @export
 quantile.fcdist <- function(x, probs = seq(0, 1, 0.25), ...){
-  args <- merge_pos_list(!!!as_list(x))
+  env <- x[[1]][[length(x[[1]])]]
+  args <- transpose(x)[-length(x[[1]])]
   map(probs, function(prob){
-    attr(x,"t")(do.call(attr(x, "f"), c(list(prob), as.list(args))))
+    intr <- do.call(env$f, c(list(prob), as.list(args), dots_list(...)))
+    if(!is.list(intr)){
+      intr <- list(intr)
+    }
+    map2(env$t, intr, calc)
   })
 }
 
@@ -305,10 +314,10 @@ dist_normal <- function(mean, sd, ...){
   new_fcdist(mean = mean, sd = sd, ..., .env = env_dist_normal)
 }
 
-env_dist_mv_normal <- new_fcdist_env(function(p, mean, sd){
-  abort("Multivariate normal intervals are not currently supported.")
-  qnorm(p, mean, diag(sd))
-}, display = function(x, ...) rep("MVN", length(x)))
+env_dist_mv_normal <- new_fcdist_env(function(p, mean, sd, var){
+  map(transpose(map2(mean, map(sd, diag), qnorm, p = p)), as.numeric)
+  # abort("Multivariate normal intervals are not currently supported.")
+}, display = function(x, ...) rep(sprintf("MVN[%i]", length(x[[1]][["mean"]])), length(x)))
 
 #' @rdname distributions
 #' @export

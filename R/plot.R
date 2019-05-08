@@ -1,28 +1,50 @@
 #' @importFrom ggplot2 ggplot aes geom_line guides guide_legend xlab
 #' @export
-autoplot.tbl_ts <- function(object, y = NULL, ...){
-  if(quo_is_null(enquo(y))){
+autoplot.tbl_ts <- function(object, .vars = NULL, ...){
+  quo_vars <- enquo(.vars)
+  
+  kv <- key_vars(object)
+  nk <- n_keys(object)
+  
+  if(quo_is_null(quo_vars)){
     inform(sprintf(
-      "Plot variable not specified, automatically selected `y = %s`",
+      "Plot variable not specified, automatically selected `.vars = %s`",
       measured_vars(object)[1]
     ))
-    y <- sym(measured_vars(object)[1])
+    .vars <- as_quosures(syms(measured_vars(object)[1]), env = empty_env())
+  }
+  else if(!possibly(compose(is_quosures, eval_tidy), FALSE)(.vars)){
+    .vars <- new_quosures(list(quo_vars))
+  }
+  
+  if(length(.vars) > 1){
+    object <- gather(object, ".response", "value", !!!.vars, factor_key = TRUE)
+    y <- sym("value")
   }
   else{
-    y <- enquo(y)
+    y <- .vars[[1]]
   }
   
   aes_spec <- list(x = index(object), y = y)
-  if(n_keys(object) > 1){
-    aes_spec["colour"] <- list(expr(interaction(!!!syms(key_vars(object)), sep = "/")))
+  
+  if(nk > 1){
+    aes_spec["colour"] <- list(expr(interaction(!!!syms(kv), sep = "/")))
   }
+  
   p <- ggplot(object, eval_tidy(expr(aes(!!!aes_spec)))) + 
     geom_line() +
     xlab(paste0(expr_text(index(object)), " [", format(interval(object)), "]"))
-  if(n_keys(object) > 1){
+  
+  if(nk > 1){
     p <- p + 
-      guides(colour = guide_legend(paste0(map(syms(key_vars(object)), expr_text), collapse = "/")))
+      guides(colour = guide_legend(paste0(kv, collapse = "/")))
   }
+  
+  if(length(.vars) > 1){
+    p <- p + facet_wrap(vars(!!sym(".response")), scales = "free_y", 
+                        ncol = length(.vars))
+  }
+  
   p
 }
 
@@ -62,50 +84,94 @@ autoplot.mable <- function(object, ...){
 #' @importFrom ggplot2 fortify
 #' @export
 fortify.fbl_ts <- function(object, level = c(80, 95)){
-  object <- object %>%
-    as_tsibble %>% 
-    mutate(!!!set_names(map(level, function(.x) expr(hilo(!!(object%@%"dist"), !!.x))), level)) %>%
-    select(!!expr(-!!(object%@%"dist")))
+  resp <- object%@%"response"
+  
+  if(length(resp) > 1){
+    object <- object %>%
+      mutate(
+        .response = rep(list(factor(map_chr(resp, expr_text))), NROW(object)),
+        value = transpose_dbl(list2(!!!resp))
+      )
+  }
+  
   if(!is.null(level)){
     object <- object %>% 
-      gather(level, hilo, !!!syms(as.character(level))) %>%
-      mutate(hilo = add_class(hilo, "hilo"),
-             level = level(hilo),
-             lower = lower(hilo),
-             upper = upper(hilo)) %>%
-      select(!!expr(-!!sym("hilo")))
+      mutate(
+        !!!set_names(
+          map(level, function(.x) expr(hilo(!!(object%@%"dist"), !!.x))), 
+          level
+        )
+      )
+    
+    object <- gather(object, ".rm", "hilo", !!!syms(as.character(level)))
+    
+    if(length(resp) > 1){
+      object <- unnest(object, !!!syms(c(".response", "value", "hilo")),
+                       key = ".response")
+      resp <- syms("value")
+    }
+    else{
+      object <- unnest(object, !!sym("hilo"))
+    }
+    
+    # Fix level in key structure
+    kv <- key_vars(object)
+    kv[kv==".rm"] <- "level"
+    object <- select(update_tsibble(object, key = kv), !!expr(-!!sym(".rm")))
   }
-  object
+  else if (length(resp) > 1) {
+    resp <- syms("value")
+    
+    object <- object %>% 
+      unnest(.response, value, key = ".response")
+  }
+  
+  as_tsibble(object) %>% 
+    select(!!!syms(setdiff(key_vars(object), "level")),
+           !!index(object), !!!resp, 
+           !!!syms(intersect(c("level", "lower", "upper"), names(object))))
 }
 
+#' @importFrom ggplot2 facet_wrap
 #' @export
 autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
-  fc_key <- syms(setdiff(key_vars(object), ".model"))
+  fc_resp <- object%@%"response"
+  fc_key <- setdiff(key_vars(object), ".model")
   has_keys <- any(duplicated(key_data(object)$.model))
   
-  if(length(object%@%"response") > 1){
-    abort("Plotting multivariate forecasts is not yet supported.")
+  aes_y <- if(length(fc_resp) > 1){
+    sym("value")
   }
+  else{
+    sym(expr_text(fc_resp[[1]]))
+  }
+
   if (!is.null(data)){
-    if(!identical(fc_key, key(data))){
+    if(!identical(fc_key, key_vars(data))){
       abort("Provided data contains a different key structure to the forecasts.")
     }
+    
     if(!is_empty(key(data))){
       data <- semi_join(data, object, by = key_vars(data))
     }
     
-    p <- ggplot(data, aes(x = !!index(data), y = !!((object%@%"response")[[1]]))) + 
-      geom_line()
+    if(length(fc_resp) > 1){
+      data <- gather(data, ".response", "value", !!!fc_resp, factor_key = TRUE)
+    }
   }
-  else{
-    p <- ggplot()
-  }
-  
-  p <- p +
+
+  p <- ggplot(data, aes(x = !!index(object), y = !!aes_y)) + 
     autolayer(object, level = level, ...)
+  if(!is.null(data)){
+    p <- p + geom_line()
+  }
   
-  if(has_keys){
-    p <- p + facet_grid(vars(!!!fc_key), scales = "free_y")
+  if(length(fc_resp) > 1){
+    p <- p + facet_wrap(vars(!!!syms(c(".response", fc_key))),
+                        ncol = length(fc_resp), scales = "free_y")
+  } else if(has_keys){
+    p <- p + facet_wrap(vars(!!!syms(fc_key)),
+                        ncol = 1, scales = "free_y")
   }
   
   p
@@ -113,15 +179,21 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
 
 #' @export
 autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
-  fc_key <- syms(setdiff(key_vars(object), ".model"))
+  fc_key <- setdiff(key_vars(object), ".model")
   data <- fortify(object, level = level)
-  
+
   if(length(object%@%"response") > 1){
-    abort("Plotting multivariate forecasts is not yet supported.")
+    resp <- sym("value")
+    grp <- syms(".response")
   }
+  else{
+    resp <- sym(expr_text((object%@%"response")[[1]]))
+    grp <- NULL
+  }
+  
   mapping <- aes(
     x = !!index(data),
-    y = !!sym(expr_text((object%@%"response")[[1]]))
+    y = !!resp
   )
   
   if(!is.null(level)){
@@ -131,16 +203,18 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   }
   
   if(!is_empty(fc_key)){
-    mapping$group <- expr(interaction(!!!fc_key, sep = "/"))
+    grp <- c(grp, syms(fc_key))
   }
-  
   if(!is.null(series)){
     mapping$colour <- series
-    mapping$group <- expr(interaction(!!series, !!sym(".model")))
+    grp <- c(grp, series, syms(".model"))
   }
   else if(length(unique(key_data(object)[[".model"]])) > 1){
     mapping$colour <- sym(".model")
-    mapping$group <- sym(".model")
+    grp <- c(grp, syms(".model"))
+  }
+  if(length(grp) > 0){
+    mapping$group <- expr(interaction(!!!grp, sep = "/"))
   }
   
   geom_forecast(mapping = mapping, stat = "identity", data = data, ...)

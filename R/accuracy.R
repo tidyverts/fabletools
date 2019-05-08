@@ -98,6 +98,7 @@ NULL
 #' @export
 winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
   interval <- hilo(.dist, level)
+  if(NROW(interval[[1]]) > 1) abort("Winkler scores are not supported for multivariate distributions.")
   alpha <- 1-level/100
   lt <- interval$lower
   ut <- interval$upper
@@ -128,8 +129,9 @@ NULL
 percentile_score <- function(.dist, .actual, na.rm = TRUE, ...){
   probs <- seq(0.01, 0.99, 0.01)
   percentiles <- quantile(.dist, probs)
+  if(length(percentiles[[1]]) > 1) abort("Percentile scores are not supported for multivariate distributions.")
   map2_dbl(percentiles, probs, function(percentile, prob){
-    L <- ifelse(.actual < percentile, (1-prob), prob)*abs(percentile-.actual)
+    L <- ifelse(.actual < percentile[[1]], (1-prob), prob)*abs(percentile[[1]]-.actual)
     mean(L, na.rm = na.rm)
   }) %>% 
     mean(na.rm = na.rm)
@@ -165,16 +167,30 @@ accuracy.mdl_df <- function(object, measures = point_measures, ...){
 #' @export
 accuracy.model <- function(object, measures = point_measures, ...){
   dots <- dots_list(...)
+  resp <- if(length(object$response) > 1) sym("value") else object$response[[1]]
   
-  aug <- as_tibble(augment(object)) %>% 
+  aug <- as_tibble(augment(object))
+  
+  # Compute inputs for each response variable
+  if(length(object$response) > 1){
+    aug <- group_by(aug, !!sym(".response"))
+  }
+  
+  aug <- aug %>% 
     rename(
-      ".actual" := !!sym(deparse(model_lhs(object[["model"]]))),
+      ".actual" := !!resp,
     ) %>% 
     summarise(
       .resid = list(!!sym(".actual") - !!sym(".fitted")),
-      .actual = list(!!sym(".actual")), .fc = list(!!sym(".fitted")),
-      .train = !!sym(".actual")
+      .train = list(!!sym(".actual")),
+      .actual = list(!!sym(".actual")), 
+      .fc = list(!!sym(".fitted")),
     )
+  
+  # Re-group after summarise
+  if(length(object$response) > 1){
+    aug <- group_by(aug, !!sym(".response"))
+  }
   
   # Add user inputs
   aug <- mutate(aug, ...)
@@ -200,18 +216,34 @@ accuracy.model <- function(object, measures = point_measures, ...){
 }
 
 #' @param data A dataset containing the complete model dataset (both training and test data). The training portion of the data will be used in the computation of some accuracy measures, and the test data is used to compute the forecast errors.
-#' @param by Variables over which the accuracy is computed (useful for computing across forecast horizons in cross-validation).
+#' @param by Variables over which the accuracy is computed (useful for computing across forecast horizons in cross-validation). If `by` is NULL, groups will be chosen automatically from the key structure.
 #' 
 #' @rdname accuracy
 #' @export
 accuracy.fbl_ts <- function(object, data, measures = point_measures, ..., 
-                            by = c(".model", key_vars(data))){
-  by <- union(expr_text(index(object)), by)
-  grp <- c(syms(setdiff(by, expr_text(index(object)))), groups(object))
+                            by = NULL){
+  resp <- object%@%"response"
+  dist <- object%@%"dist"
   
-  if(length(object%@%"response") > 1){
-    abort("Accuracy evaluation is not yet supported for multivariate forecasts.")
+  if(length(resp) > 1){
+    object <- as_tsibble(object) %>% 
+      # select(!!expr(-!!attr(object, "dist"))) %>% 
+      gather(".response", "value", !!!resp)
+    data <- gather(data, ".response", "value", !!!resp)
+    resp <- sym("value")
+    # abort("Accuracy evaluation is not yet supported for multivariate forecasts.")
   }
+  else{
+    resp <- resp[[1]]
+  }
+  
+  if(is.null(by)){
+    by <- intersect(c(".model", ".response", key_vars(data)), colnames(object))
+  }
+  
+  grp <- c(syms(by), groups(object))
+  by <- union(expr_text(index(object)), by)
+  
   
   if(!(".model" %in% by)){
     warn('Accuracy measures should be computed separately for each model, have you forgotten to add ".model" to your `by` argument?')
@@ -228,9 +260,9 @@ accuracy.fbl_ts <- function(object, data, measures = point_measures, ...,
   }
   
   # Compute .fc, .dist, .actual and .resid
-  aug <- transmute(object, .fc = !!(object%@%"response")[[1]], .dist = !!(object%@%"dist"), !!!syms(by))
+  aug <- transmute(object, .fc = !!resp, .dist = !!dist, !!!syms(by))
   aug <- left_join(aug,
-      transmute(data, !!index(data), .actual = !!(object%@%"response")[[1]]),
+      transmute(data, !!index(data), .actual = !!resp),
       by = intersect(colnames(data), by),
       suffix = c("", ".y")
     )
@@ -243,7 +275,7 @@ accuracy.fbl_ts <- function(object, data, measures = point_measures, ...,
   extract_train <- function(idx, ...){
     cnds <- dots_list(...)
     cnds <- map2(syms(names(cnds)), cnds, call2, .fn = "==")
-    eval_tidy((object%@%"response")[[1]], data = filter(data, !!index(data) < idx, !!!cnds))
+    eval_tidy(resp, data = filter(data, !!index(data) < idx, !!!cnds))
   }
   mutual_keys <- intersect(key(data), key(object))
   mutual_keys <- set_names(mutual_keys, map_chr(mutual_keys, as_string))

@@ -115,3 +115,7 @@ require_package <- function(pkg){
     )
   }
 }
+
+calc <- function(f, ...){
+  f(...)
+}

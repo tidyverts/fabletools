@@ -1,3 +1,42 @@
+train_combination <- function(.data, formula, specials, ..., cmbn_fn){
+  mdls <- dots_list(...)
+  
+  # Estimate model definitions
+  mdl_def <- map_lgl(mdls, inherits, "mdl_defn")
+  mdls[mdl_def] <- mdls[mdl_def] %>% 
+    map(function(x) estimate(self$data, x))
+  
+  do.call(cmbn_fn, mdls)
+}
+
+#' Combination modelling
+#' 
+#' @param ... Model definitions used in the combination (such as [fable::ETS()])
+#' @param cmbn_fn A function used to produce the combination
+#' 
+#' @export
+cmbn_model <- function(..., cmbn_fn = cmbn_ensemble){
+  mdls <- dots_list(...)
+  if(!any(map_lgl(mdls, inherits, "mdl_defn"))){
+    abort("`cmbn_model()` must contain at least one valid model definition.")
+  }
+  
+  cmbn_model <- new_model_class("cmbn_mdl", train = train_combination, 
+                                specials = new_specials(xreg = function(...) NULL))
+  new_model_definition(cmbn_model, !!quo(!!model_lhs(mdls[[1]])), ..., 
+                       cmbn_fn = cmbn_fn)
+}
+
+#' Ensemble combination
+#' 
+#' @param ... Estimated models used in the ensemble.
+#' 
+#' @export
+cmbn_ensemble <- function(...){
+  mdls <- dots_list(...)
+  reduce(mdls, `+`)/length(mdls)
+}
+
 new_model_combination <- function(x, combination){
   mdls <- map_lgl(x, inherits, "model")
   
@@ -38,6 +77,23 @@ new_model_combination <- function(x, combination){
 #' @export
 model_sum.model_combination <- function(x){
   "COMBINATION"
+}
+
+#' @export
+Ops.mdl_defn <- function(e1, e2){
+  e1_expr <- enexpr(e1)
+  e2_expr <- enexpr(e2)
+  ok <- switch(.Generic, `+` = , `-` = , `*` = , `/` = TRUE, FALSE)
+  if (!ok) {
+    warn(sprintf("`%s` not meaningful for model definitions", .Generic))
+    return(rep.int(NA, max(length(e1), if (!missing(e2)) length(e2))))
+  }
+  if(.Generic == "/" && is_model(e2)){
+    warn(sprintf("Cannot divide by a model definition"))
+    return(rep.int(NA, max(length(e1), if (!missing(e2)) length(e2))))
+  }
+  
+  cmbn_model(e1, e2, cmbn_fn = .Generic)
 }
 
 #' @export
