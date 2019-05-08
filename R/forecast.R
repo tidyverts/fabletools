@@ -26,18 +26,34 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
   if(!is.null(new_data)){
     object <- bind_new_data(object, new_data)
   }
-  object <- gather(object, ".model", ".fit", !!!mdls)
   
-  # Evaluate forecasts
-  fc <- map2(object$.fit,
-             object[["new_data"]] %||% rep(list(NULL), length.out = NROW(object)),
-             forecast, h = h, bias_adjust = bias_adjust, ...)
+  fc <- dplyr::mutate_at(as_tibble(object),
+                         vars(!!!mdls), forecast, object[["new_data"]],
+                         h = h, bias_adjust = bias_adjust, ...)
   
-  # Construct fable
-  out <- add_class(select(as_tibble(object), !!!syms(kv)), "lst_ts")
-  out <- suppressWarnings(unnest(out, fc, key = kv))
-  out[[expr_text(fc[[1]]%@%"dist")]] <- fc %>% map(function(x) x[[expr_text(x%@%"dist")]]) %>% invoke(c, .)
-  as_fable(out, resp = fc[[1]]%@%"response", dist = !!(fc[[1]]%@%"dist"))
+  # Combine and re-construct fable
+  fc <- gather(fc, ".model", ".fc", !!!mdls)
+
+  idx <- index(fc[[".fc"]][[1]])
+  resp <- fc[[".fc"]][[1]]%@%"response"
+  dist <- fc[[".fc"]][[1]]%@%"dist"
+  
+  dist_repaired <- fc[[".fc"]] %>%
+    map(function(x) x[[expr_text(x%@%"dist")]]) %>%
+    invoke(c, .)
+  
+  fc <- suppressWarnings(unnest(fc, .fc))
+  
+  fc[[expr_text(dist)]] <- dist_repaired
+  
+  as_fable(fc, index = !!idx, key = kv, resp = resp, dist = !!dist)
+}
+
+#' @export
+forecast.lst_mdl <- function(object, new_data = NULL, ...){
+  map2(object, 
+       new_data %||% rep(list(NULL), length.out = length(object)),
+       forecast, ...)
 }
 
 #' @export
