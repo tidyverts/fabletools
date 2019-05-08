@@ -98,7 +98,7 @@ NULL
 #' @export
 winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
   interval <- hilo(.dist, level)
-  if(NROW(interval[[1]])) abort("Winkler scores are not supported for multivariate distributions.")
+  if(NROW(interval[[1]]) > 1) abort("Winkler scores are not supported for multivariate distributions.")
   alpha <- 1-level/100
   lt <- interval$lower
   ut <- interval$upper
@@ -129,8 +129,9 @@ NULL
 percentile_score <- function(.dist, .actual, na.rm = TRUE, ...){
   probs <- seq(0.01, 0.99, 0.01)
   percentiles <- quantile(.dist, probs)
+  if(length(percentiles[[1]]) > 1) abort("Percentile scores are not supported for multivariate distributions.")
   map2_dbl(percentiles, probs, function(percentile, prob){
-    L <- ifelse(.actual < percentile, (1-prob), prob)*abs(percentile-.actual)
+    L <- ifelse(.actual < percentile[[1]], (1-prob), prob)*abs(percentile[[1]]-.actual)
     mean(L, na.rm = na.rm)
   }) %>% 
     mean(na.rm = na.rm)

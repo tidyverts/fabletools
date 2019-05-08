@@ -272,9 +272,14 @@ hilo_fcdist <- function(level, x, ...){
 
 #' @export
 quantile.fcdist <- function(x, probs = seq(0, 1, 0.25), ...){
-  args <- merge_pos_list(!!!as_list(x))
+  env <- x[[1]][[length(x[[1]])]]
+  args <- transpose(x)[-length(x[[1]])]
   map(probs, function(prob){
-    attr(x,"t")(do.call(attr(x, "f"), c(list(prob), as.list(args))))
+    intr <- do.call(env$f, c(list(prob), as.list(args), dots_list(...)))
+    if(!is.list(intr)){
+      intr <- list(intr)
+    }
+    map2(env$t, intr, calc)
   })
 }
 
