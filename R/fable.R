@@ -165,3 +165,7 @@ rbind.fbl_ts <- function(...){
   out <- NextMethod("rbind")
   as_fable(out, response, !!dist[[1]])
 }
+
+type_sum.fbl_ts <- function(x){
+  "fable"
+}

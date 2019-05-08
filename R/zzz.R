@@ -4,6 +4,7 @@
   register_s3_method("pillar", "type_sum", "hilo")
   register_s3_method("pillar", "type_sum", "fcdist")
   register_s3_method("pillar", "type_sum", "lst_mdl")
+  register_s3_method("pillar", "type_sum", "fbl_ts")
   
   register_s3_method("pillar", "obj_sum", "hilo")
   register_s3_method("pillar", "obj_sum", "fcdist")
