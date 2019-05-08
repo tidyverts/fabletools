@@ -48,4 +48,32 @@ expand_keys.tbl_ts <- function(data, ...){
   # Return tsibble
   unnest(add_class(agg_dt, "lst_ts"), .rows, key = kv)
 }
+
+#' Forecast reconciliation 
+#' 
+#' Specifies the method used to reconcile forecasts across keys.
+#' 
+#' @param data A mable.
+#' @param ... Reconciliation specification
+#' 
+#' @export
+reconcile <- function(data, ...){
+  UseMethod("reconcile")
+}
+
+#' @export
+reconcile.mdl_df <- function(data, ...){
+  mutate(data, ...)
+}
+
+#' Minimum trace forecast reconciliation
+#' 
+#' @param mdls A column of models in a mable
+#' @param method The combination method
+#' @param weights The weights used in combination
+#' 
+#' @export
+MinT <- function(mdls, method = "comb", weights = "ols"){
+  structure(mdls, method = method, weights = weights, 
+            class = union("lst_mint_mdl", class(mdls)))
 }
