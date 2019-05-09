@@ -29,7 +29,8 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
   
   fc <- dplyr::mutate_at(as_tibble(object),
                          vars(!!!mdls), forecast, object[["new_data"]],
-                         h = h, bias_adjust = bias_adjust, ...)
+                         h = h, bias_adjust = bias_adjust, ...,
+                         key_data = key_data(object))
   
   # Combine and re-construct fable
   fc <- gather(fc, ".model", ".fc", !!!mdls)
@@ -50,7 +51,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
 }
 
 #' @export
-forecast.lst_mdl <- function(object, new_data = NULL, ...){
+forecast.lst_mdl <- function(object, new_data = NULL, key_data, ...){
   map2(object, 
        new_data %||% rep(list(NULL), length.out = length(object)),
        forecast, ...)
