@@ -4,14 +4,10 @@
 \alias{MinT}
 \title{Minimum trace forecast reconciliation}
 \usage{
-MinT(mdls, method = "comb", weights = "ols")
+MinT(mdls)
 }
 \arguments{
 \item{mdls}{A column of models in a mable}
-
-\item{method}{The combination method}
-
-\item{weights}{The weights used in combination}
 }
 \description{
 Minimum trace forecast reconciliation

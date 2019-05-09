@@ -69,14 +69,13 @@ reconcile.mdl_df <- function(data, ...){
 #' Minimum trace forecast reconciliation
 #' 
 #' @param mdls A column of models in a mable
-#' @param method The combination method
-#' @param weights The weights used in combination
 #' 
 #' @export
 MinT <- function(mdls){
   add_class(mdls, "lst_mint_mdl")
 }
 
+#' @importFrom utils combn
 #' @export
 forecast.lst_mint_mdl <- function(object, key_data, ...){
   # Get forecasts
