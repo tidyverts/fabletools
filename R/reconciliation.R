@@ -73,9 +73,56 @@ reconcile.mdl_df <- function(data, ...){
 #' @param weights The weights used in combination
 #' 
 #' @export
-MinT <- function(mdls, method = "comb", weights = "ols"){
-  structure(mdls, method = method, weights = weights, 
-            class = union("lst_mint_mdl", class(mdls)))
+MinT <- function(mdls){
+  add_class(mdls, "lst_mint_mdl")
+}
+
+#' @export
+forecast.lst_mint_mdl <- function(object, key_data, ...){
+  # Get forecasts
+  fc <- NextMethod()
+  fc_point <- fc %>% map(`[[`, expr_text(attr(fc[[1]],"response")[[1]])) %>% 
+    invoke(cbind, .) %>% 
+    as.matrix()
+  fc_var <- fc %>% 
+    map(`[[`, expr_text(attr(fc[[1]],"dist"))) %>% 
+    map(function(x) map_dbl(x, `[[`, "sd")^2) %>% 
+    transpose_dbl()
+  
+  # Compute weights (sample covariance)
+  res <- map(object, function(x, ...) residuals(x, ...)[[2]], type = "response")
+  res <- matrix(invoke(c, res), ncol = length(object))
+  
+  n <- nrow(res)
+  weights <- crossprod(stats::na.omit(res)) / n
+  
+  # Check positive definiteness of weights
+  eigenvalues <- eigen(weights, only.values = TRUE)[["values"]]
+  if (any(eigenvalues < 1e-8)) {
+    abort("MinT needs covariance matrix to be positive definite.", call. = FALSE)
+  }
+  
+  # Reconciliation matrices
+  smat <- build_smat(key_data)
+  R <- t(smat)%*%solve(weights)
+  G <- solve(R%*%smat)%*%R
+  
+  # Apply to forecasts
+  fc_point <- smat%*%G%*%t(fc_point)
+  fc_point <- split(fc_point, row(fc_point))
+  
+  fc_var <- transpose_dbl(
+    map(fc_var, function(sigma) diag(smat%*%G%*%diag(sigma)%*%t(G)%*%t(smat)))
+  )
+  
+  fc_dist <- map2(fc_point, map(fc_var, sqrt), dist_normal)
+  
+  # Update fables
+  pmap(list(fc, fc_point, fc_dist), function(fc, point, dist){
+    fc[[expr_text(attr(fc,"response")[[1]])]] <- point
+    fc[[expr_text(attr(fc,"dist"))]] <- dist
+    fc
+  })
 }
 
 build_smat <- function(key_data){
