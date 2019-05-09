@@ -136,5 +136,11 @@ build_smat <- function(key_data){
     mat[is.na(x), ] <- 1
     mat
   })
-  invoke(cbind, smat)
+  
+  join_smat <- function(x, y){
+    map(split(x, col(x)), `*`, y) %>% 
+      invoke(cbind, .)
+  }
+  
+  reduce(smat, join_smat)
 }
