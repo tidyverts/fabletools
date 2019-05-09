@@ -77,3 +77,18 @@ MinT <- function(mdls, method = "comb", weights = "ols"){
   structure(mdls, method = method, weights = weights, 
             class = union("lst_mint_mdl", class(mdls)))
 }
+
+build_smat <- function(key_data){
+  key_data[".rows"] <- NULL
+  fct <- map(key_data, factor)
+  smat <- map(fct, function(x){
+    mat <- rep(0, length(x)*length(levels(x)))
+    i <- which(!is.na(x))
+    j <- as.numeric(x[i])
+    mat[i + length(x) * (j-1)] <- 1
+    mat <- matrix(mat, nrow = length(x), ncol = length(levels(x)))
+    mat[is.na(x), ] <- 1
+    mat
+  })
+  invoke(cbind, smat)
+}
