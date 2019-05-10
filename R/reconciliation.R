@@ -125,8 +125,12 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
 }
 
 build_smat <- function(key_data){
-  key_data[".rows"] <- NULL
-  fct <- map(key_data, factor)
+  row_col <- sym(colnames(key_data)[length(key_data)])
+  
+  fct <- key_data %>%
+    unnest(!!row_col) %>% arrange(!!row_col) %>% select(!!expr(-!!row_col)) %>% 
+    map(factor)
+  
   smat <- map(fct, function(x){
     mat <- rep(0, length(x)*length(levels(x)))
     i <- which(!is.na(x))
