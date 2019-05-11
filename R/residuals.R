@@ -18,7 +18,7 @@ residuals.model <- function(object, type = "innovation", ...){
     .resid <- as.matrix(.resid[measured_vars(.resid)]) - fitted(object$fit)
   }
   else{
-    .resid <- as.matrix(residuals(object$fit, type = type, ...))
+    .resid <- residuals(object$fit, type = type, ...)
     if(is.null(.resid)){
         warn(sprintf(
 'Residuals of type `%s` are not supported for %s models.
@@ -27,6 +27,7 @@ Defaulting to `type="response"`', type, model_sum(object)))
       .resid <- as.matrix(.resid[measured_vars(.resid)]) - fitted(object$fit)
     }
   }
+  .resid <- as.matrix(.resid)
   
   .resid <- split(.resid, col(.resid))
   nm <- if(length(.resid) == 1) ".resid" else map_chr(object$response, expr_text)
