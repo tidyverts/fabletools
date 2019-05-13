@@ -85,6 +85,7 @@ autoplot.mable <- function(object, ...){
 #' @export
 fortify.fbl_ts <- function(object, level = c(80, 95)){
   resp <- object%@%"response"
+  dist <- object%@%"dist"
   
   if(length(resp) > 1){
     object <- object %>%
@@ -98,7 +99,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
     object <- object %>% 
       mutate(
         !!!set_names(
-          map(level, function(.x) expr(hilo(!!(object%@%"dist"), !!.x))), 
+          map(level, function(.x) expr(hilo(!!dist, !!.x))), 
           level
         )
       )
@@ -127,9 +128,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
   }
   
   as_tsibble(object) %>% 
-    select(!!!syms(setdiff(key_vars(object), "level")),
-           !!index(object), !!!resp, 
-           !!!syms(intersect(c("level", "lower", "upper"), names(object))))
+    select(!!expr(-!!dist))
 }
 
 #' @importFrom ggplot2 facet_wrap
