@@ -228,7 +228,7 @@ accuracy.fbl_ts <- function(object, data, measures = point_measures, ...,
   if(length(resp) > 1){
     object <- as_tsibble(object) %>% 
       # select(!!expr(-!!attr(object, "dist"))) %>% 
-      gather(".response", "value", !!!resp)
+      gather(".response", "value", !!!resp, factor_key = TRUE)
     data <- gather(data, ".response", "value", !!!resp)
     resp <- sym("value")
     # abort("Accuracy evaluation is not yet supported for multivariate forecasts.")
