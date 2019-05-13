@@ -139,7 +139,7 @@ new_model_definition <- function(.class, ..., .env = caller_env(n = 2)){
 #' @export
 decomposition_definition <- R6::R6Class(NULL,
   public = list(
-    method = "Unknown decomposition",
+    model = "Unknown decomposition",
     train = function(...){
       abort("This decomposition has not defined a training method.")
     },
@@ -225,7 +225,7 @@ new_decomposition_class <- function(method = "Unknown model",
                             .inherit = decomposition_definition){
   R6::R6Class(NULL, inherit = .inherit,
               public = list(
-                method = method,
+                model = method,
                 train = train,
                 specials = specials,
                 check = check,
