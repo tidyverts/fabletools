@@ -18,6 +18,7 @@ estimate.tbl_ts <- function(.data, .model, ...){
   if(!inherits(.model, "mdl_defn")){
     abort("Model definition incorrectly created. Check that specified model(s) are model definitions.")
   }
+  .model$stage <- "estimate"
   .model$add_data(.data)
   validate_formula(.model, .data)
   parsed <- parse_model(.model)
@@ -28,5 +29,6 @@ estimate.tbl_ts <- function(.data, .model, ...){
                      specials = parsed$specials, !!!.model$extra))
   )
   .model$remove_data()
+  .model$stage <- NULL
   new_model(fit, .model, .data, parsed$response, parsed$transformation)
 }
