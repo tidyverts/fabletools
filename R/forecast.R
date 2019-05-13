@@ -26,7 +26,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
   if(!is.null(new_data)){
     object <- bind_new_data(object, new_data)
   }
-  object <- gather(object, ".model", ".fit", !!!mdls)
+  object <- gather(object, ".model", ".fit", !!!syms(mdls))
   
   # Evaluate forecasts
   fc <- map2(object$.fit,

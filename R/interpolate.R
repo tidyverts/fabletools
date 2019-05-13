@@ -10,7 +10,7 @@ Please use select() to choose the model to interpolate with.")
     as_tibble %>% 
     transmute(
       !!!syms(kv),
-      interpolated = map2(!!!(object%@%"models"), new_data, interpolate, ...)
+      interpolated = map2(!!sym(object%@%"models"), new_data, interpolate, ...)
     ) %>% 
     add_class("lst_ts") %>% 
     unnest(key = kv)

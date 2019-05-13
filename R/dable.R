@@ -9,7 +9,7 @@
 #' components.
 #'
 #' @export
-dable <- function(..., key = id(), index, resp, method = NULL,
+dable <- function(..., key = NULL, index, resp, method = NULL,
                   seasons = list(), aliases = list(), regular = TRUE){
   tsbl <- tsibble(..., key = !!enquo(key), index = !!enexpr(index), regular = regular)
   as_dable(tsbl, !!enexpr(resp), method = method, seasons = seasons, aliases = aliases)

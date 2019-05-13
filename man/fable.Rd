@@ -4,7 +4,7 @@
 \alias{fable}
 \title{Create a fable object}
 \usage{
-fable(..., key = id(), index, resp, dist, regular = TRUE)
+fable(..., key = NULL, index, resp, dist, regular = TRUE)
 }
 \arguments{
 \item{...}{A set of name-value pairs. The names of "key" and "index" should

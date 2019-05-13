@@ -1,7 +1,7 @@
 #' @importFrom utils head capture.output
 #' @export
 summary.mdl_df <- function(object, ...){
-  map(head(object[[as_string((object%@%"models")[[1]])]]), function(.x) capture.output(summary(.x))) %>%
+  map(head(object[[(object%@%"models")[[1]]]]), function(.x) capture.output(summary(.x))) %>%
     invoke(cat, ., sep="\n")
   invisible(object)
 }

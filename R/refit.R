@@ -13,7 +13,7 @@ refit <- function(object, new_data, ...){
 refit.mdl_df <- function(object, new_data, ...){
   object %>%
     bind_new_data(new_data) %>% 
-    gather(".model", ".fit", !!!(object%@%"models")) %>% 
+    gather(".model", ".fit", !!!syms(object%@%"models")) %>% 
     as_tibble %>% 
     transmute(
       !!!key(object),

@@ -160,7 +160,7 @@ accuracy <- function(object, ...){
 #' @export
 accuracy.mdl_df <- function(object, measures = point_measures, ...){
   as_tibble(object) %>% 
-    gather(".model", "fit", !!!(object%@%"models")) %>% 
+    gather(".model", "fit", !!!syms(object%@%"models")) %>% 
     unnest(fit = map(!!sym("fit"), accuracy, measures = measures, ...))
 }
 

@@ -4,7 +4,7 @@
 \alias{mable}
 \title{Create a new mable}
 \usage{
-mable(..., key = id(), models = id())
+mable(..., key = NULL, models = NULL)
 }
 \arguments{
 \item{...}{A set of name-value pairs. Arguments are evaluated sequentially,

@@ -45,7 +45,7 @@ model.tbl_ts <- function(.data, ...){
       !!!keys,
       !!!fits
     ) %>% 
-    as_mable(keys, syms(names(fits)))
+    as_mable(keys, names(fits))
 }
 
 new_model <- function(fit, model, data, response, transformation){

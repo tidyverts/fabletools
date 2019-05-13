@@ -10,7 +10,7 @@ response <- function(object, ...){
 
 #' @export
 response.mdl_df <- function(object, ...){
-  out <- gather(object, ".model", ".fit", !!!(object%@%"models"))
+  out <- gather(object, ".model", ".fit", !!!syms(object%@%"models"))
   kv <- key_vars(out)
   out <- transmute(as_tibble(out),
                    !!!syms(kv),

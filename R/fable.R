@@ -5,7 +5,7 @@
 #' @param dist The distribution variable (given as a bare or unquoted variable).
 #'
 #' @export
-fable <- function(..., key = id(), index, resp, dist, regular = TRUE){
+fable <- function(..., key = NULL, index, resp, dist, regular = TRUE){
   tsbl <- tsibble(..., key = !!enquo(key), index = !!enexpr(index), regular = regular)
   as_fable(tsbl, resp, !!enquo(dist))
 }
