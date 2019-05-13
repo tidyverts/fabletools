@@ -6,7 +6,8 @@ test_that("Model parsing variety", {
   expect_equal(parse1[[1]][[1]]$fit, list())
   
   # Parse with no specials
-  expect_error(model(as_tsibble(USAccDeaths), no_specials(value ~ rhs)), "xreg")
+  expect_error(model(as_tsibble(USAccDeaths), no_specials(value ~ rhs)), 
+               "Exogenous regressors are not supported")
   
   # Parse xreg
   parse_xreg <- model(as_tsibble(USAccDeaths), specials(value ~ value + log(value)))

@@ -9,7 +9,7 @@
 new_specials <- function(..., .required_specials = NULL){
   specials <- squash(list2(...))
   if(is.null(specials$xreg)){
-    specials$xreg <- function(...) abort(sprintf("Exogenous regressors is not supported for %s.", self$model))
+    specials$xreg <- function(...) abort(sprintf("Exogenous regressors are not supported for %s.", self$model))
   }
   structure(specials,
             required_specials = .required_specials,
