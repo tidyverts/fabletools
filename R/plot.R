@@ -124,7 +124,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
     resp <- syms("value")
     
     object <- object %>% 
-      unnest(.response, value, key = ".response")
+      unnest(!!sym(".response"), !!!resp, key = ".response")
   }
   
   as_tsibble(object) %>% 
