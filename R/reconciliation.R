@@ -28,7 +28,7 @@ expand_keys.tbl_ts <- function(data, ...){
   key_comb <- flatten(map(c(0, seq_along(kv)), combn, x = kv, simplify = FALSE))
   key_dt <- key_data(data)
   agg_dt <- invoke(dplyr::bind_rows, map(key_comb, function(x){
-    summarise(group_by(key_dt, !!!syms(x)), .rows = list(.rows))
+    summarise(group_by(key_dt, !!!syms(x)), .rows = list(!!sym(".rows")))
   }))
   
   # Aggregate variables
@@ -46,7 +46,7 @@ expand_keys.tbl_ts <- function(data, ...){
   })
   
   # Return tsibble
-  unnest(add_class(agg_dt, "lst_ts"), .rows, key = kv)
+  unnest(add_class(agg_dt, "lst_ts"), !!sym(".rows"), key = kv)
 }
 
 #' Forecast reconciliation 
@@ -107,7 +107,7 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   P <- solve(R%*%S)%*%R
   # P <- solve(t(S)%*%solve(W)%*%S)%*%t(S)%*%solve(W)
   
-  R1 <- cov2cor(W)
+  R1 <- stats::cov2cor(W)
   W_h <- map(fc_var, function(var) diag(sqrt(var))%*%R1%*%t(diag(sqrt(var))))
   
   # Apply to forecasts
@@ -128,7 +128,9 @@ build_smat <- function(key_data){
   row_col <- sym(colnames(key_data)[length(key_data)])
   
   fct <- key_data %>%
-    unnest(!!row_col) %>% arrange(!!row_col) %>% select(!!expr(-!!row_col)) %>% 
+    unnest(!!row_col) %>% 
+    dplyr::arrange(!!row_col) %>% 
+    select(!!expr(-!!row_col)) %>% 
     map(factor)
   
   smat <- map(fct, function(x){

@@ -43,7 +43,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
     map(function(x) x[[expr_text(x%@%"dist")]]) %>%
     invoke(c, .)
   
-  fc <- suppressWarnings(unnest(fc, .fc))
+  fc <- suppressWarnings(unnest(fc, !!sym(".fc")))
   
   fc[[expr_text(dist)]] <- dist_repaired
   
