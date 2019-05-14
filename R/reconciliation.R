@@ -93,28 +93,28 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   res <- matrix(invoke(c, res), ncol = length(object))
   
   n <- nrow(res)
-  weights <- crossprod(stats::na.omit(res)) / n
+  W <- crossprod(stats::na.omit(res)) / n
   
   # Check positive definiteness of weights
-  eigenvalues <- eigen(weights, only.values = TRUE)[["values"]]
+  eigenvalues <- eigen(W, only.values = TRUE)[["values"]]
   if (any(eigenvalues < 1e-8)) {
     abort("MinT needs covariance matrix to be positive definite.", call. = FALSE)
   }
   
   # Reconciliation matrices
-  smat <- build_smat(key_data)
-  R <- t(smat)%*%solve(weights)
-  G <- solve(R%*%smat)%*%R
+  S <- build_smat(key_data)
+  R <- t(S)%*%solve(W)
+  P <- solve(R%*%S)%*%R
+  # P <- solve(t(S)%*%solve(W)%*%S)%*%t(S)%*%solve(W)
+  
+  R1 <- cov2cor(W)
+  W_h <- map(fc_var, function(var) diag(sqrt(var))%*%R1%*%t(diag(sqrt(var))))
   
   # Apply to forecasts
-  fc_point <- smat%*%G%*%t(fc_point)
+  fc_point <- S%*%P%*%t(fc_point)
   fc_point <- split(fc_point, row(fc_point))
-  
-  fc_var <- transpose_dbl(
-    map(fc_var, function(sigma) diag(smat%*%G%*%diag(sigma)%*%t(G)%*%t(smat)))
-  )
-  
-  fc_dist <- map2(fc_point, map(fc_var, sqrt), dist_normal)
+  fc_var <- map(W_h, function(W) diag(S%*%P%*%W%*%t(P)%*%t(S)))
+  fc_dist <- map2(fc_point, transpose_dbl(map(fc_var, sqrt)), dist_normal)
   
   # Update fables
   pmap(list(fc, fc_point, fc_dist), function(fc, point, dist){
