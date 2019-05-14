@@ -1,6 +1,6 @@
 #' @export
 augment.mdl_df <- function(x, ...){
-  x <- gather(x, ".model", ".fit", !!!(x%@%"models"))
+  x <- gather(x, ".model", ".fit", !!!syms(x%@%"models"))
   kv <- key_vars(x)
   x <- transmute(as_tibble(x),
                  !!!syms(kv), !!sym(".model"), aug = map(!!sym(".fit"), augment))
@@ -37,7 +37,7 @@ augment.model <- function(x, ...){
 
 #' @export
 glance.mdl_df <- function(x, ...){
-  x <- gather(x, ".model", ".fit", !!!(x%@%"models"))
+  x <- gather(x, ".model", ".fit", !!!syms(x%@%"models"))
   keys <- key(x)
   x <- transmute(as_tibble(x),
                  !!!keys, !!sym(".model"), glanced = map(!!sym(".fit"), glance))
@@ -51,7 +51,7 @@ glance.model <- function(x, ...){
 
 #' @export
 tidy.mdl_df <- function(x, ...){
-  x <- gather(x, ".model", ".fit", !!!(x%@%"models"))
+  x <- gather(x, ".model", ".fit", !!!syms(x%@%"models"))
   keys <- key(x)
   x <- transmute(as_tibble(x),
                  !!!keys, !!sym(".model"), tidied = map(!!sym(".fit"), tidy))

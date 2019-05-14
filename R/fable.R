@@ -5,7 +5,7 @@
 #' @param dist The distribution variable (given as a bare or unquoted variable).
 #'
 #' @export
-fable <- function(..., key = id(), index, resp, dist, regular = TRUE){
+fable <- function(..., key = NULL, index, resp, dist, regular = TRUE){
   tsbl <- tsibble(..., key = !!enquo(key), index = !!enexpr(index), regular = regular)
   as_fable(tsbl, resp, !!enquo(dist))
 }
@@ -66,6 +66,7 @@ as_fable.fbl_ts <- function(x, resp, dist, ...){
     x%@%"dist" <- enexpr(dist)
   }
   validate_fable(x)
+  x
 }
 
 #' @rdname as-fable
@@ -149,3 +150,22 @@ mutate.fbl_ts <- function(.data, ...) {
 
 #' @export
 mutate.grouped_fbl <- mutate.fbl_ts
+
+#' @export
+rbind.fbl_ts <- function(...){
+  fbls <- dots_list(...)
+  response <- map(fbls, attr, "response")
+  dist <- map(fbls, attr, "dist")
+  if(length(response <- unique(response)) > 1){
+    abort("Cannot combine fables with different response variables.")
+  }
+  if(length(dist <- unique(dist)) > 1){
+    abort("Cannot combine fables with different distribution names.")
+  }
+  out <- update_tsibble(NextMethod("rbind"))
+  as_fable(out, response[[1]], !!dist[[1]])
+}
+
+type_sum.fbl_ts <- function(x){
+  "fable"
+}

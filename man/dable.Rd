@@ -4,7 +4,7 @@
 \alias{dable}
 \title{Create a dable object}
 \usage{
-dable(..., key = id(), index, resp, method = NULL, seasons = list(),
+dable(..., key = NULL, index, resp, method = NULL, seasons = list(),
   aliases = list(), regular = TRUE)
 }
 \arguments{

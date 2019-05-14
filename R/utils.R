@@ -68,7 +68,7 @@ make_future_data <- function(.data, h = NULL){
     n <- min(n)
   }
   if(is.null(h)) n <- n*2
-  tsibble::new_data(.data, n)
+  tsibble::new_data(.data, round(n))
 }
 
 bind_new_data <- function(object, new_data){

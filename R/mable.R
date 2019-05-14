@@ -6,7 +6,7 @@
 #' @param models Identifiers for the columns containing model(s).
 #'
 #' @export
-mable <- function(..., key = id(), models = id()){
+mable <- function(..., key = NULL, models = NULL){
   as_mable(tibble(...), key = key, models = models)
 }
 
@@ -27,12 +27,22 @@ as_mable <- function(x, ...){
 #' @param models Identifiers for the columns containing model(s).
 #' 
 #' @export
-as_mable.tbl_df <- function(x, key = id(), models = id(), ...){
+as_mable.tbl_df <- function(x, key = NULL, models = NULL, ...){
+  models <- tidyselect::vars_select(names(x), !!enquo(models))
+  
+  if(length(unique(map(x[models], function(mdl) mdl[[1]]$response))) > 1){
+    abort("A mable can only contain models with the same response variable(s).")
+  }
+  
+  add_mdl_lst <- map(models, function(model) expr(add_class(!!sym(model), "lst_mdl")))
+  
+  x <- mutate(x, !!!set_names(add_mdl_lst, map_chr(models, as_string)))
+  
   if (is.data.frame(key)) {
     key_data <- key
   }
   else{
-    key_data <- group_data(group_by(x, !!!unname(key)))
+    key_data <- group_data(group_by(x, !!!syms(key)))
   }
   
   tibble::new_tibble(x, key = key_data, models = models,
@@ -61,13 +71,11 @@ tbl_sum.mdl_df <- function(x){
 #' @export
 gather.mdl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE,
                           convert = FALSE, factor_key = FALSE){
-  key <- sym(enexpr(key))
   value <- enexpr(value)
   tbl <- gather(as_tibble(data), key = !!key, value = !!value, 
                 ..., na.rm = na.rm, convert = convert, factor_key = factor_key)
-  
-  mdls <- syms(names(which(map_lgl(tbl, inherits, "lst_mdl"))))
-  as_mable(tbl, key = c(key(data), key), models = mdls)
+  mdls <- names(which(map_lgl(tbl, inherits, "lst_mdl")))
+  as_mable(tbl, key = c(key_vars(data), key), models = mdls)
 }
 
 #' @export
@@ -75,7 +83,7 @@ select.mdl_df <- function (.data, ...){
   key <- key(.data)
   .data <- select(as_tibble(.data), !!!key(.data), ...)
   
-  mdls <- syms(names(which(map_lgl(.data, inherits, "lst_mdl"))))
+  mdls <- names(which(map_lgl(.data, inherits, "lst_mdl")))
   if(is_empty(mdls)){
     abort("A mable must contain at least one model. To remove all models, first convert to a tibble with `as_tibble()`.")
   }
@@ -87,7 +95,7 @@ mutate.mdl_df <- function (.data, ...){
   key <- key(.data)
   .data <- mutate(as_tibble(.data), ...)
   
-  mdls <- syms(names(which(map_lgl(.data, inherits, "lst_mdl"))))
+  mdls <- names(which(map_lgl(.data, inherits, "lst_mdl")))
   if(is_empty(mdls)){
     abort("A mable must contain at least one model. To remove all models, first convert to a tibble with `as_tibble()`.")
   }

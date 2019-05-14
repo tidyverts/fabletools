@@ -1,6 +1,6 @@
 #' @export
 components.mdl_df <- function(object, ...){
-  object <- gather(object, ".model", ".fit", !!!(object%@%"models"))
+  object <- gather(object, ".model", ".fit", !!!syms(object%@%"models"))
   kv <- key_vars(object)
   object <- transmute(as_tibble(object),
                       !!!syms(kv), !!sym(".model"),

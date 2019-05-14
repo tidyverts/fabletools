@@ -7,7 +7,7 @@
 \usage{
 as_mable(x, ...)
 
-\method{as_mable}{tbl_df}(x, key = id(), models = id(), ...)
+\method{as_mable}{tbl_df}(x, key = NULL, models = NULL, ...)
 }
 \arguments{
 \item{x}{A dataset containing a list model column.}

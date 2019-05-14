@@ -31,7 +31,7 @@ imitate.mdl_df <- function(object, new_data = NULL, ...){
   if(!is.null(new_data)){
     object <- bind_new_data(object, new_data)
   }
-  object <- gather(object, ".model", ".fit", !!!mdls)
+  object <- gather(object, ".model", ".fit", !!!syms(mdls))
   
   # Evaluate simulations
   object$.sim <- map2(object[[".fit"]], 

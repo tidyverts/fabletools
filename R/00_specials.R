@@ -7,7 +7,11 @@
 #' 
 #' @export
 new_specials <- function(..., .required_specials = NULL){
-  structure(squash(list2(...)),
+  specials <- squash(list2(...))
+  if(is.null(specials$xreg)){
+    specials$xreg <- function(...) abort(sprintf("Exogenous regressors are not supported for %s.", self$model))
+  }
+  structure(specials,
             required_specials = .required_specials,
             class="fable_specials")
 }

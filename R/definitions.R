@@ -31,12 +31,29 @@ model_definition <- R6::R6Class(NULL,
         parent = self$env
       ), required_specials = self$specials%@%"required_specials")
       
+      # Define custom lag() xreg special for short term memory
+      xreg_env <- get_env(self$specials$xreg)
+      xreg_env$lag <- self$recall_lag
+      
       self$env <- .env
       
       self$prepare(formula, ...)
       
       self$extra <- list2(...)
     },
+    recall_lag = function(x, n = 1L, ...){
+      start <- NULL
+      if(self$stage == "forecast"){
+        x_expr <- enexpr(x)
+        start <- eval_tidy(x_expr, self$recent_data)
+      }
+      else if(self$stage == "estimate" && NROW(self$recent_data) < n){
+        self$recent_data <- self$data[NROW(self$data) - n + seq_len(n),]
+      }
+      dplyr::lag(c(start, x), n = n, ...)[seq_along(x) + length(start)]
+    },
+    recent_data = NULL, # Used in short term memory for lagged operators
+    stage = NULL, # Identifies the current operation
     data = NULL,
     add_data = function(.data){
       self$check(.data)
@@ -101,7 +118,7 @@ new_model_class <- function(model = "Unknown model",
     public = list(
       model = model,
       train = train,
-      specials = specials,
+      specials = specials%||%new_specials(),
       check = check,
       prepare = prepare,
       env = .env,
@@ -122,7 +139,7 @@ new_model_definition <- function(.class, ..., .env = caller_env(n = 2)){
 #' @export
 decomposition_definition <- R6::R6Class(NULL,
   public = list(
-    method = "Unknown decomposition",
+    model = "Unknown decomposition",
     train = function(...){
       abort("This decomposition has not defined a training method.")
     },
@@ -208,9 +225,9 @@ new_decomposition_class <- function(method = "Unknown model",
                             .inherit = decomposition_definition){
   R6::R6Class(NULL, inherit = .inherit,
               public = list(
-                method = method,
+                model = method,
                 train = train,
-                specials = specials,
+                specials = specials%||%new_specials(),
                 check = check,
                 prepare = prepare,
                 env = .env,
