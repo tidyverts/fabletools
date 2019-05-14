@@ -23,13 +23,14 @@ model_definition <- R6::R6Class(NULL,
       
       self$formula <- enquo(formula)
       
-      self$.__enclos_env__ <- env_clone(self$.__enclos_env__, self$env)
-      
-      # Set `self` and `super` for special functions
-      self$specials <- structure(as_environment(
-        assign_func_envs(self$specials, self$.__enclos_env__),
-        parent = self$env
-      ), required_specials = self$specials%@%"required_specials")
+      # Create specials environment with user's scoping
+      specials_env <- new_environment(parent = self$env)
+      # Set `self` `super`, and `specials` in eval env for special functions
+      fn_env <- new_environment(as.list(self$.__enclos_env__), specials_env)
+      env_bind(specials_env, !!!assign_func_envs(self$specials, fn_env))
+      self$specials <- structure(
+        specials_env, required_specials = self$specials%@%"required_specials"
+      )
       
       # Define custom lag() xreg special for short term memory
       xreg_env <- get_env(self$specials$xreg)
