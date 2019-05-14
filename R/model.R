@@ -20,6 +20,10 @@ model.tbl_ts <- function(.data, ...){
   if(length(models) == 0){
     abort("At least one model must be specified.")
   }
+  if(!all(is_mdl <- map_lgl(models, inherits, "mdl_defn"))){
+    abort(sprintf("Model definition(s) incorrectly created: %s
+Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
+  }
   
   pb <- progress_estimated(length(models) * n_keys(.data), min_time = 5)
   
