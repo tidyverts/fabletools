@@ -10,21 +10,29 @@ train_combination <- function(.data, formula, specials, ..., cmbn_fn){
 }
 
 #' Combination modelling
-#' 
+#'
+#' @aliases cmbn_model
 #' @param ... Model definitions used in the combination (such as [fable::ETS()])
 #' @param cmbn_fn A function used to produce the combination
 #' 
 #' @export
-cmbn_model <- function(..., cmbn_fn = cmbn_ensemble){
+combination_model <- function(..., cmbn_fn = cmbn_ensemble){
   mdls <- dots_list(...)
   if(!any(map_lgl(mdls, inherits, "mdl_defn"))){
-    abort("`cmbn_model()` must contain at least one valid model definition.")
+    abort("`combination_model()` must contain at least one valid model definition.")
   }
   
   cmbn_model <- new_model_class("cmbn_mdl", train = train_combination, 
                                 specials = new_specials(xreg = function(...) NULL))
   new_model_definition(cmbn_model, !!quo(!!model_lhs(mdls[[1]])), ..., 
                        cmbn_fn = cmbn_fn)
+}
+
+#' @keywords internal
+#' @export
+cmbn_model <- function(...){
+  .Deprecated("combination_model")
+  combination_model(...)
 }
 
 #' Ensemble combination
@@ -93,7 +101,7 @@ Ops.mdl_defn <- function(e1, e2){
     return(rep.int(NA, max(length(e1), if (!missing(e2)) length(e2))))
   }
   
-  cmbn_model(e1, e2, cmbn_fn = .Generic)
+  combination_model(e1, e2, cmbn_fn = .Generic)
 }
 
 #' @export
