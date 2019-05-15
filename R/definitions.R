@@ -29,7 +29,9 @@ model_definition <- R6::R6Class(NULL,
       fn_env <- new_environment(as.list(self$.__enclos_env__), specials_env)
       env_bind(specials_env, !!!assign_func_envs(self$specials, fn_env))
       self$specials <- structure(
-        specials_env, required_specials = self$specials%@%"required_specials"
+        specials_env,
+        required_specials = self$specials%@%"required_specials",
+        xreg_specials = self$specials%@%"xreg_specials"
       )
       
       # Define custom lag() xreg special for short term memory
