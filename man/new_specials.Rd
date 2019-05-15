@@ -11,7 +11,7 @@ new_specials(..., .required_specials = NULL, .xreg_specials = NULL)
 
 \item{.required_specials}{The names of specials which must be provided (and if not, are included with no inputs).}
 
-\item{.xreg_specials}{The names of specials which will be only used as inputs to other specials (most commonly xregs).}
+\item{.xreg_specials}{The names of specials which will be only used as inputs to other specials (most commonly \code{xreg}).}
 }
 \description{
 Allows extension packages to make use of the formula parsing of specials.

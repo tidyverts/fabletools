@@ -4,7 +4,7 @@
 #' 
 #' @param ... A named set of functions which used to parse formula inputs
 #' @param .required_specials The names of specials which must be provided (and if not, are included with no inputs).
-#' @param .xreg_specials The names of specials which will be only used as inputs to other specials (most commonly xregs).
+#' @param .xreg_specials The names of specials which will be only used as inputs to other specials (most commonly `xreg`).
 #' 
 #' @export
 new_specials <- function(..., .required_specials = NULL, .xreg_specials = NULL){
