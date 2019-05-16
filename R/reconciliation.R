@@ -69,15 +69,18 @@ reconcile.mdl_df <- function(data, ...){
 #' Minimum trace forecast reconciliation
 #' 
 #' @param mdls A column of models in a mable
+#' @param method The reconciliation method to use.
 #' 
 #' @export
-MinT <- function(mdls){
-  add_class(mdls, "lst_mint_mdl")
+MinT <- function(mdls, method = c("WLS", "MinT_cov", "MinT_shrink")){
+  structure(mdls, class = c("lst_mint_mdl", "lst_mdl"), method = method)
 }
 
 #' @importFrom utils combn
 #' @export
 forecast.lst_mint_mdl <- function(object, key_data, ...){
+  method <- object%@%"method"
+  
   # Get forecasts
   fc <- NextMethod()
   fc_point <- fc %>% map(`[[`, expr_text(attr(fc[[1]],"response")[[1]])) %>% 
@@ -93,7 +96,29 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   res <- matrix(invoke(c, res), ncol = length(object))
   
   n <- nrow(res)
-  W <- crossprod(stats::na.omit(res)) / n
+  covm <- crossprod(stats::na.omit(res)) / n
+  if(method == "WLS"){
+    # WLS
+    W <- diag(diag(covm))
+  } else if (method == "MinT_cov"){
+    # MinT covariance
+    W <- covm
+  } else if (method == "MinT_shrink"){
+    # MinT shrink
+    tar <- diag(apply(res, 2, crossprod)/n)
+    corm <- cov2cor(covm)
+    xs <- scale(res, center = FALSE, scale = sqrt(diag(covm)))
+    v <- (1/(n * (n - 1))) * (crossprod(xs^2) - 1/n * (crossprod(xs))^2)
+    diag(v) <- 0
+    corapn <- cov2cor(tar)
+    d <- (corm - corapn)^2
+    lambda <- sum(v)/sum(d)
+    lambda <- max(min(lambda, 1), 0)
+    W <- lambda * tar + (1 - lambda) * covm
+  } else {
+    abort("Unknown reconciliation method")
+  }
+  
   
   # Check positive definiteness of weights
   eigenvalues <- eigen(W, only.values = TRUE)[["values"]]
