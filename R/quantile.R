@@ -109,8 +109,8 @@ Ops.fcdist <- function(e1, e2){
     
     e1 <- map2(split(e1, grps), split(e2, grps), function(x, y){
       if(!is_dist_normal(x) || !is_dist_normal(y)){
-        warn("Combinations of non-normal forecast distributions is not supported")
-        return(rep.int(NA, length(x)))
+        abort("Combinations of non-normal forecast distributions is not supported")
+        # return(rep.int(NA, length(x)))
       }
       x <- transpose(x) %>% map(unlist, recursive = FALSE)
       y <- transpose(y) %>% map(unlist, recursive = FALSE)
