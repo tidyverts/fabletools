@@ -4,12 +4,14 @@
 \alias{MinT}
 \title{Minimum trace forecast reconciliation}
 \usage{
-MinT(mdls, method = c("WLS", "MinT_cov", "MinT_shrink"))
+MinT(mdls, method = c("WLS", "MinT_cov", "MinT_shrink"), P_h = FALSE)
 }
 \arguments{
 \item{mdls}{A column of models in a mable}
 
 \item{method}{The reconciliation method to use.}
+
+\item{P_h}{Experimental. Should the P matrix vary across forecast horizon.}
 }
 \description{
 Minimum trace forecast reconciliation
