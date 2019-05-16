@@ -59,9 +59,9 @@ new_model_combination <- function(x, combination){
       num <- x[[which(!mdls)]]
       num <- switch(op, `*` = 1/num, `/` = num)
       if(num%%1 == 0){
-        cmp <- all.names(x[[which(mdls)]][["response"]])
+        cmp <- all.names(x[[which(mdls)]][["response"]][[1]])
         if(length(unique(cmp)) == 2 && sum(cmp == "+") + 1 == num){
-          comb_response <- sym(cmp[cmp != "+"][1])
+          comb_response <- syms(cmp[cmp != "+"][1])
         }
       }
     }
