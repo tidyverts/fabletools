@@ -32,6 +32,7 @@ Suggests:
     crayon,
     digest,
     fable,
+    future,
     knitr,
     methods,
     tibble (>= 1.4.1),

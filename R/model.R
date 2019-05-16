@@ -25,24 +25,47 @@ model.tbl_ts <- function(.data, ...){
 Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   }
   
-  pb <- progress_estimated(length(models) * n_keys(.data), min_time = 5)
+  num_key <- n_keys(.data)
+  num_mdl <- length(models)
+  num_est <- num_mdl * num_key
+  pb <- progress_estimated(num_est, min_time = 5)
   
   keys <- key(.data)
   .data <- nest(group_by(.data, !!!keys), .key = "lst_data")
   
-  
-  eval_models <- function(models, lst_data){
-    map(models, function(model){
-      map(lst_data, function(dt, mdl){
-        out <- estimate(dt, mdl)
-        pb$tick()$print()
-        out
-      }, model)
-    })
+  if(is_attached("package:future")){
+    require_package("future")
+    eval_models <- function(models, lst_data){
+      out <- vector("list", num_est)
+      for(i in seq_len(num_est)){
+        out[[i]] <- future::future(
+          {
+            estimate(tsbl, mdl)
+          },
+          globals = list(
+            tsbl = lst_data[[1 + (i-1)%%num_key]],
+            mdl = models[[1 + (i-1)%/%num_key]],
+            estimate = estimate
+          )
+        )
+      }
+      unname(split(values(out), rep(seq_len(num_mdl), each = num_key)))
+    }
+  }
+  else{
+    eval_models <- function(models, lst_data){
+      map(models, function(model){
+        map(lst_data, function(dt, mdl){
+          out <- estimate(dt, mdl)
+          pb$tick()$print()
+          out
+        }, model)
+      })
+    }
   }
   
   fits <- eval_models(models, .data[["lst_data"]])
-  names(fits) <- ifelse(nchar(names(fits)), names(fits), nm)
+  names(fits) <- ifelse(nchar(names(models)), names(models), nm)
   
   .data %>% 
     transmute(
