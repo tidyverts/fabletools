@@ -95,7 +95,7 @@ model_sum.model <- function(x){
 
 #' @export
 print.model <- function(x, ...){
-  sprintf("A %s model", model_sum(x[["fit"]]))
+  report(x)
 }
 
 #' Extract the left hand side of a model

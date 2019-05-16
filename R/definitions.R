@@ -69,7 +69,7 @@ model_definition <- R6::R6Class(NULL,
       abort("This model has not defined a training method.")
     },
     print = function(...){
-      cat("<A model definition>\n", sep = "")
+      cat(sprintf("<%s model definition>\n", self$model), sep = "")
     }
   ),
   lock_objects = FALSE
@@ -147,7 +147,7 @@ decomposition_definition <- R6::R6Class(NULL,
       abort("This decomposition has not defined a training method.")
     },
     print = function(...){
-      cat("<A decomposition definition>\n", sep = "")
+      cat(sprintf("<%s decomposition definition>\n", self$model), sep = "")
     }
   ),
   lock_objects = FALSE,
