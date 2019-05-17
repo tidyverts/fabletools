@@ -77,7 +77,7 @@ Does your model require extra variables to produce forecasts?", e$message))
       warn("Could not bias adjust the point forecasts as the back-transformation's hessian is not well behaved. Consider using a different transformation.")
     }
     else if(any(map_lgl(fc[["sd"]], compose(any, is.na)))){
-      warn("Could not bias adjust the point forecasts as the forecast standard deviation is unknown. Perhaps your series is too short.")
+      warn("Could not bias adjust the point forecasts as the forecast standard deviation is unknown. Perhaps your series is too short or insufficient bootstrap samples are used.")
     }
     else{
       adjustment <- map2(fc[["sd"]], adjustment, function(sd, adj) sd^2/2*adj)
@@ -115,7 +115,7 @@ Does your model require extra variables to produce forecasts?", e$message))
 #' @export
 construct_fc <- function(point, sd, dist){
   stopifnot(inherits(dist, "fcdist"))
-  if(is.numeric(point) && is.numeric(sd)){
+  if(is.numeric(point)){
     point <- list(point)
     sd <- list(sd)
   }
