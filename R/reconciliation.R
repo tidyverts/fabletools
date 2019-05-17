@@ -72,9 +72,7 @@ reconcile.mdl_df <- function(data, ...){
 #' @param method The reconciliation method to use.
 #' @param P_h Experimental. Should the P matrix vary across forecast horizon.
 #' @export
-MinT <- function(mdls, method = c("WLS", "MinT_cov", "MinT_shrink"),
-                 P_h = FALSE){
-  if(!missing(P_h)) warn("This feature is experimental.")
+MinT <- function(mdls, method = c("WLS", "MinT_cov", "MinT_shrink")){
   structure(mdls, class = c("lst_mint_mdl", "lst_mdl"),
             method = method, P_h = P_h)
 }
@@ -136,28 +134,15 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   R1 <- stats::cov2cor(W)
   W_h <- map(fc_var, function(var) diag(sqrt(var))%*%R1%*%t(diag(sqrt(var))))
   
-  if(P_h){
-    R_h <- map(W_h, function(W) t(S)%*%solve(W))
-    P_h <- map(R_h, function(R) solve(R%*%S)%*%R)
-  } else {
-    S <- build_smat(key_data)
-    R <- t(S)%*%solve(W)
-    P <- solve(R%*%S)%*%R
-  }
+  S <- build_smat(key_data)
+  R <- t(S)%*%solve(W)
+  P <- solve(R%*%S)%*%R
   
   # Apply to forecasts
-  if(P_h){
-    fc_point <- split(fc_point, row(fc_point))
-    fc_point <- map2(P_h, fc_point, function(P, fc) as.numeric(S%*%P%*%matrix(fc))) %>%  # t(fc)
-      transpose_dbl()
-    fc_var <- map2(P_h, W_h, function(P, W) diag(S%*%P%*%W%*%t(P)%*%t(S)))
-    fc_dist <- map2(fc_point, transpose_dbl(map(fc_var, sqrt)), dist_normal)
-  } else {
-    fc_point <- S%*%P%*%t(fc_point)
-    fc_point <- split(fc_point, row(fc_point))
-    fc_var <- map(W_h, function(W) diag(S%*%P%*%W%*%t(P)%*%t(S)))
-    fc_dist <- map2(fc_point, transpose_dbl(map(fc_var, sqrt)), dist_normal)
-  }
+  fc_point <- S%*%P%*%t(fc_point)
+  fc_point <- split(fc_point, row(fc_point))
+  fc_var <- map(W_h, function(W) diag(S%*%P%*%W%*%t(P)%*%t(S)))
+  fc_dist <- map2(fc_point, transpose_dbl(map(fc_var, sqrt)), dist_normal)
     
   # Update fables
   pmap(list(fc, fc_point, fc_dist), function(fc, point, dist){
