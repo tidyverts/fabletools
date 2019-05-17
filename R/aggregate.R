@@ -36,17 +36,17 @@ aggregate_keys.tbl_ts <- function(data, structure = NULL, ...){
         list(parse_spec(enexpr(e1)), parse_spec(enexpr(e2)))
       },
       `/` = function(e1, e2) {
-        
+        list(enexpr(e1), parse_spec(enexpr(e2)))
       }
     ))
   }
   
-  parse_spec(spec)
+  parse_spec(structure)
   
   browser()
   
   # Extract data
-  kv <- all.vars(spec)
+  kv <- all.vars(structure)
   vars <- as.list(data[measured_vars(data)])
   idx_chr <- as_string(index(data))
   idx <- data[[idx_chr]]
