@@ -196,7 +196,11 @@ forecast.model_combination <- function(object, new_data, specials, ...){
   
   # var(x) + var(y) + 2*cov(x,y)
   .dist <- eval_tidy(expr, map(object, get_attr_col, "dist"))
-  .dist <- add_class(map(.dist, function(x) {x$sd <- sqrt(x$sd^2 + 2*fc_cov); x}), "fcdist")
+  if(is_dist_normal(.dist)){
+    .dist <- add_class(
+      map(.dist, function(x) {x$sd <- sqrt(x$sd^2 + 2*fc_cov); x}),
+      "fcdist")
+  }
   
   .fc <- eval_tidy(expr, map(object, function(x) 
     if(is_fable(x)) x[[expr_text(attr(x, "response")[[1]])]] else x))
