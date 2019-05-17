@@ -70,18 +70,17 @@ reconcile.mdl_df <- function(data, ...){
 #' 
 #' @param mdls A column of models in a mable
 #' @param method The reconciliation method to use.
-#' @param P_h Experimental. Should the P matrix vary across forecast horizon.
+#' 
 #' @export
-MinT <- function(mdls, method = c("MinT_shrink", "WLS", "OLS", "MinT_cov")){
+MinT <- function(mdls, method = c("shrink", "wls", "ols", "cov")){
   structure(mdls, class = c("lst_mint_mdl", "lst_mdl"),
-            method = method, P_h = P_h)
+            method = method)
 }
 
 #' @importFrom utils combn
 #' @export
 forecast.lst_mint_mdl <- function(object, key_data, ...){
   method <- object%@%"method"
-  P_h <- object%@%"P_h"
   
   # Get forecasts
   fc <- NextMethod()
@@ -99,16 +98,16 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   
   n <- nrow(res)
   covm <- crossprod(stats::na.omit(res)) / n
-  if(method == "OLS"){
+  if(method == "ols"){
     # OLS
     W <- diag(nrow = nrow(covm), ncol = ncol(covm))
-  } else if(method == "WLS"){
+  } else if(method == "wls"){
     # WLS
     W <- diag(diag(covm))
-  } else if (method == "MinT_cov"){
+  } else if (method == "cov"){
     # MinT covariance
     W <- covm
-  } else if (method == "MinT_shrink"){
+  } else if (method == "shrink"){
     # MinT shrink
     tar <- diag(apply(res, 2, crossprod)/n)
     corm <- cov2cor(covm)
