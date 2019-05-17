@@ -72,7 +72,7 @@ reconcile.mdl_df <- function(data, ...){
 #' @param method The reconciliation method to use.
 #' @param P_h Experimental. Should the P matrix vary across forecast horizon.
 #' @export
-MinT <- function(mdls, method = c("WLS", "MinT_cov", "MinT_shrink")){
+MinT <- function(mdls, method = c("MinT_shrink", "WLS", "OLS", "MinT_cov")){
   structure(mdls, class = c("lst_mint_mdl", "lst_mdl"),
             method = method, P_h = P_h)
 }
@@ -99,7 +99,10 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   
   n <- nrow(res)
   covm <- crossprod(stats::na.omit(res)) / n
-  if(method == "WLS"){
+  if(method == "OLS"){
+    # OLS
+    W <- diag(nrow = nrow(covm), ncol = ncol(covm))
+  } else if(method == "WLS"){
     # WLS
     W <- diag(diag(covm))
   } else if (method == "MinT_cov"){
