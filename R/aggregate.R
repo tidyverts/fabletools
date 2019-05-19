@@ -30,33 +30,48 @@ aggregate_keys.tbl_ts <- function(data, structure = NULL, ...){
   }
   
   parse_spec <- function(spec){
-    if(!is_call(spec)) return(spec)
+    if(!is_call(spec)){
+      return(as_string(spec))
+    }
     eval_tidy(spec, env = env(
       `*` = function(e1, e2) {
-        list(parse_spec(enexpr(e1)), parse_spec(enexpr(e2)))
+        e1 <- parse_spec(enexpr(e1))
+        e2 <- parse_spec(enexpr(e2))
+        c(
+          e1, e2,
+          flatten(map(e1, function(x){
+            map(e2, function(y){
+              c(x, y)
+            })
+          }))
+        )
       },
       `/` = function(e1, e2) {
-        list(enexpr(e1), parse_spec(enexpr(e2)))
+        e1 <- enexpr(e1)
+        e2 <- enexpr(e2)
+        if(is_call(e1)) abort("Hierarchical structure must be specified for specific nodes. Try adding more parenthesis.")
+        e1 <- parse_spec(e1)
+        e2 <- parse_spec(e2)
+        c(
+          e1,
+          map(e2, function(x, y) c(y, x), e1)
+        )
       }
     ))
   }
   
-  parse_spec(structure)
-  
-  browser()
+  # Key combinations
+  key_comb <- c(list(chr()), parse_spec(structure))
+  key_dt <- key_data(data)
+  agg_dt <- invoke(dplyr::bind_rows, map(key_comb, function(x){
+    summarise(group_by(key_dt, !!!syms(x)), .rows = list(!!sym(".rows")))
+  }))
   
   # Extract data
   kv <- all.vars(structure)
   vars <- as.list(data[measured_vars(data)])
   idx_chr <- as_string(index(data))
   idx <- data[[idx_chr]]
-  
-  # Key combinations
-  key_comb <- flatten(map(c(0, seq_along(kv)), combn, x = kv, simplify = FALSE))
-  key_dt <- key_data(data)
-  agg_dt <- invoke(dplyr::bind_rows, map(key_comb, function(x){
-    summarise(group_by(key_dt, !!!syms(x)), .rows = list(!!sym(".rows")))
-  }))
   
   # Aggregate variables
   agg_dt$.rows <- map(agg_dt$.rows, function(comb_rows){
