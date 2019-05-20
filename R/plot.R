@@ -158,6 +158,9 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
     if(length(fc_resp) > 1){
       data <- gather(data, ".response", "value", !!!fc_resp, factor_key = TRUE)
     }
+    
+    data <- data %>% 
+      dplyr::mutate_if(~inherits(., "agg_key"), compose(trimws, format))
   }
 
   p <- ggplot(data, aes(x = !!index(object), y = !!aes_y)) + 
