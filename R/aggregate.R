@@ -82,7 +82,8 @@ aggregate_keys.tbl_ts <- function(.data, structure = NULL, ...){
   .data <- ungroup(summarise(.data, ...))
   
   # Return tsibble
-  as_tsibble(.data, key = kv, index = !!idx)
+  as_tsibble(.data, key = kv, index = !!idx) %>% 
+    mutate(!!!set_names(map(kv, function(x) expr(agg_key(!!sym(x)))), kv))
 }
 
 
