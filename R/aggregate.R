@@ -1,3 +1,34 @@
+parse_aggregation <- function(spec){
+  if(!is_call(spec)){
+    return(as_string(spec))
+  }
+  eval_tidy(spec, env = env(
+    `*` = function(e1, e2) {
+      e1 <- parse_aggregation(enexpr(e1))
+      e2 <- parse_aggregation(enexpr(e2))
+      c(
+        e1, e2,
+        flatten(map(e1, function(x){
+          map(e2, function(y){
+            c(x, y)
+          })
+        }))
+      )
+    },
+    `/` = function(e1, e2) {
+      e1 <- enexpr(e1)
+      e2 <- enexpr(e2)
+      if(is_call(e1)) abort("Hierarchical structure must be specified for specific nodes. Try adding more parenthesis.")
+      e1 <- parse_aggregation(e1)
+      e2 <- parse_aggregation(e2)
+      c(
+        e1,
+        map(e2, function(x, y) c(y, x), e1)
+      )
+    }
+  ))
+}
+
 #' Expand a dataset to include other levels of aggregation
 #' 
 #' Uses the structural specification given in `structure` to aggregate a time
@@ -32,39 +63,8 @@ aggregate_keys.tbl_ts <- function(.data, structure = NULL, ...){
     structure <- parse_expr(paste(key_vars(.data), collapse = "*"))
   }
   
-  parse_spec <- function(spec){
-    if(!is_call(spec)){
-      return(as_string(spec))
-    }
-    eval_tidy(spec, env = env(
-      `*` = function(e1, e2) {
-        e1 <- parse_spec(enexpr(e1))
-        e2 <- parse_spec(enexpr(e2))
-        c(
-          e1, e2,
-          flatten(map(e1, function(x){
-            map(e2, function(y){
-              c(x, y)
-            })
-          }))
-        )
-      },
-      `/` = function(e1, e2) {
-        e1 <- enexpr(e1)
-        e2 <- enexpr(e2)
-        if(is_call(e1)) abort("Hierarchical structure must be specified for specific nodes. Try adding more parenthesis.")
-        e1 <- parse_spec(e1)
-        e2 <- parse_spec(e2)
-        c(
-          e1,
-          map(e2, function(x, y) c(y, x), e1)
-        )
-      }
-    ))
-  }
-  
   # Key combinations
-  key_comb <- c(list(chr()), parse_spec(structure))
+  key_comb <- c(list(chr()), parse_aggregation(structure))
   
   idx <- index2(.data)
   .data <- as_tibble(.data)
