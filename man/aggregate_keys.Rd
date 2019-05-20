@@ -5,14 +5,14 @@
 \alias{aggregate_index}
 \title{Expand a dataset to include other levels of aggregation}
 \usage{
-aggregate_keys(.data, structure, ...)
+aggregate_keys(.data, .spec, ...)
 
 aggregate_index(.data, .times, ...)
 }
 \arguments{
 \item{.data}{A tsibble.}
 
-\item{structure}{The specification of aggregation structure.}
+\item{.spec}{The specification of aggregation structure.}
 
 \item{...}{Name-value pairs of summary functions. The name will be the
 name of the variable in the result. The value should be an expression
@@ -30,7 +30,7 @@ as a list of \code{\link[lubridate:period]{lubridate::period()}} elements, or a 
 temporal aggregations.}
 }
 \description{
-Uses the structural specification given in \code{structure} to aggregate a time
+Uses the structural specification given in \code{.spec} to aggregate a time
 series. Commonly used in combination with forecast reconciliation.
 }
 \details{

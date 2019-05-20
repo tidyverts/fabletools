@@ -31,7 +31,7 @@ parse_aggregation <- function(spec){
 
 #' Expand a dataset to include other levels of aggregation
 #' 
-#' Uses the structural specification given in `structure` to aggregate a time
+#' Uses the structural specification given in `.spec` to aggregate a time
 #' series. Commonly used in combination with forecast reconciliation.
 #' 
 #' A grouped structure is specified using `grp1 * grp2`, and a nested structure 
@@ -39,7 +39,7 @@ parse_aggregation <- function(spec){
 #' 
 #' @param .data A tsibble.
 #' @inheritParams dplyr::summarise
-#' @param structure The specification of aggregation structure.
+#' @param .spec The specification of aggregation structure.
 #' 
 #' @examples 
 #' library(tsibble)
@@ -47,25 +47,25 @@ parse_aggregation <- function(spec){
 #'   aggregate_keys(Purpose * (State / Region), Trips = sum(Trips))
 #' 
 #' @export
-aggregate_keys <- function(.data, structure, ...){
+aggregate_keys <- function(.data, .spec, ...){
   UseMethod("aggregate_keys")
 }
 
 #' @export
-aggregate_keys.tbl_ts <- function(.data, structure = NULL, ...){
+aggregate_keys.tbl_ts <- function(.data, .spec = NULL, ...){
   message("Note: reconciliation in fable is highly experimental. The interface will be refined in the near future.")
   
-  structure <- enexpr(structure)
-  if(is.null(structure)){
+  .spec <- enexpr(.spec)
+  if(is.null(.spec)){
     message(
       sprintf("Key structural specification not found, defaulting to `structure = %s`",
               paste(key_vars(.data), collapse = "*"))
     )
-    structure <- parse_expr(paste(key_vars(.data), collapse = "*"))
+    .spec <- parse_expr(paste(key_vars(.data), collapse = "*"))
   }
   
   # Key combinations
-  key_comb <- c(list(chr()), parse_aggregation(structure))
+  key_comb <- c(list(chr()), parse_aggregation(.spec))
   
   idx <- index2(.data)
   .data <- as_tibble(.data)
