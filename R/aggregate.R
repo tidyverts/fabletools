@@ -76,7 +76,7 @@ aggregate_keys.tbl_ts <- function(.data, structure = NULL, ...){
   kv <- setdiff(colnames(agg_dt), c(as_string(idx), ".rows"))
   agg_dt <- agg_dt[c(as_string(idx), kv, ".rows")]
   
-  .data <- new_tibble(.data, groups = agg_dt, subclass = "grouped_df")
+  .data <- dplyr::new_grouped_df(.data, groups = agg_dt)
   
   # Compute aggregates
   .data <- ungroup(summarise(.data, ...))
@@ -126,7 +126,7 @@ aggregate_index.tbl_ts <- function(.data, .times = NULL, ...){
   
   # Temporal aggregations
   .data <- as_tibble(.data)
-  agg_dt <- invoke(bind_rows,
+  agg_dt <- invoke(dplyr::bind_rows,
     map(seq_along(.times), function(tm){
       group_data(
         group_by(.data,
@@ -139,7 +139,7 @@ aggregate_index.tbl_ts <- function(.data, .times = NULL, ...){
   kv <- setdiff(colnames(agg_dt), c(as_string(idx), ".rows"))
   agg_dt <- agg_dt[c(as_string(idx), kv, ".rows")]
   
-  .data <- new_tibble(.data, groups = agg_dt, subclass = "grouped_df")
+  .data <- dplyr::new_grouped_df(.data, groups = agg_dt)
   
   # Compute aggregates
   .data <- ungroup(summarise(.data, ...))
