@@ -145,5 +145,48 @@ aggregate_index.tbl_ts <- function(.data, .times = NULL, ...){
   .data <- ungroup(summarise(.data, ...))
   
   # Return tsibble
-  as_tsibble(.data, key = kv, index = !!idx)
+  as_tsibble(.data, key = kv, index = !!idx) %>% 
+    mutate(!!!set_names(map(kv, function(x) expr(agg_key(!!sym(x)))), kv))
+}
+
+agg_key <- function(x){
+  add_class(x, "agg_key")
+}
+
+#' @export
+print.agg_key <- function(x){
+  print(format(x))
+}
+
+#' @export
+format.agg_key <- function(x, na_chr = "<total>"){
+  out <- NextMethod(na.encode = FALSE)
+  out[is.na(out)] <- na_chr
+  out 
+}
+
+#' @export
+`[.agg_key` <- function(...){
+  agg_key(NextMethod())
+}
+
+pillar_shaft.agg_key <- function(x, ...) {
+  if(requireNamespace("crayon")){
+    na_chr <- crayon::style("<total>", crayon::make_style("#999999", grey = TRUE))
+  }
+  else{
+    na_chr <- "<total>"
+  }
+  
+  out <- format(x, na_chr = na_chr)
+  
+  pillar::new_pillar_shaft_simple(out, align = "right", min_width = 10)
+}
+
+type_sum.agg_key <- function(x){
+  pillar::type_sum(rm_class(x, "agg_key"))
+}
+
+obj_sum.agg_key <- function(x){
+  pillar::obj_sum(rm_class(x, "agg_key"))
 }
