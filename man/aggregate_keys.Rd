@@ -2,23 +2,37 @@
 % Please edit documentation in R/aggregate.R
 \name{aggregate_keys}
 \alias{aggregate_keys}
-\title{Expand a dataset to include all levels of aggregation}
+\title{Expand a dataset to include other levels of aggregation}
 \usage{
-aggregate_keys(data, structure, ...)
+aggregate_keys(.data, structure, ...)
 }
 \arguments{
-\item{data}{A dataset to aggregate.}
+\item{.data}{A tbl. All main verbs are S3 generics and provide methods
+for \code{\link[=tbl_df]{tbl_df()}}, \code{\link[dtplyr:tbl_dt]{dtplyr::tbl_dt()}} and \code{\link[dbplyr:tbl_dbi]{dbplyr::tbl_dbi()}}.}
 
 \item{structure}{The specification of aggregation structure.}
 
-\item{...}{Further arguments passed to other methods.}
+\item{...}{Name-value pairs of summary functions. The name will be the
+name of the variable in the result. The value should be an expression
+that returns a single value like \code{min(x)}, \code{n()}, or \code{sum(is.na(y))}.
+
+The arguments in \code{...} are automatically \link[rlang:quo]{quoted} and
+\link[rlang:eval_tidy]{evaluated} in the context of the data
+frame. They support \link[rlang:quasiquotation]{unquoting} and
+splicing. See \code{vignette("programming")} for an introduction to
+these concepts.}
 }
 \description{
-All keys must be of the same length over the same time period, and a grouping
-aggregation structure will be used.
+Uses the structural specification given in \code{structure} to aggregate a time
+series. Commonly used in combination with forecast reconciliation.
+}
+\details{
+A grouped structure is specified using \code{grp1 * grp2}, and a nested structure
+is specified via \code{parent / child}.
 }
 \examples{
 library(tsibble)
-aggregate_keys(tourism)
+tourism_grp <- tourism \%>\% 
+  aggregate_keys(Purpose * (State / Region), Trips = sum(Trips))
 
 }
