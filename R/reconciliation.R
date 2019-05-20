@@ -23,7 +23,7 @@ reconcile.mdl_df <- function(data, ...){
 #' @export
 MinT <- function(mdls, method = c("shrink", "wls", "ols", "cov")){
   structure(mdls, class = c("lst_mint_mdl", "lst_mdl"),
-            method = method)
+            method = match.arg(method))
 }
 
 #' @importFrom utils combn
