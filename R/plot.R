@@ -180,7 +180,8 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
 #' @export
 autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   fc_key <- setdiff(key_vars(object), ".model")
-  data <- fortify(object, level = level)
+  data <- fortify(object, level = level) %>% 
+    dplyr::mutate_if(~inherits(., "agg_key"), compose(trimws, format))
 
   if(length(object%@%"response") > 1){
     resp <- sym("value")

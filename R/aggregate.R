@@ -157,7 +157,7 @@ agg_key <- function(x){
 
 #' @export
 print.agg_key <- function(x){
-  print(format(x))
+  print(trimws(format(x)))
 }
 
 #' @export
