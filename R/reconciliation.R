@@ -60,11 +60,11 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   } else if (method == "shrink"){
     # MinT shrink
     tar <- diag(apply(res, 2, crossprod)/n)
-    corm <- cov2cor(covm)
+    corm <- stats::cov2cor(covm)
     xs <- scale(res, center = FALSE, scale = sqrt(diag(covm)))
     v <- (1/(n * (n - 1))) * (crossprod(xs^2) - 1/n * (crossprod(xs))^2)
     diag(v) <- 0
-    corapn <- cov2cor(tar)
+    corapn <- stats::cov2cor(tar)
     d <- (corm - corapn)^2
     lambda <- sum(v)/sum(d)
     lambda <- max(min(lambda, 1), 0)
@@ -72,7 +72,6 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   } else {
     abort("Unknown reconciliation method")
   }
-  
   
   # Check positive definiteness of weights
   eigenvalues <- eigen(W, only.values = TRUE)[["values"]]

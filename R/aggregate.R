@@ -156,12 +156,12 @@ agg_key <- function(x){
 }
 
 #' @export
-print.agg_key <- function(x){
-  print(trimws(format(x)))
+print.agg_key <- function(x, ...){
+  print(trimws(format(x, ...)))
 }
 
 #' @export
-format.agg_key <- function(x, na_chr = "<total>"){
+format.agg_key <- function(x, ..., na_chr = "<total>"){
   out <- NextMethod(na.encode = FALSE)
   out[is.na(out)] <- na_chr
   out 
