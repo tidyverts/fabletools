@@ -93,7 +93,7 @@ aggregate_keys.tbl_ts <- function(.data, structure = NULL, ...){
 #' as a list of lubridate::period elements, or a character vector describing the
 #' temporal aggregations.
 #' 
-#' @example 
+#' @examples
 #' library(tsibble)
 #' pedestrian %>% 
 #'   aggregate_index()
