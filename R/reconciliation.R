@@ -12,6 +12,7 @@ reconcile <- function(data, ...){
 
 #' @export
 reconcile.mdl_df <- function(data, ...){
+  message("Note: reconciliation in fable is highly experimental. The interface will be refined in the near future.")
   mutate(data, ...)
 }
 

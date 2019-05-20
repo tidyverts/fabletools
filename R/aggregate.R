@@ -53,8 +53,6 @@ aggregate_keys <- function(.data, .spec, ...){
 
 #' @export
 aggregate_keys.tbl_ts <- function(.data, .spec = NULL, ...){
-  message("Note: reconciliation in fable is highly experimental. The interface will be refined in the near future.")
-  
   .spec <- enexpr(.spec)
   if(is.null(.spec)){
     message(
@@ -107,6 +105,8 @@ aggregate_index <- function(.data, .times, ...){
 
 #' @export
 aggregate_index.tbl_ts <- function(.data, .times = NULL, ...){
+  message("Note: temporal aggregation is highly experimental. The interface will be refined in the near future.")
+  
   require_package("lubridate")
   idx <- index(.data)
   kv <- key_vars(.data)
