@@ -69,22 +69,73 @@ aggregate_keys.tbl_ts <- function(.data, structure = NULL, ...){
   idx <- index2(.data)
   .data <- as_tibble(.data)
   
-  bind_row_attrb <- function(x){
-    attrb <- transpose(map(x, function(dt) map(dt, attributes)))
-    simple_attrb <- map_lgl(attrb, function(x) length(unique(x)) == 1)
-    
-    x <- dplyr::bind_rows(!!!x)
-    
-    for (col in which(simple_attrb)){
-      attributes(x[[col]]) <- attrb[[col]][[1]]
-    }
-    x
-  }
-  
   agg_dt <- bind_row_attrb(map(key_comb, function(x){
     group_data(group_by(.data, !!idx, !!!syms(x)))
   }))
   
+  kv <- setdiff(colnames(agg_dt), c(as_string(idx), ".rows"))
+  agg_dt <- agg_dt[c(as_string(idx), kv, ".rows")]
+  
+  .data <- new_tibble(.data, groups = agg_dt, subclass = "grouped_df")
+  
+  # Compute aggregates
+  .data <- ungroup(summarise(.data, ...))
+  
+  # Return tsibble
+  as_tsibble(.data, key = kv, index = !!idx)
+}
+
+
+#' @rdname aggregate_keys
+#' 
+#' @param .times Temporal aggregations to include. The default (NULL) will
+#' automatically identify appropriate temporal aggregations. This can be specified
+#' as a list of lubridate::period elements, or a character vector describing the
+#' temporal aggregations.
+#' 
+#' @example 
+#' library(tsibble)
+#' pedestrian %>% 
+#'   aggregate_index()
+#' 
+#' @export
+aggregate_index <- function(.data, .times, ...){
+  UseMethod("aggregate_index")
+}
+
+#' @export
+aggregate_index.tbl_ts <- function(.data, .times = NULL, ...){
+  require_package("lubridate")
+  idx <- index(.data)
+  kv <- key_vars(.data)
+  
+  # Parse times as lubridate::period
+  if(is.null(.times)){
+    interval <- with(interval(.data), lubridate::years(year) + 
+           lubridate::period(3*quarter + month, units = "month") + lubridate::weeks(week) +
+           lubridate::days(day) + lubridate::hours(hour) + lubridate::minutes(minute) + 
+           lubridate::seconds(second) + lubridate::milliseconds(millisecond) + 
+           lubridate::microseconds(microsecond) + lubridate::nanoseconds(nanosecond))
+    periods <- common_periods(.data)
+    .times <- c(set_names(names(periods), names(periods)), list2(!!format(interval(.data)) := interval))
+  }
+  .times <- set_names(map(.times, lubridate::as.period), names(.times) %||% .times)
+  
+  secs <- map_dbl(.times, lubridate::period_to_seconds)
+  .times <- .times[order(secs, decreasing = TRUE)]
+  
+  # Temporal aggregations
+  .data <- as_tibble(.data)
+  agg_dt <- invoke(bind_rows,
+    map(seq_along(.times), function(tm){
+      group_data(
+        group_by(.data,
+                 !!!set_names(names(.times), names(.times))[seq_len(tm-1) + 1],
+                 !!as_string(idx) := lubridate::floor_date(!!idx, .times[[tm]]),
+                 !!!syms(kv))
+      )
+    })
+  )
   kv <- setdiff(colnames(agg_dt), c(as_string(idx), ".rows"))
   agg_dt <- agg_dt[c(as_string(idx), kv, ".rows")]
   

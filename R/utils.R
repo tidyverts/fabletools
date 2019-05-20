@@ -119,3 +119,15 @@ require_package <- function(pkg){
 calc <- function(f, ...){
   f(...)
 }
+
+bind_row_attrb <- function(x){
+  attrb <- transpose(map(x, function(dt) map(dt, attributes)))
+  simple_attrb <- map_lgl(attrb, function(x) length(unique(x)) == 1)
+  
+  x <- dplyr::bind_rows(!!!x)
+  
+  for (col in which(simple_attrb)){
+    attributes(x[[col]]) <- attrb[[col]][[1]]
+  }
+  x
+}
