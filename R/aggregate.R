@@ -182,7 +182,7 @@ pillar_shaft.agg_key <- function(x, ...) {
   
   out <- format(x, na_chr = na_chr)
   
-  pillar::new_pillar_shaft_simple(out, align = "right", min_width = 10)
+  pillar::new_pillar_shaft_simple(out, align = "left", min_width = 10)
 }
 
 type_sum.agg_key <- function(x){
