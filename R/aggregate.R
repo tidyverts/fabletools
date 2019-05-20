@@ -62,31 +62,48 @@ aggregate_keys.tbl_ts <- function(data, structure = NULL, ...){
   
   # Key combinations
   key_comb <- c(list(chr()), parse_spec(structure))
-  key_dt <- key_data(data)
-  agg_dt <- invoke(dplyr::bind_rows, map(key_comb, function(x){
-    summarise(group_by(key_dt, !!!syms(x)), .rows = list(!!sym(".rows")))
+  
+  idx <- index2(data)
+  data <- as_tibble(data)
+  
+  bind_row_attrb <- function(x){
+    attrb <- transpose(map(x, function(dt) map(dt, attributes)))
+    simple_attrb <- map_lgl(attrb, function(x) length(unique(x)) == 1)
+    
+    x <- dplyr::bind_rows(!!!x)
+    
+    for (col in which(simple_attrb)){
+      attributes(x[[col]]) <- attrb[[col]][[1]]
+    }
+    x
+  }
+  
+  agg_dt <- bind_row_attrb(map(key_comb, function(x){
+    group_data(group_by(data, !!idx, !!!syms(x)))
   }))
   
-  # Extract data
-  kv <- all.vars(structure)
-  vars <- as.list(data[measured_vars(data)])
-  idx_chr <- as_string(index(data))
-  idx <- data[[idx_chr]]
+  kv <- setdiff(colnames(agg_dt), c(as_string(idx), ".rows"))
+  agg_dt <- agg_dt[c(as_string(idx), kv, ".rows")]
   
-  # Aggregate variables
-  agg_dt$.rows <- map(agg_dt$.rows, function(comb_rows){
-    as_tsibble(c(
-      set_names(list(idx[comb_rows[[1]]]), idx_chr),
-      map(vars, function(x){
-        possibly(reduce, rep(NA, length(comb_rows[[1]])))(
-          comb_rows[-1], 
-          function(tot, y) tot + x[y], 
-          .init = x[comb_rows[[1]]]
-        )
-      })
-    ), index = idx_chr)
-  })
+  data <- new_tibble(data, groups = agg_dt, subclass = "grouped_df")
+  
+  # # Aggregate variables
+  # agg_dt$.rows <- map(agg_dt$.rows, function(comb_rows){
+  #   as_tsibble(c(
+  #     set_names(list(idx[comb_rows[[1]]]), idx_chr),
+  #     map(vars, function(x){
+  #       possibly(reduce, rep(NA, length(comb_rows[[1]])))(
+  #         comb_rows[-1], 
+  #         function(tot, y) tot + x[y], 
+  #         .init = x[comb_rows[[1]]]
+  #       )
+  #     })
+  #   ), index = idx_chr)
+  # })
+  
+  # Compute aggregates
+  data <- ungroup(summarise(data, ...))
   
   # Return tsibble
-  unnest(add_class(agg_dt, "lst_ts"), !!sym(".rows"), key = kv)
+  as_tsibble(data, key = kv, index = !!idx)
 }
