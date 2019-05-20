@@ -60,7 +60,7 @@ as_fable.tbl_df <- function(x, resp, dist, ...){
 #' @export
 as_fable.fbl_ts <- function(x, resp, dist, ...){
   if(!missing(resp)){
-    x%@%"resp" <- resp
+    x%@%"response" <- resp
   }
   if(!missing(dist)){
     x%@%"dist" <- enexpr(dist)
