@@ -10,8 +10,7 @@ aggregate_keys(.data, structure, ...)
 aggregate_index(.data, .times, ...)
 }
 \arguments{
-\item{.data}{A tbl. All main verbs are S3 generics and provide methods
-for \code{\link[=tbl_df]{tbl_df()}}, \code{\link[dtplyr:tbl_dt]{dtplyr::tbl_dt()}} and \code{\link[dbplyr:tbl_dbi]{dbplyr::tbl_dbi()}}.}
+\item{.data}{A tsibble.}
 
 \item{structure}{The specification of aggregation structure.}
 
@@ -27,7 +26,7 @@ these concepts.}
 
 \item{.times}{Temporal aggregations to include. The default (NULL) will
 automatically identify appropriate temporal aggregations. This can be specified
-as a list of lubridate::period elements, or a character vector describing the
+as a list of \code{\link[lubridate:period]{lubridate::period()}} elements, or a character vector describing the
 temporal aggregations.}
 }
 \description{

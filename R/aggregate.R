@@ -37,6 +37,7 @@ parse_aggregation <- function(spec){
 #' A grouped structure is specified using `grp1 * grp2`, and a nested structure 
 #' is specified via `parent / child`. 
 #' 
+#' @param .data A tsibble.
 #' @inheritParams dplyr::summarise
 #' @param structure The specification of aggregation structure.
 #' 
@@ -91,7 +92,7 @@ aggregate_keys.tbl_ts <- function(.data, structure = NULL, ...){
 #' 
 #' @param .times Temporal aggregations to include. The default (NULL) will
 #' automatically identify appropriate temporal aggregations. This can be specified
-#' as a list of lubridate::period elements, or a character vector describing the
+#' as a list of [`lubridate::period()`] elements, or a character vector describing the
 #' temporal aggregations.
 #' 
 #' @examples
