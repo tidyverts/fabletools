@@ -4,12 +4,14 @@
 \alias{MinT}
 \title{Minimum trace forecast reconciliation}
 \usage{
-MinT(mdls, method = c("shrink", "wls", "ols", "cov"))
+MinT(mdls, method = c("shrink", "wls", "ols", "cov"), sparse = FALSE)
 }
 \arguments{
-\item{mdls}{A column of models in a mable}
+\item{mdls}{A column of models in a mable.}
 
 \item{method}{The reconciliation method to use.}
+
+\item{sparse}{Should the reconciliation be computed with sparse matrix algebra?}
 }
 \description{
 Minimum trace forecast reconciliation

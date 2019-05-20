@@ -18,19 +18,21 @@ reconcile.mdl_df <- function(data, ...){
 
 #' Minimum trace forecast reconciliation
 #' 
-#' @param mdls A column of models in a mable
+#' @param mdls A column of models in a mable.
 #' @param method The reconciliation method to use.
+#' @param sparse Should the reconciliation be computed with sparse matrix algebra?
 #' 
 #' @export
-MinT <- function(mdls, method = c("shrink", "wls", "ols", "cov")){
+MinT <- function(mdls, method = c("shrink", "wls", "ols", "cov"), sparse = FALSE){
   structure(mdls, class = c("lst_mint_mdl", "lst_mdl"),
-            method = match.arg(method))
+            method = match.arg(method), sparse = sparse)
 }
 
 #' @importFrom utils combn
 #' @export
 forecast.lst_mint_mdl <- function(object, key_data, ...){
   method <- object%@%"method"
+  sparse <- object%@%"sparse"
   
   # Get forecasts
   fc <- NextMethod()
@@ -86,11 +88,36 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   W_h <- map(fc_var, function(var) diag(sqrt(var))%*%R1%*%t(diag(sqrt(var))))
   
   S <- build_smat(key_data)
-  R <- t(S)%*%solve(W)
-  P <- solve(R%*%S)%*%R
+  
+  if(sparse){
+    require_package("Matrix")
+    require_package("SparseM")
+    require_package("methods")
+    as.matrix <- SparseM::as.matrix
+    t <- SparseM::t
+    diag <- SparseM::diag
+    
+    S <- SparseM::as.matrix.csr(S)
+    rs <- as.matrix(S%*%matrix(1, nrow=32))
+    row_agg <- which(rs!=1)
+    row_btm <- which(rs==1)
+    i_pos <- which(as.logical(as.matrix(S[row_btm,])))
+    J <- methods::new("matrix.csr", ra = rep(1,ncol(S)), ja =row_btm,
+                      ia = c((i_pos-1L)%/%ncol(S)+1L, ncol(S) + 1L), dimension = rev(dim(S)))
+    
+    U <- cbind(methods::as(diff(dim(J)), "matrix.diag.csr"), SparseM::as.matrix.csr(-S[row_agg,]))
+    U <- U[, order(c(row_agg, row_btm))]
+    
+    P <- J - J%*%W%*%t(U)%*%Matrix::solve(U%*%W%*%t(U))%*%U
+  }
+  else {
+    R <- t(S)%*%solve(W)
+    P <- solve(R%*%S)%*%R
+  }
+  
   
   # Apply to forecasts
-  fc_point <- S%*%P%*%t(fc_point)
+  fc_point <- as.matrix(S%*%P%*%t(fc_point))
   fc_point <- split(fc_point, row(fc_point))
   fc_var <- map(W_h, function(W) diag(S%*%P%*%W%*%t(P)%*%t(S)))
   fc_dist <- map2(fc_point, transpose_dbl(map(fc_var, sqrt)), dist_normal)
