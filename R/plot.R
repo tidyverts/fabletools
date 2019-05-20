@@ -28,6 +28,7 @@ autoplot.tbl_ts <- function(object, .vars = NULL, ...){
   aes_spec <- list(x = index(object), y = y)
   
   if(nk > 1){
+    object <- dplyr::mutate_if(object, ~inherits(., "agg_key"), compose(trimws, format))
     aes_spec["colour"] <- list(expr(interaction(!!!syms(kv), sep = "/")))
   }
   
