@@ -104,20 +104,23 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
         )
       )
     
-    object <- gather(object, ".rm", "hilo", !!!syms(as.character(level)))
+    object <- gather(object, ".rm", ".hilo", !!!syms(as.character(level)))
     
     if(length(resp) > 1){
-      object <- unnest(object, !!!syms(c(".response", "value", "hilo")),
+      object <- unnest(object, !!!syms(c(".response", "value", ".hilo")),
                        key = ".response")
       resp <- syms("value")
     }
     else{
-      object <- unnest(object, !!sym("hilo"))
+      object <- unnest(object, !!sym(".hilo"))
     }
+    
+    object <- rename(object, !!!set_names(c("lower", "upper", "level"),
+                                          c(".lower", ".upper", ".level")))
     
     # Fix level in key structure
     kv <- key_vars(object)
-    kv[kv==".rm"] <- "level"
+    kv[kv==".rm"] <- ".level"
     object <- select(update_tsibble(object, key = kv), !!expr(-!!sym(".rm")))
   }
   else if (length(resp) > 1) {
@@ -196,9 +199,9 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   )
   
   if(!is.null(level)){
-    mapping$level <- sym("level")
-    mapping$ymin <- sym("lower")
-    mapping$ymax <- sym("upper")
+    mapping$level <- sym(".level")
+    mapping$ymin <- sym(".lower")
+    mapping$ymax <- sym(".upper")
   }
   
   if(!is_empty(fc_key)){
