@@ -52,11 +52,11 @@ Ops.fcdist <- function(e1, e2){
   ok <- switch(.Generic, `+` = , `-` = , `*` = , `/` = TRUE, FALSE)
   if (!ok) {
     warn(sprintf("`%s` not meaningful for distributions", .Generic))
-    return(rep.int(NA, max(length(e1), if (!missing(e2)) length(e2))))
+    return(dist_unknown(max(length(e1), if (!missing(e2)) length(e2))))
   }
   if(.Generic == "/" && inherits(e2, "fcdist")){
     warn(sprintf("Cannot divide by a distribution"))
-    return(rep.int(NA, max(length(e1), if (!missing(e2)) length(e2))))
+    return(dist_unknown(max(length(e1), if (!missing(e2)) length(e2))))
   }
   if(.Generic %in% c("-", "+") && missing(e2)){
     e2 <- e1
@@ -92,14 +92,10 @@ Ops.fcdist <- function(e1, e2){
     }
   }
   
-  is_dist_normal <- function(dist){
-    identical(dist[[1]]$.env$f, env_dist_normal$f) && !dist[[1]]$.env$trans
-  }
-  
   if(inherits(e1, "fcdist") && inherits(e2, "fcdist")){
     if(.Generic == "*"){
       warn(sprintf("Multipling forecast distributions is not supported"))
-      return(rep.int(NA, length(e1)))
+      return(dist_unknown(max(length(e1), if (!missing(e2)) length(e2))))
     }
     
     grps <- paste(sep = "-",
@@ -110,7 +106,7 @@ Ops.fcdist <- function(e1, e2){
     e1 <- map2(split(e1, grps), split(e2, grps), function(x, y){
       if(!is_dist_normal(x) || !is_dist_normal(y)){
         warn("Combinations of non-normal forecast distributions is not supported")
-        return(rep.int(NA, length(x)))
+        return(dist_unknown(max(length(e1), length(e2))))
       }
       x <- transpose(x) %>% map(unlist, recursive = FALSE)
       y <- transpose(y) %>% map(unlist, recursive = FALSE)
@@ -134,14 +130,14 @@ Ops.fcdist <- function(e1, e2){
   if(!is.numeric(scalar)){
     warn(sprintf("Cannot %s a `%s` with a distribution", switch(.Generic, 
       `+` = "add", `-` = "subtract", `*` = "multiply", `/` = "divide"), class(scalar)))
-    return(rep.int(NA, length(e1)))
+    return(dist_unknown(length(e1)))
   }
   
   .env_ids <- map_chr(dist, function(x) env_label(x[[length(x)]]))
   dist <- map2(split(dist, .env_ids), split(scalar, .env_ids), function(x, y){
     if(!is_dist_normal(x)){
       warn("Cannot perform calculations with this non-normal distributions")
-      return(rep.int(NA, length(x)))
+      return(dist_unknown(length(x)))
     }
     x <- transpose(x) %>% map(unlist, recursive = FALSE)
     if(.Generic == "+"){
@@ -247,8 +243,7 @@ hilo.fcdist <- function(x, level = 95, ...){
   if (level < 0 || level > 100) {
     abort("'level' can't be negative or greater than 100.")
   }
-  
-  .env_ids <- map_chr(transpose(x)$.env, env_label)
+  .env_ids <- map_chr(x, function(x) env_label(x[[".env"]]))
   split(x, .env_ids) %>% 
     set_names(NULL) %>% 
     map(hilo_fcdist, level = level, ...) %>% 
@@ -342,4 +337,19 @@ env_dist_sim <- new_fcdist_env(qsample, display = format_dist("sim"))
 #' @export
 dist_sim <- function(sample, ...){
   new_fcdist(map(sample, list), ..., .env = env_dist_sim)
+}
+
+env_dist_unknown <- new_fcdist_env(function(x, ...) rep(NA, length(x)),
+                                   display = function(x, ...) rep("?", length(x)))
+
+#' @rdname distributions
+#' 
+#' @param n The number of distributions.
+#' 
+#' @examples 
+#' dist_unknown(10)
+#' 
+#' @export
+dist_unknown <- function(n, ...){
+  new_fcdist(vector("double", n), ..., .env = env_dist_unknown)
 }

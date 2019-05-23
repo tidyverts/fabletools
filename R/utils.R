@@ -120,6 +120,10 @@ calc <- function(f, ...){
   f(...)
 }
 
+is_dist_normal <- function(dist){
+  identical(dist[[1]]$.env$f, env_dist_normal$f) && !dist[[1]]$.env$trans
+}
+
 bind_row_attrb <- function(x){
   attrb <- transpose(map(x, function(dt) map(dt, attributes)))
   simple_attrb <- map_lgl(attrb, function(x) length(unique(x)) == 1)

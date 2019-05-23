@@ -4,6 +4,7 @@
 \alias{dist_normal}
 \alias{dist_mv_normal}
 \alias{dist_sim}
+\alias{dist_unknown}
 \title{Distributions for intervals}
 \usage{
 dist_normal(mean, sd, ...)
@@ -11,6 +12,8 @@ dist_normal(mean, sd, ...)
 dist_mv_normal(mean, sd, ...)
 
 dist_sim(sample, ...)
+
+dist_unknown(n, ...)
 }
 \arguments{
 \item{mean}{vector of distributional means.}
@@ -20,6 +23,8 @@ dist_sim(sample, ...)
 \item{...}{Additional arguments passed on to quantile methods.}
 
 \item{sample}{a list of simulated values}
+
+\item{n}{The number of distributions.}
 }
 \description{
 Distributions for intervals
@@ -28,5 +33,7 @@ Distributions for intervals
 dist_normal(rep(3, 10), seq(0, 1, length.out=10))
 
 dist_sim(list(rnorm(100), rnorm(100), rnorm(100)))
+
+dist_unknown(10)
 
 }

@@ -20,28 +20,54 @@ model.tbl_ts <- function(.data, ...){
   if(length(models) == 0){
     abort("At least one model must be specified.")
   }
+  if(!all(is_mdl <- map_lgl(models, inherits, "mdl_defn"))){
+    abort(sprintf("Model definition(s) incorrectly created: %s
+Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
+  }
   
-  pb <- progress_estimated(length(models) * n_keys(.data), min_time = 5)
+  num_key <- n_keys(.data)
+  num_mdl <- length(models)
+  num_est <- num_mdl * num_key
+  pb <- progress_estimated(num_est, min_time = 5)
   
   keys <- key(.data)
   .data <- nest(group_by(.data, !!!keys), .key = "lst_data")
   
-  
-  eval_models <- function(models, lst_data){
-    map(models, function(model){
-      structure(
+  if(is_attached("package:future")){
+    require_package("future")
+    eval_models <- function(models, lst_data){
+      out <- vector("list", num_est)
+      for(i in seq_len(num_est)){
+        tsbl <- mdl <- NULL
+        out[[i]] <- future::future(
+          {
+            estimate(tsbl, mdl)
+          },
+          globals = list(
+            tsbl = lst_data[[1 + (i-1)%%num_key]],
+            mdl = models[[1 + (i-1)%/%num_key]],
+            estimate = estimate
+          )
+        )
+      }
+      unname(split(future::values(out), rep(seq_len(num_mdl), each = num_key)))
+    }
+  }
+  else{
+    eval_models <- function(models, lst_data){
+      map(models, function(model){
         map(lst_data, function(dt, mdl){
           out <- estimate(dt, mdl)
           pb$tick()$print()
           out
-        }, model),
-        class = "lst_mdl"
-      )
-    })
+        }, model)
+      })
+    }
   }
   
   fits <- eval_models(models, .data[["lst_data"]])
-  names(fits) <- ifelse(nchar(names(fits)), names(fits), nm)
+  names(fits) <- ifelse(nchar(names(models)), names(models), nm)
+  fits <- map(fits, add_class, "lst_mdl")
   
   .data %>% 
     transmute(
@@ -94,7 +120,7 @@ model_sum.model <- function(x){
 
 #' @export
 print.model <- function(x, ...){
-  sprintf("A %s model", model_sum(x[["fit"]]))
+  report(x)
 }
 
 #' Extract the left hand side of a model

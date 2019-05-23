@@ -7,6 +7,9 @@ autoplot.tbl_ts <- function(object, .vars = NULL, ...){
   nk <- n_keys(object)
   
   if(quo_is_null(quo_vars)){
+    if(is_empty(measured_vars(object))){
+      abort("There are no variables to plot.")
+    }
     inform(sprintf(
       "Plot variable not specified, automatically selected `.vars = %s`",
       measured_vars(object)[1]
@@ -51,24 +54,43 @@ autoplot.tbl_ts <- function(object, .vars = NULL, ...){
 
 #' @importFrom ggplot2 ggplot aes geom_line guides guide_legend xlab
 #' @export
-autolayer.tbl_ts <- function(object, y = NULL, series = NULL, ...){
-  if(quo_is_null(enquo(y))){
+autolayer.tbl_ts <- function(object, .vars = NULL, series = NULL, ...){
+  quo_vars <- enquo(.vars)
+  kv <- key_vars(object)
+  nk <- n_keys(object)
+  
+  if(quo_is_null(quo_vars)){
+    if(is_empty(measured_vars(object))){
+      abort("There are no variables to plot.")
+    }
     inform(sprintf(
-      "Plot variable not specified, automatically selected `y = %s`",
+      "Plot variable not specified, automatically selected `.vars = %s`",
       measured_vars(object)[1]
     ))
-    y <- sym(measured_vars(object)[1])
+    .vars <- as_quosures(syms(measured_vars(object)[1]), env = empty_env())
+  }
+  else if(!possibly(compose(is_quosures, eval_tidy), FALSE)(.vars)){
+    .vars <- new_quosures(list(quo_vars))
+  }
+  
+  if(length(.vars) > 1){
+    object <- gather(object, ".response", "value", !!!.vars, factor_key = TRUE)
+    y <- sym("value")
   }
   else{
-    y <- enexpr(y)
+    y <- .vars[[1]]
   }
   
   aes_spec <- list(x = index(object), y = y)
+  
   if(!is.null(series)){
     aes_spec$colour <- series
   }
-  else if(n_keys(object) > 1){
-    aes_spec["colour"] <- list(expr(interaction(!!!syms(key_vars(object)), sep = "/")))
+  else if(nk > 1){
+    aes_spec["colour"] <- list(expr(interaction(!!!syms(kv), sep = "/")))
+  }
+  if(n_keys(object) > 1){
+    aes_spec["group"] <- list(expr(interaction(!!!syms(key_vars(object)), sep = "/")))
   }
   
   geom_line(eval_tidy(expr(aes(!!!aes_spec))), data = object, ...)
@@ -105,20 +127,23 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
         )
       )
     
-    object <- gather(object, ".rm", "hilo", !!!syms(as.character(level)))
+    object <- gather(object, ".rm", ".hilo", !!!syms(as.character(level)))
     
     if(length(resp) > 1){
-      object <- unnest(object, !!!syms(c(".response", "value", "hilo")),
+      object <- unnest(object, !!!syms(c(".response", "value", ".hilo")),
                        key = ".response")
       resp <- syms("value")
     }
     else{
-      object <- unnest(object, !!sym("hilo"))
+      object <- unnest(object, !!sym(".hilo"))
     }
+    
+    object <- rename(object, !!!set_names(c("lower", "upper", "level"),
+                                          c(".lower", ".upper", ".level")))
     
     # Fix level in key structure
     kv <- key_vars(object)
-    kv[kv==".rm"] <- "level"
+    kv[kv==".rm"] <- ".level"
     object <- select(update_tsibble(object, key = kv), !!expr(-!!sym(".rm")))
   }
   else if (length(resp) > 1) {
@@ -128,8 +153,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
       unnest(!!sym(".response"), !!!resp, key = ".response")
   }
   
-  as_tsibble(object) %>% 
-    select(!!expr(-!!dist))
+  as_tsibble(object)[setdiff(colnames(object), expr_text(dist))]
 }
 
 #' @importFrom ggplot2 facet_wrap
@@ -201,9 +225,9 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   )
   
   if(!is.null(level)){
-    mapping$level <- sym("level")
-    mapping$ymin <- sym("lower")
-    mapping$ymax <- sym("upper")
+    mapping$level <- sym(".level")
+    mapping$ymin <- sym(".lower")
+    mapping$ymax <- sym(".upper")
   }
   
   if(!is_empty(fc_key)){

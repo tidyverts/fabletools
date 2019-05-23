@@ -110,7 +110,7 @@ Please check that you have specified the decomposition models appropriately.")
 #'   
 #' # Use an ARIMA model to seasonally adjusted data, and SNAIVE to season_year
 #' # Any model can be used, and seasonal components will default to use SNAIVE.
-#' my_dcmp_spec <- dcmp_model(
+#' my_dcmp_spec <- decomposition_model(
 #'   STL, log(Turnover) ~ season(window = Inf),
 #'   ETS(seas_adjust), SNAIVE(season_year)
 #' )
@@ -123,12 +123,20 @@ Please check that you have specified the decomposition models appropriately.")
 #' @seealso 
 #' [*Forecasting: Principles and Practice* - Forecasting Decomposition](https://otexts.com/fpp3/forecasting-decomposition.html)
 #' 
+#' @aliases dcmp_model
 #' @export
-dcmp_model <- function(dcmp_fn, formula, ..., dcmp_args = list()){
+decomposition_model <- function(dcmp_fn, formula, ..., dcmp_args = list()){
   dcmp_model <- new_model_class("dcmp_mdl", train = train_decomposition, 
                                 specials = new_specials(xreg = function(...) NULL))
   new_model_definition(dcmp_model, !!enquo(formula), ..., 
                        dcmp_fn = dcmp_fn, dcmp_args = dcmp_args)
+}
+
+#' @keywords internal
+#' @export
+dcmp_model <- function(...){
+  .Deprecated("decomposition_model")
+  decomposition_model(...)
 }
 
 #' @export

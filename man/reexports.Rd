@@ -13,6 +13,7 @@
 \alias{augment}
 \alias{glance}
 \alias{tidy}
+\alias{generate}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -20,7 +21,7 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{generics}{\code{\link[generics]{equation}}, \code{\link[generics]{interpolate}}, \code{\link[generics]{components}}, \code{\link[generics]{augment}}, \code{\link[generics]{glance}}, \code{\link[generics]{tidy}}}
+  \item{generics}{\code{\link[generics]{equation}}, \code{\link[generics]{interpolate}}, \code{\link[generics]{components}}, \code{\link[generics]{augment}}, \code{\link[generics]{glance}}, \code{\link[generics]{tidy}}, \code{\link[generics]{generate}}}
 
   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}, \code{\link[ggplot2]{autolayer}}}
 

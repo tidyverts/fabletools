@@ -1,11 +1,16 @@
-#' Imitate responses from a model
+#' Generate responses from a mable
 #' 
 #' Use a model's fitted distribution to simulate additional data with similar
 #' behaviour to the response. This is a tidy implementation of 
 #' `\link[stats]{simulate}`.
 #' 
-#' @param object A model
-#' @param ... Additional optional arguments
+#' @param x A mable.
+#' @param new_data The data to be generated (time index and exogenous regressors)
+#' @param h The simulation horizon (can be used instead of `new_data` for regular
+#' time series with no exogenous regressors).
+#' @param times The number of replications.
+#' @param seed The seed for the random generation from distributions.
+#' @param ... Additional arguments for individual simulation methods.
 #' 
 #' @examples
 #' library(dplyr)
@@ -13,41 +18,26 @@
 #' UKLungDeaths <- as_tsibble(cbind(mdeaths, fdeaths), pivot_longer = FALSE)
 #' UKLungDeaths %>% 
 #'   model(lm = TSLM(mdeaths ~ fourier("year", K = 4) + fdeaths)) %>% 
-#'   imitate(UKLungDeaths, times = 5)
+#'   generate(UKLungDeaths, times = 5)
 #' 
-#' @rdname imitate
-#'   
 #' @export
-imitate <- function(object, ...){
-  UseMethod("imitate")
-}
-
-#' @param new_data The data to be imitated (time index and exogenous regressors)
-#' @rdname imitate
-#' @export
-imitate.mdl_df <- function(object, new_data = NULL, ...){
-  kv <- c(key_vars(object), ".model")
-  mdls <- object%@%"models"
+generate.mdl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
+  kv <- c(key_vars(x), ".model")
+  mdls <- x%@%"models"
   if(!is.null(new_data)){
-    object <- bind_new_data(object, new_data)
+    x <- bind_new_data(x, new_data)
   }
-  object <- gather(object, ".model", ".fit", !!!syms(mdls))
+  x <- gather(x, ".model", ".fit", !!!syms(mdls))
   
   # Evaluate simulations
-  object$.sim <- map2(object[[".fit"]], 
-                      object[["new_data"]] %||% rep(list(NULL), length.out = NROW(object)),
-                      imitate, ...)
-  unnest(add_class(object, "lst_ts"), !!sym(".sim"), key = kv)
+  x$.sim <- map2(x[[".fit"]], 
+                      x[["new_data"]] %||% rep(list(NULL), length.out = NROW(x)),
+                      generate, h = h, times = times, seed = seed, ...)
+  unnest(add_class(x, "lst_ts"), !!sym(".sim"), key = kv)
 }
 
-#' @param h The simulation horizon (can be used instead of `new_data` for regular
-#' time series with no exogenous regressors).
-#' @param times The number of replications
-#' @param seed The seed for the random generation from distributions
-#' 
-#' @rdname imitate
 #' @export
-imitate.model <- function(object, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
+generate.model <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
     stats::runif(1)
   if (is.null(seed))
@@ -60,7 +50,7 @@ imitate.model <- function(object, new_data = NULL, h = NULL, times = 1, seed = N
   }
   
   if(is.null(new_data)){
-    new_data <- make_future_data(object$data, h)
+    new_data <- make_future_data(x$data, h)
   }
   
   if(is.null(new_data[[".rep"]])){
@@ -72,8 +62,8 @@ imitate.model <- function(object, new_data = NULL, h = NULL, times = 1, seed = N
       invoke("rbind", .)
   }
   
-  .sim <- imitate(object[["fit"]], new_data = new_data, ...)
-  if(length(object$transformation) > 1) abort("Imitating multivariate models is not yet supported")
-  .sim[[".sim"]] <- invert_transformation(object$transformation[[1]])(.sim[[".sim"]])
+  .sim <- generate(x[["fit"]], new_data = new_data, ...)
+  if(length(x$transformation) > 1) abort("Imitating multivariate models is not yet supported")
+  .sim[[".sim"]] <- invert_transformation(x$transformation[[1]])(.sim[[".sim"]])
   .sim
 }

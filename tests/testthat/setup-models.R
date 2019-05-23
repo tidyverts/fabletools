@@ -2,7 +2,7 @@ context("setup-models.R")
 
 test_specials <- new_specials(
   rnorm = function(m,s){
-    rnorm(NROW(self$data), m, s)
+    stats::rnorm(NROW(self$data), m, s)
   },
   log5 = function(x){
     logb(x, base = 5)

@@ -10,21 +10,29 @@ train_combination <- function(.data, formula, specials, ..., cmbn_fn){
 }
 
 #' Combination modelling
-#' 
+#'
+#' @aliases cmbn_model
 #' @param ... Model definitions used in the combination (such as [fable::ETS()])
 #' @param cmbn_fn A function used to produce the combination
 #' 
 #' @export
-cmbn_model <- function(..., cmbn_fn = cmbn_ensemble){
+combination_model <- function(..., cmbn_fn = cmbn_ensemble){
   mdls <- dots_list(...)
   if(!any(map_lgl(mdls, inherits, "mdl_defn"))){
-    abort("`cmbn_model()` must contain at least one valid model definition.")
+    abort("`combination_model()` must contain at least one valid model definition.")
   }
   
   cmbn_model <- new_model_class("cmbn_mdl", train = train_combination, 
                                 specials = new_specials(xreg = function(...) NULL))
   new_model_definition(cmbn_model, !!quo(!!model_lhs(mdls[[1]])), ..., 
                        cmbn_fn = cmbn_fn)
+}
+
+#' @keywords internal
+#' @export
+cmbn_model <- function(...){
+  .Deprecated("combination_model")
+  combination_model(...)
 }
 
 #' Ensemble combination
@@ -51,9 +59,9 @@ new_model_combination <- function(x, combination){
       num <- x[[which(!mdls)]]
       num <- switch(op, `*` = 1/num, `/` = num)
       if(num%%1 == 0){
-        cmp <- all.names(x[[which(mdls)]][["response"]])
+        cmp <- all.names(x[[which(mdls)]][["response"]][[1]])
         if(length(unique(cmp)) == 2 && sum(cmp == "+") + 1 == num){
-          comb_response <- sym(cmp[cmp != "+"][1])
+          comb_response <- syms(cmp[cmp != "+"][1])
         }
       }
     }
@@ -93,7 +101,7 @@ Ops.mdl_defn <- function(e1, e2){
     return(rep.int(NA, max(length(e1), if (!missing(e2)) length(e2))))
   }
   
-  cmbn_model(e1, e2, cmbn_fn = .Generic)
+  combination_model(e1, e2, cmbn_fn = .Generic)
 }
 
 #' @export
@@ -188,7 +196,11 @@ forecast.model_combination <- function(object, new_data, specials, ...){
   
   # var(x) + var(y) + 2*cov(x,y)
   .dist <- eval_tidy(expr, map(object, get_attr_col, "dist"))
-  .dist <- add_class(map(.dist, function(x) {x$sd <- sqrt(x$sd^2 + 2*fc_cov); x}), "fcdist")
+  if(is_dist_normal(.dist)){
+    .dist <- add_class(
+      map(.dist, function(x) {x$sd <- sqrt(x$sd^2 + 2*fc_cov); x}),
+      "fcdist")
+  }
   
   .fc <- eval_tidy(expr, map(object, function(x) 
     if(is_fable(x)) x[[expr_text(attr(x, "response")[[1]])]] else x))

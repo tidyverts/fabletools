@@ -4,12 +4,14 @@
 \alias{new_specials}
 \title{Create evaluation environment for specials}
 \usage{
-new_specials(..., .required_specials = NULL)
+new_specials(..., .required_specials = NULL, .xreg_specials = NULL)
 }
 \arguments{
 \item{...}{A named set of functions which used to parse formula inputs}
 
 \item{.required_specials}{The names of specials which must be provided (and if not, are included with no inputs).}
+
+\item{.xreg_specials}{The names of specials which will be only used as inputs to other specials (most commonly \code{xreg}).}
 }
 \description{
 Allows extension packages to make use of the formula parsing of specials.

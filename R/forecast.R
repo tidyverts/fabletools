@@ -32,6 +32,8 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
                          h = h, bias_adjust = bias_adjust, ...,
                          key_data = key_data(object))
   
+  fc_interval <- interval(fc[[mdls[[1]]]][[1]])
+  fc_idx <- index(fc[[mdls[[1]]]][[1]])
   # Combine and re-construct fable
   fc <- gather(fc, ".model", ".fc", !!!mdls)
 
@@ -44,8 +46,8 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
     invoke(c, .)
   
   fc <- suppressWarnings(unnest(fc, !!sym(".fc")))
-  
   fc[[expr_text(dist)]] <- dist_repaired
+  fc <- build_tsibble(fc, key = kv, index = !!fc_idx, interval = fc_interval)
   
   as_fable(fc, index = !!idx, key = kv, resp = resp, dist = !!dist)
 }
@@ -92,7 +94,7 @@ Does your model require extra variables to produce forecasts?", e$message))
       warn("Could not bias adjust the point forecasts as the back-transformation's hessian is not well behaved. Consider using a different transformation.")
     }
     else if(any(map_lgl(fc[["sd"]], compose(any, is.na)))){
-      warn("Could not bias adjust the point forecasts as the forecast standard deviation is unknown. Perhaps your series is too short.")
+      warn("Could not bias adjust the point forecasts as the forecast standard deviation is unknown. Perhaps your series is too short or insufficient bootstrap samples are used.")
     }
     else{
       adjustment <- map2(fc[["sd"]], adjustment, function(sd, adj) sd^2/2*adj)
@@ -130,7 +132,7 @@ Does your model require extra variables to produce forecasts?", e$message))
 #' @export
 construct_fc <- function(point, sd, dist){
   stopifnot(inherits(dist, "fcdist"))
-  if(is.numeric(point) && is.numeric(sd)){
+  if(is.numeric(point)){
     point <- list(point)
     sd <- list(sd)
   }

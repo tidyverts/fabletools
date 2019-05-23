@@ -1,6 +1,10 @@
 parse_specials <- function(call = NULL, specials = NULL, xreg = TRUE){
   if(!is.null(call)){ # No model specified
     call <- enexpr(call)
+    
+    # Don't parse xreg_specials - leave them to the xregs
+    nm <- setdiff(names(specials), specials%@%"xreg_specials")
+    
     parsed <- traverse_call(!!call,
                             .f = function(.x, ...) {
                               merge_named_list(.x[[1]], .x[[2]])},
@@ -13,7 +17,7 @@ parse_specials <- function(call = NULL, specials = NULL, xreg = TRUE){
                             },
                             .h = function(x){ # Base types
                               x <- get_expr(x)
-                              if(!is_call(x) || !(call_name(x) %in% names(specials))){
+                              if(!is_call(x) || !(call_name(x) %in% nm)){
                                 if(!xreg) stop("Exogenous regressors are not supported for this model type")
                                 list(xreg = list(x))
                               }
