@@ -143,8 +143,10 @@ aggregate_index.tbl_ts <- function(.data, .times = NULL, ...){
   
   .data <- dplyr::new_grouped_df(.data, groups = agg_dt)
   
-  # Compute aggregates
+  # Compute aggregates and repair index attributes
+  idx_attr <- attributes(.data[[as_string(idx)]])
   .data <- ungroup(summarise(.data, ...))
+  attributes(.data[[as_string(idx)]]) <- idx_attr
   
   # Return tsibble
   as_tsibble(.data, key = kv, index = !!idx) %>% 
