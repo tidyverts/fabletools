@@ -32,9 +32,9 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
                          h = h, bias_adjust = bias_adjust, ...,
                          key_data = key_data(object))
   
+  # Combine and re-construct fable
   fc_interval <- interval(fc[[mdls[[1]]]][[1]])
   fc_idx <- index(fc[[mdls[[1]]]][[1]])
-  # Combine and re-construct fable
   fc <- gather(fc, ".model", ".fc", !!!mdls)
 
   idx <- index(fc[[".fc"]][[1]])
@@ -42,11 +42,14 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
   dist <- fc[[".fc"]][[1]]%@%"dist"
   
   dist_repaired <- fc[[".fc"]] %>%
-    map(function(x) x[[expr_text(x%@%"dist")]]) %>%
+    map(function(x) x[[as_string(x%@%"dist")]]) %>%
     invoke(c, .)
-  
+  idx_repaired <- fc[[".fc"]] %>%
+    map(function(x) x[[as_string(index(x))]]) %>%
+    invoke(c, .)
   fc <- suppressWarnings(unnest(fc, !!sym(".fc")))
-  fc[[expr_text(dist)]] <- dist_repaired
+  fc[[as_string(dist)]] <- dist_repaired
+  fc[[as_string(idx)]] <- idx_repaired
   fc <- build_tsibble(fc, key = kv, index = !!fc_idx, interval = fc_interval)
   
   as_fable(fc, index = !!idx, key = kv, resp = resp, dist = !!dist)
