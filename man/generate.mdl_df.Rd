@@ -8,14 +8,18 @@
   seed = NULL, ...)
 }
 \arguments{
+\item{x}{A mable.}
+
 \item{new_data}{The data to be generated (time index and exogenous regressors)}
 
 \item{h}{The simulation horizon (can be used instead of \code{new_data} for regular
 time series with no exogenous regressors).}
 
-\item{times}{The number of replications}
+\item{times}{The number of replications.}
 
-\item{seed}{The seed for the random generation from distributions}
+\item{seed}{The seed for the random generation from distributions.}
+
+\item{...}{Additional arguments for individual simulation methods.}
 }
 \description{
 Use a model's fitted distribution to simulate additional data with similar

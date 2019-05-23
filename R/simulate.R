@@ -4,11 +4,13 @@
 #' behaviour to the response. This is a tidy implementation of 
 #' `\link[stats]{simulate}`.
 #' 
+#' @param x A mable.
 #' @param new_data The data to be generated (time index and exogenous regressors)
 #' @param h The simulation horizon (can be used instead of `new_data` for regular
 #' time series with no exogenous regressors).
-#' @param times The number of replications
-#' @param seed The seed for the random generation from distributions
+#' @param times The number of replications.
+#' @param seed The seed for the random generation from distributions.
+#' @param ... Additional arguments for individual simulation methods.
 #' 
 #' @examples
 #' library(dplyr)
