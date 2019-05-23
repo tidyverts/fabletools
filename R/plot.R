@@ -130,8 +130,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
       unnest(!!sym(".response"), !!!resp, key = ".response")
   }
   
-  as_tsibble(object) %>% 
-    select(!!expr(-!!dist))
+  as_tsibble(object)[setdiff(colnames(object), expr_text(dist))]
 }
 
 #' @importFrom ggplot2 facet_wrap
