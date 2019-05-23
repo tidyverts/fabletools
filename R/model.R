@@ -38,6 +38,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
     eval_models <- function(models, lst_data){
       out <- vector("list", num_est)
       for(i in seq_len(num_est)){
+        tsbl <- mdl <- NULL
         out[[i]] <- future::future(
           {
             estimate(tsbl, mdl)
@@ -49,7 +50,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
           )
         )
       }
-      unname(split(values(out), rep(seq_len(num_mdl), each = num_key)))
+      unname(split(future::values(out), rep(seq_len(num_mdl), each = num_key)))
     }
   }
   else{
