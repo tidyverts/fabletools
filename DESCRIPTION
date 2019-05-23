@@ -43,7 +43,9 @@ Suggests:
     spelling,
     testthat,
     tsibbledata,
-    lubridate
+    lubridate,
+    Matrix,
+    SparseM
 Remotes:
     tidyverts/fable,
     tidyverts/feasts,
