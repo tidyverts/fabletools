@@ -5,6 +5,8 @@
 
 [![Travis build
 status](https://travis-ci.org/tidyverts/fablelite.svg?branch=master)](https://travis-ci.org/tidyverts/fablelite)
+[![Codecov test
+coverage](https://codecov.io/gh/tidyverts/fablelite/branch/master/graph/badge.svg)](https://codecov.io/gh/tidyverts/fablelite?branch=master)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
