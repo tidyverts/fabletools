@@ -52,20 +52,6 @@ parse_specials <- function(call = NULL, specials = NULL){
   parsed
 }
 
-parse_response <- function(model_lhs){
-  model_lhs <- enquo(model_lhs)
-  
-  # Traverse call along longest argument (hopefully, the response)
-  traverse_call(!!model_lhs,
-                .f = function(.x) .x[[1]],
-                .g = function(.x) .x %>%
-                  get_expr %>%
-                  as.list %>% 
-                  map(new_quosure, env = get_env(.x)) %>%
-                  .[which.max(map(., function(.x) length(eval_tidy(.x))))]) %>%
-    get_expr
-}
-
 #' Validate the user provided model
 #' 
 #' Appropriately format the user's model for evaluation. Typically ran as one of the first steps
