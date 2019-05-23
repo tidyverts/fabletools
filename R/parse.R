@@ -1,4 +1,4 @@
-parse_specials <- function(call = NULL, specials = NULL, xreg = TRUE){
+parse_specials <- function(call = NULL, specials = NULL){
   if(!is.null(call)){ # No model specified
     call <- enexpr(call)
     
@@ -18,7 +18,6 @@ parse_specials <- function(call = NULL, specials = NULL, xreg = TRUE){
                             .h = function(x){ # Base types
                               x <- get_expr(x)
                               if(!is_call(x) || !(call_name(x) %in% nm)){
-                                if(!xreg) stop("Exogenous regressors are not supported for this model type")
                                 list(xreg = list(x))
                               }
                               else{# Current call is a special function
