@@ -3,10 +3,7 @@ globalVariables("self")
 train_decomposition <- function(.data, specials, ..., dcmp_fn, 
                                 dcmp_args = list()){
   # Extract raw original data
-  est <- .data
-  .data <- self$data
-  
-  dcmp <- do.call(dcmp_fn, list2(.data, formula, !!!dcmp_args))
+  dcmp <- do.call(dcmp_fn, list2(self$.data, self$formula, !!!dcmp_args))
   
   dcmp_method <- (dcmp%@%"aliases")[[as_string(dcmp%@%"resp")]]
   structure <- dcmp%@%"seasons"
@@ -67,7 +64,7 @@ Please specify an appropriate model for these components",
   
   model <- reduce(c(mdls, mdls_default), `+`)
   
-  if(!isTRUE(all.equal(response(model)[[".response"]], est[[measured_vars(est)]]))){
+  if(!isTRUE(all.equal(response(model)[[".response"]], .data[[measured_vars(.data)]]))){
     abort(
 "The models specified do not combine to give the correct response.
 Please check that you have specified the decomposition models appropriately.")
