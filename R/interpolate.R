@@ -17,6 +17,22 @@ Please use select() to choose the model to interpolate with.")
 }
 
 #' @export
-interpolate.model <- function(object, ...){
-  interpolate(object[["fit"]], ...)
+interpolate.model <- function(object, new_data, ...){
+  # Compute specials with new_data
+  object$model$stage <- "interpolate"
+  object$model$add_data(new_data)
+  specials <- tryCatch(parse_model_rhs(object$model)$specials,
+                       error = function(e){
+                         abort(sprintf(
+                           "%s
+Unable to compute required variables from provided `new_data`.
+Does your interpolation data include all variables required by the model?", e$message))
+                       }, interrupt = function(e) {
+                         stop("Terminated by user", call. = FALSE)
+                       })
+  
+  object$model$remove_data()
+  object$model$stage <- NULL
+  
+  interpolate(object[["fit"]], new_data = new_data, specials = specials, ...)
 }
