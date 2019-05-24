@@ -17,7 +17,7 @@
 #' library(fable)
 #' UKLungDeaths <- as_tsibble(cbind(mdeaths, fdeaths), pivot_longer = FALSE)
 #' UKLungDeaths %>% 
-#'   model(lm = TSLM(mdeaths ~ fourier("year", K = 4) + fdeaths)) %>% 
+#'   model(lm = fable::TSLM(mdeaths ~ fourier("year", K = 4) + fdeaths)) %>% 
 #'   generate(UKLungDeaths, times = 5)
 #' 
 #' @export
@@ -53,6 +53,15 @@ generate.model <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL,
     new_data <- make_future_data(x$data, h)
   }
   
+  if(is.null(new_data[[".rep"]])){
+    new_data <- map(seq_len(times), function(rep){
+      new_data[[".rep"]] <- rep
+      update_tsibble(new_data, key = c(".rep", key_vars(new_data)),
+                     validate = FALSE)
+    }) %>% 
+      invoke("rbind", .)
+  }
+  
   # Compute specials with new_data
   x$model$stage <- "generate"
   x$model$add_data(new_data)
@@ -68,16 +77,6 @@ Does your model require extra variables to produce simulations?", e$message))
   
   x$model$remove_data()
   x$model$stage <- NULL
-  
-  
-  if(is.null(new_data[[".rep"]])){
-    new_data <- map(seq_len(times), function(rep){
-      new_data[[".rep"]] <- rep
-      update_tsibble(new_data, key = c(".rep", key_vars(new_data)),
-                     validate = FALSE)
-    }) %>% 
-      invoke("rbind", .)
-  }
   
   .sim <- generate(x[["fit"]], new_data = new_data, specials = specials, ...)
   if(length(x$transformation) > 1) abort("Imitating multivariate models is not yet supported")
