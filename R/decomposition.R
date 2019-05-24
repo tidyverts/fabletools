@@ -1,6 +1,6 @@
 globalVariables("self")
 
-train_decomposition <- function(.data, formula, specials, ..., dcmp_fn, 
+train_decomposition <- function(.data, specials, ..., dcmp_fn, 
                                 dcmp_args = list()){
   # Extract raw original data
   est <- .data

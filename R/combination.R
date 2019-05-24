@@ -1,4 +1,4 @@
-train_combination <- function(.data, formula, specials, ..., cmbn_fn){
+train_combination <- function(.data, specials, ..., cmbn_fn){
   mdls <- dots_list(...)
   
   # Estimate model definitions
