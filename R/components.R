@@ -12,6 +12,6 @@ components.mdl_df <- function(object, ...){
 }
 
 #' @export
-components.model <- function(object, ...){
+components.mdl_ts <- function(object, ...){
   components(object$fit, ...)
 }

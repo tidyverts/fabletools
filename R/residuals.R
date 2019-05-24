@@ -12,7 +12,7 @@ residuals.mdl_df <- function(object, ...){
 }
 
 #' @export
-residuals.model <- function(object, type = "innovation", ...){
+residuals.mdl_ts <- function(object, type = "innovation", ...){
   if(type == "response"){
     .resid <- response(object)
     .resid <- as.matrix(.resid[measured_vars(.resid)]) - fitted(object$fit)

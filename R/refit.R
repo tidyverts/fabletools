@@ -25,7 +25,7 @@ refit.mdl_df <- function(object, new_data, ...){
 }
 
 #' @export
-refit.model <- function(object, new_data, ...){
+refit.mdl_ts <- function(object, new_data, ...){
   # Compute specials with new_data
   object$model$stage <- "refit"
   object$model$add_data(new_data)

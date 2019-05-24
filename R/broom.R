@@ -8,7 +8,7 @@ augment.mdl_df <- function(x, ...){
 }
 
 #' @export
-augment.model <- function(x, ...){
+augment.mdl_ts <- function(x, ...){
   tryCatch(augment(x[["fit"]], ...),
            error = function(e){
              idx <- as_string(index(x$data))
@@ -45,7 +45,7 @@ glance.mdl_df <- function(x, ...){
 }
 
 #' @export
-glance.model <- function(x, ...){
+glance.mdl_ts <- function(x, ...){
   glance(x$fit, ...)
 }
 
@@ -59,6 +59,6 @@ tidy.mdl_df <- function(x, ...){
 }
 
 #' @export
-tidy.model <- function(x, ...){
+tidy.mdl_ts <- function(x, ...){
   tidy(x$fit, ...)
 }

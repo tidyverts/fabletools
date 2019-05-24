@@ -165,7 +165,7 @@ accuracy.mdl_df <- function(object, measures = point_measures, ...){
 }
 
 #' @export
-accuracy.model <- function(object, measures = point_measures, ...){
+accuracy.mdl_ts <- function(object, measures = point_measures, ...){
   dots <- dots_list(...)
   resp <- if(length(object$response) > 1) sym("value") else object$response[[1]]
   

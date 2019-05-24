@@ -21,7 +21,7 @@ response.mdl_df <- function(object, ...){
 }
 
 #' @export
-response.model <- function(object, ...){
+response.mdl_ts <- function(object, ...){
   bt <- map(object$transformation, invert_transformation)
   
   resp <- as.list(object$data)[measured_vars(object$data)]

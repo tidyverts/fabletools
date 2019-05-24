@@ -46,7 +46,7 @@ cmbn_ensemble <- function(...){
 }
 
 new_model_combination <- function(x, combination){
-  mdls <- map_lgl(x, inherits, "model")
+  mdls <- map_lgl(x, is_model)
   
   mdls_response <- map(x, function(x) if(is_model(x)) x[["response"]] else x)
   comb_response <- map(transpose(mdls_response),
@@ -105,7 +105,7 @@ Ops.mdl_defn <- function(e1, e2){
 }
 
 #' @export
-Ops.model <- function(e1, e2){
+Ops.mdl_ts <- function(e1, e2){
   e1_expr <- enexpr(e1)
   e2_expr <- enexpr(e2)
   ok <- switch(.Generic, `+` = , `-` = , `*` = , `/` = TRUE, FALSE)

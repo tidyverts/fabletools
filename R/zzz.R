@@ -1,6 +1,6 @@
 # nocov start
 .onLoad <- function(...) {
-  register_s3_method("pillar", "type_sum", "model")
+  register_s3_method("pillar", "type_sum", "mdl_ts")
   register_s3_method("pillar", "type_sum", "hilo")
   register_s3_method("pillar", "type_sum", "fcdist")
   register_s3_method("pillar", "type_sum", "lst_mdl")

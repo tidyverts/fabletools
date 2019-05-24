@@ -12,7 +12,7 @@ fitted.mdl_df <- function(object, ...){
 }
 
 #' @export
-fitted.model <- function(object, ...){
+fitted.mdl_ts <- function(object, ...){
   bt <- map(object$transformation, invert_transformation)
   
   fits <- as.matrix(fitted(object$fit, ...))

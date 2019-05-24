@@ -17,7 +17,7 @@ Please use select() to choose the model to interpolate with.")
 }
 
 #' @export
-interpolate.model <- function(object, new_data, ...){
+interpolate.mdl_ts <- function(object, new_data, ...){
   # Compute specials with new_data
   object$model$stage <- "interpolate"
   object$model$add_data(new_data)

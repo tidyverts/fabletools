@@ -80,7 +80,7 @@ new_model <- function(fit, model, data, response, transformation){
   if(is_model(fit)) return(fit)
   structure(list(fit = fit, model = model, data = data,
                  response = response, transformation = transformation),
-            class = "model")
+            class = "mdl_ts")
 }
 
 #' Is the object a model
@@ -89,10 +89,10 @@ new_model <- function(fit, model, data, response, transformation){
 #' 
 #' @export
 is_model <- function(x){
-  inherits(x, "model")
+  inherits(x, "mdl_ts")
 }
 
-type_sum.model <- function(x){
+type_sum.mdl_ts <-  function(x){
   model_sum(x[["fit"]])
 }
 
@@ -113,12 +113,12 @@ model_sum.default <- function(x){
 }
 
 #' @export
-model_sum.model <- function(x){
+model_sum.mdl_ts <-  function(x){
   model_sum(x$fit)
 }
 
 #' @export
-print.model <- function(x, ...){
+print.mdl_ts <-  function(x, ...){
   report(x)
 }
 
@@ -156,9 +156,9 @@ model_rhs <- function(model){
 }
 
 #' @export
-formula.model <- function(x, ...){
+formula.mdl_ts <-  function(x, ...){
   x$formula
 }
 
 #' @export
-length.model <- function(x) 1
+length.mdl_ts <-  function(x) 1
