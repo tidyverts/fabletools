@@ -25,8 +25,7 @@ estimate.tbl_ts <- function(.data, .model, ...){
   .data <- eval_tidy(expr(transmute(!!sym("data"), !!!parsed$expressions)),
                     env = env_bury(.model$env, data = .data, transmute = transmute))
   fit <- eval_tidy(
-    expr(.model$train(.data = .data, formula = .model$formula,
-                     specials = parsed$specials, !!!.model$extra))
+    expr(.model$train(.data = .data, specials = parsed$specials, !!!.model$extra))
   )
   .model$remove_data()
   .model$stage <- NULL
