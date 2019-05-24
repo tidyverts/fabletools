@@ -53,6 +53,23 @@ generate.model <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL,
     new_data <- make_future_data(x$data, h)
   }
   
+  # Compute specials with new_data
+  x$model$stage <- "generate"
+  x$model$add_data(new_data)
+  specials <- tryCatch(parse_model_rhs(x$model)$specials,
+                       error = function(e){
+                         abort(sprintf(
+                           "%s
+Unable to compute required variables from provided `new_data`.
+Does your model require extra variables to produce simulations?", e$message))
+                       }, interrupt = function(e) {
+                         stop("Terminated by user", call. = FALSE)
+                       })
+  
+  x$model$remove_data()
+  x$model$stage <- NULL
+  
+  
   if(is.null(new_data[[".rep"]])){
     new_data <- map(seq_len(times), function(rep){
       new_data[[".rep"]] <- rep
@@ -62,7 +79,7 @@ generate.model <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL,
       invoke("rbind", .)
   }
   
-  .sim <- generate(x[["fit"]], new_data = new_data, ...)
+  .sim <- generate(x[["fit"]], new_data = new_data, specials = specials, ...)
   if(length(x$transformation) > 1) abort("Imitating multivariate models is not yet supported")
   .sim[[".sim"]] <- invert_transformation(x$transformation[[1]])(.sim[[".sim"]])
   .sim
