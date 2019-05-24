@@ -27,11 +27,19 @@ refit.mdl_df <- function(object, new_data, ...){
 #' @export
 refit.model <- function(object, new_data, ...){
   # Compute specials with new_data
+  object$model$stage <- "refit"
   object$model$add_data(new_data)
   specials <- parse_model_rhs(object$model)$specials
   object$model$remove_data()
+  object$model$stage <- NULL
   
+  resp <- map2(seq_along(object$response), object$response, function(i, resp){
+    expr(object$transformation[[!!i]](!!resp))
+  }) %>% 
+    set_names(map_chr(object$response, as_string))
+  
+  new_data <- transmute(new_data, !!!resp)
   object$fit <- refit(object[["fit"]], new_data, specials = specials, ...)
-  object$index <- select(new_data, !!index(new_data))
+  object$data <- new_data
   object
 }
