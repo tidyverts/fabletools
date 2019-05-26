@@ -14,7 +14,7 @@ augment.mdl_ts <- function(x, ...){
              idx <- as_string(index(x$data))
              resp <- x$response
              if(length(resp) > 1){
-               x$data %>% 
+               response(x) %>% 
                  gather(".response", "value", !!!resp, factor_key = TRUE) %>% 
                  left_join(
                    gather(fitted(x, ...), ".response", ".fitted",
@@ -27,7 +27,7 @@ augment.mdl_ts <- function(x, ...){
                    by = c(".response", idx)
                  )
              } else {
-               x$data %>% 
+               set_names(response(x), c(idx, as_string(resp[[1]]))) %>% 
                  left_join(fitted(x, ...), by = idx) %>% 
                  left_join(residuals(x, ...), by = idx)
              }
