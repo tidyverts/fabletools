@@ -1,3 +1,4 @@
+# nocov start
 # Adapted from dplyr to suit the purpose of modelling.
 progress_estimated <- function(n, min_time = 0) {
   Progress$new(n, min_time = min_time)
@@ -121,3 +122,5 @@ show_time <- function(x) {
 }
 
 now <- function() proc.time()[[3]]
+
+# nocov end
