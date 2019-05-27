@@ -44,12 +44,12 @@ fitted.null_mdl <- function(object, ...){
 }
 
 #' @export
-glance.null_mdl <- function(object, ...){
+glance.null_mdl <- function(x, ...){
   tibble()
 }
 
 #' @export
-tidy.null_mdl <- function(object, ...){
+tidy.null_mdl <- function(x, ...){
   tibble(term = numeric(), estimate = numeric())
 }
 
@@ -59,6 +59,6 @@ report.null_mdl <- function(object, ...){
 }
 
 #' @export
-model_sum.null_mdl <- function(object, ...){
+model_sum.null_mdl <- function(x){
   "NULL model"
 }
