@@ -19,6 +19,7 @@ report.mdl_df <- function(object, ...){
   else{
     report(object[[(object%@%"models")[[1]]]][[1]])
   }
+  invisible(object)
 }
 
 #' @export
