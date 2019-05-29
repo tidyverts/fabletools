@@ -19,10 +19,11 @@ report.mdl_df <- function(object, ...){
   else{
     report(object[[(object%@%"models")[[1]]]][[1]])
   }
+  invisible(object)
 }
 
 #' @export
-report.model <- function(object, ...){
+report.mdl_ts <- function(object, ...){
   cat(paste("Series:", paste0(map(object$response, expr_text), collapse = ", "), "\n"))
   cat(paste("Model:", model_sum(object), "\n"))
   if(!is_symbol(body(object$transformation[[1]])) && length(object$response) == 1){

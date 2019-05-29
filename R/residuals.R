@@ -12,10 +12,11 @@ residuals.mdl_df <- function(object, ...){
 }
 
 #' @export
-residuals.model <- function(object, type = "innovation", ...){
+residuals.mdl_ts <- function(object, type = "innovation", ...){
   if(type == "response"){
     .resid <- response(object)
-    .resid <- as.matrix(.resid[measured_vars(.resid)]) - fitted(object$fit)
+    .fits <- fitted(object)
+    .resid <- as.matrix(.resid[measured_vars(.resid)]) - as.matrix(.fits[measured_vars(.fits)])
   }
   else{
     .resid <- residuals(object$fit, type = type, ...)
@@ -24,7 +25,8 @@ residuals.model <- function(object, type = "innovation", ...){
 'Residuals of type `%s` are not supported for %s models.
 Defaulting to `type="response"`', type, model_sum(object)))
       .resid <- response(object)
-      .resid <- as.matrix(.resid[measured_vars(.resid)]) - fitted(object$fit)
+      .fits <- fitted(object)
+      .resid <- as.matrix(.resid[measured_vars(.resid)]) - as.matrix(.fits[measured_vars(.fits)])
     }
   }
   .resid <- as.matrix(.resid)

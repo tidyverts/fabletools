@@ -7,7 +7,7 @@ summary.mdl_df <- function(object, ...){
 }
 
 #' @export
-summary.model <- function(object, ...){
+summary.mdl_ts <- function(object, ...){
   summary(object$fit, ...)
 }
 

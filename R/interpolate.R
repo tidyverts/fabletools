@@ -17,6 +17,29 @@ Please use select() to choose the model to interpolate with.")
 }
 
 #' @export
-interpolate.model <- function(object, ...){
-  interpolate(object[["fit"]], ...)
+interpolate.mdl_ts <- function(object, new_data, ...){
+  # Compute specials with new_data
+  object$model$stage <- "interpolate"
+  object$model$add_data(new_data)
+  specials <- tryCatch(parse_model_rhs(object$model)$specials,
+                       error = function(e){
+                         abort(sprintf(
+                           "%s
+Unable to compute required variables from provided `new_data`.
+Does your interpolation data include all variables required by the model?", e$message))
+                       }, interrupt = function(e) {
+                         stop("Terminated by user", call. = FALSE)
+                       })
+  
+  object$model$remove_data()
+  object$model$stage <- NULL
+  
+  resp <- map2(seq_along(object$response), object$response, function(i, resp){
+    expr(object$transformation[[!!i]](!!resp))
+  }) %>% 
+    set_names(map_chr(object$response, as_string))
+  
+  new_data <- transmute(new_data, !!!resp)
+  
+  interpolate(object[["fit"]], new_data = new_data, specials = specials, ...)
 }

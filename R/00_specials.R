@@ -17,18 +17,3 @@ new_specials <- function(..., .required_specials = NULL, .xreg_specials = NULL){
             xreg_specials = .xreg_specials,
             class="fable_specials")
 }
-
-#' Bind values to the functions of a specials environment
-#' 
-#' @param .specials The specials environment
-#' @param ... Values to be bound to the functions of the specials environment
-#' 
-#' @export
-specials_fn_bind <- function(.specials, ...){
-  imap(as.list(.specials), function(fn, nm){
-    assign(nm,
-           set_env(fn, env_bury(get_env(fn), ...)),
-           envir = .specials
-    )
-  })
-}

@@ -24,7 +24,7 @@ stream.mdl_df <- function(object, new_data, ...){
 }
 
 #' @export
-stream.model <- function(object, new_data, ...){
+stream.mdl_ts <- function(object, new_data, ...){
   # Compute specials with new_data
   object$model$add_data(new_data)
   specials <- parse_model_rhs(object$model)$specials

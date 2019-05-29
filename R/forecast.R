@@ -63,7 +63,7 @@ forecast.lst_mdl <- function(object, new_data = NULL, key_data, ...){
 }
 
 #' @export
-forecast.model <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
+forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
   if(is.null(new_data)){
     new_data <- make_future_data(object$data, h)
   }

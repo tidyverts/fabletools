@@ -1,4 +1,4 @@
-parse_specials <- function(call = NULL, specials = NULL, xreg = TRUE){
+parse_specials <- function(call = NULL, specials = NULL){
   if(!is.null(call)){ # No model specified
     call <- enexpr(call)
     
@@ -18,7 +18,6 @@ parse_specials <- function(call = NULL, specials = NULL, xreg = TRUE){
                             .h = function(x){ # Base types
                               x <- get_expr(x)
                               if(!is_call(x) || !(call_name(x) %in% nm)){
-                                if(!xreg) stop("Exogenous regressors are not supported for this model type")
                                 list(xreg = list(x))
                               }
                               else{# Current call is a special function
@@ -51,20 +50,6 @@ parse_specials <- function(call = NULL, specials = NULL, xreg = TRUE){
     )
   
   parsed
-}
-
-parse_response <- function(model_lhs){
-  model_lhs <- enquo(model_lhs)
-  
-  # Traverse call along longest argument (hopefully, the response)
-  traverse_call(!!model_lhs,
-                .f = function(.x) .x[[1]],
-                .g = function(.x) .x %>%
-                  get_expr %>%
-                  as.list %>% 
-                  map(new_quosure, env = get_env(.x)) %>%
-                  .[which.max(map(., function(.x) length(eval_tidy(.x))))]) %>%
-    get_expr
 }
 
 #' Validate the user provided model

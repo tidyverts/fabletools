@@ -36,7 +36,7 @@ autoplot.tbl_ts <- function(object, .vars = NULL, ...){
   }
   
   p <- ggplot(object, eval_tidy(expr(aes(!!!aes_spec)))) + 
-    geom_line() +
+    geom_line(...) +
     xlab(paste0(expr_text(index(object)), " [", format(interval(object)), "]"))
   
   if(nk > 1){

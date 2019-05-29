@@ -8,13 +8,13 @@ augment.mdl_df <- function(x, ...){
 }
 
 #' @export
-augment.model <- function(x, ...){
+augment.mdl_ts <- function(x, ...){
   tryCatch(augment(x[["fit"]], ...),
            error = function(e){
              idx <- as_string(index(x$data))
              resp <- x$response
              if(length(resp) > 1){
-               x$data %>% 
+               response(x) %>% 
                  gather(".response", "value", !!!resp, factor_key = TRUE) %>% 
                  left_join(
                    gather(fitted(x, ...), ".response", ".fitted",
@@ -27,7 +27,7 @@ augment.model <- function(x, ...){
                    by = c(".response", idx)
                  )
              } else {
-               x$data %>% 
+               set_names(response(x), c(idx, as_string(resp[[1]]))) %>% 
                  left_join(fitted(x, ...), by = idx) %>% 
                  left_join(residuals(x, ...), by = idx)
              }
@@ -45,7 +45,7 @@ glance.mdl_df <- function(x, ...){
 }
 
 #' @export
-glance.model <- function(x, ...){
+glance.mdl_ts <- function(x, ...){
   glance(x$fit, ...)
 }
 
@@ -59,6 +59,6 @@ tidy.mdl_df <- function(x, ...){
 }
 
 #' @export
-tidy.model <- function(x, ...){
+tidy.mdl_ts <- function(x, ...){
   tidy(x$fit, ...)
 }
