@@ -138,9 +138,6 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
       object <- unnest(object, !!sym(".hilo"))
     }
     
-    object <- rename(object, !!!set_names(c("lower", "upper", "level"),
-                                          c(".lower", ".upper", ".level")))
-    
     # Fix level in key structure
     kv <- key_vars(object)
     kv[kv==".rm"] <- ".level"
