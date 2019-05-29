@@ -35,7 +35,7 @@ new_hilo <- function(lower, upper, level = NULL) {
     }
   }
   
-  list(lower = transpose_dbl(lower), upper = transpose_dbl(upper), level = level) %>% 
+  list(.lower = transpose_dbl(lower), .upper = transpose_dbl(upper), .level = level) %>% 
     pmap(tibble) %>%
     enclass("hilo")
 }
@@ -66,14 +66,14 @@ hilo.default <- function(x, ...){
 #' @export
 lower <- function(x) {
   stopifnot(is_hilo(x))
-  x$lower
+  x$.lower
 }
 
 #' @rdname helper
 #' @export
 upper <- function(x) {
   stopifnot(is_hilo(x))
-  x$upper
+  x$.upper
 }
 
 #' @rdname helper
@@ -101,7 +101,7 @@ is_hilo <- function(x) {
 #' @export
 bt <- function(x, hilo) {
   stopifnot(is.numeric(x) || is_hilo(hilo))
-  x >= hilo$lower & x <= hilo$upper
+  x >= hilo$.lower & x <= hilo$.upper
 }
 
 #' @export
@@ -136,12 +136,12 @@ format.hilo <- function(x, digits = NULL, ...) {
 #' @export
 is.na.hilo <- function(x) {
   # both lower and upper are NA's
-  rowSums(is.na(matrix(c(x$lower, x$upper), ncol = 2))) == 2
+  rowSums(is.na(matrix(c(x$.lower, x$.upper), ncol = 2))) == 2
 }
 
 #' @export
 duplicated.hilo <- function(x, incomparables = FALSE, fromLast = FALSE, ...) {
-  mat <- matrix(c(x$lower, x$upper, x$level), ncol = 3)
+  mat <- matrix(c(x$.lower, x$.upper, x$.level), ncol = 3)
   duplicated(mat, incomparables = incomparables, fromLast = fromLast, ...)
 }
 
@@ -191,8 +191,8 @@ compact_hilo <- function(x, digits = NULL) {
     return(out)
   }
   limit <- paste(
-    format(x$lower, justify = "right", digits = digits),
-    format(x$upper, justify = "right", digits = digits),
+    format(x$.lower, justify = "right", digits = digits),
+    format(x$.upper, justify = "right", digits = digits),
     sep = ", "
   )
   rng <- paste0("[", limit, "]")
