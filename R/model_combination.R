@@ -199,7 +199,7 @@ forecast.model_combination <- function(object, new_data, specials, ...){
       map(`[[`, expr_text(attr(object[[1]],"dist"))) %>% 
       map(function(x) map_dbl(x, `[[`, "sd")) %>% 
       transpose_dbl()
-    fc_cov <- cov2cor(fc_cov)
+    fc_cov <- stats::cov2cor(fc_cov)
     fc_cov <- map_dbl(fc_sd, function(sigma) (diag(sigma)%*%fc_cov%*%t(diag(sigma)))[1,2])
   }
   
