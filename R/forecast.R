@@ -84,7 +84,7 @@ These required variables can be provided by specifying `new_data`.",
   
   if(isTRUE(bias_adjust)){
     # Faster version of bias_adjust(bt, fc[["sd"]]^2)(fc[["mean"]]) 
-    fc[["point"]] <- pmap(list(fc[["point"]], fc[["sd"]], bt), function(fc, sd, bt) bias_adjust(bt,sd^2)(fc))
+    fc[["point"]] <- pmap(list(fc[["point"]], fc[["sd"]], bt), function(fc, sd, bt) bias_adjust(bt,sd)(fc))
   }
   else{
     fc[["point"]] <- map2(fc[["point"]], bt, function(fc, bt) bt(fc))
