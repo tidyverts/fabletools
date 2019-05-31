@@ -98,10 +98,22 @@ new_transformation <- function(transformation, inverse){
 #' exp(y)
 #' adj_fn(y)
 #' 
-#' @importFrom numDeriv hessian
 #' @export
-bias_adjust <- function(bt_fn, fvar){
-  new_function(alist(x=), expr((!!bt_fn)(!!sym("x")) + !!fvar/2*map_dbl(as.numeric(!!sym("x")), hessian, func = !!bt_fn)))
+bias_adjust <- function(bt, fvar){
+  if(any(is.na(fvar))){
+    warn("Could not bias adjust the point forecasts as the forecast standard deviation is unknown. Perhaps your series is too short or insufficient bootstrap samples are used.")
+    return(bt)
+  }
+  function(x, ...){
+    h <- .Machine$double.eps^(1/4)
+    hessian <- (bt(x + h, ...) - 2 * bt(x, ...) + bt(x - h, ...))/h^2
+    x <- bt(x, ...)
+    if(any(!is.na(x) & is.na(hessian))){
+      warn("Could not bias adjust the point forecasts as the back-transformation's hessian is not well behaved. Consider using a different transformation.")
+      return(bt)
+    }
+    x + fvar/2*hessian
+  }
 }
 
 #' @export
