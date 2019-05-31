@@ -89,7 +89,7 @@ new_transformation <- function(transformation, inverse){
 #' `vignette("transformations", package = "fable")`
 #' 
 #' @param bt_fn The back-transformation function
-#' @param fvar The forecast variance
+#' @param sd The forecast standard deviation
 #' 
 #' @examples 
 #' 
@@ -99,20 +99,27 @@ new_transformation <- function(transformation, inverse){
 #' adj_fn(y)
 #' 
 #' @export
-bias_adjust <- function(bt, fvar){
+bias_adjust <- function(bt, sd){
+  fvar <- sd^2
   if(any(is.na(fvar))){
     warn("Could not bias adjust the point forecasts as the forecast standard deviation is unknown. Perhaps your series is too short or insufficient bootstrap samples are used.")
     return(bt)
   }
-  function(x, ...){
+  function(x){
     h <- .Machine$double.eps^(1/4)
-    hessian <- (bt(x + h, ...) - 2 * bt(x, ...) + bt(x - h, ...))/h^2
-    x <- bt(x, ...)
-    if(any(!is.na(x) & is.na(hessian))){
+    f0 <- bt(x)
+    bt_hessian <- bt
+    body(bt_hessian) <- possibly(deriv, expr({
+      h <- abs(1e-4 * x) + 1e-4 * (abs(x) < sqrt(.Machine$double.eps/7e-07))
+      structure(list(), hessian = (bt(x + h) - 2 * f0 + bt(x - h))/h^2)
+    }))(body(bt), names(formals(bt)[1]), hessian = TRUE)
+    hessian <- as.numeric(bt_hessian(x)%@%"hessian")
+
+    if(any(!is.na(f0) & !is.finite(hessian))){
       warn("Could not bias adjust the point forecasts as the back-transformation's hessian is not well behaved. Consider using a different transformation.")
-      return(bt)
+      return(f0)
     }
-    x + fvar/2*hessian
+    f0 + fvar/2*hessian
   }
 }
 

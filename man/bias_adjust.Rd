@@ -4,10 +4,10 @@
 \alias{bias_adjust}
 \title{Bias adjust back-transformation functions}
 \usage{
-bias_adjust(bt, fvar)
+bias_adjust(bt, sd)
 }
 \arguments{
-\item{fvar}{The forecast variance}
+\item{sd}{The forecast standard deviation}
 
 \item{bt_fn}{The back-transformation function}
 }
