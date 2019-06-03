@@ -13,7 +13,7 @@ model <- function(.data, ...){
 
 #' @rdname model
 #' 
-#' @param .safely If a model encounters an error, rather than aborting the process a NULL model will be returned instead. This allows for an error to occur when computing many models, without losing the results of the successful models.
+#' @param .safely If a model encounters an error, rather than aborting the process a [NULL model][null_model()] will be returned instead. This allows for an error to occur when computing many models, without losing the results of the successful models.
 #' 
 #' @export
 model.tbl_ts <- function(.data, ..., .safely = TRUE){

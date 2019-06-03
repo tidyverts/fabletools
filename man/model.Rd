@@ -14,7 +14,7 @@ model(.data, ...)
 
 \item{...}{Definitions for the models to be used}
 
-\item{.safely}{If a model encounters an error, rather than aborting the process a NULL model will be returned instead. This allows for an error to occur when computing many models, without losing the results of the successful models.}
+\item{.safely}{If a model encounters an error, rather than aborting the process a \link[=null_model]{NULL model} will be returned instead. This allows for an error to occur when computing many models, without losing the results of the successful models.}
 }
 \description{
 Trains specified model definitions to a dataset.

@@ -6,7 +6,7 @@ train_null_mdl <- function(.data, ...){
 #' 
 #' Create a NULL model definition. This model produces NA forecasts and does not
 #' require any estimation of the data. It is generally used as a placeholder for
-#' models which have encountered an error (see .safely in [`model()`]).
+#' models which have encountered an error (see `.safely` in [`model()`]).
 #' 
 #' @param formula Model specification (response variable)
 #' @param ... Unused
