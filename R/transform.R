@@ -109,7 +109,7 @@ bias_adjust <- function(bt, sd){
     h <- .Machine$double.eps^(1/4)
     f0 <- bt(x)
     bt_hessian <- bt
-    body(bt_hessian) <- possibly(deriv, expr({
+    body(bt_hessian) <- possibly(stats::deriv, expr({
       h <- abs(1e-4 * x) + 1e-4 * (abs(x) < sqrt(.Machine$double.eps/7e-07))
       structure(list(), hessian = (bt(x + h) - 2 * f0 + bt(x - h))/h^2)
     }))(body(bt), names(formals(bt)[1]), hessian = TRUE)
