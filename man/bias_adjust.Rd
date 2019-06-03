@@ -7,9 +7,9 @@
 bias_adjust(bt, sd)
 }
 \arguments{
-\item{sd}{The forecast standard deviation}
+\item{bt}{The back-transformation function}
 
-\item{bt_fn}{The back-transformation function}
+\item{sd}{The forecast standard deviation}
 }
 \description{
 To produce forecast means (instead of forecast medians) it is necessary to adjust the back-transformation function relative to the forecast variance.
@@ -20,7 +20,7 @@ More details about bias adjustment can be found in the transformations vignette:
 }
 \examples{
 
-adj_fn <- bias_adjust(exp, 1:10)
+adj_fn <- bias_adjust(function(x) exp(x), 1:10)
 y <- rnorm(10)
 exp(y)
 adj_fn(y)

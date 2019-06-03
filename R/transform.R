@@ -88,12 +88,12 @@ new_transformation <- function(transformation, inverse){
 #' More details about bias adjustment can be found in the transformations vignette: read the vignette:
 #' `vignette("transformations", package = "fable")`
 #' 
-#' @param bt_fn The back-transformation function
+#' @param bt The back-transformation function
 #' @param sd The forecast standard deviation
 #' 
 #' @examples 
 #' 
-#' adj_fn <- bias_adjust(exp, 1:10)
+#' adj_fn <- bias_adjust(function(x) exp(x), 1:10)
 #' y <- rnorm(10)
 #' exp(y)
 #' adj_fn(y)
