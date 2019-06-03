@@ -80,7 +80,7 @@ upper <- function(x) {
 #' @export
 level <- function(x) {
   stopifnot(is_hilo(x))
-  x$level
+  x$.level
 }
 
 #' @rdname helper

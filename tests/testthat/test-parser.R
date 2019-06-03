@@ -6,7 +6,7 @@ test_that("Model parsing variety", {
   expect_equal(parse1[[1]][[1]]$fit, list())
   
   # Parse with no specials
-  expect_error(model(as_tsibble(USAccDeaths), no_specials(value ~ rhs)), 
+  expect_warning(model(as_tsibble(USAccDeaths), no_specials(value ~ rhs)), 
                "Exogenous regressors are not supported")
   
   # Parse xreg
@@ -29,7 +29,7 @@ test_that("Model parsing variety", {
   expect_identical(length(parse_rnorm[[1]][[1]]$fit$rnorm[[1]]), length(parse_multi[[1]][[1]]$fit$rnorm[[1]]))
   
   # Special causing error
-  expect_error(model(as_tsibble(USAccDeaths), specials(value ~ oops())), "Not allowed")
+  expect_warning(model(as_tsibble(USAccDeaths), specials(value ~ oops())), "Not allowed")
   
   # Parse lhs transformation with no rhs
   parse_log1 <- model(as_tsibble(USAccDeaths), specials(log(value)))
@@ -89,7 +89,7 @@ test_that("Model parsing scope", {
   expect_equal(mdl[[1]][[1]]$response[[1]], sym("value"))
   
   # Specials missing values
-  expect_error(
+  expect_warning(
     eval({
       model(as_tsibble(USAccDeaths), specials(value ~ log5(mytrend)))
     }, envir = new_environment(list(specials = specials))),

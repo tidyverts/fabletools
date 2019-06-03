@@ -182,8 +182,10 @@ forecast.model_combination <- function(object, new_data, specials, ...){
   
   if(all(mdls)){
     fc_cov <- var(
-      residuals(object[[1]], type = "response")[[".resid"]],
-      residuals(object[[2]], type = "response")[[".resid"]],
+      cbind(
+        residuals(object[[1]], type = "response")[[".resid"]],
+        residuals(object[[2]], type = "response")[[".resid"]]
+      ),
       na.rm = TRUE
     )
   }
@@ -192,13 +194,21 @@ forecast.model_combination <- function(object, new_data, specials, ...){
   }
   object[mdls] <- map(object[mdls], forecast, new_data = new_data, ...)
   
-  get_attr_col <- function(x, col) if(is_fable(x)) x[[expr_text(attr(x, col))]] else x 
+  if(all(mdls)){
+    fc_sd <- object %>% 
+      map(`[[`, expr_text(attr(object[[1]],"dist"))) %>% 
+      map(function(x) map_dbl(x, `[[`, "sd")) %>% 
+      transpose_dbl()
+    fc_cov <- stats::cov2cor(fc_cov)
+    fc_cov <- map_dbl(fc_sd, function(sigma) (diag(sigma)%*%fc_cov%*%t(diag(sigma)))[1,2])
+  }
   
+  get_attr_col <- function(x, col) if(is_fable(x)) x[[expr_text(attr(x, col))]] else x 
   # var(x) + var(y) + 2*cov(x,y)
   .dist <- eval_tidy(expr, map(object, get_attr_col, "dist"))
   if(is_dist_normal(.dist)){
     .dist <- add_class(
-      map(.dist, function(x) {x$sd <- sqrt(x$sd^2 + 2*fc_cov); x}),
+      map2(.dist, fc_cov, function(x, cov) {x$sd <- sqrt(x$sd^2 + 2*cov); x}),
       "fcdist")
   }
   

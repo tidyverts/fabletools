@@ -4,12 +4,12 @@
 \alias{bias_adjust}
 \title{Bias adjust back-transformation functions}
 \usage{
-bias_adjust(bt_fn, fvar)
+bias_adjust(bt, sd)
 }
 \arguments{
-\item{bt_fn}{The back-transformation function}
+\item{sd}{The forecast standard deviation}
 
-\item{fvar}{The forecast variance}
+\item{bt_fn}{The back-transformation function}
 }
 \description{
 To produce forecast means (instead of forecast medians) it is necessary to adjust the back-transformation function relative to the forecast variance.

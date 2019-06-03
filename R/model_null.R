@@ -2,10 +2,31 @@ train_null_mdl <- function(.data, ...){
   structure(list(n = NROW(.data), vars = measured_vars(.data)), class = "null_mdl")
 }
 
+#' NULL model
+#' 
+#' Create a NULL model definition. This model produces NA forecasts and does not
+#' require any estimation of the data. It is generally used as a placeholder for
+#' models which have encountered an error (see `.safely` in [`model()`]).
+#' 
+#' @param formula Model specification (response variable)
+#' @param ... Unused
+#' 
+#' @keywords internal
+#' @export
 null_model <- function(formula, ...){
   null_model <- new_model_class("null_mdl", train = train_null_mdl, 
                                 specials = new_specials(xreg = function(...) NULL))
   new_model_definition(null_model, formula = !!enquo(formula), ...)
+}
+
+#' @rdname null_model
+#' @param x The object to be tested.
+#' @export
+is_null_model <- function(x){
+  if(is_model(x)){
+    is_null_model(x[["fit"]])
+  }
+  inherits(x, "null_mdl")
 }
 
 #' @export

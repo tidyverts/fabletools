@@ -18,7 +18,6 @@ Depends:
 Imports:
     tsibble (>= 0.8.0),
     ggplot2 (>= 3.0.0),
-    numDeriv,
     tidyselect,
     rlang (>= 0.2.0),
     stats,

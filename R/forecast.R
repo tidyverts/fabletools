@@ -87,22 +87,24 @@ Does your model require extra variables to produce forecasts?", e$message))
   fc <- forecast(object$fit, new_data, specials = specials, ...)
   
   # Modify forecasts with transformations / bias_adjust
-  bt <- map(object$transformation, invert_transformation)
+  bt <- map(object$transformation, function(x){
+    bt <- invert_transformation(x)
+    env <- new_environment(new_data, get_env(bt))
+    req_vars <- setdiff(all.vars(body(bt)), names(formals(bt)))
+    exists_vars <- map_lgl(req_vars, exists, env)
+    if(any(!exists_vars)){
+      abort(sprintf(
+"Unable to find all required variables to back-transform the forecasts (missing %s).
+These required variables can be provided by specifying `new_data`.",
+        paste0("`", req_vars[!exists_vars], "`", collapse = ", ")
+      ))
+    }
+    set_env(bt, env)
+  })
+  
   if(isTRUE(bias_adjust)){
     # Faster version of bias_adjust(bt, fc[["sd"]]^2)(fc[["mean"]]) 
-    adjustment <- map2(fc[["point"]], bt, function(fc, bt) map_dbl(fc, hessian, func = bt))
-
-    fc[["point"]] <- map2(fc[["point"]], bt, function(fc, bt) bt(fc))
-    if(any(map2_lgl(fc[["point"]], adjustment, function(fc, adj) any(!is.na(fc) & is.na(adj))))){
-      warn("Could not bias adjust the point forecasts as the back-transformation's hessian is not well behaved. Consider using a different transformation.")
-    }
-    else if(any(map_lgl(fc[["sd"]], compose(any, is.na)))){
-      warn("Could not bias adjust the point forecasts as the forecast standard deviation is unknown. Perhaps your series is too short or insufficient bootstrap samples are used.")
-    }
-    else{
-      adjustment <- map2(fc[["sd"]], adjustment, function(sd, adj) sd^2/2*adj)
-      fc[["point"]] <- map2(fc[["point"]], adjustment, "+")
-    }
+    fc[["point"]] <- pmap(list(fc[["point"]], fc[["sd"]], bt), function(fc, sd, bt) bias_adjust(bt,sd)(fc))
   }
   else{
     fc[["point"]] <- map2(fc[["point"]], bt, function(fc, bt) bt(fc))

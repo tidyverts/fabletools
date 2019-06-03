@@ -27,6 +27,13 @@ as_dable <- function(x, ...){
 }
 
 #' @rdname as-dable
+#' @export
+as_dable.tbl_df <- function(x, resp, method = NULL, seasons = list(), aliases = list(), ...){
+  as_dable(as_tsibble(x, ...), resp = !!enexpr(resp), method = method,
+           seasons = seasons, aliases = aliases)
+}
+
+#' @rdname as-dable
 #' 
 #' @inheritParams dable
 #' 

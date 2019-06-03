@@ -2,10 +2,14 @@
 % Please edit documentation in R/dable.R
 \name{as_dable}
 \alias{as_dable}
+\alias{as_dable.tbl_df}
 \alias{as_dable.tbl_ts}
 \title{Coerce to a dable object}
 \usage{
 as_dable(x, ...)
+
+\method{as_dable}{tbl_df}(x, resp, method = NULL, seasons = list(),
+  aliases = list(), ...)
 
 \method{as_dable}{tbl_ts}(x, resp, method = NULL, seasons = list(),
   aliases = list(), ...)

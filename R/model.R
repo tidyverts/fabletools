@@ -12,8 +12,11 @@ model <- function(.data, ...){
 }
 
 #' @rdname model
+#' 
+#' @param .safely If a model encounters an error, rather than aborting the process a [NULL model][null_model()] will be returned instead. This allows for an error to occur when computing many models, without losing the results of the successful models.
+#' 
 #' @export
-model.tbl_ts <- function(.data, ...){
+model.tbl_ts <- function(.data, ..., .safely = TRUE){
   nm <- map(enexprs(...), expr_text)
   models <- dots_list(...)
   
@@ -32,6 +35,18 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   
   keys <- key(.data)
   .data <- nest(group_by(.data, !!!keys), .key = "lst_data")
+  
+  if(.safely){
+    estimate <- function(dt, mdl){
+      out <- safely(fablelite::estimate)(dt, mdl)
+      if(is.null(out$result)){
+        f <- quo(!!mdl$formula)
+        f <- set_env(f, mdl$env)
+        out$result <- fablelite::estimate(dt, null_model(!!f))
+      }
+      out
+    }
+  }
   
   if(is_attached("package:future")){
     require_package("future")
@@ -68,6 +83,25 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   fits <- eval_models(models, .data[["lst_data"]])
   names(fits) <- ifelse(nchar(names(models)), names(models), nm)
   fits <- map(fits, add_class, "lst_mdl")
+  
+  # Report errors if estimated safely
+  if(.safely){
+    fits <- imap(fits, function(x, nm){
+      err <- map_lgl(x, function(x) !is.null(x[["error"]]))
+      if((tot_err <- sum(err)) > 0){
+        err_msg <- table(map_chr(x[err], function(x) x[["error"]][["message"]]))
+        warn(
+          sprintf("%i error%s encountered for %s\n%s\n",
+                  tot_err,
+                  if(tot_err > 1) sprintf("s (%i unique)", length(err_msg)) else "", 
+                  nm,
+                  paste0("[", err_msg, "] ", names(err_msg), collapse = "\n")
+          )
+        )
+      }
+      map(x, function(x) x[["result"]])
+    })
+  }
   
   .data %>% 
     transmute(
