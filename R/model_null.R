@@ -19,6 +19,16 @@ null_model <- function(formula, ...){
   new_model_definition(null_model, formula = !!enquo(formula), ...)
 }
 
+#' @rdname null_model
+#' @param x The object to be tested.
+#' @export
+is_null_model <- function(x){
+  if(is_model(x)){
+    is_null_model(x[["fit"]])
+  }
+  inherits(x, "null_mdl")
+}
+
 #' @export
 forecast.null_mdl <- function(object, new_data, ...){
   h <- NROW(new_data)
