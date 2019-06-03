@@ -140,22 +140,26 @@ build_smat <- function(key_data){
     unnest(!!row_col) %>% 
     dplyr::arrange(!!row_col) %>% 
     select(!!expr(-!!row_col)) %>% 
-    map(factor)
+    dplyr::mutate_all(factor) 
+  
+  lvls <- invoke(paste, fct[complete.cases(fct),])
   
   smat <- map(fct, function(x){
     mat <- rep(0, length(x)*length(levels(x)))
     i <- which(!is.na(x))
     j <- as.numeric(x[i])
     mat[i + length(x) * (j-1)] <- 1
-    mat <- matrix(mat, nrow = length(x), ncol = length(levels(x)))
+    mat <- matrix(mat, nrow = length(x), ncol = length(levels(x)),
+                  dimnames = list(NULL, levels(x)))
     mat[is.na(x), ] <- 1
     mat
   })
   
   join_smat <- function(x, y){
     map(split(x, col(x)), `*`, y) %>% 
+      map2(colnames(x), function(S, cn) `colnames<-`(S, paste(cn, colnames(S)))) %>% 
       invoke(cbind, .)
   }
   
-  reduce(smat, join_smat)
+  reduce(smat, join_smat)[,lvls,drop = FALSE]
 }
