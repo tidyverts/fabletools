@@ -142,7 +142,7 @@ build_smat <- function(key_data){
     select(!!expr(-!!row_col)) %>% 
     dplyr::mutate_all(factor) 
   
-  lvls <- invoke(paste, fct[complete.cases(fct),])
+  lvls <- invoke(paste, fct[stats::complete.cases(fct),])
   
   smat <- map(fct, function(x){
     mat <- rep(0, length(x)*length(levels(x)))

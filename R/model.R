@@ -82,7 +82,6 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   
   fits <- eval_models(models, .data[["lst_data"]])
   names(fits) <- ifelse(nchar(names(models)), names(models), nm)
-  fits <- map(fits, add_class, "lst_mdl")
   
   # Report errors if estimated safely
   if(.safely){
@@ -102,6 +101,8 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
       map(x, function(x) x[["result"]])
     })
   }
+  
+  fits <- map(fits, add_class, "lst_mdl")
   
   .data %>% 
     transmute(
