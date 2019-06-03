@@ -103,25 +103,6 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
     })
   }
   
-  # Report errors if estimated safely
-  if(.safely){
-    fits <- imap(fits, function(x, nm){
-      err <- map_lgl(x, function(x) !is.null(x[["error"]]))
-      if((tot_err <- sum(err)) > 0){
-        err_msg <- table(map_chr(x[err], function(x) x[["error"]][["message"]]))
-        warn(
-          sprintf("%i error%s encountered for %s\n%s\n",
-                  tot_err,
-                  if(tot_err > 1) sprintf("s (%i unique)", length(err_msg)) else "", 
-                  nm,
-                  paste0("[", err_msg, "] ", names(err_msg), collapse = "\n")
-          )
-        )
-      }
-      map(x, function(x) x[["result"]])
-    })
-  }
-  
   .data %>% 
     transmute(
       !!!keys,
