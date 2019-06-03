@@ -164,8 +164,9 @@ print.agg_key <- function(x, ...){
 
 #' @export
 format.agg_key <- function(x, ..., na_chr = "<total>"){
+  na_pos <- is.na(x)
   out <- NextMethod(na.encode = FALSE)
-  out[is.na(out)] <- na_chr
+  out[na_pos] <- na_chr
   out 
 }
 
