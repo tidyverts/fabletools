@@ -108,14 +108,24 @@ bias_adjust <- function(bt, sd){
   function(x){
     h <- .Machine$double.eps^(1/4)
     f0 <- bt(x)
-    bt_hessian <- new_function(
-      alist(x = ),
-      possibly(stats::deriv, expr({
-        h <- abs(1e-4 * x) + 1e-4 * (abs(x) < sqrt(.Machine$double.eps/7e-07))
-        structure(list(), hessian = (bt(x + h) - 2 * f0 + bt(x - h))/h^2)
-      }))(body(bt), names(formals(bt))[1], hessian = TRUE),
-      env = env_bury(get_env(bt), bt = bt, f0 = f0, h = h)
-    )
+    
+    # Set up hessian function
+    .x_var <- sym(names(formals(bt)))
+    bt_hessian <- bt
+    
+    # Try for symbolic derivatives
+    body(bt_hessian) <- possibly(stats::deriv, NULL)(
+      body(bt), names(formals(bt))[1], hessian = TRUE)
+    
+    # Fall back to numerical derivatives
+    if(is.null(body(bt_hessian))){
+      body(bt_hessian) <- expr({
+        h <- abs(1e-4 * !!.x_var) + 1e-4 * (abs(!!.x_var) < sqrt(.Machine$double.eps/7e-07))
+        structure(list(), hessian = (bt(!!.x_var + h) - 2 * f0 + bt(!!.x_var - h))/h^2)
+      })
+      environment(bt_hessian) <- env_bury(get_env(bt), bt = bt, f0 = f0, h = h)
+    }
+    
     hessian <- as.numeric(bt_hessian(x)%@%"hessian")
 
     if(any(!is.na(f0) & !is.finite(hessian))){
