@@ -38,7 +38,8 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
   fc_idx <- index(fc[[1]])
   out <- suppressWarnings(unnest(select(as_tibble(object), !!!syms(kv)), fc))
   out[[expr_text(fc[[1]]%@%"dist")]] <- fc %>% map(function(x) x[[expr_text(x%@%"dist")]]) %>% invoke(c, .)
-  out <- build_tsibble(out, key = kv, index = !!fc_idx, interval = fc_interval)
+  out <- build_tsibble(out, key = kv, index = !!fc_idx, interval = fc_interval, 
+                       validate = FALSE)
   as_fable(out, resp = fc[[1]]%@%"response", dist = !!(fc[[1]]%@%"dist"))
 }
 
