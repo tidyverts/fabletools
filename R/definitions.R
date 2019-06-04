@@ -18,7 +18,9 @@ model_definition <- R6::R6Class(NULL,
     },
     initialize = function(formula, ..., .env){
       if(possibly(compose(is.data.frame, eval_tidy), FALSE)(self$formula)){
-        abort("The API for fable models has changed. Read more here: https://github.com/tidyverts/fable/issues/77")
+        abort(
+"A model specification is trained to a dataset using the `model()` function.
+Refer to the documentation in ?model for more details.")
       }
       
       self$formula <- enquo(formula)
