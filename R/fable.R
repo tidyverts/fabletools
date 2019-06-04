@@ -1,12 +1,12 @@
 #' Create a fable object
 #'
-#' @inheritParams tsibble::tsibble
+#' @param ... Arguments passed to [tsibble::tsibble()].
 #' @param resp The response variable (a list of expressions).
 #' @param dist The distribution variable (given as a bare or unquoted variable).
 #'
 #' @export
-fable <- function(..., key = NULL, index, resp, dist, regular = TRUE){
-  tsbl <- tsibble(..., key = !!enquo(key), index = !!enexpr(index), regular = regular)
+fable <- function(..., resp, dist){
+  tsbl <- tsibble(...)
   as_fable(tsbl, resp, !!enquo(dist))
 }
 

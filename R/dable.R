@@ -1,7 +1,7 @@
 #' Create a dable object
 #'
-#' @inheritParams tsibble::tsibble
 #' @inheritParams fable
+#' @param ... Arguments passed to [tsibble::tsibble()].
 #' @param method The name of the decomposition method.
 #' @param seasons A named list describing the structure of seasonal components
 #' (such as `period`, and `base`).
@@ -9,9 +9,8 @@
 #' components.
 #'
 #' @export
-dable <- function(..., key = NULL, index, resp, method = NULL,
-                  seasons = list(), aliases = list(), regular = TRUE){
-  tsbl <- tsibble(..., key = !!enquo(key), index = !!enexpr(index), regular = regular)
+dable <- function(..., resp, method = NULL, seasons = list(), aliases = list()){
+  tsbl <- tsibble(...)
   as_dable(tsbl, !!enexpr(resp), method = method, seasons = seasons, aliases = aliases)
 }
 
