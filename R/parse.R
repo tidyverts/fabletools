@@ -39,15 +39,8 @@ parse_specials <- function(call = NULL, specials = NULL){
   }
   
   # Add required_specials
-  missing_specials <- attr(specials, "required_specials") %>% 
-    .[!(.%in%names(parsed))]
-  
-  parsed <- parsed %>%
-    append(
-      missing_specials %>%
-        map(function(.x) list(call2(.x))) %>%
-        set_names(missing_specials)
-    )
+  missing_specials <- setdiff(attr(specials, "required_specials"), names(parsed))
+  parsed[missing_specials] <- map(missing_specials, compose("list", "call2"))
   
   parsed
 }
