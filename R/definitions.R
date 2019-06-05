@@ -25,10 +25,11 @@ Refer to the documentation in ?model for more details.")
       
       self$formula <- enquo(formula)
       
+      # self$env <- .env
       # Create specials environment with user's scoping
-      specials_env <- new_environment(parent = self$env)
+      specials_env <- new_environment(parent = .env)
       # Set `self` `super`, and `specials` in eval env for special functions
-      fn_env <- new_environment(as.list(self$.__enclos_env__), specials_env)
+      fn_env <- new_environment(as.list(self$.__enclos_env__), self$env)
       env_bind(specials_env, !!!assign_func_envs(self$specials, fn_env))
       self$specials <- structure(
         specials_env,
@@ -40,7 +41,6 @@ Refer to the documentation in ?model for more details.")
       xreg_env <- get_env(self$specials$xreg)
       xreg_env$lag <- self$recall_lag
       
-      self$env <- .env
       
       self$prepare(formula, ...)
       

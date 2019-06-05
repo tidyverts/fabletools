@@ -113,10 +113,9 @@ parse_model_rhs <- function(model){
   # }
   rhs <- model_rhs(model)
   specials <- parse_specials(rhs, specials = model$specials)
-  eval_env <- new_environment(as.list(model$specials), model$env)
   list(
     specials = map(specials, function(.x){
-      map(.x, eval_tidy, data = model$data, env = eval_env)
+      map(.x, eval_tidy, data = model$data, env = model$specials)
     })
   )
 }
