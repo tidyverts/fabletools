@@ -118,18 +118,14 @@ parse_model_rhs <- function(model){
   # if(length(model$specials) == 0){
   #   return(list(specials = NULL))
   # }
-  model_rhs(model) %>%
-    parse_specials(specials = model$specials) %>%
-    map(function(.x){
-      .x %>%
-          map(
-            function(special){
-              eval_tidy(special, data = model$data,
-                        env = new_environment(as.list(model$specials), model$env))
-            }
-          )
-    }) %>%
-    list(specials = .)
+  rhs <- model_rhs(model)
+  specials <- parse_specials(rhs, specials = model$specials)
+  eval_env <- new_environment(as.list(model$specials), model$env)
+  list(
+    specials = map(specials, function(.x){
+      map(.x, eval_tidy, data = model$data, env = eval_env)
+    })
+  )
 }
 
 #' Parse the RHS of the model formula for transformations
