@@ -117,7 +117,7 @@ key_data.mdl_df <- function(x){
 #' @export
 key_vars.mdl_df <- function(x){
   keys <- key_data(x)
-  head(names(keys), -1L)
+  names(keys)[-NCOL(keys)]
 }
 
 #' @export
