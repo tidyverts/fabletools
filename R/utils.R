@@ -165,8 +165,11 @@ nest_keys <- function(.data, nm = "data"){
   if(is_empty(col_nest)){
     col_nest <- rlang::missing_arg()
   }
+  idx <- as_string(index(.data))
+  idx2 <- as_string(index2(.data))
   out[[nm]] <- map(row_indices, function(x, i, j){
-    build_tsibble(x[i,j], index = !!index(x), interval = is_regular(x), validate = FALSE)
+    build_tsibble_meta(x[i,j], index = idx, index2 = idx2,
+                       ordered = is_ordered(x), interval = is_regular(x))
   }, x = .data, j = col_nest)
   out
 }
