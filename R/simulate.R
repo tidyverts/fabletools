@@ -33,7 +33,7 @@ generate.mdl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
   x$.sim <- map2(x[[".fit"]], 
                       x[["new_data"]] %||% rep(list(NULL), length.out = NROW(x)),
                       generate, h = h, times = times, seed = seed, ...)
-  unnest(add_class(x, "lst_ts"), !!sym(".sim"), key = kv)
+  unnest_tsbl(x, ".sim", parent_key = kv)
 }
 
 #' @export

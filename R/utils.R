@@ -75,9 +75,12 @@ bind_new_data <- function(object, new_data){
   if(!is.data.frame(new_data)){
     abort(sprintf("`new_data` requires a data frame. Perhaps you intended to specify the forecast horizon? If so, use `h = %s`.", deparse(new_data)))
   }
-  new_data <- new_data %>% 
-    group_by(!!!syms(key_vars(object))) %>% 
-    nest(.key = "new_data")
+  if(!identical(key_vars(object), key_vars(new_data))){
+    abort("Provided data contains a different key structure to the models.")
+  }
+  
+  new_data <- nest_keys(new_data, "new_data")
+  
   if(length(key_vars(object)) > 0){
     object <- left_join(object, new_data, by = key_vars(object))
   }
@@ -122,4 +125,48 @@ calc <- function(f, ...){
 
 is_dist_normal <- function(dist){
   identical(dist[[1]]$.env$f, env_dist_normal$f) && !dist[[1]]$.env$trans
+}
+
+#' Unnest into a tsibble
+#' 
+#' Similar to tsibble::unnest_tsibble, but less general and faster validation
+#' 
+#' @param .data A dataset containing a listed column of tsibbles
+#' @param tsbl_col The column containing the tsibble to be unnested
+#' @param parent_key The keys from data to be joined with keys from the nested tsibble
+#' @param interval If NULL, the interval will be taken from the first tsibble, otherwise defaults to [[tsibble::build_tsibble()]] functionality.
+unnest_tsbl <- function(.data, tsbl_col, parent_key = NULL, interval = NULL){
+  tsbl <- .data[[tsbl_col]][[1L]]
+  if (!is_tsibble(tsbl)) {
+    abort("Unnested column is not a tsibble object.")
+  }
+  idx <- index(tsbl)
+  
+  row_indices <- rep.int(seq_len(NROW(.data)), map_int(.data[[tsbl_col]], NROW))
+  .data <- dplyr::bind_cols(
+    .data[row_indices, setdiff(names(.data), tsbl_col)], # Parent cols
+    dplyr::bind_rows(!!!.data[[tsbl_col]]) # Nested cols
+  )
+  
+  key <- c(parent_key, key_vars(tsbl))
+  idx_chr <- as_string(idx)
+  class(.data[[idx_chr]]) <- class(tsbl[[idx_chr]])
+  build_tsibble(.data, key = !!key, index = !!idx, 
+                index2 = !!index2(tsbl), ordered = is_ordered(tsbl), 
+                interval = interval%||%interval(tsbl))
+}
+
+nest_keys <- function(.data, nm = "data"){
+  out <- key_data(.data)
+  key <- key_vars(.data)
+  row_indices <- out[[NCOL(out)]]
+  out[[NCOL(out)]] <- NULL
+  col_nest <- -match(key, colnames(.data))
+  if(is_empty(col_nest)){
+    col_nest <- rlang::missing_arg()
+  }
+  out[[nm]] <- map(row_indices, function(x, i, j){
+    build_tsibble(x[i,j], index = !!index(x), interval = is_regular(x), validate = FALSE)
+  }, x = .data, j = col_nest)
+  out
 }

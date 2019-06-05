@@ -29,18 +29,17 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
   object <- gather(object, ".model", ".fit", !!!syms(mdls))
   
   # Evaluate forecasts
-  fc <- map2(object$.fit,
-             object[["new_data"]] %||% rep(list(NULL), length.out = NROW(object)),
-             forecast, h = h, bias_adjust = bias_adjust, ...)
+  object$.fc <- map2(object$.fit,
+                     object[["new_data"]] %||% rep(list(NULL), length.out = NROW(object)),
+                     forecast, h = h, bias_adjust = bias_adjust, ...)
   
   # Construct fable
-  fc_interval <- interval(fc[[1]])
-  fc_idx <- index(fc[[1]])
-  out <- suppressWarnings(unnest(select(as_tibble(object), !!!syms(kv)), fc))
-  out[[expr_text(fc[[1]]%@%"dist")]] <- fc %>% map(function(x) x[[expr_text(x%@%"dist")]]) %>% invoke(c, .)
-  out <- build_tsibble(out, key = kv, index = !!fc_idx, interval = fc_interval, 
-                       validate = FALSE)
-  as_fable(out, resp = fc[[1]]%@%"response", dist = !!(fc[[1]]%@%"dist"))
+  fbl_attr <- attributes(object$.fc[[1]])
+  out <- suppressWarnings(
+    unnest_tsbl(as_tibble(object)[c(kv, ".fc")], ".fc", parent_key = kv)
+  )
+  out[[expr_text(fbl_attr$dist)]] <- invoke(c, map(object$.fc, function(x) x[[expr_text(x%@%"dist")]]))
+  as_fable(out, resp = fbl_attr$response, dist = !!fbl_attr$dist)
 }
 
 #' @export

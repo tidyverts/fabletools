@@ -8,7 +8,7 @@ fitted.mdl_df <- function(object, ...){
     !!sym(".model"),
     fitted = map(!!sym(".fit"), fitted, ...)
   )
-  unnest(add_class(out, "lst_ts"), key = kv)
+  unnest_tsbl(out, "fitted", parent_key = kv)
 }
 
 #' @export

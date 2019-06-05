@@ -168,7 +168,7 @@ new_decomposition <- function(.class, .data, ..., .env = caller_env(n = 2)){
   dcmp <- new_model_definition(.class, ..., .env = .env)
   
   kv <- key_vars(.data)
-  .data <- nest(group_by(.data, !!!syms(kv)), .key = "lst_data")
+  .data <- nest_keys(.data, "lst_data")
   
   if(NROW(.data) == 0){
     abort("There is no data to decompose!")
@@ -180,7 +180,7 @@ new_decomposition <- function(.class, .data, ..., .env = caller_env(n = 2)){
                 }, dcmp))
   
   attrs <- combine_dcmp_attr(out[["dcmp"]])
-  out <- unnest(out, !!sym("dcmp"), key = kv)
+  out <- unnest_tsbl(out, "dcmp", parent_key = kv)
   as_dable(out, method = attrs[["method"]], resp = !!attrs[["response"]],
            seasons = attrs[["seasons"]], aliases = attrs[["aliases"]])
 }

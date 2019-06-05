@@ -34,7 +34,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   pb <- dplyr::progress_estimated(num_est, min_time = 5)
   
   keys <- key(.data)
-  .data <- nest(group_by(.data, !!!keys), .key = "lst_data")
+  .data <- nest_keys(.data, "lst_data")
   
   if(.safely){
     estimate <- function(dt, mdl){

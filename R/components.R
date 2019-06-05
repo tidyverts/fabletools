@@ -6,7 +6,7 @@ components.mdl_df <- function(object, ...){
                       !!!syms(kv), !!sym(".model"),
                       cmp = map(!!sym(".fit"), components))
   attrs <- combine_dcmp_attr(object[["cmp"]])
-  object <- unnest(add_class(object, "lst_ts"), key = kv)
+  object <- unnest_tsbl(object, "cmp", parent_key = kv)
   as_dable(object, method = attrs[["method"]], resp = !!attrs[["response"]],
            seasons = attrs[["seasons"]], aliases = attrs[["aliases"]])
 }
