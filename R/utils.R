@@ -127,14 +127,14 @@ is_dist_normal <- function(dist){
   identical(dist[[1]]$.env$f, env_dist_normal$f) && !dist[[1]]$.env$trans
 }
 
-#' Unnest into a tsibble
-#' 
-#' Similar to tsibble::unnest_tsibble, but less general and faster validation
-#' 
-#' @param .data A dataset containing a listed column of tsibbles
-#' @param tsbl_col The column containing the tsibble to be unnested
-#' @param parent_key The keys from data to be joined with keys from the nested tsibble
-#' @param interval If NULL, the interval will be taken from the first tsibble, otherwise defaults to [[tsibble::build_tsibble()]] functionality.
+# Unnest into a tsibble
+# 
+# Similar to tsibble::unnest_tsibble, but less general and faster validation
+# 
+# @param .data A dataset containing a listed column of tsibbles
+# @param tsbl_col The column containing the tsibble to be unnested
+# @param parent_key The keys from data to be joined with keys from the nested tsibble
+# @param interval If NULL, the interval will be taken from the first tsibble, otherwise defaults to [[tsibble::build_tsibble()]] functionality.
 unnest_tsbl <- function(.data, tsbl_col, parent_key = NULL, interval = NULL){
   tsbl <- .data[[tsbl_col]][[1L]]
   if (!is_tsibble(tsbl)) {
