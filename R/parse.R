@@ -232,8 +232,10 @@ parse_model_lhs <- function(model){
     new_transformation
   )
   
-  # Test transformations to see if they are valid
-  map2(transformations, responses, function(trans, resp){
+  # Test combinations of transformations to see if they are valid
+  comb_trans <- map_lgl(transformations, function(x) 
+    length(all.names(body(x))) > length(all.vars(body(x))) + 1)
+  map2(transformations[comb_trans], responses[comb_trans], function(trans, resp){
     dt <- model$data
     environment(trans) <- new_environment(dt, get_env(trans))
     inv <- invert_transformation(trans)
