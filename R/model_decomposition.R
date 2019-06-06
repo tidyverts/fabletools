@@ -140,3 +140,18 @@ dcmp_model <- function(...){
 model_sum.decomposition_model <- function(x){
   paste(x%@%"dcmp_method", "decomposition model")
 }
+
+#' @export
+report.model_combination <- function(x){
+  comb_expr <- traverse(
+    x, .f = function(resp, comb) eval(expr(substitute(!!comb, resp))),
+    .h = function(x) if(is_model(x)) x[["response"]][[1]] else x%@%"combination",
+    base = is_model)
+  
+  cmbn <- sprintf("Combination: %s", expr_text(comb_expr))
+  cat(sprintf("%s\n\n%s\n\n", cmbn, strrep("=", nchar(cmbn))))
+  
+  traverse(x, .h = function(x) if(is_model(x)) {report(x);cat("\n")}, base = is_model)
+  
+  invisible(x)
+}
