@@ -13,7 +13,7 @@ features_impl <- function(.tbl, .var, features, ...){
   .resp <- map(.var, eval_tidy, data = .tbl)
   key_dt <- key_data(.tbl)
   out <- map(.resp, function(x){
-    tbl <- map2(features, names(features), function(fn, nm){
+    tbl <- imap(features, function(fn, nm){
       fmls <- formals(fn)[-1]
       tbl <- invoke(dplyr::bind_rows, map(key_dt[[".rows"]], function(i){
         do.call(fn, c(list(x[i]), dots[intersect(names(fmls), names(dots))]))
