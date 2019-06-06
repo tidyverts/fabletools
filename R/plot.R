@@ -108,6 +108,8 @@ autoplot.mable <- function(object, ...){
 fortify.fbl_ts <- function(object, level = c(80, 95)){
   resp <- object%@%"response"
   dist <- object%@%"dist"
+  idx <- index(object)
+  kv <- key_vars(object)
   
   if(length(resp) > 1){
     object <- object %>%
@@ -129,28 +131,25 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
     object <- gather(object, ".rm", ".hilo", !!!syms(as.character(level)))
     
     if(length(resp) > 1){
-      object <- unnest(object, !!!syms(c(".response", "value", ".hilo")),
-                       key = ".response")
+      object <- unnest_tbl(object, c(".response", "value", ".hilo"))
       resp <- syms("value")
+      kv <- c(kv, ".response")
     }
     else{
-      object <- unnest(object, !!sym(".hilo"))
+      object <- unnest_tbl(object, ".hilo")
     }
+    kv <- c(kv, ".level")
     
-    # Fix level in key structure
-    kv <- key_vars(object)
-    kv[kv==".rm"] <- ".level"
-    object <- select(update_tsibble(object, key = kv), !!expr(-!!sym(".rm")))
+    # Drop temporary col
+    object[".rm"] <- NULL
   }
   else if (length(resp) > 1) {
-    resp <- syms("value")
-    
-    object <- object %>% 
-      unnest(!!sym(".response"), !!!resp, key = ".response")
+    object <- unnest_tbl(object, c(".response", "value"))
+    kv <- c(kv, ".response")
   }
   
-  as_tsibble(object) %>% 
-    select(!!!syms(setdiff(colnames(object), expr_text(dist))))
+  as_tsibble(object[setdiff(colnames(object), expr_text(dist))],
+             key = kv, index = !!idx, validate = FALSE) 
 }
 
 #' @importFrom ggplot2 facet_wrap

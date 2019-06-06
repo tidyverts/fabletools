@@ -135,12 +135,20 @@ is_dist_normal <- function(dist){
 # @param tbl_col/tsbl_col The column containing the tibble/tsibble to be unnested
 # @param parent_key The keys from data to be joined with keys from the nested tsibble
 # @param interval If NULL, the interval will be taken from the first tsibble, otherwise defaults to [[tsibble::build_tsibble()]] functionality.
-unnest_tbl <- function(.data, tbl_col, .sep = "_"){
+unnest_tbl <- function(.data, tbl_col, .sep = NULL){
   row_indices <- rep.int(seq_len(NROW(.data)), map_int(.data[[tbl_col[[1]]]], NROW))
   
-  nested_cols <- map(tbl_col, function(x) dplyr::bind_rows(!!!.data[[x]]))
+  nested_cols <- map(tbl_col, function(x){
+    lst_col <- .data[[x]]
+    if(is.data.frame(lst_col[[1]])){
+      dplyr::bind_rows(!!!set_names(lst_col, rep(x, length(lst_col))))
+    }
+    else{
+      list2(!!x := unlist(lst_col))
+    }
+  })
   
-  if(length(tbl_col) > 1){
+  if(!is.null(.sep)){
     nested_cols <- map2(
       nested_cols, tbl_col,
       function(x, nm) set_names(x, paste(nm, colnames(x), sep = .sep))
