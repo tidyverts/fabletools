@@ -4,7 +4,7 @@ features_impl <- function(.tbl, .var, features, ...){
   if(is_function(features)){
     features <- list(features)
   }
-  features <- map(squash(features), rlang::as_function)
+  features <- map(squash(features), as_function)
   
   if(is.null(dots$.period)){
     dots$.period <- get_frequencies(NULL, .tbl, .auto = "smallest")
@@ -15,11 +15,12 @@ features_impl <- function(.tbl, .var, features, ...){
   out <- map(.resp, function(x){
     tbl <- imap(features, function(fn, nm){
       fmls <- formals(fn)[-1]
+      fn_safe <- possibly(fn, tibble(.rows = 1))
       tbl <- invoke(dplyr::bind_rows, map(key_dt[[".rows"]], function(i){
-        do.call(fn, c(list(x[i]), dots[intersect(names(fmls), names(dots))]))
+        do.call(fn_safe, c(list(x[i]), dots[intersect(names(fmls), names(dots))]))
       }))
       if(is.character(nm) && nzchar(nm)){
-        tbl <- set_names(tbl, paste(nm, colnames(tbl), sep = "_"))
+        tbl <- set_names(tbl, sprintf("%s_%s", nm, colnames(tbl)))
       }
       tbl
     })
@@ -28,7 +29,7 @@ features_impl <- function(.tbl, .var, features, ...){
   
   if(!is.null(names(out))){
     out <- imap(out, function(tbl, nm){
-      set_names(tbl, paste(nm, colnames(tbl), sep = "_"))
+      set_names(tbl, sprintf("%s_%s", nm, colnames(tbl)))
     })
   }
   
