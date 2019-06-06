@@ -1,7 +1,41 @@
-tbl_features <- function(features){
-  function(...){
-    list(as_tibble(squash(map(features, function(.fn, ...) as.list(.fn(...)), ...))))
+features_impl <- function(.tbl, .var, features, ...){
+  dots <- dots_list(...)
+  
+  if(is_function(features)){
+    features <- list(features)
   }
+  features <- map(squash(features), rlang::as_function)
+  
+  if(is.null(dots$.period)){
+    dots$.period <- get_frequencies(NULL, .tbl, .auto = "smallest")
+  }
+  
+  .resp <- map(.var, eval_tidy, data = .tbl)
+  key_dt <- key_data(.tbl)
+  out <- map(.resp, function(x){
+    tbl <- map2(features, names(features), function(fn, nm){
+      fmls <- formals(fn)[-1]
+      tbl <- invoke(dplyr::bind_rows, map(key_dt[[".rows"]], function(i){
+        do.call(fn, c(list(x[i]), dots[intersect(names(fmls), names(dots))]))
+      }))
+      if(is.character(nm) && nzchar(nm)){
+        tbl <- set_names(tbl, paste(nm, colnames(tbl), sep = "_"))
+      }
+      tbl
+    })
+    invoke(dplyr::bind_cols, tbl)
+  })
+  
+  if(!is.null(names(out))){
+    out <- imap(out, function(tbl, nm){
+      set_names(tbl, paste(nm, colnames(tbl), sep = "_"))
+    })
+  }
+  
+  dplyr::bind_cols(
+    key_dt[-NCOL(key_dt)],
+    !!!out
+  )
 }
 
 #' Extract features from a dataset
@@ -19,13 +53,6 @@ features <- function(.tbl, .var, features, ...){
 
 #' @export
 features.tbl_ts <- function(.tbl, .var = NULL, features = list(), ...){
-  dots <- dots_list(...)
-  
-  if(is_function(features)){
-    features <- list(features)
-  }
-  features <- map(squash(features), rlang::as_function)
-  
   .var <- enquo(.var)
   if(quo_is_null(.var)){
     inform(sprintf(
@@ -38,17 +65,7 @@ features.tbl_ts <- function(.tbl, .var = NULL, features = list(), ...){
     abort("`features()` only supports a single variable. To compute features across multiple variables consider scoped variants like `features_at()`")
   }
   
-  if(is.null(dots$.period)){
-    dots$.period <- get_frequencies(NULL, .tbl, .auto = "smallest")
-  }
-  
-  as_tibble(.tbl) %>%
-    group_by(!!!key(.tbl)) %>%
-    dplyr::summarise(
-      .funs = tbl_features(features)(!!.var, !!!dots),
-    ) %>%
-    unnest_tbl(".funs") %>%
-    dplyr::ungroup()
+  features_impl(.tbl, list(.var), features, ...)
 }
 
 #' @rdname features
@@ -59,32 +76,8 @@ features_at <- function(.tbl, .vars, features, ...){
 
 #' @export
 features_at.tbl_ts <- function(.tbl, .vars = NULL, features = list(), ...){
-  dots <- dots_list(...)
-  
-  if(is_function(features)){
-    features <- list(features)
-  }
-  features <- map(squash(features), rlang::as_function)
-  
-  quo_vars <- enquo(.vars)
-  if(!possibly(compose(is_quosures, eval_tidy), FALSE)(.vars)){
-    .vars <- new_quosures(list(quo_vars))
-  }
-  
-  if(is.null(dots$.period)){
-    dots$.period <- get_frequencies(NULL, .tbl, .auto = "smallest")
-  }
-  
-  as_tibble(.tbl) %>%
-    group_by(!!!key(.tbl), !!!dplyr::groups(.tbl)) %>%
-    dplyr::summarise_at(
-      .vars = .vars,
-      .funs = tbl_features(features),
-      !!!dots
-    ) %>%
-    unnest_tbl(., .sep = "_",
-               setdiff(colnames(.), c(key_vars(.tbl), dplyr::group_vars(.tbl)))) %>%
-    dplyr::ungroup()
+  .vars <- syms(tidyselect::vars_select(names(.tbl), !!!enquo(.vars)))
+  features_impl(.tbl, syms(.vars), features = features, ...)
 }
 
 #' @rdname features
@@ -95,8 +88,7 @@ features_all <- function(.tbl, features, ...){
 
 #' @export
 features_all.tbl_ts <- function(.tbl, features = list(), ...){
-  features_at(.tbl, .vars = as_quosures(syms(measured_vars(.tbl)), empty_env()),
-              features = features, ...)
+  features_impl(.tbl, syms(measured_vars(.tbl)), features = features, ...)
 }
 
 #' @rdname features
@@ -107,8 +99,7 @@ features_if <- function(.tbl, .predicate, features, ...){
 
 #' @export
 features_if.tbl_ts <- function(.tbl, .predicate, features = list(), ...){
-  mv_if <- map_lgl(.tbl[measured_vars(.tbl)], rlang::as_function(.predicate))
-  features_at(.tbl,
-              .vars = as_quosures(syms(measured_vars(.tbl)[mv_if]), empty_env()),
-              features = features, ...)
+  .vars <- measured_vars(.tbl)
+  .vars <- .vars[map_lgl(.tbl[.vars], rlang::as_function(.predicate))]
+  features_impl(.tbl, syms(.vars), features = features, ...)
 }
