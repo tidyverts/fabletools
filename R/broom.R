@@ -41,7 +41,7 @@ glance.mdl_df <- function(x, ...){
   keys <- key(x)
   x <- transmute(as_tibble(x),
                  !!!keys, !!sym(".model"), glanced = map(!!sym(".fit"), glance))
-  unnest(x, !!sym("glanced"))
+  unnest_tbl(x, "glanced")
 }
 
 #' @export
@@ -55,7 +55,7 @@ tidy.mdl_df <- function(x, ...){
   keys <- key(x)
   x <- transmute(as_tibble(x),
                  !!!keys, !!sym(".model"), tidied = map(!!sym(".fit"), tidy))
-  unnest(x, !!sym("tidied"))
+  unnest_tbl(x, "tidied")
 }
 
 #' @export

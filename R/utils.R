@@ -127,33 +127,62 @@ is_dist_normal <- function(dist){
   identical(dist[[1]]$.env$f, env_dist_normal$f) && !dist[[1]]$.env$trans
 }
 
-# Unnest into a tsibble
+# Unnest nested tibble/tsibble
 # 
 # Similar to tsibble::unnest_tsibble, but less general and faster validation
 # 
 # @param .data A dataset containing a listed column of tsibbles
-# @param tsbl_col The column containing the tsibble to be unnested
+# @param tbl_col/tsbl_col The column containing the tibble/tsibble to be unnested
 # @param parent_key The keys from data to be joined with keys from the nested tsibble
 # @param interval If NULL, the interval will be taken from the first tsibble, otherwise defaults to [[tsibble::build_tsibble()]] functionality.
+unnest_tbl <- function(.data, tbl_col, .sep = "_"){
+  row_indices <- rep.int(seq_len(NROW(.data)), map_int(.data[[tbl_col[[1]]]], NROW))
+  
+  nested_cols <- map(tbl_col, function(x) dplyr::bind_rows(!!!.data[[x]]))
+  
+  if(length(tbl_col) > 1){
+    nested_cols <- map2(
+      nested_cols, tbl_col,
+      function(x, nm) set_names(x, paste(nm, colnames(x), sep = .sep))
+    )
+  }
+  
+  dplyr::bind_cols(
+    .data[row_indices, setdiff(names(.data), tbl_col)], # Parent cols
+    !!!nested_cols # Nested cols
+  )
+}
+
 unnest_tsbl <- function(.data, tsbl_col, parent_key = NULL, interval = NULL){
   tsbl <- .data[[tsbl_col]][[1L]]
   if (!is_tsibble(tsbl)) {
     abort("Unnested column is not a tsibble object.")
   }
   idx <- index(tsbl)
-  
-  row_indices <- rep.int(seq_len(NROW(.data)), map_int(.data[[tsbl_col]], NROW))
-  .data <- dplyr::bind_cols(
-    .data[row_indices, setdiff(names(.data), tsbl_col)], # Parent cols
-    dplyr::bind_rows(!!!.data[[tsbl_col]]) # Nested cols
-  )
-  
-  key <- c(parent_key, key_vars(tsbl))
   idx_chr <- as_string(idx)
+  key <- c(parent_key, key_vars(tsbl))
+  
+  .data <- unnest_tbl(.data, tsbl_col)
+  
   class(.data[[idx_chr]]) <- class(tsbl[[idx_chr]])
-  build_tsibble(.data, key = !!key, index = !!idx, 
-                index2 = !!index2(tsbl), ordered = is_ordered(tsbl), 
+  build_tsibble(.data, key = !!key, index = !!idx,
+                index2 = !!index2(tsbl), ordered = is_ordered(tsbl),
                 interval = interval%||%interval(tsbl))
+}
+
+nest_grps <- function(.data, nm = "data"){
+  out <- dplyr::group_data(.data)
+  grps <- dplyr::group_vars(.data)
+  row_indices <- out[[NCOL(out)]]
+  out[[NCOL(out)]] <- NULL
+  col_nest <- -match(grps, colnames(.data))
+  if(is_empty(col_nest)){
+    col_nest <- rlang::missing_arg()
+  }
+  out[[nm]] <- map(row_indices, function(x, i, j){
+    out <- x[i,j]
+  }, x = .data, j = col_nest)
+  out
 }
 
 nest_keys <- function(.data, nm = "data"){
@@ -168,7 +197,8 @@ nest_keys <- function(.data, nm = "data"){
   idx <- as_string(index(.data))
   idx2 <- as_string(index2(.data))
   out[[nm]] <- map(row_indices, function(x, i, j){
-    build_tsibble(x[i,j], index = idx, index2 = idx2,
+    out <- x[i,j]
+    build_tsibble(out, index = idx, index2 = idx2,
                   ordered = is_ordered(x), interval = is_regular(x),
                   validate = FALSE)
   }, x = .data, j = col_nest)

@@ -161,7 +161,8 @@ accuracy <- function(object, ...){
 accuracy.mdl_df <- function(object, measures = point_measures, ...){
   as_tibble(object) %>% 
     gather(".model", "fit", !!!syms(object%@%"models")) %>% 
-    unnest(fit = map(!!sym("fit"), accuracy, measures = measures, ...))
+    mutate(fit = map(!!sym("fit"), accuracy, measures = measures, ...)) %>% 
+    unnest_tbl("fit")
 }
 
 #' @export
@@ -202,17 +203,14 @@ accuracy.mdl_ts <- function(object, measures = point_measures, ...){
   measures <- squash(measures)
   
   aug %>% 
-    nest(.key = ".accuracy_inputs") %>% 
+    nest_grps(nm = ".accuracy") %>% 
     mutate(
-      .accuracy_inputs = map(!!sym(".accuracy_inputs"), compose(flatten, transpose))
-    ) %>% 
-    unnest(
       .type = "Training",
-      map(!!sym(".accuracy_inputs"), 
-          function(measures, inputs) as_tibble(map(measures, do.call, inputs)),
-          measures = measures),
-      .drop = TRUE
-    )
+      .accuracy = map(!!sym(".accuracy"), function(measures, inputs){
+        as_tibble(map(measures, do.call, flatten(transpose(inputs))))},
+        measures = measures)
+    ) %>% 
+    unnest_tbl(".accuracy")
 }
 
 #' @param data A dataset containing the complete model dataset (both training and test data). The training portion of the data will be used in the computation of some accuracy measures, and the test data is used to compute the forecast errors.
@@ -298,15 +296,12 @@ accuracy.fbl_ts <- function(object, data, measures = point_measures, ...,
   
   aug %>% 
     group_by(!!!grp) %>% 
-    nest(.key = ".accuracy_inputs") %>% 
+    nest_grps(nm = ".accuracy") %>% 
     mutate(
-      .accuracy_inputs = map(!!sym(".accuracy_inputs"), compose(flatten, transpose))
-    ) %>% 
-    unnest(
       .type = "Test",
-      map(!!sym(".accuracy_inputs"), 
-          function(measures, inputs) as_tibble(map(measures, do.call, inputs)),
-          measures = measures),
-      .drop = TRUE
-    )
+      .accuracy = map(!!sym(".accuracy"), function(measures, inputs){
+        as_tibble(map(measures, do.call, flatten(transpose(inputs))))},
+        measures = measures)
+    ) %>% 
+    unnest_tbl(".accuracy")
 }
