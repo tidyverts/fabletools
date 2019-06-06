@@ -88,7 +88,8 @@ features_all <- function(.tbl, features, ...){
 
 #' @export
 features_all.tbl_ts <- function(.tbl, features = list(), ...){
-  features_impl(.tbl, syms(measured_vars(.tbl)), features = features, ...)
+  .vars <- measured_vars(.tbl)
+  features_impl(.tbl, set_names(syms(.vars), .vars), features = features, ...)
 }
 
 #' @rdname features
@@ -101,5 +102,5 @@ features_if <- function(.tbl, .predicate, features, ...){
 features_if.tbl_ts <- function(.tbl, .predicate, features = list(), ...){
   .vars <- measured_vars(.tbl)
   .vars <- .vars[map_lgl(.tbl[.vars], rlang::as_function(.predicate))]
-  features_impl(.tbl, syms(.vars), features = features, ...)
+  features_impl(.tbl, set_names(syms(.vars), .vars), features = features, ...)
 }
