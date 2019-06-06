@@ -82,7 +82,8 @@ features_at.tbl_ts <- function(.tbl, .vars = NULL, features = list(), ...){
       .funs = tbl_features(features),
       !!!dots
     ) %>%
-    unnest_tbl(., setdiff(colnames(.), c(key_vars(.tbl), dplyr::group_vars(.tbl)))) %>%
+    unnest_tbl(., .sep = "_",
+               setdiff(colnames(.), c(key_vars(.tbl), dplyr::group_vars(.tbl)))) %>%
     dplyr::ungroup()
 }
 
