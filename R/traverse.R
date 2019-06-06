@@ -7,7 +7,7 @@
 #' @param base The base case for the recursion
 #' 
 #' @export
-traverse <-  function(x, .f = identity, .g = identity, .h = identity, base = function(.x) is_syntactic_literal(.x) || is_symbol(.x)){
+traverse <- function(x, .f = list, .g = identity, .h = identity, base = function(.x) is_syntactic_literal(.x) || is_symbol(.x)){
   # base case
   if(base(x))
     return(.h(x))

@@ -4,7 +4,7 @@
 \alias{traverse}
 \title{Recursively traverse an object}
 \usage{
-traverse(x, .f = identity, .g = identity, .h = identity,
+traverse(x, .f = list, .g = identity, .h = identity,
   base = function(.x) is_syntactic_literal(.x) || is_symbol(.x))
 }
 \arguments{
