@@ -76,7 +76,7 @@ features_at <- function(.tbl, .vars, features, ...){
 
 #' @export
 features_at.tbl_ts <- function(.tbl, .vars = NULL, features = list(), ...){
-  .vars <- syms(tidyselect::vars_select(names(.tbl), !!!enquo(.vars)))
+  .vars <- syms(tidyselect::vars_select(names(.tbl), !!!.vars))
   features_impl(.tbl, syms(.vars), features = features, ...)
 }
 
