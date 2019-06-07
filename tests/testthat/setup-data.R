@@ -1,22 +1,23 @@
 context("setup-data.R")
 
-UKLungDeaths <- as_tsibble(cbind(mdeaths, fdeaths))
-USAccDeaths <- as_tsibble(USAccDeaths)
+us_deaths <- as_tsibble(USAccDeaths)
+lung_deaths_long <- as_tsibble(cbind(mdeaths, fdeaths))
+lung_deaths_wide <- as_tsibble(cbind(mdeaths, fdeaths), pivot_longer = FALSE)
 
-mbl <- USAccDeaths %>%
+mbl <- us_deaths %>%
   model(fable::ETS(value))
 fbl <- mbl %>% forecast
 
-mbl_multi <- UKLungDeaths %>%
+mbl_multi <- lung_deaths_long %>%
   model(fable::ETS(value))
 fbl_multi <- mbl_multi %>% forecast
 
-mbl_complex <- UKLungDeaths %>% 
+mbl_complex <- lung_deaths_long %>% 
   model(ets = fable::ETS(value), lm = fable::TSLM(value ~ trend() + season()))
 fbl_complex <- mbl_complex %>% forecast
 
-# dbl <- USAccDeaths %>%
-#   tsibblestats::STL(value)
+# dbl <- us_deaths %>%
+#   feasts::STL(value)
 # 
-# dbl_multi <- UKLungDeaths %>%
-#   tsibblestats::STL(value)
+# dbl_multi <- us_deaths %>%
+#   feasts::STL(value)

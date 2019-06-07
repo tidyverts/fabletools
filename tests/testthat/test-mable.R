@@ -13,7 +13,7 @@ test_that("Mable fitted values", {
   fits <- fitted(mbl)
   expect_true(is_tsibble(fits))
   expect_true(all(colnames(fits) %in% c(".model", "index", ".fitted")))
-  expect_equal(fits[["index"]], USAccDeaths[["index"]])
+  expect_equal(fits[["index"]], us_deaths[["index"]])
   expect_equal(
     fits[[".fitted"]],
     fitted(mbl[[attr(mbl,"models")[[1]]]][[1]])[[".fitted"]]
@@ -24,7 +24,7 @@ test_that("Mable fitted values", {
   expect_equal(key_vars(fits), c("key", ".model"))
   expect_true(all(colnames(fits) %in% c("key", ".model", "index", ".fitted")))
   expect_equal(unique(fits[["key"]]), mbl_multi[["key"]])
-  expect_equal(fits[["index"]], UKLungDeaths[["index"]])
+  expect_equal(fits[["index"]], lung_deaths_long[["index"]])
   expect_equal(fits[[".fitted"]],
                as.numeric(c(
                  fitted(mbl_multi[[attr(mbl,"models")[[1]]]][[1]])[[".fitted"]],
@@ -37,7 +37,7 @@ test_that("Mable residuals", {
   resids <- residuals(mbl)
   expect_true(is_tsibble(resids))
   expect_true(all(colnames(resids) %in% c(".model", "index", ".resid")))
-  expect_equal(resids[["index"]], USAccDeaths[["index"]])
+  expect_equal(resids[["index"]], us_deaths[["index"]])
   expect_equal(resids[[".resid"]], as.numeric(residuals(mbl[[attr(mbl,"models")[[1]]]][[1]])[[".resid"]]))
   
   resids <- residuals(mbl_multi)
@@ -45,7 +45,7 @@ test_that("Mable residuals", {
   expect_equal(key_vars(resids), c("key", ".model"))
   expect_true(all(colnames(resids) %in% c("key", ".model", "index", ".resid")))
   expect_equal(unique(resids[["key"]]), mbl_multi[["key"]])
-  expect_equal(resids[["index"]], UKLungDeaths[["index"]])
+  expect_equal(resids[["index"]], lung_deaths_long[["index"]])
   expect_equal(resids[[".resid"]], 
                as.numeric(c(
                  residuals(mbl_multi[[attr(mbl,"models")[[1]]]][[1]])[[".resid"]],
