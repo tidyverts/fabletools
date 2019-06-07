@@ -110,10 +110,10 @@ features_if.tbl_ts <- function(.tbl, .predicate, features = list(), ...){
 feature_table <- function() {
   table <- new.env(parent = emptyenv())
   list(
-    add = function(fn, tags) {
+    add = function(fn, fn_name, tags) {
       pkg <- environmentName(environment(feasts:::features_acf))
       table[[pkg]] <- as.list(table[[pkg]])
-      table[[pkg]][[length(table[[pkg]]) + 1]] <- list(fn = fn, tags = tags)
+      table[[pkg]][[fn_name]] <- list(fn = fn, tags = tags)
     },
     get = function(pkg) {
       if(is.null(pkg)){
@@ -136,7 +136,9 @@ feature_table <- feature_table()
 #' 
 #' @export
 register_feature <- function(fn, tags){
-  feature_table$add(fn, tags)
+  nm <- enexpr(fn)
+  nm <- if(is_call(nm)) call_name(fn) else as_string(nm)
+  feature_table$add(fn, nm, tags)
 }
 
 #' Create a feature set from tags
@@ -152,5 +154,5 @@ feature_set <- function(package = NULL, tags = NULL){
   if(!is.null(tags)){
     f_set <- f_set[map_lgl(f_set, function(x) any(x[["tags"]] %in% tags))]
   }
-  map(f_set, `[[`, "fn")
+  unname(map(f_set, `[[`, "fn"))
 }
