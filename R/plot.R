@@ -184,8 +184,13 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
     }
   }
 
+  # Change colours to be more appropriate for later facets
+  fc_layer <- autolayer(object, level = level, ...)
+  fc_layer$mapping$colour <- set_expr(fc_layer$mapping$colour, sym(".model"))
+  
   p <- ggplot(data, aes(x = !!index(object), y = !!aes_y)) + 
-    autolayer(object, level = level, ...)
+    fc_layer
+    
   if(!is.null(data)){
     p <- p + geom_line()
   }
@@ -209,8 +214,8 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   key_data <- key_data(object)
   distinct_mdls <- duplicated(key_data[[".model"]])
   data <- fortify(object, level = level)
-
   if(length(object%@%"response") > 1){
+
     resp <- sym("value")
     grp <- syms(".response")
   }
