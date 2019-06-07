@@ -14,18 +14,20 @@ autoplot.tbl_ts <- function(object, .vars = NULL, ...){
       "Plot variable not specified, automatically selected `.vars = %s`",
       measured_vars(object)[1]
     ))
-    .vars <- as_quosures(syms(measured_vars(object)[1]), env = empty_env())
+    y <- sym(measured_vars(object)[1])
+    .vars <- as_quosures(list(y), env = empty_env())
   }
-  else if(!possibly(compose(is_quosures, eval_tidy), FALSE)(.vars)){
-    .vars <- new_quosures(list(quo_vars))
-  }
-  
-  if(length(.vars) > 1){
-    object <- gather(object, ".response", "value", !!!.vars, factor_key = TRUE)
+  else if(possibly(compose(is_quosures, eval_tidy), FALSE)(.vars)){
+    .vars <- eval_tidy(.vars)
+    object <- gather(
+      mutate(object, !!!.vars),
+      ".response", "value", !!!map(.vars, quo_name), factor_key = TRUE
+    )
     y <- sym("value")
   }
   else{
-    y <- .vars[[1]]
+    y <- get_expr(quo_vars)
+    .vars <- as_quosures(list(y), env = empty_env())
   }
   
   aes_spec <- list(x = index(object), y = y)
@@ -45,7 +47,7 @@ autoplot.tbl_ts <- function(object, .vars = NULL, ...){
   
   if(length(.vars) > 1){
     p <- p + facet_wrap(vars(!!sym(".response")), scales = "free_y", 
-                        ncol = length(.vars))
+                        ncol = length(.vars)) + ggplot2::ylab(NULL)
   }
   
   p
@@ -66,18 +68,20 @@ autolayer.tbl_ts <- function(object, .vars = NULL, series = NULL, ...){
       "Plot variable not specified, automatically selected `.vars = %s`",
       measured_vars(object)[1]
     ))
-    .vars <- as_quosures(syms(measured_vars(object)[1]), env = empty_env())
+    y <- sym(measured_vars(object)[1])
+    .vars <- as_quosures(list(y), env = empty_env())
   }
-  else if(!possibly(compose(is_quosures, eval_tidy), FALSE)(.vars)){
-    .vars <- new_quosures(list(quo_vars))
-  }
-  
-  if(length(.vars) > 1){
-    object <- gather(object, ".response", "value", !!!.vars, factor_key = TRUE)
+  else if(possibly(compose(is_quosures, eval_tidy), FALSE)(.vars)){
+    .vars <- eval_tidy(.vars)
+    object <- gather(
+      mutate(object, !!!.vars),
+      ".response", "value", !!!map(.vars, quo_name), factor_key = TRUE
+    )
     y <- sym("value")
   }
   else{
-    y <- .vars[[1]]
+    y <- get_expr(quo_vars)
+    .vars <- as_quosures(list(y), env = empty_env())
   }
   
   aes_spec <- list(x = index(object), y = y)
