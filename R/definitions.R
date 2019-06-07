@@ -168,19 +168,19 @@ new_decomposition <- function(.class, .data, ..., .env = caller_env(n = 2)){
   dcmp <- new_model_definition(.class, ..., .env = .env)
   
   kv <- key_vars(.data)
-  .data <- nest_keys(.data, "lst_data")
+  .data <- nest_keys(.data, ".dcmp")
   
   if(NROW(.data) == 0){
     abort("There is no data to decompose!")
   }
   
   out <- mutate(.data,
-                dcmp = map(!!sym("lst_data"), function(data, dcmp){
+                .dcmp = map(!!sym(".dcmp"), function(data, dcmp){
                   estimate(data, dcmp)[["fit"]]
                 }, dcmp))
   
-  attrs <- combine_dcmp_attr(out[["dcmp"]])
-  out <- unnest_tsbl(out, "dcmp", parent_key = kv)
+  attrs <- combine_dcmp_attr(out[[".dcmp"]])
+  out <- unnest_tsbl(out, ".dcmp", parent_key = kv)
   as_dable(out, method = attrs[["method"]], resp = !!attrs[["response"]],
            seasons = attrs[["seasons"]], aliases = attrs[["aliases"]])
 }
