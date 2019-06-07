@@ -20,8 +20,8 @@ mbl_mv <- lung_deaths_wide %>%
   model(var = fable::VAR(vars(mdeaths, fdeaths) ~ fourier(K = 4)))
 fbl_mv <- mbl_mv %>% forecast
 
-# dbl <- us_deaths %>%
-#   feasts::STL(value)
-# 
-# dbl_multi <- us_deaths %>%
-#   feasts::STL(value)
+dbl <- us_deaths %>%
+  feasts::STL(value)
+
+dbl_multi <- us_deaths %>%
+  feasts::STL(value)
