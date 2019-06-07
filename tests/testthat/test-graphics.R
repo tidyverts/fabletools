@@ -294,3 +294,45 @@ test_that("autolayer.fbl_ts()", {
     list(x = "index [1M]", y = NULL)
   )
 })
+
+test_that("autoplot_dcmp_ts()", {
+  p <- autoplot(dcmp)
+  
+  expect_equal(
+    ggplot2::layer_data(p)$y,
+    c(dcmp$value, dcmp$trend, dcmp$season_year, dcmp$remainder)
+  )
+  
+  p_built <- ggplot2::ggplot_build(p)
+  
+  expect_identical(
+    p_built$plot$labels[c("title", "subtitle", "x", "y")],
+    list(
+      title = "STL decomposition",
+      subtitle = "value = trend + season_year + remainder",
+      x = "index", y = NULL
+    )
+  )
+  
+  p <- autoplot(dcmp_multi)
+  
+  expect_equal(
+    ggplot2::layer_data(p)$y,
+    c(dcmp_multi$value, dcmp_multi$trend, dcmp_multi$season_year, dcmp_multi$remainder)
+  )
+  expect_equivalent(
+    as.numeric(table(ggplot2::layer_data(p)$colour)),
+    rep(288, 2)
+  )
+  
+  p_built <- ggplot2::ggplot_build(p)
+  
+  expect_identical(
+    p_built$plot$labels[c("title", "subtitle", "x", "y")],
+    list(
+      title = "STL decomposition",
+      subtitle = "value = trend + season_year + remainder",
+      x = "index", y = NULL
+    )
+  )
+})
