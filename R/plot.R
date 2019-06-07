@@ -99,14 +99,6 @@ autolayer.tbl_ts <- function(object, .vars = NULL, series = NULL, ...){
   geom_line(eval_tidy(expr(aes(!!!aes_spec))), data = object, ...)
 }
 
-#' @export
-autoplot.mable <- function(object, ...){
-  if(length(object$model) > 1){
-    inform("Only univariate models are supported at the moment, plotting the first model.")
-  }
-  autoplot(object$model[[1]])
-}
-
 #' @importFrom ggplot2 fortify
 #' @export
 fortify.fbl_ts <- function(object, level = c(80, 95)){
