@@ -105,3 +105,52 @@ features_if.tbl_ts <- function(.tbl, .predicate, features = list(), ...){
   .vars <- .vars[map_lgl(.tbl[.vars], rlang::as_function(.predicate))]
   features_impl(.tbl, set_names(syms(.vars), .vars), features = features, ...)
 }
+
+# Lookup table for features
+feature_table <- function() {
+  table <- new.env(parent = emptyenv())
+  list(
+    add = function(fn, tags) {
+      pkg <- environmentName(environment(feasts:::features_acf))
+      table[[pkg]] <- as.list(table[[pkg]])
+      table[[pkg]][[length(table[[pkg]]) + 1]] <- list(fn = fn, tags = tags)
+    },
+    get = function(pkg) {
+      if(is.null(pkg)){
+        as.list(table)
+      }
+      else{
+        as.list(table)[pkg]
+      }
+    })
+}
+
+feature_table <- feature_table()
+
+#' Register a feature function
+#' 
+#' Allows users to find and use features from your package using [`feature_set()`].
+#' 
+#' @param fn The feature function
+#' @param tags Identifying tags
+#' 
+#' @export
+register_feature <- function(fn, tags){
+  feature_table$add(fn, tags)
+}
+
+#' Create a feature set from tags
+#' 
+#' @param package The package(s) from which to search for features. If `NULL`, 
+#' all registered features from currently loaded packages will be searched.
+#' @param tags Tags used to identify similar groups of features. If `NULL`,
+#' all tags will be included.
+#' 
+#' @export
+feature_set <- function(package = NULL, tags = NULL){
+  f_set <- flatten(unname(feature_table$get(package)))
+  if(!is.null(tags)){
+    f_set <- f_set[map_lgl(f_set, function(x) any(x[["tags"]] %in% tags))]
+  }
+  map(f_set, `[[`, "fn")
+}
