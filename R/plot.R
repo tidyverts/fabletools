@@ -206,6 +206,8 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
 #' @export
 autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   fc_key <- setdiff(key_vars(object), ".model")
+  key_data <- key_data(object)
+  distinct_mdls <- duplicated(key_data[[".model"]])
   data <- fortify(object, level = level)
 
   if(length(object%@%"response") > 1){
@@ -235,8 +237,13 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
     mapping$colour <- series
     grp <- c(grp, series, syms(".model"))
   }
-  else if(length(unique(key_data(object)[[".model"]])) > 1){
-    mapping$colour <- sym(".model")
+  else if(NROW(key_data) > 1){
+    col <- c(
+      if(sum(distinct_mdls) > 1) syms(fc_key) else NULL,
+      if(sum(!distinct_mdls) > 1) syms(".model") else NULL
+    )
+    
+    mapping$colour <- expr(interaction(!!!col, sep = "/"))
     grp <- c(grp, syms(".model"))
   }
   if(length(grp) > 0){
