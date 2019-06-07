@@ -191,8 +191,10 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
   }
   
   if(length(fc_resp) > 1){
-    p <- p + facet_wrap(vars(!!!syms(c(".response", fc_key))),
-                        ncol = length(fc_resp), scales = "free_y")
+    p <- p + 
+      facet_wrap(vars(!!!syms(c(".response", fc_key))),
+                 ncol = length(fc_resp), scales = "free_y") +
+      ggplot2::ylab(NULL)
   } else if(has_keys){
     p <- p + facet_wrap(vars(!!!syms(fc_key)),
                         ncol = 1, scales = "free_y")
