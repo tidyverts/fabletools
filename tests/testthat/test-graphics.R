@@ -1,5 +1,6 @@
 context("test-graphics")
 
+library(ggplot2)
 test_that("autoplot.tbl_ts()", {
   expect_message(
     p <- autoplot(us_deaths),
@@ -87,7 +88,7 @@ test_that("autoplot.tbl_ts()", {
 })
 
 
-test_that("autoplot.tbl_ts()", {
+test_that("autolayer.tbl_ts()", {
   expect_message(
     p <- ggplot() + autolayer(us_deaths),
     "Plot variable not specified, automatically selected \\`.vars = value\\`"
@@ -170,5 +171,126 @@ test_that("autoplot.tbl_ts()", {
   expect_identical(
     p_built$plot$labels[c("x", "y")],
     list(x = "index", y = "value")
+  )
+})
+
+test_that("autoplot.fbl_ts()", {
+  p <- autoplot(fbl)
+  
+  expect_equal(
+    ggplot2::layer_data(p)$y,
+    rep(fbl$value, 2)
+  )
+  
+  p_built <- ggplot2::ggplot_build(p)
+  
+  expect_identical(
+    p_built$plot$labels[c("x", "y")],
+    list(x = "index", y = "value")
+  )
+  
+  p <- autoplot(fbl, us_deaths)
+  expect_equal(
+    ggplot2::layer_data(p, 1)$y,
+    rep(fbl$value, 2)
+  )
+  expect_equal(
+    ggplot2::layer_data(p, 2)$y,
+    us_deaths$value
+  )
+  
+  p_built <- ggplot2::ggplot_build(p)
+  
+  expect_identical(
+    p_built$plot$labels[c("x", "y")],
+    list(x = "index", y = "value")
+  )
+  
+  p <- autoplot(fbl_complex, lung_deaths_long, level = 95)
+  
+  expect_equal(
+    ggplot2::layer_data(p)$y,
+    fbl_complex$value[c(1:24, 49:72, 25:48, 73:96)]
+  )
+  expect_equivalent(
+    as.numeric(table(ggplot2::layer_data(p)$colour)),
+    rep(48, 2)
+  )
+  
+  p_built <- ggplot2::ggplot_build(p)
+  
+  expect_identical(
+    p_built$plot$labels[c("x", "y")],
+    list(x = "index", y = "value")
+  )
+  
+  p <- autoplot(fbl_mv, lung_deaths_wide, level = 80)
+  
+  expect_equal(
+    ggplot2::layer_data(p)$y,
+    c(fbl_mv$fdeaths, fbl_mv$mdeaths)
+  )
+  expect_equivalent(
+    as.numeric(table(ggplot2::layer_data(p)$PANEL)),
+    rep(24, 2)
+  )
+  
+  p_built <- ggplot2::ggplot_build(p)
+  
+  expect_identical(
+    p_built$plot$labels[c("x", "y")],
+    list(x = "index", y = NULL)
+  )
+})
+
+test_that("autolayer.fbl_ts()", {
+  p <- autoplot(us_deaths, value) + autolayer(fbl)
+  
+  expect_equal(
+    ggplot2::layer_data(p,2)$y,
+    rep(fbl$value, 2)
+  )
+  
+  p_built <- ggplot2::ggplot_build(p)
+  
+  expect_identical(
+    p_built$plot$labels[c("x", "y")],
+    list(x = "index [1M]", y = "value")
+  )
+  
+  p <- autoplot(lung_deaths_long, value) + autolayer(fbl_complex, level = 95)
+  
+  expect_equal(
+    ggplot2::layer_data(p,2)$y,
+    fbl_complex$value[c(1:24, 49:72, 25:48, 73:96)]
+  )
+  expect_equivalent(
+    as.numeric(table(ggplot2::layer_data(p,2)$colour)),
+    rep(24, 4)
+  )
+  
+  p_built <- ggplot2::ggplot_build(p)
+  
+  expect_identical(
+    p_built$plot$labels[c("x", "y")],
+    list(x = "index [1M]", y = "value")
+  )
+  
+  p <- autoplot(lung_deaths_wide, vars(mdeaths, fdeaths)) + autolayer(fbl_mv, level = 80)
+  
+  expect_equal(
+    ggplot2::layer_data(p,2)$y,
+    c(fbl_mv$fdeaths, fbl_mv$mdeaths)
+  )
+  expect_equivalent(
+    as.numeric(table(ggplot2::layer_data(p,2)$PANEL)),
+    rep(24, 2)
+  )
+  
+  p_built <- ggplot2::ggplot_build(p)
+  
+  expect_identical(
+    p_built$plot$labels[c("x", "y")],
+    list(x = "index [1M]", y = NULL)
   )
 })
