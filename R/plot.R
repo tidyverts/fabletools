@@ -55,7 +55,7 @@ autoplot.tbl_ts <- function(object, .vars = NULL, ...){
 
 #' @importFrom ggplot2 ggplot aes geom_line guides guide_legend xlab
 #' @export
-autolayer.tbl_ts <- function(object, .vars = NULL, series = NULL, ...){
+autolayer.tbl_ts <- function(object, .vars = NULL, ...){
   quo_vars <- enquo(.vars)
   kv <- key_vars(object)
   nk <- n_keys(object)
@@ -86,10 +86,7 @@ autolayer.tbl_ts <- function(object, .vars = NULL, series = NULL, ...){
   
   aes_spec <- list(x = index(object), y = y)
   
-  if(!is.null(series)){
-    aes_spec$colour <- series
-  }
-  else if(nk > 1){
+  if(nk > 1){
     aes_spec["colour"] <- list(expr(interaction(!!!syms(kv), sep = "/")))
   }
   if(n_keys(object) > 1){
@@ -201,7 +198,7 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
 }
 
 #' @export
-autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
+autolayer.fbl_ts <- function(object, level = c(80, 95), ...){
   fc_key <- setdiff(key_vars(object), ".model")
   key_data <- key_data(object)
   distinct_mdls <- duplicated(key_data[[".model"]])
@@ -230,11 +227,7 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), series = NULL, ...){
   if(!is_empty(fc_key)){
     grp <- c(grp, syms(fc_key))
   }
-  if(!is.null(series)){
-    mapping$colour <- series
-    grp <- c(grp, series, syms(".model"))
-  }
-  else if(NROW(key_data) > 1){
+  if(NROW(key_data) > 1){
     col <- c(
       if(sum(distinct_mdls) > 1) syms(fc_key) else NULL,
       if(sum(!distinct_mdls) > 1) syms(".model") else NULL
