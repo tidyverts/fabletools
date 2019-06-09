@@ -293,7 +293,7 @@ accuracy.fbl_ts <- function(object, data, measures = point_measures, ...,
   }
   mutual_keys <- intersect(key(data), key(object))
   mutual_keys <- set_names(mutual_keys, map_chr(mutual_keys, as_string))
-  .train <- object %>% 
+  .train <- as_tibble(object) %>% 
     group_by(!!!key(object), !!!grp) %>% 
     filter(!!index(object) == min(!!index(object))) %>% 
     group_by(!!!grp) %>% 
