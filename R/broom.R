@@ -2,8 +2,8 @@
 augment.mdl_df <- function(x, ...){
   x <- gather(x, ".model", ".fit", !!!syms(x%@%"models"))
   kv <- key_vars(x)
-  x <- transmute(as_tibble(x),
-                 !!!syms(kv), !!sym(".model"), aug = map(!!sym(".fit"), augment))
+  x <- transmute(as_tibble(x), !!!syms(kv), !!sym(".model"),
+                 aug = map(!!sym(".fit"), augment, ...))
   unnest_tsbl(x, "aug", parent_key = kv)
 }
 
