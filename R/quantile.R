@@ -60,8 +60,8 @@ Ops.fcdist <- function(e1, e2){
   }
   if(.Generic %in% c("-", "+") && missing(e2)){
     e2 <- e1
+    e1 <- if(.Generic == "+") 1 else -1
     .Generic <- "*"
-    e1 <- 1
   }
   if(.Generic == "-"){
     .Generic <- "+"
@@ -101,7 +101,7 @@ Ops.fcdist <- function(e1, e2){
     
     e1 <- map2(split(e1, grps), split(e2, grps), function(x, y){
       if(!is_dist_normal(x) || !is_dist_normal(y)){
-        warn("Combinations of non-normal forecast distributions is not supported")
+        warn("Combinations of non-normal forecast distributions is not supported.")
         return(dist_unknown(max(length(e1), length(e2))))
       }
       x <- transpose(x) %>% map(unlist, recursive = FALSE)
