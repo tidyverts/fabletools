@@ -10,8 +10,8 @@ test_that("Combination modelling", {
   )
   
   expect_equivalent(
-    unclass(fortify(mbl_cmbn %>% forecast(h = 12))[,-1]),
-    unclass(fortify(fbl)[,-1])
+    unclass(ggplot2::fortify(mbl_cmbn %>% forecast(h = 12))[,-1]),
+    unclass(ggplot2::fortify(fbl)[,-1])
   )
   
   mbl_cmbn <- us_deaths_tr %>% 
@@ -23,8 +23,8 @@ test_that("Combination modelling", {
   fbl_cmbn <- forecast(mbl_cmbn)
   
   expect_equivalent(
-    unclass(fortify(fbl_cmbn)[1:48, -1]),
-    unclass(fortify(fbl_cmbn)[49:96, -1])
+    unclass(ggplot2::fortify(fbl_cmbn)[1:48, -1]),
+    unclass(ggplot2::fortify(fbl_cmbn)[49:96, -1])
   )
   
   mbl_cmbn <- us_deaths_tr %>% 
