@@ -16,3 +16,8 @@ all tags will be included.}
 \description{
 Create a feature set from tags
 }
+\section{Features}{
+
+\Sexpr[stage=render,results=rd]{fablelite:::rd_features()}
+}
+

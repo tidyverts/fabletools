@@ -122,7 +122,11 @@ feature_table <- function() {
       else{
         as.list(table)[pkg]
       }
-    })
+    },
+    list = function() {
+      map(table, names)
+    }
+  )
 }
 
 feature_table <- feature_table()
@@ -148,6 +152,9 @@ register_feature <- function(fn, tags){
 #' @param tags Tags used to identify similar groups of features. If `NULL`,
 #' all tags will be included.
 #' 
+#' @section Features:
+#' \Sexpr[stage=render,results=rd]{fablelite:::rd_features()}
+#' 
 #' @export
 feature_set <- function(pkgs = NULL, tags = NULL){
   f_set <- flatten(unname(feature_table$get(package)))
@@ -155,4 +162,32 @@ feature_set <- function(pkgs = NULL, tags = NULL){
     f_set <- f_set[map_lgl(f_set, function(x) any(x[["tags"]] %in% tags))]
   }
   unname(map(f_set, `[[`, "fn"))
+}
+
+rd_features <- function(){
+  features <- feature_table$list()
+  
+  if (length(features) == 0) {
+    return("No features found in currently loaded packages.")
+  }
+  
+  feature_links <- paste0(
+    map2_chr(features, names(features), function(fns, pkg) {
+      sprintf(
+        "\\subsection{%s}{\n\\itemize{\n%s\n}\n}", pkg, 
+        paste0(
+          map_chr(fns, function(fn){
+            sprintf("\\item \\code{\\link[%s]{%s}}", pkg, fn)
+          }),
+          collapse = "\n"
+        )
+      )
+    }),
+    collapse = "\n"
+  )
+  
+  sprintf(
+"See the following help topics for more details about currently available features:\n%s",
+feature_links
+  )
 }
