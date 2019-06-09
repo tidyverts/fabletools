@@ -199,16 +199,32 @@ accuracy.mdl_ts <- function(object, measures = point_measures, ...){
   if(is.null(aug[[".period"]])){
     aug <- mutate(aug, .period = get_frequencies(NULL, object[["data"]], .auto = "smallest"))
   }
+  aug <- aug %>% 
+    nest_grps(nm = ".accuracy")
   
-  measures <- map(squash(measures), possibly, NA)
+  measures <- map(aug[[".accuracy"]], function(measures, inputs){
+    map(measures, safely(do.call, otherwise = NA_real_), flatten(transpose(inputs)))
+  }, measures = squash(measures))
+  
+  measures <- imap(measures, function(x, nm){
+    err <- map_lgl(x, function(x) !is.null(x[["error"]]))
+    if((tot_err <- sum(err)) > 0){
+      err_msg <- table(map_chr(x[err], function(x) x[["error"]][["message"]]))
+      warn(
+        sprintf("%i error%s encountered\n%s\n",
+                tot_err,
+                if(tot_err > 1) sprintf("s (%i unique)", length(err_msg)) else "", 
+                paste0("[", err_msg, "] ", names(err_msg), collapse = "\n")
+        )
+      )
+    }
+    as_tibble(map(x, function(x) x[["result"]]))
+  })
   
   aug %>% 
-    nest_grps(nm = ".accuracy") %>% 
     mutate(
       .type = "Training",
-      .accuracy = map(!!sym(".accuracy"), function(measures, inputs){
-        as_tibble(map(measures, do.call, flatten(transpose(inputs))))},
-        measures = measures)
+      .accuracy = measures
     ) %>% 
     unnest_tbl(".accuracy")
 }
@@ -292,16 +308,33 @@ accuracy.fbl_ts <- function(object, data, measures = point_measures, ...,
     aug <- mutate(aug, .period = get_frequencies(NULL, object, .auto = "smallest"))
   }
   
-  measures <- squash(measures)
+  aug <- aug %>% 
+    group_by(!!!grp) %>% 
+    nest_grps(nm = ".accuracy")
+  
+  measures <- map(aug[[".accuracy"]], function(measures, inputs){
+    map(measures, safely(do.call, otherwise = NA_real_), flatten(transpose(inputs)))
+  }, measures = squash(measures))
+  
+  measures <- imap(measures, function(x, nm){
+    err <- map_lgl(x, function(x) !is.null(x[["error"]]))
+    if((tot_err <- sum(err)) > 0){
+      err_msg <- table(map_chr(x[err], function(x) x[["error"]][["message"]]))
+      warn(
+        sprintf("%i error%s encountered\n%s\n",
+                tot_err,
+                if(tot_err > 1) sprintf("s (%i unique)", length(err_msg)) else "", 
+                paste0("[", err_msg, "] ", names(err_msg), collapse = "\n")
+        )
+      )
+    }
+    as_tibble(map(x, function(x) x[["result"]]))
+  })
   
   aug %>% 
-    group_by(!!!grp) %>% 
-    nest_grps(nm = ".accuracy") %>% 
     mutate(
       .type = "Test",
-      .accuracy = map(!!sym(".accuracy"), function(measures, inputs){
-        as_tibble(map(measures, do.call, flatten(transpose(inputs))))},
-        measures = measures)
+      .accuracy = measures
     ) %>% 
     unnest_tbl(".accuracy")
 }
