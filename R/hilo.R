@@ -58,54 +58,19 @@ hilo.default <- function(x, ...){
   ))
 }
 
-#' Helpers for `hilo`
-#'
-#' @param x A `hilo` object.
-#' @rdname helper
-#'
-#' @export
-lower <- function(x) {
-  stopifnot(is_hilo(x))
-  x$.lower
-}
-
-#' @rdname helper
-#' @export
-upper <- function(x) {
-  stopifnot(is_hilo(x))
-  x$.upper
-}
-
-#' @rdname helper
-#' @export
-level <- function(x) {
-  stopifnot(is_hilo(x))
-  x$.level
-}
-
-#' @rdname helper
+#' Is the object a hilo
+#' 
+#' @param x An object.
+#' 
 #' @export
 is_hilo <- function(x) {
   inherits(x, "hilo")
 }
 
-#' Validate whether values fall in the hilo
-#'
-#' @param x A numeric vector of values.
-#' @param hilo A vector of `hilo` objects.
-#'
-#' @examples
-#' myhilo <- new_hilo(lower = rnorm(10), upper = rnorm(10) + 5, level = 95)
-#' bt(0.2017, myhilo)
-#'
-#' @export
-bt <- function(x, hilo) {
-  stopifnot(is.numeric(x) || is_hilo(hilo))
-  x >= hilo$.lower & x <= hilo$.upper
-}
 
 #' @export
 `$.hilo` <- function(x, name) {
+  browser()
   map_dbl(x, function(.x) .x[[name]])
 }
 
@@ -196,7 +161,7 @@ compact_hilo <- function(x, digits = NULL) {
     sep = ", "
   )
   rng <- paste0("[", limit, "]")
-  lvl <- level(x)
+  lvl <- x$.level
   if (is.null(lvl)) {
     return(rng)
   } else {
