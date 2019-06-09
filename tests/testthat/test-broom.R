@@ -38,9 +38,9 @@ test_that("glance", {
 
 test_that("tidy", {
   td <- tidy(mbl)
-  expect_equal(unique(td$.model), "fable::ETS(value)")
+  expect_equal(unique(td$.model), "ets")
   td_multi <- tidy(mbl_multi)
-  expect_equal(unique(td_multi$.model), "fable::ETS(value)")
+  expect_equal(unique(td_multi$.model), "ets")
   expect_equal(unique(td_multi$key), c("fdeaths", "mdeaths"))
   td_complex <- tidy(mbl_complex)
   expect_equal(unique(td_complex$.model), c("ets", "lm"))

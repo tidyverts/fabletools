@@ -8,11 +8,11 @@ lung_deaths_wide <- as_tsibble(cbind(mdeaths, fdeaths), pivot_longer = FALSE)
 lung_deaths_wide_tr <- dplyr::filter(lung_deaths_wide, index < tsibble::yearmonth("1979 Jan"))
 
 mbl <- us_deaths_tr %>%
-  model(fable::ETS(value))
+  model(ets = fable::ETS(value))
 fbl <- mbl %>% forecast(h = 12)
 
 mbl_multi <- lung_deaths_long_tr %>%
-  model(fable::ETS(value))
+  model(ets = fable::ETS(value))
 fbl_multi <- mbl_multi %>% forecast(h = 12)
 
 mbl_complex <- lung_deaths_long_tr %>% 
