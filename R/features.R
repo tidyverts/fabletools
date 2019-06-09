@@ -157,7 +157,7 @@ register_feature <- function(fn, tags){
 #' 
 #' @export
 feature_set <- function(pkgs = NULL, tags = NULL){
-  f_set <- flatten(unname(feature_table$get(package)))
+  f_set <- flatten(unname(feature_table$get(pkgs)))
   if(!is.null(tags)){
     f_set <- f_set[map_lgl(f_set, function(x) any(x[["tags"]] %in% tags))]
   }
