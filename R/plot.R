@@ -228,8 +228,9 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), ...){
     grp <- c(grp, syms(fc_key))
   }
   if(NROW(key_data) > 1){
+    useful_keys <- fc_key[map_lgl(key_data[fc_key], function(x) sum(!duplicated(x)) > 1)]
     col <- c(
-      if(sum(distinct_mdls) > 1) syms(fc_key) else NULL,
+      if(sum(distinct_mdls) > 1) syms(useful_keys) else NULL,
       if(sum(!distinct_mdls) > 1) syms(".model") else NULL
     )
     
