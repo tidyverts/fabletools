@@ -4,12 +4,14 @@
 \alias{feature_set}
 \title{Create a feature set from tags}
 \usage{
-feature_set(package, tags)
+feature_set(pkgs = NULL, tags = NULL)
 }
 \arguments{
-\item{package}{The package(s) from which to search for features}
+\item{pkgs}{The package(s) from which to search for features. If \code{NULL},
+all registered features from currently loaded packages will be searched.}
 
-\item{tags}{Identifying tags}
+\item{tags}{Tags used to identify similar groups of features. If \code{NULL},
+all tags will be included.}
 }
 \description{
 Create a feature set from tags

@@ -143,13 +143,13 @@ register_feature <- function(fn, tags){
 
 #' Create a feature set from tags
 #' 
-#' @param package The package(s) from which to search for features. If `NULL`, 
+#' @param pkgs The package(s) from which to search for features. If `NULL`, 
 #' all registered features from currently loaded packages will be searched.
 #' @param tags Tags used to identify similar groups of features. If `NULL`,
 #' all tags will be included.
 #' 
 #' @export
-feature_set <- function(package = NULL, tags = NULL){
+feature_set <- function(pkgs = NULL, tags = NULL){
   f_set <- flatten(unname(feature_table$get(package)))
   if(!is.null(tags)){
     f_set <- f_set[map_lgl(f_set, function(x) any(x[["tags"]] %in% tags))]
