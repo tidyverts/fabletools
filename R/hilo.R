@@ -37,7 +37,7 @@ new_hilo <- function(lower, upper, level = NULL) {
   
   list(.lower = transpose_dbl(lower), .upper = transpose_dbl(upper), .level = level) %>% 
     pmap(tibble) %>%
-    enclass("hilo")
+    add_class("hilo")
 }
 
 #' @rdname hilo
@@ -111,7 +111,7 @@ bt <- function(x, hilo) {
 
 #' @export
 `[.hilo` <- function(x, ..., drop = TRUE) {
-  enclass(NextMethod(), "hilo")
+  add_class(NextMethod(), "hilo")
 }
 
 #' @export
@@ -119,7 +119,7 @@ c.hilo <- function(...) {
   dots_list(...) %>%
     map(`[`) %>%
     unlist(recursive = FALSE, use.names = FALSE) %>%
-    enclass("hilo")
+    add_class("hilo")
 }
 
 #' @export
@@ -152,7 +152,7 @@ unique.hilo <- function(x, incomparables = FALSE, ...) {
 
 #' @export
 rep.hilo <- function(x, ...) {
-  enclass(NextMethod(), "hilo")
+  add_class(NextMethod(), "hilo")
 }
 
 type_sum.hilo <- function(x) {
