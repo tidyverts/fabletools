@@ -16,4 +16,14 @@ test_that("fable dplyr verbs", {
     select(index, .model, value, .distribution) %>% 
     n_keys() %>% 
     expect_equal(2)
+  
+  expect_equal(
+    colnames(report(fbl_complex, level = c(50, 80, 95))),
+    c("key", ".model", "index", "value", "50%", "80%", "95%")
+  )
+  
+  expect_equivalent(
+    as.list(fbl_multi),
+    as.list(rbind(fbl_multi[1:12,], fbl_multi[13:24,]))
+  )
 })
