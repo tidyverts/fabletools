@@ -11,7 +11,7 @@ test_that("In-sample accuracy", {
   acc <- accuracy(mbl)
   expect_equal(acc$.type, "Training")
   expect_equal(dim(acc), c(1,9))
-  expect_true(!any(map_lgl(acc_mv, compose(any, is.na))))
+  expect_true(!any(map_lgl(acc, compose(any, is.na))))
   expect_equal(
     acc,
     as_tibble(augment(mbl, type = "response")) %>% 
@@ -52,7 +52,7 @@ test_that("Out-of-sample accuracy", {
   acc <- accuracy(fbl, us_deaths)
   expect_equal(acc$.type, "Test")
   expect_equal(dim(acc), c(1,9))
-  expect_true(!any(map_lgl(acc_mv, compose(any, is.na))))
+  expect_true(!any(map_lgl(acc, compose(any, is.na))))
   expect_equal(
     acc,
     as_tibble(fbl) %>% 
@@ -77,7 +77,7 @@ test_that("Out-of-sample accuracy", {
   expect_equal(acc_complex$key, rep(c("fdeaths", "mdeaths"), 2))
   expect_equal(acc_complex$.model, rep(c("ets", "lm"), each = 2))
   expect_equal(dim(acc_complex), c(4,10))
-  expect_equal(acc_complex[1:2, -2], acc_multi[,-2])
+  expect_equal(acc_complex[1:2, -(1:2)], acc_multi[,-(1:2)])
   expect_true(!any(map_lgl(acc_complex, compose(any, is.na))))
   
   acc_mv <- accuracy(fbl_mv, lung_deaths_wide)

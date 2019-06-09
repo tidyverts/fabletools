@@ -4,7 +4,7 @@ test_that("fable dplyr verbs", {
   fbl_complex %>% filter(key == "mdeaths") %>% 
     expect_s3_class("fbl_ts") %>% 
     NROW %>% 
-    expect_equal(48)
+    expect_equal(24)
   
   expect_error(
     fbl_complex %>% select(index, .model, value, .distribution),

@@ -210,11 +210,11 @@ test_that("autoplot.fbl_ts()", {
   
   expect_equal(
     ggplot2::layer_data(p)$y,
-    fbl_complex$value[c(1:24, 49:72, 25:48, 73:96)]
+    fbl_complex$value[c(1:12, 25:36, 13:24, 37:48)]
   )
   expect_equivalent(
     as.numeric(table(ggplot2::layer_data(p)$colour)),
-    rep(48, 2)
+    rep(24, 2)
   )
   
   p_built <- ggplot2::ggplot_build(p)
@@ -232,7 +232,7 @@ test_that("autoplot.fbl_ts()", {
   )
   expect_equivalent(
     as.numeric(table(ggplot2::layer_data(p)$PANEL)),
-    rep(24, 2)
+    rep(12, 2)
   )
   
   p_built <- ggplot2::ggplot_build(p)
@@ -262,11 +262,11 @@ test_that("autolayer.fbl_ts()", {
   
   expect_equal(
     ggplot2::layer_data(p,2)$y,
-    fbl_complex$value[c(1:24, 49:72, 25:48, 73:96)]
+    fbl_complex$value[c(1:12, 25:36, 13:24, 37:48)]
   )
   expect_equivalent(
     as.numeric(table(ggplot2::layer_data(p,2)$colour)),
-    rep(24, 4)
+    rep(12, 4)
   )
   
   p_built <- ggplot2::ggplot_build(p)
@@ -284,7 +284,7 @@ test_that("autolayer.fbl_ts()", {
   )
   expect_equivalent(
     as.numeric(table(ggplot2::layer_data(p,2)$PANEL)),
-    rep(24, 2)
+    rep(12, 2)
   )
   
   p_built <- ggplot2::ggplot_build(p)
