@@ -6,6 +6,7 @@ test_that("autoplot.tbl_ts()", {
     p <- autoplot(us_deaths),
     "Plot variable not specified, automatically selected \\`.vars = value\\`"
   )
+  expect_silent(print(p))
   
   expect_equal(
     ggplot2::layer_data(p)$y,
@@ -20,6 +21,8 @@ test_that("autoplot.tbl_ts()", {
   )
   
   p <- autoplot(us_deaths, log(value))
+  expect_silent(print(p))
+  
   expect_equal(
     ggplot2::layer_data(p)$y,
     log(us_deaths$value)
@@ -33,6 +36,7 @@ test_that("autoplot.tbl_ts()", {
   )
   
   p <- autoplot(lung_deaths_long, value)
+  expect_silent(print(p))
   
   expect_equal(
     ggplot2::layer_data(p)$y,
@@ -51,6 +55,7 @@ test_that("autoplot.tbl_ts()", {
   )
   
   p <- autoplot(lung_deaths_wide, vars(mdeaths, fdeaths))
+  expect_silent(print(p))
   
   expect_equal(
     ggplot2::layer_data(p)$y,
@@ -69,6 +74,7 @@ test_that("autoplot.tbl_ts()", {
   )
   
   p <- autoplot(lung_deaths_wide, vars(mdeaths, log(fdeaths)))
+  expect_silent(print(p))
   
   expect_equal(
     ggplot2::layer_data(p)$y,
@@ -93,6 +99,7 @@ test_that("autolayer.tbl_ts()", {
     p <- ggplot() + autolayer(us_deaths),
     "Plot variable not specified, automatically selected \\`.vars = value\\`"
   )
+  expect_silent(print(p))
   
   expect_equal(
     ggplot2::layer_data(p)$y,
@@ -107,6 +114,7 @@ test_that("autolayer.tbl_ts()", {
   )
   
   p <- ggplot() + autolayer(us_deaths, log(value))
+  expect_silent(print(p))
   expect_equal(
     ggplot2::layer_data(p)$y,
     log(us_deaths$value)
@@ -120,6 +128,7 @@ test_that("autolayer.tbl_ts()", {
   )
   
   p <- ggplot() + autolayer(lung_deaths_long, value)
+  expect_silent(print(p))
   
   expect_equal(
     ggplot2::layer_data(p)$y,
@@ -138,6 +147,7 @@ test_that("autolayer.tbl_ts()", {
   )
   
   p <- ggplot() + autolayer(lung_deaths_wide, vars(mdeaths, fdeaths))
+  expect_silent(print(p))
   
   expect_equal(
     ggplot2::layer_data(p)$y,
@@ -156,6 +166,7 @@ test_that("autolayer.tbl_ts()", {
   )
   
   p <- ggplot() + autolayer(lung_deaths_wide, vars(log(mdeaths), log(fdeaths)))
+  expect_silent(print(p))
   
   expect_equal(
     ggplot2::layer_data(p)$y,
@@ -176,6 +187,7 @@ test_that("autolayer.tbl_ts()", {
 
 test_that("autoplot.fbl_ts()", {
   p <- autoplot(fbl)
+  expect_silent(print(p))
   
   expect_equal(
     ggplot2::layer_data(p)$y,
@@ -190,6 +202,8 @@ test_that("autoplot.fbl_ts()", {
   )
   
   p <- autoplot(fbl, us_deaths)
+  expect_silent(print(p))
+
   expect_equal(
     ggplot2::layer_data(p, 1)$y,
     rep(fbl$value, 2)
@@ -207,6 +221,7 @@ test_that("autoplot.fbl_ts()", {
   )
   
   p <- autoplot(fbl_complex, lung_deaths_long, level = 95)
+  expect_silent(print(p))
   
   expect_equal(
     ggplot2::layer_data(p)$y,
@@ -225,6 +240,7 @@ test_that("autoplot.fbl_ts()", {
   )
   
   p <- autoplot(fbl_mv, lung_deaths_wide, level = 80)
+  expect_silent(print(p))
   
   expect_equal(
     ggplot2::layer_data(p)$y,
@@ -245,6 +261,7 @@ test_that("autoplot.fbl_ts()", {
 
 test_that("autolayer.fbl_ts()", {
   p <- autoplot(us_deaths, value) + autolayer(fbl)
+  expect_silent(print(p))
   
   expect_equal(
     ggplot2::layer_data(p,2)$y,
@@ -259,6 +276,7 @@ test_that("autolayer.fbl_ts()", {
   )
   
   p <- autoplot(lung_deaths_long, value) + autolayer(fbl_complex, level = 95)
+  expect_silent(print(p))
   
   expect_equal(
     ggplot2::layer_data(p,2)$y,
@@ -277,6 +295,7 @@ test_that("autolayer.fbl_ts()", {
   )
   
   p <- autoplot(lung_deaths_wide, vars(mdeaths, fdeaths)) + autolayer(fbl_mv, level = 80)
+  expect_silent(print(p))
   
   expect_equal(
     ggplot2::layer_data(p,2)$y,
@@ -297,6 +316,7 @@ test_that("autolayer.fbl_ts()", {
 
 test_that("autoplot_dcmp_ts()", {
   p <- autoplot(dcmp)
+  expect_silent(print(p))
   
   expect_equal(
     ggplot2::layer_data(p)$y,
@@ -315,6 +335,7 @@ test_that("autoplot_dcmp_ts()", {
   )
   
   p <- autoplot(dcmp_multi)
+  expect_silent(print(p))
   
   expect_equal(
     ggplot2::layer_data(p)$y,
