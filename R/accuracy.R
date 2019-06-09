@@ -100,8 +100,8 @@ winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
   interval <- hilo(.dist, level)
   if(NROW(interval[[1]]) > 1) abort("Winkler scores are not supported for multivariate distributions.")
   alpha <- 1-level/100
-  lt <- interval$lower
-  ut <- interval$upper
+  lt <- interval$.lower
+  ut <- interval$.upper
   score <- ifelse(
     .actual < lt, 
       (ut - lt) + (2/alpha)*(lt-.actual),
