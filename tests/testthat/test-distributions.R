@@ -28,7 +28,7 @@ test_that("Normal distribution", {
     d*d,
     "Multiplying forecast distributions is not supported"
   ) %>% 
-    is_dist_unknown() %>% 
+    fablelite:::is_dist_unknown() %>% 
     expect_true()
   
   expect_length(rep(d, 10), 10)
@@ -40,7 +40,7 @@ test_that("Normal distribution", {
   #   d
   # )
   
-  td <- update_fcdist(d, transformation = list(function(x) exp(x)))
+  td <- fablelite:::update_fcdist(d, transformation = list(function(x) exp(x)))
   
   expect_equal(
     hilo(d)[[1]] %>% mutate(.lower = exp(.lower), .upper = exp(.upper)),
