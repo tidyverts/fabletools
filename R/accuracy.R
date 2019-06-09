@@ -200,7 +200,7 @@ accuracy.mdl_ts <- function(object, measures = point_measures, ...){
     aug <- mutate(aug, .period = get_frequencies(NULL, object[["data"]], .auto = "smallest"))
   }
   
-  measures <- squash(measures)
+  measures <- map(squash(measures), possibly, NA)
   
   aug %>% 
     nest_grps(nm = ".accuracy") %>% 
