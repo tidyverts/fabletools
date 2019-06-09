@@ -70,7 +70,6 @@ is_hilo <- function(x) {
 
 #' @export
 `$.hilo` <- function(x, name) {
-  browser()
   map_dbl(x, function(.x) .x[[name]])
 }
 
