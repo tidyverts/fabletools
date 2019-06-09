@@ -162,8 +162,14 @@ rbind.fbl_ts <- function(...){
   if(length(dist <- unique(dist)) > 1){
     abort("Cannot combine fables with different distribution names.")
   }
-  out <- update_tsibble(NextMethod("rbind"))
+  out <- suppressWarnings(invoke("rbind", map(fbls, as_tsibble)))
+  class(out[[as_string(dist[[1]])]]) <- "fcdist"
   as_fable(out, response[[1]], !!dist[[1]])
+}
+
+#' @export
+`[.fbl_ts` <- function (x, i, j, drop = FALSE){
+  as_fable(NextMethod(), x%@%"response", !!(x%@%"dist"))
 }
 
 type_sum.fbl_ts <- function(x){
