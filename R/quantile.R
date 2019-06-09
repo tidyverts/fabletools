@@ -199,7 +199,7 @@ format.fcdist <- function(x, ...){
   split(x, .env_ids) %>%
     set_names(NULL) %>% 
     map(function(x){
-      if(!is_env(x[[1]][[length(x[[1]])]])) return("NA")
+      if(!is_environment(x[[1]][[length(x[[1]])]])) return("NA")
       out <- x[[1]]$.env$format(map(x, function(x) x[-length(x)]))
       if(x[[1]]$.env$trans){
         out <- paste0("t(", out, ")")
