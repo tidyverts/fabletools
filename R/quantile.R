@@ -78,23 +78,19 @@ Ops.fcdist <- function(e1, e2){
   if(e_len[[1]] != e_len[[2]]){
     if(which.min(e_len) == 1){
       is_dist <- inherits(e1, "fcdist")
-      e1 <- rep_len(e1, e_len[[2]])
-      if(is_dist){
-        e1 <- structure(e1, class = "fcdist")
-      }
+      e1 <- rep(e1, e_len[[2]])
     }
     else{
       is_dist <- inherits(e2, "fcdist")
-      e2 <- rep_len(e2, e_len[[1]])
-      if(is_dist){
-        e2 <- structure(e2, class = "fcdist")
-      }
+      e2 <- rep(e2, e_len[[1]])
     }
   }
   
+  
+  
   if(inherits(e1, "fcdist") && inherits(e2, "fcdist")){
     if(.Generic == "*"){
-      warn(sprintf("Multipling forecast distributions is not supported"))
+      warn(sprintf("Multiplying forecast distributions is not supported."))
       return(dist_unknown(max(length(e1), if (!missing(e2)) length(e2))))
     }
     
@@ -220,6 +216,16 @@ format.fcdist <- function(x, ...){
 
 #' @export
 c.fcdist <- function(...){
+  structure(NextMethod(), class = "fcdist")
+}
+
+#' @export
+rep.fcdist <- function(x, ...){
+  structure(NextMethod(), class = "fcdist")
+}
+
+#' @export
+unique.fcdist <- function(x, ...){
   structure(NextMethod(), class = "fcdist")
 }
 
