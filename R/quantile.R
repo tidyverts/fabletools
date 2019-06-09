@@ -359,3 +359,12 @@ env_dist_unknown <- new_fcdist_env(function(x, ...) rep(NA, length(x)),
 dist_unknown <- function(n, ...){
   new_fcdist(vector("double", n), ..., .env = env_dist_unknown)
 }
+
+
+is_dist_normal <- function(dist){
+  identical(dist[[1]]$.env$f, env_dist_normal$f) && !dist[[1]]$.env$trans
+}
+
+is_dist_unknown <- function(dist){
+  identical(dist[[1]]$.env$f, env_dist_unknown$f) && !dist[[1]]$.env$trans
+}

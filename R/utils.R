@@ -85,10 +85,6 @@ calc <- function(f, ...){
   f(...)
 }
 
-is_dist_normal <- function(dist){
-  identical(dist[[1]]$.env$f, env_dist_normal$f) && !dist[[1]]$.env$trans
-}
-
 # Unnest nested tibble/tsibble
 # 
 # Similar to tsibble::unnest_tsibble, but less general and faster validation
