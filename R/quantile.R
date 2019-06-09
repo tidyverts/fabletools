@@ -77,16 +77,16 @@ Ops.fcdist <- function(e1, e2){
   }
   if(e_len[[1]] != e_len[[2]]){
     if(which.min(e_len) == 1){
-      is_dist <- inherits(e1, "fcdist")
       e1 <- rep(e1, e_len[[2]])
     }
     else{
-      is_dist <- inherits(e2, "fcdist")
       e2 <- rep(e2, e_len[[1]])
     }
   }
   
-  
+  if(is_dist_unknown(e1) || is_dist_unknown(e2)){
+    return(dist_unknown(length(e1)))
+  }
   
   if(inherits(e1, "fcdist") && inherits(e2, "fcdist")){
     if(.Generic == "*"){
