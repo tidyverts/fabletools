@@ -362,9 +362,11 @@ dist_unknown <- function(n, ...){
 
 
 is_dist_normal <- function(dist){
+  if(!inherits(dist, "fcdist")) return(FALSE)
   identical(dist[[1]]$.env$f, env_dist_normal$f) && !dist[[1]]$.env$trans
 }
 
 is_dist_unknown <- function(dist){
+  if(!inherits(dist, "fcdist")) return(FALSE)
   identical(dist[[1]]$.env$f, env_dist_unknown$f) && !dist[[1]]$.env$trans
 }
