@@ -67,6 +67,11 @@ test_that("Out-of-sample accuracy", {
                 MASE = MASE(.resid, us_deaths_tr$value, .period = 12), ACF1 = ACF1(.resid))
   )
   
+  acc <- accuracy(fbl, us_deaths, measures = list(interval_measures, distribution_measures))
+  expect_equal(acc$.type, "Test")
+  expect_equal(colnames(acc), c(".model", ".type", "winkler", "percentile"))
+  expect_true(!any(map_lgl(acc, compose(any, is.na))))
+  
   acc_multi <- accuracy(fbl_multi, lung_deaths_long)
   expect_equal(acc_multi$key, c("fdeaths", "mdeaths"))
   expect_equal(dim(acc_multi), c(2,10))
