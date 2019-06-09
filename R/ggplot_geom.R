@@ -157,7 +157,6 @@ globalVariables("y")
 #'  geom_forecast()
 #' }
 #'
-#' @export
 geom_forecast <- function(mapping = NULL, data = NULL, stat = "forecast",
                           position = "identity", na.rm = FALSE, show.legend = NA,
                           inherit.aes = TRUE, level=c(80, 95), h = NULL,
