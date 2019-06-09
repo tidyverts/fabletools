@@ -227,7 +227,7 @@ accuracy.fbl_ts <- function(object, data, measures = point_measures, ...,
     object <- as_tsibble(object) %>% 
       # select(!!expr(-!!attr(object, "dist"))) %>% 
       gather(".response", "value", !!!resp, factor_key = TRUE)
-    data <- gather(data, ".response", "value", !!!resp)
+    data <- gather(data, ".response", "value", !!!resp, factor_key = TRUE)
     resp <- sym("value")
     # abort("Accuracy evaluation is not yet supported for multivariate forecasts.")
   }
@@ -247,7 +247,7 @@ accuracy.fbl_ts <- function(object, data, measures = point_measures, ...,
     warn('Accuracy measures should be computed separately for each model, have you forgotten to add ".model" to your `by` argument?')
   }
   
-  if(NROW(missing_test <- anti_join(object, data, by = intersect(colnames(data), by))) > 0){
+  if(NROW(missing_test <- suppressWarnings(anti_join(object, data, by = intersect(colnames(data), by)))) > 0){
     warn(sprintf(
       "The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
 %i %s %s", 
