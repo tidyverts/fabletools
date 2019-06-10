@@ -86,17 +86,17 @@ aggregate_keys.tbl_ts <- function(.data, .spec = NULL, ...){
 }
 
 
-#' @rdname aggregate_keys
-#' 
-#' @param .times Temporal aggregations to include. The default (NULL) will
-#' automatically identify appropriate temporal aggregations. This can be specified
-#' as a list of [`lubridate::period()`] elements, or a character vector describing the
-#' temporal aggregations.
-#' 
-#' @examples
-#' library(tsibble)
-#' pedestrian %>% 
-#'   aggregate_index()
+# #' @rdname aggregate_keys
+# #' 
+# #' @param .times Temporal aggregations to include. The default (NULL) will
+# #' automatically identify appropriate temporal aggregations. This can be specified
+# #' as a list of [`lubridate::period()`] elements, or a character vector describing the
+# #' temporal aggregations.
+# #' 
+# #' @examples
+# #' library(tsibble)
+# #' pedestrian %>% 
+# #'   aggregate_index()
 aggregate_index <- function(.data, .times, ...){
   UseMethod("aggregate_index")
 }

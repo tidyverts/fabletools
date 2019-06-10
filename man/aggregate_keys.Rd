@@ -2,12 +2,9 @@
 % Please edit documentation in R/aggregate.R
 \name{aggregate_keys}
 \alias{aggregate_keys}
-\alias{aggregate_index}
 \title{Expand a dataset to include other levels of aggregation}
 \usage{
 aggregate_keys(.data, .spec, ...)
-
-aggregate_index(.data, .times, ...)
 }
 \arguments{
 \item{.data}{A tsibble.}
@@ -23,11 +20,6 @@ The arguments in \code{...} are automatically \link[rlang:quo]{quoted} and
 frame. They support \link[rlang:quasiquotation]{unquoting} and
 splicing. See \code{vignette("programming")} for an introduction to
 these concepts.}
-
-\item{.times}{Temporal aggregations to include. The default (NULL) will
-automatically identify appropriate temporal aggregations. This can be specified
-as a list of \code{\link[lubridate:period]{lubridate::period()}} elements, or a character vector describing the
-temporal aggregations.}
 }
 \description{
 Uses the structural specification given in \code{.spec} to aggregate a time
@@ -42,7 +34,4 @@ library(tsibble)
 tourism_grp <- tourism \%>\% 
   aggregate_keys(Purpose * (State / Region), Trips = sum(Trips))
 
-library(tsibble)
-pedestrian \%>\% 
-  aggregate_index()
 }
