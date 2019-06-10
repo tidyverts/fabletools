@@ -33,6 +33,7 @@ autoplot.tbl_ts <- function(object, .vars = NULL, ...){
   aes_spec <- list(x = index(object), y = y)
   
   if(nk > 1){
+    object <- dplyr::mutate_if(object, ~inherits(., "agg_key"), compose(trimws, format))
     aes_spec["colour"] <- list(expr(interaction(!!!syms(kv), sep = "/")))
   }
   
@@ -171,6 +172,9 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
     if(length(fc_resp) > 1){
       data <- gather(data, ".response", "value", !!!fc_resp, factor_key = TRUE)
     }
+    
+    data <- data %>% 
+      dplyr::mutate_if(~inherits(., "agg_key"), compose(trimws, format))
   }
 
   # Change colours to be more appropriate for later facets
@@ -202,9 +206,9 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), ...){
   fc_key <- setdiff(key_vars(object), ".model")
   key_data <- key_data(object)
   distinct_mdls <- duplicated(key_data[[".model"]])
-  data <- fortify(object, level = level)
+  data <- fortify(object, level = level) %>% 
+    dplyr::mutate_if(~inherits(., "agg_key"), compose(trimws, format))
   if(length(object%@%"response") > 1){
-
     resp <- sym("value")
     grp <- syms(".response")
   }
@@ -238,7 +242,7 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), ...){
     grp <- c(grp, syms(".model"))
   }
   if(length(grp) > 0){
-    mapping$group <- expr(interaction(!!!grp, sep = "/"))
+    mapping$group <- expr(interaction(!!!map(grp, function(x) expr(format(!!x))), sep = "/"))
   }
   
   geom_forecast(mapping = mapping, stat = "identity", data = data, ...)

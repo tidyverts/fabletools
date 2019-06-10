@@ -5,12 +5,15 @@
   register_s3_method("pillar", "type_sum", "fcdist")
   register_s3_method("pillar", "type_sum", "lst_mdl")
   register_s3_method("pillar", "type_sum", "fbl_ts")
+  register_s3_method("pillar", "type_sum", "agg_key")
   
   register_s3_method("pillar", "obj_sum", "hilo")
   register_s3_method("pillar", "obj_sum", "fcdist")
+  register_s3_method("pillar", "obj_sum", "agg_key")
   
   register_s3_method("pillar", "pillar_shaft", "hilo")
   register_s3_method("pillar", "pillar_shaft", "fcdist")
+  register_s3_method("pillar", "pillar_shaft", "agg_key")
   
   register_s3_method("pillar", "is_vector_s3", "hilo")
   register_s3_method("pillar", "is_vector_s3", "fcdist")

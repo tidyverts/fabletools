@@ -24,7 +24,8 @@ Imports:
     dplyr (>= 0.8.0),
     tidyr (>= 0.8.3),
     generics,
-    R6
+    R6,
+    utils
 Suggests:
     colorspace,
     covr,
@@ -42,7 +43,8 @@ Suggests:
     spelling,
     testthat,
     tsibbledata,
-    lubridate
+    lubridate,
+    SparseM
 Remotes:
     tidyverts/fable,
     tidyverts/feasts,

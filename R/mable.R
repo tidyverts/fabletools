@@ -44,10 +44,6 @@ as_mable.tbl_df <- function(x, key = NULL, models = NULL, ...){
     abort("A mable can only contain models with the same response variable(s).")
   }
   
-  add_mdl_lst <- map(models, function(model) expr(add_class(!!sym(model), "lst_mdl")))
-  
-  x <- mutate(x, !!!set_names(add_mdl_lst, map_chr(models, as_string)))
-  
   if (is.data.frame(key)) {
     key_data <- key
   }

@@ -12,6 +12,10 @@ add_class <- function(x, new_class){
   `class<-`(x, union(new_class, class(x)))
 }
 
+rm_class <- function(x, class){
+  `class<-`(x, setdiff(class(x), class))
+}
+
 custom_error <- function(.f, error){
   force(error)
   function(...){
@@ -169,4 +173,16 @@ nest_keys <- function(.data, nm = "data"){
                   validate = FALSE)
   }, x = .data, j = col_nest)
   out
+}
+
+bind_row_attrb <- function(x){
+  attrb <- transpose(map(x, function(dt) map(dt, attributes)))
+  simple_attrb <- map_lgl(attrb, function(x) length(unique(x)) == 1)
+  
+  x <- dplyr::bind_rows(!!!x)
+  
+  for (col in which(simple_attrb)){
+    attributes(x[[col]]) <- attrb[[col]][[1]]
+  }
+  x
 }
