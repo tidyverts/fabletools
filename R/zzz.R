@@ -13,6 +13,7 @@
   
   register_s3_method("pillar", "pillar_shaft", "hilo")
   register_s3_method("pillar", "pillar_shaft", "fcdist")
+  register_s3_method("pillar", "pillar_shaft", "agg_key")
   
   register_s3_method("pillar", "is_vector_s3", "hilo")
   register_s3_method("pillar", "is_vector_s3", "fcdist")
