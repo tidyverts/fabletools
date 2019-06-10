@@ -12,8 +12,7 @@ Please use select() to choose the model to interpolate with.")
       !!!syms(kv),
       interpolated = map2(!!sym(object%@%"models"), new_data, interpolate, ...)
     ) %>% 
-    add_class("lst_ts") %>% 
-    unnest(key = kv)
+    unnest_tsbl("interpolated", parent_key = kv)
 }
 
 #' @export

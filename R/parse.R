@@ -39,15 +39,8 @@ parse_specials <- function(call = NULL, specials = NULL){
   }
   
   # Add required_specials
-  missing_specials <- attr(specials, "required_specials") %>% 
-    .[!(.%in%names(parsed))]
-  
-  parsed <- parsed %>%
-    append(
-      missing_specials %>%
-        map(function(.x) list(call2(.x))) %>%
-        set_names(missing_specials)
-    )
+  missing_specials <- setdiff(attr(specials, "required_specials"), names(parsed))
+  parsed[missing_specials] <- map(missing_specials, compose("list", "call2"))
   
   parsed
 }
@@ -118,18 +111,13 @@ parse_model_rhs <- function(model){
   # if(length(model$specials) == 0){
   #   return(list(specials = NULL))
   # }
-  model_rhs(model) %>%
-    parse_specials(specials = model$specials) %>%
-    map(function(.x){
-      .x %>%
-          map(
-            function(special){
-              eval_tidy(special, data = model$data,
-                        env = new_environment(as.list(model$specials), model$env))
-            }
-          )
-    }) %>%
-    list(specials = .)
+  rhs <- model_rhs(model)
+  specials <- parse_specials(rhs, specials = model$specials)
+  list(
+    specials = map(specials, function(.x){
+      map(.x, eval_tidy, data = model$data, env = model$specials)
+    })
+  )
 }
 
 #' Parse the RHS of the model formula for transformations
@@ -236,8 +224,10 @@ parse_model_lhs <- function(model){
     new_transformation
   )
   
-  # Test transformations to see if they are valid
-  map2(transformations, responses, function(trans, resp){
+  # Test combinations of transformations to see if they are valid
+  comb_trans <- map_lgl(transformations, function(x) 
+    length(all.names(body(x))) > length(all.vars(body(x))) + 1)
+  map2(transformations[comb_trans], responses[comb_trans], function(trans, resp){
     dt <- model$data
     environment(trans) <- new_environment(dt, get_env(trans))
     inv <- invert_transformation(trans)

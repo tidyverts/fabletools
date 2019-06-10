@@ -27,13 +27,13 @@ generate.mdl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
   if(!is.null(new_data)){
     x <- bind_new_data(x, new_data)
   }
-  x <- gather(x, ".model", ".fit", !!!syms(mdls))
+  x <- gather(x, ".model", ".sim", !!!syms(mdls))
   
   # Evaluate simulations
-  x$.sim <- map2(x[[".fit"]], 
-                      x[["new_data"]] %||% rep(list(NULL), length.out = NROW(x)),
-                      generate, h = h, times = times, seed = seed, ...)
-  unnest(add_class(x, "lst_ts"), !!sym(".sim"), key = kv)
+  x$.sim <- map2(x[[".sim"]], 
+                 x[["new_data"]] %||% rep(list(NULL), length.out = NROW(x)),
+                 generate, h = h, times = times, seed = seed, ...)
+  unnest_tsbl(x, ".sim", parent_key = kv)
 }
 
 #' @export
@@ -78,8 +78,8 @@ Does your model require extra variables to produce simulations?", e$message))
   x$model$remove_data()
   x$model$stage <- NULL
   
+  if(length(x$response) > 1) abort("Generating paths from multivariate models is not yet supported.")
   .sim <- generate(x[["fit"]], new_data = new_data, specials = specials, ...)
-  if(length(x$transformation) > 1) abort("Imitating multivariate models is not yet supported")
   .sim[[".sim"]] <- invert_transformation(x$transformation[[1]])(.sim[[".sim"]])
   .sim
 }

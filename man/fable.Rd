@@ -4,23 +4,14 @@
 \alias{fable}
 \title{Create a fable object}
 \usage{
-fable(..., key = NULL, index, resp, dist, regular = TRUE)
+fable(..., resp, dist)
 }
 \arguments{
-\item{...}{A set of name-value pairs. The names of "key" and "index" should
-be avoided as they are used as the arguments.}
-
-\item{key}{Unquoted variable(s) that uniquely determine time indices. \code{NULL} for
-empty key, and works with tidy selector (e.g. \code{\link[dplyr:starts_with]{dplyr::starts_with()}}).}
-
-\item{index}{A bare (or unquoted) variable to specify the time index variable.}
+\item{...}{Arguments passed to \code{\link[tsibble:tsibble]{tsibble::tsibble()}}.}
 
 \item{resp}{The response variable (a list of expressions).}
 
 \item{dist}{The distribution variable (given as a bare or unquoted variable).}
-
-\item{regular}{Regular time interval (\code{TRUE}) or irregular (\code{FALSE}). The
-interval is determined by the greatest common divisor of index column, if \code{TRUE}.}
 }
 \description{
 Create a fable object

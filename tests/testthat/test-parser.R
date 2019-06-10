@@ -2,37 +2,37 @@ context("test-parser.R")
 
 test_that("Model parsing variety", {
   # Parse with no rhs and no specials
-  parse1 <- model(as_tsibble(USAccDeaths), no_specials(value))
+  parse1 <- model(us_deaths, no_specials(value))
   expect_equal(parse1[[1]][[1]]$fit, list())
   
   # Parse with no specials
-  expect_warning(model(as_tsibble(USAccDeaths), no_specials(value ~ rhs)), 
+  expect_warning(model(us_deaths, no_specials(value ~ rhs)), 
                "Exogenous regressors are not supported")
   
   # Parse xreg
-  parse_xreg <- model(as_tsibble(USAccDeaths), specials(value ~ value + log(value)))
+  parse_xreg <- model(us_deaths, specials(value ~ value + log(value)))
   expect_identical(parse_xreg[[1]][[1]]$fit$xreg[[1]], "xreg(value, log(value))")
   
   # Parse special
-  parse_log5 <- model(as_tsibble(USAccDeaths), specials(value ~ log5(value)))
-  expect_identical(parse_log5[[1]][[1]]$fit$log5[[1]], logb(USAccDeaths$value, 5))
+  parse_log5 <- model(us_deaths, specials(value ~ log5(value)))
+  expect_identical(parse_log5[[1]][[1]]$fit$log5[[1]], logb(us_deaths$value, 5))
   
   # Parse specials using .vals
-  parse_rnorm <- model(as_tsibble(USAccDeaths), specials(value ~ rnorm(0,1)))
-  expect_length(parse_rnorm[[1]][[1]]$fit$rnorm[[1]], NROW(USAccDeaths))
+  parse_rnorm <- model(us_deaths, specials(value ~ rnorm(0,1)))
+  expect_length(parse_rnorm[[1]][[1]]$fit$rnorm[[1]], NROW(us_deaths))
   
   # Parse multiple specials
-  parse_multi <- model(as_tsibble(USAccDeaths), specials(value ~ value + log(value) + rnorm(0,1) + log5(value)))
+  parse_multi <- model(us_deaths, specials(value ~ value + log(value) + rnorm(0,1) + log5(value)))
   expect_length(parse_multi[[1]][[1]]$fit, 3)
   expect_identical(parse_xreg[[1]][[1]]$fit$xreg[[1]], parse_multi[[1]][[1]]$fit$xreg[[1]])
   expect_identical(parse_log5[[1]][[1]]$fit$log5[[1]], parse_multi[[1]][[1]]$fit$log5[[1]])
   expect_identical(length(parse_rnorm[[1]][[1]]$fit$rnorm[[1]]), length(parse_multi[[1]][[1]]$fit$rnorm[[1]]))
   
   # Special causing error
-  expect_warning(model(as_tsibble(USAccDeaths), specials(value ~ oops())), "Not allowed")
+  expect_warning(model(us_deaths, specials(value ~ oops())), "Not allowed")
   
   # Parse lhs transformation with no rhs
-  parse_log1 <- model(as_tsibble(USAccDeaths), specials(log(value)))
+  parse_log1 <- model(us_deaths, specials(log(value)))
   log_trans <- new_transformation(
     function(.x) log(.x),
     function(.x) exp(.x)
@@ -42,12 +42,12 @@ test_that("Model parsing variety", {
   
   
   # Parse lhs transformation with rhs
-  parse_log2 <- model(as_tsibble(USAccDeaths), specials(log(value) ~ 1))
+  parse_log2 <- model(us_deaths, specials(log(value) ~ 1))
   expect_equal(parse_log1[[1]][[1]]$transformation[[1]], parse_log2[[1]][[1]]$transformation[[1]])
   expect_equal(parse_log1[[1]][[1]]$response[[1]], parse_log2[[1]][[1]]$response[[1]])
   
   # Parse lhs transformation with specials
-  parse_log3 <- model(as_tsibble(USAccDeaths), specials(log(value) ~ value + log(value) + rnorm(0,1) + log5(value)))
+  parse_log3 <- model(us_deaths, specials(log(value) ~ value + log(value) + rnorm(0,1) + log5(value)))
   expect_equal(parse_log1[[1]][[1]]$transformation[[1]], parse_log3[[1]][[1]]$transformation[[1]])
   expect_equal(parse_log1[[1]][[1]]$response[[1]], parse_log3[[1]][[1]]$response[[1]])
 })
@@ -56,18 +56,18 @@ test_that("Model parsing variety", {
 test_that("Model parsing scope", {
   # Test scoping without provided formula
   mdl <- eval({
-    model(as_tsibble(USAccDeaths), no_specials())
+    model(us_deaths, no_specials())
   }, envir = new_environment(list(no_specials = no_specials)))
   expect_equal(mdl[[1]][[1]]$response[[1]], sym("value"))
   
   mdl <- eval({
-    model(as_tsibble(USAccDeaths), no_specials(value))
+    model(us_deaths, no_specials(value))
   }, envir = new_environment(list(no_specials = no_specials)))
   expect_equal(mdl[[1]][[1]]$response[[1]], sym("value"))
   
   expect_error(
     eval({
-      model(as_tsibble(USAccDeaths), no_specials(nothing))
+      model(us_deaths, no_specials(nothing))
     }, envir = new_environment(list(no_specials = no_specials))),
     "nothing"
   )
@@ -75,7 +75,7 @@ test_that("Model parsing scope", {
   # Response variable from env
   mdl <- eval({
     something <- 1:72
-    model(as_tsibble(USAccDeaths), no_specials(something))
+    model(us_deaths, no_specials(something))
   }, envir = new_environment(list(no_specials = no_specials)))
   
   expect_equal(mdl[[1]][[1]]$response[[1]], sym("something"))
@@ -83,7 +83,7 @@ test_that("Model parsing scope", {
   # Transformation from scalar
   mdl <- eval({
     scale <- pi
-    model(as_tsibble(USAccDeaths), no_specials(value/scale))
+    model(us_deaths, no_specials(value/scale))
   }, envir = new_environment(list(no_specials = no_specials)))
   
   expect_equal(mdl[[1]][[1]]$response[[1]], sym("value"))
@@ -91,7 +91,7 @@ test_that("Model parsing scope", {
   # Specials missing values
   expect_warning(
     eval({
-      model(as_tsibble(USAccDeaths), specials(value ~ log5(mytrend)))
+      model(us_deaths, specials(value ~ log5(mytrend)))
     }, envir = new_environment(list(specials = specials))),
     "mytrend"
   )
@@ -99,7 +99,7 @@ test_that("Model parsing scope", {
   # Specials with data from scope
   mdl <- eval({
     mytrend <- 1:72
-    model(as_tsibble(USAccDeaths), specials(value ~ log5(mytrend)))
+    model(us_deaths, specials(value ~ log5(mytrend)))
   }, envir = new_environment(list(specials = specials)))
   
   expect_equal(mdl[[1]][[1]]$fit[[1]][[1]], log(1:72, 5))

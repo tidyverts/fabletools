@@ -2,9 +2,9 @@
 augment.mdl_df <- function(x, ...){
   x <- gather(x, ".model", ".fit", !!!syms(x%@%"models"))
   kv <- key_vars(x)
-  x <- transmute(as_tibble(x),
-                 !!!syms(kv), !!sym(".model"), aug = map(!!sym(".fit"), augment))
-  unnest(add_class(x, "lst_ts"), !!sym("aug"), key = kv)
+  x <- transmute(as_tibble(x), !!!syms(kv), !!sym(".model"),
+                 aug = map(!!sym(".fit"), augment, ...))
+  unnest_tsbl(x, "aug", parent_key = kv)
 }
 
 #' @export
@@ -41,7 +41,7 @@ glance.mdl_df <- function(x, ...){
   keys <- key(x)
   x <- transmute(as_tibble(x),
                  !!!keys, !!sym(".model"), glanced = map(!!sym(".fit"), glance))
-  unnest(x, !!sym("glanced"))
+  unnest_tbl(x, "glanced")
 }
 
 #' @export
@@ -55,7 +55,7 @@ tidy.mdl_df <- function(x, ...){
   keys <- key(x)
   x <- transmute(as_tibble(x),
                  !!!keys, !!sym(".model"), tidied = map(!!sym(".fit"), tidy))
-  unnest(x, !!sym("tidied"))
+  unnest_tbl(x, "tidied")
 }
 
 #' @export

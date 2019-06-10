@@ -37,7 +37,7 @@ new_hilo <- function(lower, upper, level = NULL) {
   
   list(.lower = transpose_dbl(lower), .upper = transpose_dbl(upper), .level = level) %>% 
     pmap(tibble) %>%
-    enclass("hilo")
+    add_class("hilo")
 }
 
 #' @rdname hilo
@@ -58,51 +58,15 @@ hilo.default <- function(x, ...){
   ))
 }
 
-#' Helpers for `hilo`
-#'
-#' @param x A `hilo` object.
-#' @rdname helper
-#'
-#' @export
-lower <- function(x) {
-  stopifnot(is_hilo(x))
-  x$.lower
-}
-
-#' @rdname helper
-#' @export
-upper <- function(x) {
-  stopifnot(is_hilo(x))
-  x$.upper
-}
-
-#' @rdname helper
-#' @export
-level <- function(x) {
-  stopifnot(is_hilo(x))
-  x$.level
-}
-
-#' @rdname helper
+#' Is the object a hilo
+#' 
+#' @param x An object.
+#' 
 #' @export
 is_hilo <- function(x) {
   inherits(x, "hilo")
 }
 
-#' Validate whether values fall in the hilo
-#'
-#' @param x A numeric vector of values.
-#' @param hilo A vector of `hilo` objects.
-#'
-#' @examples
-#' myhilo <- new_hilo(lower = rnorm(10), upper = rnorm(10) + 5, level = 95)
-#' bt(0.2017, myhilo)
-#'
-#' @export
-bt <- function(x, hilo) {
-  stopifnot(is.numeric(x) || is_hilo(hilo))
-  x >= hilo$.lower & x <= hilo$.upper
-}
 
 #' @export
 `$.hilo` <- function(x, name) {
@@ -111,7 +75,7 @@ bt <- function(x, hilo) {
 
 #' @export
 `[.hilo` <- function(x, ..., drop = TRUE) {
-  enclass(NextMethod(), "hilo")
+  add_class(NextMethod(), "hilo")
 }
 
 #' @export
@@ -119,7 +83,7 @@ c.hilo <- function(...) {
   dots_list(...) %>%
     map(`[`) %>%
     unlist(recursive = FALSE, use.names = FALSE) %>%
-    enclass("hilo")
+    add_class("hilo")
 }
 
 #' @export
@@ -152,7 +116,7 @@ unique.hilo <- function(x, incomparables = FALSE, ...) {
 
 #' @export
 rep.hilo <- function(x, ...) {
-  enclass(NextMethod(), "hilo")
+  add_class(NextMethod(), "hilo")
 }
 
 type_sum.hilo <- function(x) {
@@ -196,7 +160,7 @@ compact_hilo <- function(x, digits = NULL) {
     sep = ", "
   )
   rng <- paste0("[", limit, "]")
-  lvl <- level(x)
+  lvl <- x$.level
   if (is.null(lvl)) {
     return(rng)
   } else {

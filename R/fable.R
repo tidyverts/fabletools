@@ -1,12 +1,12 @@
 #' Create a fable object
 #'
-#' @inheritParams tsibble::tsibble
+#' @param ... Arguments passed to [tsibble::tsibble()].
 #' @param resp The response variable (a list of expressions).
 #' @param dist The distribution variable (given as a bare or unquoted variable).
 #'
 #' @export
-fable <- function(..., key = NULL, index, resp, dist, regular = TRUE){
-  tsbl <- tsibble(..., key = !!enquo(key), index = !!enexpr(index), regular = regular)
+fable <- function(..., resp, dist){
+  tsbl <- tsibble(...)
   as_fable(tsbl, resp, !!enquo(dist))
 }
 
@@ -162,8 +162,14 @@ rbind.fbl_ts <- function(...){
   if(length(dist <- unique(dist)) > 1){
     abort("Cannot combine fables with different distribution names.")
   }
-  out <- update_tsibble(NextMethod("rbind"))
+  out <- suppressWarnings(invoke("rbind", map(fbls, as_tsibble)))
+  class(out[[as_string(dist[[1]])]]) <- "fcdist"
   as_fable(out, response[[1]], !!dist[[1]])
+}
+
+#' @export
+`[.fbl_ts` <- function (x, i, j, drop = FALSE){
+  as_fable(NextMethod(), x%@%"response", !!(x%@%"dist"))
 }
 
 type_sum.fbl_ts <- function(x){

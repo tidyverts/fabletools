@@ -25,4 +25,4 @@ no_specials <- function(formula, ...){
 specials <- function(formula, ...){
   specials_model <- new_model_class(model = "test model", train = test_train, specials = test_specials)
   new_model_definition(specials_model, !!enquo(formula), ...)
-} 
+}

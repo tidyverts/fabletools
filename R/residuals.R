@@ -8,7 +8,7 @@ residuals.mdl_df <- function(object, ...){
     !!sym(".model"),
     residuals = map(!!sym(".fit"), residuals, ...)
   )
-  unnest(add_class(out, "lst_ts"), key = kv)
+  unnest_tsbl(out, "residuals", parent_key = kv)
 }
 
 #' @export

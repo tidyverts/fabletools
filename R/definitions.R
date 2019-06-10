@@ -18,15 +18,18 @@ model_definition <- R6::R6Class(NULL,
     },
     initialize = function(formula, ..., .env){
       if(possibly(compose(is.data.frame, eval_tidy), FALSE)(self$formula)){
-        abort("The API for fable models has changed. Read more here: https://github.com/tidyverts/fable/issues/77")
+        abort(
+"A model specification is trained to a dataset using the `model()` function.
+Refer to the documentation in ?model for more details.")
       }
       
       self$formula <- enquo(formula)
       
+      # self$env <- .env
       # Create specials environment with user's scoping
-      specials_env <- new_environment(parent = self$env)
+      specials_env <- new_environment(parent = .env)
       # Set `self` `super`, and `specials` in eval env for special functions
-      fn_env <- new_environment(as.list(self$.__enclos_env__), specials_env)
+      fn_env <- new_environment(as.list(self$.__enclos_env__), self$env)
       env_bind(specials_env, !!!assign_func_envs(self$specials, fn_env))
       self$specials <- structure(
         specials_env,
@@ -38,7 +41,6 @@ model_definition <- R6::R6Class(NULL,
       xreg_env <- get_env(self$specials$xreg)
       xreg_env$lag <- self$recall_lag
       
-      self$env <- .env
       
       self$prepare(formula, ...)
       
@@ -166,19 +168,19 @@ new_decomposition <- function(.class, .data, ..., .env = caller_env(n = 2)){
   dcmp <- new_model_definition(.class, ..., .env = .env)
   
   kv <- key_vars(.data)
-  .data <- nest(group_by(.data, !!!syms(kv)), .key = "lst_data")
+  .data <- nest_keys(.data, ".dcmp")
   
   if(NROW(.data) == 0){
     abort("There is no data to decompose!")
   }
   
   out <- mutate(.data,
-                dcmp = map(!!sym("lst_data"), function(data, dcmp){
+                .dcmp = map(!!sym(".dcmp"), function(data, dcmp){
                   estimate(data, dcmp)[["fit"]]
                 }, dcmp))
   
-  attrs <- combine_dcmp_attr(out[["dcmp"]])
-  out <- unnest(out, !!sym("dcmp"), key = kv)
+  attrs <- combine_dcmp_attr(out[[".dcmp"]])
+  out <- unnest_tsbl(out, ".dcmp", parent_key = kv)
   as_dable(out, method = attrs[["method"]], resp = !!attrs[["response"]],
            seasons = attrs[["seasons"]], aliases = attrs[["aliases"]])
 }

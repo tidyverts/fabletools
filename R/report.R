@@ -29,5 +29,10 @@ report.mdl_ts <- function(object, ...){
   if(!is_symbol(body(object$transformation[[1]])) && length(object$response) == 1){
     cat(paste("Transformation:", expr_text(body(object$transformation[[1]])), "\n"))
   }
-  report(object[["fit"]])
+  tryCatch(
+    report(object[["fit"]]),
+    error = function(e){
+      cat("\nA model specific report is not available for this model class.")
+    }
+  )
 }

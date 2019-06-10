@@ -10,6 +10,16 @@ mable <- function(..., key = NULL, models = NULL){
   as_mable(tibble(...), key = key, models = models)
 }
 
+
+#' Is the object a mable
+#' 
+#' @param x An object.
+#' 
+#' @export
+is_mable <- function(x){
+  inherits(x, "mdl_df")
+}
+
 #' Coerce a dataset to a mable
 #' 
 #' @param x A dataset containing a list model column.
@@ -113,7 +123,7 @@ key_data.mdl_df <- function(x){
 #' @export
 key_vars.mdl_df <- function(x){
   keys <- key_data(x)
-  head(names(keys), -1L)
+  names(keys)[-NCOL(keys)]
 }
 
 #' @export

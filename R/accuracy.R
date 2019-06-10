@@ -100,8 +100,8 @@ winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
   interval <- hilo(.dist, level)
   if(NROW(interval[[1]]) > 1) abort("Winkler scores are not supported for multivariate distributions.")
   alpha <- 1-level/100
-  lt <- interval$lower
-  ut <- interval$upper
+  lt <- interval$.lower
+  ut <- interval$.upper
   score <- ifelse(
     .actual < lt, 
       (ut - lt) + (2/alpha)*(lt-.actual),
@@ -161,7 +161,8 @@ accuracy <- function(object, ...){
 accuracy.mdl_df <- function(object, measures = point_measures, ...){
   as_tibble(object) %>% 
     gather(".model", "fit", !!!syms(object%@%"models")) %>% 
-    unnest(fit = map(!!sym("fit"), accuracy, measures = measures, ...))
+    mutate(fit = map(!!sym("fit"), accuracy, measures = measures, ...)) %>% 
+    unnest_tbl("fit")
 }
 
 #' @export
@@ -198,21 +199,34 @@ accuracy.mdl_ts <- function(object, measures = point_measures, ...){
   if(is.null(aug[[".period"]])){
     aug <- mutate(aug, .period = get_frequencies(NULL, object[["data"]], .auto = "smallest"))
   }
+  aug <- aug %>% 
+    nest_grps(nm = ".accuracy")
   
-  measures <- squash(measures)
+  measures <- map(aug[[".accuracy"]], function(measures, inputs){
+    map(measures, safely(do.call, otherwise = NA_real_), flatten(transpose(inputs)))
+  }, measures = squash(measures))
+  
+  measures <- imap(measures, function(x, nm){
+    err <- map_lgl(x, function(x) !is.null(x[["error"]]))
+    if((tot_err <- sum(err)) > 0){
+      err_msg <- table(map_chr(x[err], function(x) x[["error"]][["message"]]))
+      warn(
+        sprintf("%i error%s encountered\n%s\n",
+                tot_err,
+                if(tot_err > 1) sprintf("s (%i unique)", length(err_msg)) else "", 
+                paste0("[", err_msg, "] ", names(err_msg), collapse = "\n")
+        )
+      )
+    }
+    as_tibble(map(x, function(x) x[["result"]]))
+  })
   
   aug %>% 
-    nest(.key = ".accuracy_inputs") %>% 
     mutate(
-      .accuracy_inputs = map(!!sym(".accuracy_inputs"), compose(flatten, transpose))
-    ) %>% 
-    unnest(
       .type = "Training",
-      map(!!sym(".accuracy_inputs"), 
-          function(measures, inputs) as_tibble(map(measures, do.call, inputs)),
-          measures = measures),
-      .drop = TRUE
-    )
+      .accuracy = measures
+    ) %>% 
+    unnest_tbl(".accuracy")
 }
 
 #' @param data A dataset containing the complete model dataset (both training and test data). The training portion of the data will be used in the computation of some accuracy measures, and the test data is used to compute the forecast errors.
@@ -229,7 +243,7 @@ accuracy.fbl_ts <- function(object, data, measures = point_measures, ...,
     object <- as_tsibble(object) %>% 
       # select(!!expr(-!!attr(object, "dist"))) %>% 
       gather(".response", "value", !!!resp, factor_key = TRUE)
-    data <- gather(data, ".response", "value", !!!resp)
+    data <- gather(data, ".response", "value", !!!resp, factor_key = TRUE)
     resp <- sym("value")
     # abort("Accuracy evaluation is not yet supported for multivariate forecasts.")
   }
@@ -249,7 +263,7 @@ accuracy.fbl_ts <- function(object, data, measures = point_measures, ...,
     warn('Accuracy measures should be computed separately for each model, have you forgotten to add ".model" to your `by` argument?')
   }
   
-  if(NROW(missing_test <- anti_join(object, data, by = intersect(colnames(data), by))) > 0){
+  if(NROW(missing_test <- suppressWarnings(anti_join(object, data, by = intersect(colnames(data), by)))) > 0){
     warn(sprintf(
       "The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
 %i %s %s", 
@@ -279,7 +293,7 @@ accuracy.fbl_ts <- function(object, data, measures = point_measures, ...,
   }
   mutual_keys <- intersect(key(data), key(object))
   mutual_keys <- set_names(mutual_keys, map_chr(mutual_keys, as_string))
-  .train <- object %>% 
+  .train <- as_tibble(object) %>% 
     group_by(!!!key(object), !!!grp) %>% 
     filter(!!index(object) == min(!!index(object))) %>% 
     group_by(!!!grp) %>% 
@@ -294,19 +308,33 @@ accuracy.fbl_ts <- function(object, data, measures = point_measures, ...,
     aug <- mutate(aug, .period = get_frequencies(NULL, object, .auto = "smallest"))
   }
   
-  measures <- squash(measures)
+  aug <- aug %>% 
+    group_by(!!!grp) %>% 
+    nest_grps(nm = ".accuracy")
+  
+  measures <- map(aug[[".accuracy"]], function(measures, inputs){
+    map(measures, safely(do.call, otherwise = NA_real_), flatten(transpose(inputs)))
+  }, measures = squash(measures))
+  
+  measures <- imap(measures, function(x, nm){
+    err <- map_lgl(x, function(x) !is.null(x[["error"]]))
+    if((tot_err <- sum(err)) > 0){
+      err_msg <- table(map_chr(x[err], function(x) x[["error"]][["message"]]))
+      warn(
+        sprintf("%i error%s encountered\n%s\n",
+                tot_err,
+                if(tot_err > 1) sprintf("s (%i unique)", length(err_msg)) else "", 
+                paste0("[", err_msg, "] ", names(err_msg), collapse = "\n")
+        )
+      )
+    }
+    as_tibble(map(x, function(x) x[["result"]]))
+  })
   
   aug %>% 
-    group_by(!!!grp) %>% 
-    nest(.key = ".accuracy_inputs") %>% 
     mutate(
-      .accuracy_inputs = map(!!sym(".accuracy_inputs"), compose(flatten, transpose))
-    ) %>% 
-    unnest(
       .type = "Test",
-      map(!!sym(".accuracy_inputs"), 
-          function(measures, inputs) as_tibble(map(measures, do.call, inputs)),
-          measures = measures),
-      .drop = TRUE
-    )
+      .accuracy = measures
+    ) %>% 
+    unnest_tbl(".accuracy")
 }

@@ -27,32 +27,21 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
     object <- bind_new_data(object, new_data)
   }
   
-  fc <- dplyr::mutate_at(as_tibble(object),
-                         vars(!!!mdls), forecast, object[["new_data"]],
-                         h = h, bias_adjust = bias_adjust, ...,
-                         key_data = key_data(object))
+  # Evaluate forecasts
+  object <- dplyr::mutate_at(as_tibble(object), vars(!!!mdls),
+                             forecast, object[["new_data"]],
+                             h = h, bias_adjust = bias_adjust, ...,
+                             key_data = key_data(object))
+  
+  object <- gather(object, ".model", ".fc", !!!mdls)
   
   # Combine and re-construct fable
-  fc_interval <- interval(fc[[mdls[[1]]]][[1]])
-  fc_idx <- index(fc[[mdls[[1]]]][[1]])
-  fc <- gather(fc, ".model", ".fc", !!!mdls)
-
-  idx <- index(fc[[".fc"]][[1]])
-  resp <- fc[[".fc"]][[1]]%@%"response"
-  dist <- fc[[".fc"]][[1]]%@%"dist"
-  
-  dist_repaired <- fc[[".fc"]] %>%
-    map(function(x) x[[as_string(x%@%"dist")]]) %>%
-    invoke(c, .)
-  idx_repaired <- fc[[".fc"]] %>%
-    map(function(x) x[[as_string(index(x))]]) %>%
-    invoke(c, .)
-  fc <- suppressWarnings(unnest(fc, !!sym(".fc")))
-  fc[[as_string(dist)]] <- dist_repaired
-  fc[[as_string(idx)]] <- idx_repaired
-  fc <- build_tsibble(fc, key = kv, index = !!fc_idx, interval = fc_interval)
-  
-  as_fable(fc, index = !!idx, key = kv, resp = resp, dist = !!dist)
+  fbl_attr <- attributes(object$.fc[[1]])
+  out <- suppressWarnings(
+    unnest_tsbl(as_tibble(object)[c(kv, ".fc")], ".fc", parent_key = kv)
+  )
+  out[[expr_text(fbl_attr$dist)]] <- invoke(c, map(object$.fc, function(x) x[[expr_text(x%@%"dist")]]))
+  as_fable(out, resp = fbl_attr$response, dist = !!fbl_attr$dist)
 }
 
 #' @export
@@ -93,7 +82,7 @@ Does your model require extra variables to produce forecasts?", e$message))
     req_vars <- setdiff(all.vars(body(bt)), names(formals(bt)))
     exists_vars <- map_lgl(req_vars, exists, env)
     if(any(!exists_vars)){
-      abort(sprintf(
+      bt <- custom_error(bt, sprintf(
 "Unable to find all required variables to back-transform the forecasts (missing %s).
 These required variables can be provided by specifying `new_data`.",
         paste0("`", req_vars[!exists_vars], "`", collapse = ", ")

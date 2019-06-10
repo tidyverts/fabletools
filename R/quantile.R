@@ -60,8 +60,8 @@ Ops.fcdist <- function(e1, e2){
   }
   if(.Generic %in% c("-", "+") && missing(e2)){
     e2 <- e1
+    e1 <- if(.Generic == "+") 1 else -1
     .Generic <- "*"
-    e1 <- 1
   }
   if(.Generic == "-"){
     .Generic <- "+"
@@ -77,24 +77,20 @@ Ops.fcdist <- function(e1, e2){
   }
   if(e_len[[1]] != e_len[[2]]){
     if(which.min(e_len) == 1){
-      is_dist <- inherits(e1, "fcdist")
-      e1 <- rep_len(e1, e_len[[2]])
-      if(is_dist){
-        e1 <- structure(e1, class = "fcdist")
-      }
+      e1 <- rep(e1, e_len[[2]])
     }
     else{
-      is_dist <- inherits(e2, "fcdist")
-      e2 <- rep_len(e2, e_len[[1]])
-      if(is_dist){
-        e2 <- structure(e2, class = "fcdist")
-      }
+      e2 <- rep(e2, e_len[[1]])
     }
+  }
+  
+  if(is_dist_unknown(e1) || is_dist_unknown(e2)){
+    return(dist_unknown(length(e1)))
   }
   
   if(inherits(e1, "fcdist") && inherits(e2, "fcdist")){
     if(.Generic == "*"){
-      warn(sprintf("Multipling forecast distributions is not supported"))
+      warn(sprintf("Multiplying forecast distributions is not supported."))
       return(dist_unknown(max(length(e1), if (!missing(e2)) length(e2))))
     }
     
@@ -105,7 +101,7 @@ Ops.fcdist <- function(e1, e2){
     
     e1 <- map2(split(e1, grps), split(e2, grps), function(x, y){
       if(!is_dist_normal(x) || !is_dist_normal(y)){
-        warn("Combinations of non-normal forecast distributions is not supported")
+        warn("Combinations of non-normal forecast distributions is not supported.")
         return(dist_unknown(max(length(e1), length(e2))))
       }
       x <- transpose(x) %>% map(unlist, recursive = FALSE)
@@ -203,7 +199,7 @@ format.fcdist <- function(x, ...){
   split(x, .env_ids) %>%
     set_names(NULL) %>% 
     map(function(x){
-      if(!is_env(x[[1]][[length(x[[1]])]])) return("NA")
+      if(!is_environment(x[[1]][[length(x[[1]])]])) return("NA")
       out <- x[[1]]$.env$format(map(x, function(x) x[-length(x)]))
       if(x[[1]]$.env$trans){
         out <- paste0("t(", out, ")")
@@ -220,6 +216,16 @@ format.fcdist <- function(x, ...){
 
 #' @export
 c.fcdist <- function(...){
+  structure(NextMethod(), class = "fcdist")
+}
+
+#' @export
+rep.fcdist <- function(x, ...){
+  structure(NextMethod(), class = "fcdist")
+}
+
+#' @export
+unique.fcdist <- function(x, ...){
   structure(NextMethod(), class = "fcdist")
 }
 
@@ -352,4 +358,15 @@ env_dist_unknown <- new_fcdist_env(function(x, ...) rep(NA, length(x)),
 #' @export
 dist_unknown <- function(n, ...){
   new_fcdist(vector("double", n), ..., .env = env_dist_unknown)
+}
+
+
+is_dist_normal <- function(dist){
+  if(!inherits(dist, "fcdist")) return(FALSE)
+  identical(dist[[1]]$.env$f, env_dist_normal$f) && !dist[[1]]$.env$trans
+}
+
+is_dist_unknown <- function(dist){
+  if(!inherits(dist, "fcdist")) return(FALSE)
+  identical(dist[[1]]$.env$f, env_dist_unknown$f) && !dist[[1]]$.env$trans
 }
