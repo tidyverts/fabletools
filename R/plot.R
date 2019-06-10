@@ -142,7 +142,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
     kv <- c(kv, ".response")
   }
   
-  as_tsibble(object[setdiff(colnames(object), expr_text(dist))],
+  as_tsibble(as_tibble(object)[setdiff(colnames(object), expr_text(dist))],
              key = kv, index = !!idx, validate = FALSE) 
 }
 
