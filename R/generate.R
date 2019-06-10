@@ -78,8 +78,8 @@ Does your model require extra variables to produce simulations?", e$message))
   x$model$remove_data()
   x$model$stage <- NULL
   
+  if(length(x$response) > 1) abort("Generating paths from multivariate models is not yet supported.")
   .sim <- generate(x[["fit"]], new_data = new_data, specials = specials, ...)
-  if(length(x$transformation) > 1) abort("Imitating multivariate models is not yet supported")
   .sim[[".sim"]] <- invert_transformation(x$transformation[[1]])(.sim[[".sim"]])
   .sim
 }
