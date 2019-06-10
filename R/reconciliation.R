@@ -18,14 +18,14 @@ reconcile.mdl_df <- function(data, ...){
 
 #' Minimum trace forecast reconciliation
 #' 
-#' @param mdls A column of models in a mable.
+#' @param models A column of models in a mable.
 #' @param method The reconciliation method to use.
 #' @param sparse Should the reconciliation be computed with sparse matrix algebra?
 #' 
 #' @export
-MinT <- function(mdls, method = c("shrink", "wls", "ols", "cov"),
+MinT <- function(models, method = c("shrink", "wls", "ols", "cov"),
                  sparse = requireNamespace("SparseM")){
-  structure(mdls, class = c("lst_mint_mdl", "lst_mdl"),
+  structure(models, class = c("lst_mint_mdl", "lst_mdl"),
             method = match.arg(method), sparse = sparse)
 }
 
