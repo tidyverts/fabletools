@@ -27,12 +27,12 @@ generate.mdl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
   if(!is.null(new_data)){
     x <- bind_new_data(x, new_data)
   }
-  x <- gather(x, ".model", ".fit", !!!syms(mdls))
+  x <- gather(x, ".model", ".sim", !!!syms(mdls))
   
   # Evaluate simulations
-  x$.sim <- map2(x[[".fit"]], 
-                      x[["new_data"]] %||% rep(list(NULL), length.out = NROW(x)),
-                      generate, h = h, times = times, seed = seed, ...)
+  x$.sim <- map2(x[[".sim"]], 
+                 x[["new_data"]] %||% rep(list(NULL), length.out = NROW(x)),
+                 generate, h = h, times = times, seed = seed, ...)
   unnest_tsbl(x, ".sim", parent_key = kv)
 }
 
