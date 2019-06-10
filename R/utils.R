@@ -12,6 +12,10 @@ add_class <- function(x, new_class){
   `class<-`(x, union(new_class, class(x)))
 }
 
+rm_class <- function(x, class){
+  `class<-`(x, setdiff(class(x), class))
+}
+
 custom_error <- function(.f, error){
   force(error)
   function(...){
