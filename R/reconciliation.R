@@ -23,7 +23,8 @@ reconcile.mdl_df <- function(data, ...){
 #' @param sparse Should the reconciliation be computed with sparse matrix algebra?
 #' 
 #' @export
-MinT <- function(mdls, method = c("shrink", "wls", "ols", "cov"), sparse = FALSE){
+MinT <- function(mdls, method = c("shrink", "wls", "ols", "cov"),
+                 sparse = requireNamespace("SparseM")){
   structure(mdls, class = c("lst_mint_mdl", "lst_mdl"),
             method = match.arg(method), sparse = sparse)
 }
