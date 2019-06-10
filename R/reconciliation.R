@@ -94,7 +94,6 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   S <- build_smat(key_data)
   
   if(sparse){
-    require_package("Matrix")
     require_package("SparseM")
     require_package("methods")
     as.matrix <- SparseM::as.matrix
@@ -112,7 +111,7 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
     U <- cbind(methods::as(diff(dim(J)), "matrix.diag.csr"), SparseM::as.matrix.csr(-S[row_agg,]))
     U <- U[, order(c(row_agg, row_btm))]
     
-    P <- J - J%*%W%*%t(U)%*%Matrix::solve(U%*%W%*%t(U))%*%U
+    P <- J - J%*%W%*%t(U)%*%SparseM::solve(U%*%W%*%t(U))%*%U
   }
   else {
     R <- t(S)%*%solve(W)

@@ -44,7 +44,6 @@ Suggests:
     testthat,
     tsibbledata,
     lubridate,
-    Matrix,
     SparseM
 Remotes:
     tidyverts/fable,
