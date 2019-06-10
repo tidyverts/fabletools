@@ -97,15 +97,13 @@ aggregate_keys.tbl_ts <- function(.data, .spec = NULL, ...){
 #' library(tsibble)
 #' pedestrian %>% 
 #'   aggregate_index()
-#' 
-#' @export
 aggregate_index <- function(.data, .times, ...){
   UseMethod("aggregate_index")
 }
 
 #' @export
 aggregate_index.tbl_ts <- function(.data, .times = NULL, ...){
-  message("Note: temporal aggregation is highly experimental. The interface will be refined in the near future.")
+  warn("Temporal aggregation is highly experimental. The interface will be refined in the near future.")
   
   require_package("lubridate")
   idx <- index(.data)

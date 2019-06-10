@@ -45,5 +45,4 @@ tourism_grp <- tourism \%>\%
 library(tsibble)
 pedestrian \%>\% 
   aggregate_index()
-
 }
