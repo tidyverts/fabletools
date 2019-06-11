@@ -45,7 +45,10 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
     as.matrix()
   fc_var <- fc %>% 
     map(`[[`, expr_text(attr(fc[[1]],"dist"))) %>% 
-    map(function(x) map_dbl(x, `[[`, "sd")^2) %>% 
+    map(function(x){
+      if(!is_dist_normal(x)) abort("Reconciliation of non-normal forecasts is not yet supported.")
+      map_dbl(x, `[[`, "sd")^2
+    }) %>% 
     transpose_dbl()
   
   # Compute weights (sample covariance)
