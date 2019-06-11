@@ -168,6 +168,8 @@ accuracy <- function(object, ...){
 #' library(fable)
 #' library(tsibble)
 #' library(tsibbledata)
+#' library(dplyr)
+#' 
 #' fit <- aus_production %>%
 #'   filter(Quarter < yearquarter("2006 Q1")) %>% 
 #'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A")))

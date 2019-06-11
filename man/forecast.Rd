@@ -31,6 +31,7 @@ from fitted models.
 library(fable)
 library(tsibble)
 library(tsibbledata)
+library(dplyr)
 
 # Forecasting with an ETS(M,Ad,A) model to Australian beer production
 aus_production \%>\%
