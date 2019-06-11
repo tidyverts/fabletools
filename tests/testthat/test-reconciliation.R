@@ -22,7 +22,7 @@ test_that("reconciliation", {
   
   fc_agg <- fit_agg %>% forecast()
   expect_message(
-    fc_agg_reconciled <- fit_agg %>% reconcile(ses = MinT(snaive)) %>% forecast(),
+    fc_agg_reconciled <- fit_agg %>% reconcile(snaive = MinT(snaive)) %>% forecast(),
     "experimental"
   )
   
