@@ -12,10 +12,37 @@ model(.data, ...)
 \arguments{
 \item{.data}{A data structure suitable for the models (such as a \code{tsibble})}
 
-\item{...}{Definitions for the models to be used}
+\item{...}{Definitions for the models to be used (such as \code{\link[fable:ETS]{fable::ETS()}})}
 
 \item{.safely}{If a model encounters an error, rather than aborting the process a \link[=null_model]{NULL model} will be returned instead. This allows for an error to occur when computing many models, without losing the results of the successful models.}
 }
 \description{
-Trains specified model definitions to a dataset.
+Trains specified model definition(s) to a dataset.
+}
+\section{Parallel}{
+
+
+It is possible to estimate models in parallel using the
+\link[=https://cran.r-project.org/package=future]{future} package. By specifying a
+\code{\link[future:plan]{future::plan()}} before estimating the models, they will be computed
+according to that plan.
+}
+
+\examples{
+library(fable)
+library(tsibbledata)
+
+# Training an ETS(M,Ad,A) model to Australian beer production
+aus_production \%>\%
+  model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A")))
+
+# Training a seasonal naive and ETS(A,A,A) model to the monthly Food 
+# retailing turnover for each Australian state/territory.
+library(dplyr)
+aus_retail \%>\% 
+  filter(Industry == "Food retailing") \%>\% 
+  model(
+    snaive = SNAIVE(Turnover),
+    ets = ETS(log(Turnover) ~ error("A") + trend("A") + season("A")),
+  )
 }

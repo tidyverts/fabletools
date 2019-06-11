@@ -1,9 +1,9 @@
 #' Estimate models
 #' 
-#' Trains specified model definitions to a dataset.
+#' Trains specified model definition(s) to a dataset.
 #' 
 #' @param .data A data structure suitable for the models (such as a `tsibble`)
-#' @param ... Definitions for the models to be used
+#' @param ... Definitions for the models to be used (such as [`fable::ETS()`])
 #'
 #' @rdname model
 #' @export
@@ -15,6 +15,31 @@ model <- function(.data, ...){
 #' 
 #' @param .safely If a model encounters an error, rather than aborting the process a [NULL model][null_model()] will be returned instead. This allows for an error to occur when computing many models, without losing the results of the successful models.
 #' 
+#' @section Parallel:
+#' 
+#' It is possible to estimate models in parallel using the
+#' [future][https://cran.r-project.org/package=future] package. By specifying a
+#' [`future::plan()`] before estimating the models, they will be computed 
+#' according to that plan.
+#' 
+#' 
+#' @examples 
+#' library(fable)
+#' library(tsibbledata)
+#' 
+#' # Training an ETS(M,Ad,A) model to Australian beer production
+#' aus_production %>%
+#'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A")))
+#' 
+#' # Training a seasonal naive and ETS(A,A,A) model to the monthly Food 
+#' # retailing turnover for each Australian state/territory.
+#' library(dplyr)
+#' aus_retail %>% 
+#'   filter(Industry == "Food retailing") %>% 
+#'   model(
+#'     snaive = SNAIVE(Turnover),
+#'     ets = ETS(log(Turnover) ~ error("A") + trend("A") + season("A")),
+#'   )
 #' @export
 model.tbl_ts <- function(.data, ..., .safely = TRUE){
   nm <- map(enexprs(...), expr_text)
