@@ -1,3 +1,21 @@
+#' Augment a mable
+#' 
+#' Uses a fitted model to augment the response variable with fitted values and
+#' residuals.
+#' 
+#' @param x A mable.
+#' @param ... Arguments for model methods.
+#' 
+#' @examples 
+#' library(fable)
+#' library(tsibbledata)
+#' 
+#' # Forecasting with an ETS(M,Ad,A) model to Australian beer production
+#' aus_production %>%
+#'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) %>% 
+#'   augment(type = "response")
+#' 
+#' @rdname augment
 #' @export
 augment.mdl_df <- function(x, ...){
   x <- gather(x, ".model", ".fit", !!!syms(x%@%"models"))
@@ -7,6 +25,7 @@ augment.mdl_df <- function(x, ...){
   unnest_tsbl(x, "aug", parent_key = kv)
 }
 
+#' @rdname augment
 #' @export
 augment.mdl_ts <- function(x, ...){
   tryCatch(augment(x[["fit"]], ...),
