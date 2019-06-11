@@ -8,6 +8,7 @@
 #' @param ... Additional optional arguments for refit methods.
 #' 
 #' @examples 
+#' library(fable)
 #' 
 #' fit <- as_tsibble(mdeaths) %>% 
 #'   model(ETS(value ~ error("M") + trend("A") + season("A")))
