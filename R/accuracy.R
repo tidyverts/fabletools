@@ -141,12 +141,19 @@ percentile_score <- function(.dist, .actual, na.rm = TRUE, ...){
 #' @export
 distribution_measures <- list(percentile = percentile_score)
 
-#' Evaluate model/forecast accuracy
+#' Evaluate accuracy of a forecast or model
 #' 
-#' 
+#' Summarise the performance of the model using accuracy measures. Accuracy
+#' measures can be computed directly from models as the one-step-ahead fitted
+#' residuals are available. When evaluating accuracy on forecasts, you will
+#' need to provide a complete dataset that includes the future data and data
+#' used to train the model.
 #' 
 #' @param object A model or forecast object
 #' @param ... Additional arguments to be passed to measures that use it.
+#' 
+#' @seealso 
+#' [Evaluating forecast accuracy](https://otexts.com/fpp3/accuracy.html)
 #' 
 #' @export
 accuracy <- function(object, ...){
@@ -155,7 +162,31 @@ accuracy <- function(object, ...){
 
 #' @rdname accuracy
 #' 
-#' @param measures A list of accuracy measures to compute (such as [`point_measures`], [`interval_measures`], or [`distribution_measures`])
+#' @param measures A list of accuracy measure functions to compute (such as [`point_measures`], [`interval_measures`], or [`distribution_measures`])
+#' 
+#' @examples 
+#' library(fable)
+#' library(tsibble)
+#' library(tsibbledata)
+#' fit <- aus_production %>%
+#'   filter(Quarter < yearquarter("2006 Q1")) %>% 
+#'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A")))
+#' 
+#' # In-sample training accuracy does not require extra data provided.
+#' accuracy(fit)
+#' 
+#' # Out-of-sample forecast accuracy requires the future values to compare with.
+#' # All available future data will be used, and a warning will be given if some
+#' # data for the forecast window is unavailable.
+#' fc <- fit %>% 
+#'   forecast(h = "5 years")
+#' fc %>% 
+#'   accuracy(aus_production)
+#'   
+#' # It is also possible to compute interval and distributional measures of
+#' # accuracy for models and forecasts which give forecast distributions.
+#' fc %>% 
+#'   accuracy(aus_production, measures = list(interval_measures, distribution_measures))
 #' 
 #' @export
 accuracy.mdl_df <- function(object, measures = point_measures, ...){
@@ -230,7 +261,7 @@ accuracy.mdl_ts <- function(object, measures = point_measures, ...){
 }
 
 #' @param data A dataset containing the complete model dataset (both training and test data). The training portion of the data will be used in the computation of some accuracy measures, and the test data is used to compute the forecast errors.
-#' @param by Variables over which the accuracy is computed (useful for computing across forecast horizons in cross-validation). If `by` is NULL, groups will be chosen automatically from the key structure.
+#' @param by Variables over which the accuracy is computed (useful for computing across forecast horizons in cross-validation). If `by` is `NULL`, groups will be chosen automatically from the key structure.
 #' 
 #' @rdname accuracy
 #' @export

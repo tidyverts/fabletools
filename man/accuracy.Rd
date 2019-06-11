@@ -4,7 +4,7 @@
 \alias{accuracy}
 \alias{accuracy.mdl_df}
 \alias{accuracy.fbl_ts}
-\title{Evaluate model/forecast accuracy}
+\title{Evaluate accuracy of a forecast or model}
 \usage{
 accuracy(object, ...)
 
@@ -18,12 +18,44 @@ accuracy(object, ...)
 
 \item{...}{Additional arguments to be passed to measures that use it.}
 
-\item{measures}{A list of accuracy measures to compute (such as \code{\link{point_measures}}, \code{\link{interval_measures}}, or \code{\link{distribution_measures}})}
+\item{measures}{A list of accuracy measure functions to compute (such as \code{\link{point_measures}}, \code{\link{interval_measures}}, or \code{\link{distribution_measures}})}
 
 \item{data}{A dataset containing the complete model dataset (both training and test data). The training portion of the data will be used in the computation of some accuracy measures, and the test data is used to compute the forecast errors.}
 
-\item{by}{Variables over which the accuracy is computed (useful for computing across forecast horizons in cross-validation). If \code{by} is NULL, groups will be chosen automatically from the key structure.}
+\item{by}{Variables over which the accuracy is computed (useful for computing across forecast horizons in cross-validation). If \code{by} is \code{NULL}, groups will be chosen automatically from the key structure.}
 }
 \description{
-Evaluate model/forecast accuracy
+Summarise the performance of the model using accuracy measures. Accuracy
+measures can be computed directly from models as the one-step-ahead fitted
+residuals are available. When evaluating accuracy on forecasts, you will
+need to provide a complete dataset that includes the future data and data
+used to train the model.
+}
+\examples{
+library(fable)
+library(tsibble)
+library(tsibbledata)
+fit <- aus_production \%>\%
+  filter(Quarter < yearquarter("2006 Q1")) \%>\% 
+  model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A")))
+
+# In-sample training accuracy does not require extra data provided.
+accuracy(fit)
+
+# Out-of-sample forecast accuracy requires the future values to compare with.
+# All available future data will be used, and a warning will be given if some
+# data for the forecast window is unavailable.
+fc <- fit \%>\% 
+  forecast(h = "5 years")
+fc \%>\% 
+  accuracy(aus_production)
+  
+# It is also possible to compute interval and distributional measures of
+# accuracy for models and forecasts which give forecast distributions.
+fc \%>\% 
+  accuracy(aus_production, measures = list(interval_measures, distribution_measures))
+
+}
+\seealso{
+\href{https://otexts.com/fpp3/accuracy.html}{Evaluating forecast accuracy}
 }
