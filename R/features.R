@@ -111,7 +111,7 @@ feature_table <- function() {
   table <- new.env(parent = emptyenv())
   list(
     add = function(fn, fn_name, tags) {
-      pkg <- environmentName(environment(feasts:::features_acf))
+      pkg <- environmentName(environment(fn))
       table[[pkg]] <- as.list(table[[pkg]])
       table[[pkg]][[fn_name]] <- list(fn = fn, tags = tags)
     },
