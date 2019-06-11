@@ -203,7 +203,7 @@ accuracy.mdl_ts <- function(object, measures = point_measures, ...){
   dots <- dots_list(...)
   resp <- if(length(object$response) > 1) sym("value") else object$response[[1]]
   
-  aug <- as_tibble(augment(object))
+  aug <- as_tibble(augment(object, type = "response"))
   
   # Compute inputs for each response variable
   if(length(object$response) > 1){
