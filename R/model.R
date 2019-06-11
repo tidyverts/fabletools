@@ -49,23 +49,14 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   }
   
   if(is_attached("package:future")){
-    require_package("future")
+    require_package("furrr")
     eval_models <- function(models, lst_data){
-      out <- vector("list", num_est)
-      for(i in seq_len(num_est)){
-        tsbl <- mdl <- NULL
-        out[[i]] <- future::future(
-          {
-            estimate(tsbl, mdl)
-          },
-          globals = list(
-            tsbl = lst_data[[1 + (i-1)%%num_key]],
-            mdl = models[[1 + (i-1)%/%num_key]],
-            estimate = estimate
-          )
-        )
-      }
-      unname(split(future::values(out), rep(seq_len(num_mdl), each = num_key)))
+      out <- furrr::future_map2(
+        rep(lst_data, length(models)),
+        rep(models, each = length(lst_data)),
+        estimate
+      )
+      unname(split(out, rep(seq_len(num_mdl), each = num_key)))
     }
   }
   else{
