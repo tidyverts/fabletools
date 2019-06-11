@@ -1,3 +1,24 @@
+#' Interpolate missing values
+#' 
+#' Uses a fitted model to interpolate missing values from a dataset.
+#' 
+#' @param object A mable containing a single model column.
+#' @param new_data A dataset with the same structure as the data used to fit the model.
+#' @param ... Other arguments passed to interpolate methods.
+#' 
+#' @examples 
+#' library(fable)
+#' library(tsibbledata)
+#' 
+#' # The fastest running times for the olympics are missing for years during 
+#' # world wars as the olympics were not held.
+#' olympic_running
+#' 
+#' olympic_running %>% 
+#'   model(TSLM(Time ~ trend())) %>% 
+#'   interpolate(olympic_running)
+#' 
+#' @rdname interpolate
 #' @export
 interpolate.mdl_df <- function(object, new_data, ...){
   if(length(object%@%"models") > 1){
@@ -15,6 +36,7 @@ Please use select() to choose the model to interpolate with.")
     unnest_tsbl("interpolated", parent_key = kv)
 }
 
+#' @rdname interpolate
 #' @export
 interpolate.mdl_ts <- function(object, new_data, ...){
   # Compute specials with new_data
