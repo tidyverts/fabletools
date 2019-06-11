@@ -1,13 +1,20 @@
 #' Extend a fitted model with new data
 #'
-#' @param object An object (such as a model) which can be extended with additional data
-#' @param ... Additional arguments passed on to other methods (usually streamed data and options)
+#' Extend the length of data used to fit a model and update the parameters to 
+#' suit this new data.
 #'
+#' @param object An object (such as a model) which can be extended with additional data.
+#' @param ... Additional arguments passed on to stream methods.
+#'
+#' @rdname stream
 #' @export
 stream <- function(object, ...){
   UseMethod("stream")
 }
 
+#' @param new_data A dataset of the same structure as was used to fit the model.
+#' 
+#' @rdname stream
 #' @export
 stream.mdl_df <- function(object, new_data, ...){
   object %>%
@@ -23,6 +30,7 @@ stream.mdl_df <- function(object, new_data, ...){
     as_mable(key = key(object), models = object%@%"models")
 }
 
+#' @rdname stream
 #' @export
 stream.mdl_ts <- function(object, new_data, ...){
   # Compute specials with new_data

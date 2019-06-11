@@ -2,15 +2,24 @@
 % Please edit documentation in R/stream.R
 \name{stream}
 \alias{stream}
+\alias{stream.mdl_df}
+\alias{stream.mdl_ts}
 \title{Extend a fitted model with new data}
 \usage{
 stream(object, ...)
+
+\method{stream}{mdl_df}(object, new_data, ...)
+
+\method{stream}{mdl_ts}(object, new_data, ...)
 }
 \arguments{
-\item{object}{An object (such as a model) which can be extended with additional data}
+\item{object}{An object (such as a model) which can be extended with additional data.}
 
-\item{...}{Additional arguments passed on to other methods (usually streamed data and options)}
+\item{...}{Additional arguments passed on to stream methods.}
+
+\item{new_data}{A dataset of the same structure as was used to fit the model.}
 }
 \description{
-Extend a fitted model with new data
+Extend the length of data used to fit a model and update the parameters to
+suit this new data.
 }
