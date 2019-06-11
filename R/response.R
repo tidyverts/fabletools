@@ -1,4 +1,7 @@
-#' Extract the response data from a model
+#' Extract the response variable from a model
+#' 
+#' Returns a tsibble containing only the response variable used in the fitting
+#' of a model.
 #' 
 #' @param object The object containing response data
 #' @param ... Additional parameters passed on to other methods
