@@ -1,0 +1,102 @@
+context("test-reconciliation")
+
+test_that("reconciliation", {
+  lung_deaths_agg <- lung_deaths_long %>% 
+    aggregate_keys(key, value = sum(value))
+  expect_equal(n_keys(lung_deaths_agg), 3)
+  expect_equal(
+    lung_deaths_agg$value[72*2 + (1:72)], 
+    lung_deaths_long$value[1:72] + lung_deaths_long$value[72 + (1:72)]
+  )
+  expect_output(
+    print(lung_deaths_agg$key),
+    "<total>"
+  )
+  expect_output(
+    print(tail(lung_deaths_agg)),
+    "<total>"
+  )
+  
+  fit_agg <- lung_deaths_agg %>% 
+    model(snaive = fable::SNAIVE(value))
+  
+  fc_agg <- fit_agg %>% forecast()
+  expect_message(
+    fc_agg_reconciled <- fit_agg %>% reconcile(ses = MinT(snaive)) %>% forecast(),
+    "experimental"
+  )
+  
+  expect_equal(
+    fc_agg$value,
+    fc_agg_reconciled$value
+  )
+  expect_failure(
+    expect_equal(
+      fc_agg$.distribution,
+      fc_agg_reconciled$.distribution
+    ) 
+  )
+  
+  fit_agg <- lung_deaths_agg %>% 
+    model(ses = fable::ETS(value ~ error("A") + trend("A") + season("A")))
+  fc_agg <- fit_agg %>% forecast()
+  expect_message(
+    fc_agg_reconciled <- fit_agg %>% reconcile(ses = MinT(ses)) %>% forecast(),
+    "experimental"
+  )
+  expect_equal(
+    fc_agg_reconciled$value[1:24],
+    fc_agg_reconciled$value[24 + (1:24)] + fc_agg_reconciled$value[48 + (1:24)],
+  )
+  expect_failure(
+    expect_equal(
+      fc_agg$value,
+      fc_agg_reconciled$value
+    )
+  )
+  
+  expect_message(
+    fc_agg_reconciled <- fit_agg %>% reconcile(ses = MinT(ses, method = "wls")) %>% forecast(),
+    "experimental"
+  )
+  expect_equal(
+    fc_agg_reconciled$value[1:24],
+    fc_agg_reconciled$value[24 + (1:24)] + fc_agg_reconciled$value[48 + (1:24)],
+  )
+  expect_failure(
+    expect_equal(
+      fc_agg$value,
+      fc_agg_reconciled$value
+    )
+  )
+  
+  expect_message(
+    fc_agg_reconciled <- fit_agg %>% reconcile(ses = MinT(ses, method = "ols")) %>% forecast(),
+    "experimental"
+  )
+  expect_equal(
+    fc_agg_reconciled$value[1:24],
+    fc_agg_reconciled$value[24 + (1:24)] + fc_agg_reconciled$value[48 + (1:24)],
+  )
+  expect_failure(
+    expect_equal(
+      fc_agg$value,
+      fc_agg_reconciled$value
+    )
+  )
+  
+  expect_message(
+    fc_agg_reconciled <- fit_agg %>% reconcile(ses = MinT(ses, method = "cov")) %>% forecast(),
+    "experimental"
+  )
+  expect_equal(
+    fc_agg_reconciled$value[1:24],
+    fc_agg_reconciled$value[24 + (1:24)] + fc_agg_reconciled$value[48 + (1:24)],
+  )
+  expect_failure(
+    expect_equal(
+      fc_agg$value,
+      fc_agg_reconciled$value
+    )
+  )
+})
