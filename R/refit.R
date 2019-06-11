@@ -4,11 +4,7 @@
 #' @param new_data A tsibble containing the new data
 #' @param ... Additional optional arguments for refit methods
 #' 
-#' @export
-refit <- function(object, new_data, ...){
-  UseMethod("refit")
-}
-
+#' @rdname refit
 #' @export
 refit.mdl_df <- function(object, new_data, ...){
   object %>%

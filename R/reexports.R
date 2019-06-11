@@ -40,3 +40,7 @@ generics::tidy
 #' @importFrom generics generate
 #' @export
 generics::generate
+
+#' @importFrom generics refit
+#' @export
+generics::refit
