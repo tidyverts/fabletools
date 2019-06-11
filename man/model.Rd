@@ -36,8 +36,8 @@ library(tsibbledata)
 aus_production \%>\%
   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A")))
 
-# Training a seasonal naive and ETS(A,A,A) model to the monthly Food 
-# retailing turnover for each Australian state/territory.
+# Training a seasonal naive and ETS(A,A,A) model to the monthly 
+# "Food retailing" turnover for each Australian state/territory.
 library(dplyr)
 aus_retail \%>\% 
   filter(Industry == "Food retailing") \%>\% 
@@ -45,4 +45,5 @@ aus_retail \%>\%
     snaive = SNAIVE(Turnover),
     ets = ETS(log(Turnover) ~ error("A") + trend("A") + season("A")),
   )
+
 }

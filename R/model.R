@@ -31,8 +31,8 @@ model <- function(.data, ...){
 #' aus_production %>%
 #'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A")))
 #' 
-#' # Training a seasonal naive and ETS(A,A,A) model to the monthly Food 
-#' # retailing turnover for each Australian state/territory.
+#' # Training a seasonal naive and ETS(A,A,A) model to the monthly 
+#' # "Food retailing" turnover for each Australian state/territory.
 #' library(dplyr)
 #' aus_retail %>% 
 #'   filter(Industry == "Food retailing") %>% 
@@ -40,6 +40,7 @@ model <- function(.data, ...){
 #'     snaive = SNAIVE(Turnover),
 #'     ets = ETS(log(Turnover) ~ error("A") + trend("A") + season("A")),
 #'   )
+#' 
 #' @export
 model.tbl_ts <- function(.data, ..., .safely = TRUE){
   nm <- map(enexprs(...), expr_text)

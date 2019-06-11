@@ -18,6 +18,44 @@ forecast <- function(object, ...){
 #' Refer to `vignette("transformations")` for more details.
 #' @param ... Additional arguments for forecast model methods.
 #' 
+#' @examples 
+#' library(fable)
+#' library(tsibble)
+#' library(tsibbledata)
+#' 
+#' # Forecasting with an ETS(M,Ad,A) model to Australian beer production
+#' aus_production %>%
+#'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) %>% 
+#'   forecast(h = "3 years") %>% 
+#'   autoplot(aus_production)
+#' 
+#' # Forecasting with a seasonal naive and ETS(A,A,A) model to the monthly 
+#' # "Food retailing" turnover for each Australian state/territory.
+#' library(dplyr)
+#' aus_retail %>% 
+#'   filter(Industry == "Food retailing") %>% 
+#'   model(
+#'     snaive = SNAIVE(Turnover),
+#'     ets = ETS(log(Turnover) ~ error("A") + trend("A") + season("A")),
+#'   ) %>% 
+#'   forecast(h = "2 years 6 months") %>% 
+#'   autoplot(filter(aus_retail, Month >= yearmonth("2000 Jan")), level = 90)
+#'   
+#' # Forecast GDP with a dynamic regression model on log(GDP) using population and
+#' # an automatically chosen ARIMA error structure. Assume that population is fixed
+#' # in the future.
+#' aus_economy <- global_economy %>% 
+#'   filter(Country == "Australia")
+#' fit <- aus_economy %>% 
+#'   model(lm = ARIMA(log(GDP) ~ Population))
+#' 
+#' future_aus <- new_data(global_economy, n = 10) %>% 
+#'   mutate(Population = last(aus_economy$Population))
+#' 
+#' fit %>% 
+#'   forecast(new_data = future_aus) %>% 
+#'   autoplot(aus_economy)
+#' 
 #' @rdname forecast
 #' @export
 forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
