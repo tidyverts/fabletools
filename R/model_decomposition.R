@@ -109,7 +109,7 @@ Please check that you have specified the decomposition models appropriately.")
 #' # Any model can be used, and seasonal components will default to use SNAIVE.
 #' my_dcmp_spec <- decomposition_model(
 #'   STL, log(Turnover) ~ season(window = Inf),
-#'   ETS(seas_adjust), SNAIVE(season_year)
+#'   ETS(season_adjust), SNAIVE(season_year)
 #' )
 #' 
 #' vic_food %>%
