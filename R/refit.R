@@ -1,8 +1,21 @@
-#' Refit a mable with new data
+#' Refit a mable to a new dataset
 #' 
-#' @param object A model (typically a mable)
-#' @param new_data A tsibble containing the new data
-#' @param ... Additional optional arguments for refit methods
+#' Applies a fitted model to a new dataset. For most methods this can be done
+#' with or without re-estimation of the parameters.
+#' 
+#' @param object A mable.
+#' @param new_data A tsibble dataset used to refit the model.
+#' @param ... Additional optional arguments for refit methods.
+#' 
+#' @examples 
+#' 
+#' fit <- as_tsibble(mdeaths) %>% 
+#'   model(ETS(value ~ error("M") + trend("A") + season("A")))
+#' fit %>% report()
+#'
+#' fit %>% 
+#'   refit(as_tsibble(fdeaths)) %>% 
+#'   report(reinitialise = TRUE)
 #' 
 #' @rdname refit
 #' @export
@@ -20,6 +33,7 @@ refit.mdl_df <- function(object, new_data, ...){
     as_mable(key = key(object), models = object%@%"models")
 }
 
+#' @rdname refit
 #' @export
 refit.mdl_ts <- function(object, new_data, ...){
   # Compute specials with new_data
