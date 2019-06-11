@@ -87,6 +87,23 @@ glance.mdl_ts <- function(x, ...){
   glance(x$fit, ...)
 }
 
+#' Extract model coefficients from a mable
+#' 
+#' This function will obtain the coefficients (and associated statistics) for
+#' each model in the mable.
+#' 
+#' @param x A mable.
+#' @param ... Arguments for model methods.
+#' 
+#' @examples 
+#' library(fable)
+#' library(tsibbledata)
+#' 
+#' olympic_running %>%
+#'   model(lm = TSLM(log(Time) ~ trend())) %>% 
+#'   tidy()
+#' 
+#' @rdname tidy
 #' @export
 tidy.mdl_df <- function(x, ...){
   x <- gather(x, ".model", ".fit", !!!syms(x%@%"models"))
@@ -96,6 +113,7 @@ tidy.mdl_df <- function(x, ...){
   unnest_tbl(x, "tidied")
 }
 
+#' @rdname tidy
 #' @export
 tidy.mdl_ts <- function(x, ...){
   tidy(x$fit, ...)
