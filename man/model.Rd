@@ -23,7 +23,7 @@ Trains specified model definition(s) to a dataset.
 
 
 It is possible to estimate models in parallel using the
-\link[=https://cran.r-project.org/package=future]{future} package. By specifying a
+\href{https://cran.r-project.org/package=future}{future} package. By specifying a
 \code{\link[future:plan]{future::plan()}} before estimating the models, they will be computed
 according to that plan.
 }

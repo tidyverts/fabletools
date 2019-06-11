@@ -18,7 +18,7 @@ model <- function(.data, ...){
 #' @section Parallel:
 #' 
 #' It is possible to estimate models in parallel using the
-#' [future][https://cran.r-project.org/package=future] package. By specifying a
+#' [future](https://cran.r-project.org/package=future) package. By specifying a
 #' [`future::plan()`] before estimating the models, they will be computed 
 #' according to that plan.
 #' 
