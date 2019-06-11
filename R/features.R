@@ -41,9 +41,14 @@ features_impl <- function(.tbl, .var, features, ...){
 
 #' Extract features from a dataset
 #'
+#' Create scalar valued summary features for a dataset from feature functions.
+#' 
+#' Lists of available features can be found in the following pages:
+#' - [Features by package][features_by_pkg]
+#' 
 #' @param .tbl A dataset
 #' @param .var,.vars The variable(s) to compute features on
-#' @param features A list of functions (or lambda expressions) for the features to compute.
+#' @param features A list of functions (or lambda expressions) for the features to compute. [`feature_set()`] is a useful helper for building sets of features.
 #' @param .predicate A predicate function (or lambda expression) to be applied to the columns or a logical vector. The variables for which .predicate is or returns TRUE are selected.
 #' @param ... Additional arguments to be passed to each feature.
 #'
@@ -147,13 +152,14 @@ register_feature <- function(fn, tags){
 
 #' Create a feature set from tags
 #' 
+#' Construct a feature set from features available in currently loaded packages.
+#' Lists of available features can be found in the following pages:
+#' - [Features by package][features_by_pkg]
+#' 
 #' @param pkgs The package(s) from which to search for features. If `NULL`, 
 #' all registered features from currently loaded packages will be searched.
 #' @param tags Tags used to identify similar groups of features. If `NULL`,
 #' all tags will be included.
-#' 
-#' @section Features:
-#' \Sexpr[stage=render,results=rd]{fablelite:::rd_features()}
 #' 
 #' @export
 feature_set <- function(pkgs = NULL, tags = NULL){
@@ -191,3 +197,13 @@ rd_features <- function(){
 feature_links
   )
 }
+
+#' Features by package
+#' 
+#' This documentation lists all available in currently loaded packages. This is
+#' a useful reference for making a [`feature_set()`] from particular package(s).
+#' 
+#' \Sexpr[stage=render,results=rd]{fablelite:::rd_features()}
+#' 
+#' @name features_by_pkg
+NULL

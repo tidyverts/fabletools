@@ -20,12 +20,18 @@ features_if(.tbl, .predicate, features, ...)
 
 \item{.var, .vars}{The variable(s) to compute features on}
 
-\item{features}{A list of functions (or lambda expressions) for the features to compute.}
+\item{features}{A list of functions (or lambda expressions) for the features to compute. \code{\link[=feature_set]{feature_set()}} is a useful helper for building sets of features.}
 
 \item{...}{Additional arguments to be passed to each feature.}
 
 \item{.predicate}{A predicate function (or lambda expression) to be applied to the columns or a logical vector. The variables for which .predicate is or returns TRUE are selected.}
 }
 \description{
-Extract features from a dataset
+Create scalar valued summary features for a dataset from feature functions.
+}
+\details{
+Lists of available features can be found in the following pages:
+\itemize{
+\item \link[=features_by_pkg]{Features by package}
+}
 }

@@ -14,10 +14,9 @@ all registered features from currently loaded packages will be searched.}
 all tags will be included.}
 }
 \description{
-Create a feature set from tags
+Construct a feature set from features available in currently loaded packages.
+Lists of available features can be found in the following pages:
+\itemize{
+\item \link[=features_by_pkg]{Features by package}
 }
-\section{Features}{
-
-\Sexpr[stage=render,results=rd]{fablelite:::rd_features()}
 }
-
