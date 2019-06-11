@@ -102,7 +102,7 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
     diag <- SparseM::diag
     
     S <- SparseM::as.matrix.csr(S)
-    rs <- as.matrix(S%*%matrix(1, nrow=32))
+    rs <- as.matrix(S%*%matrix(1, nrow=NCOL(S)))
     row_agg <- which(rs!=1)
     row_btm <- which(rs==1)
     i_pos <- which(as.logical(as.matrix(S[row_btm,])))
