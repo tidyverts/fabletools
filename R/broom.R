@@ -54,6 +54,24 @@ augment.mdl_ts <- function(x, ...){
            })
 }
 
+#' Glance a mable
+#' 
+#' Uses the models within a mable to produce a one row summary of their fits.
+#' This typically contains information about the residual variance,
+#' information criterion, and other relevant summary statistics. Each model 
+#' will be represented with a row of output.
+#' 
+#' @param x A mable.
+#' @param ... Arguments for model methods.
+#' 
+#' @examples 
+#' library(fable)
+#' library(tsibbledata)
+#' 
+#' olympic_running %>%
+#'   model(lm = TSLM(log(Time) ~ trend())) %>% 
+#'   glance()
+#' @rdname glance
 #' @export
 glance.mdl_df <- function(x, ...){
   x <- gather(x, ".model", ".fit", !!!syms(x%@%"models"))
@@ -63,6 +81,7 @@ glance.mdl_df <- function(x, ...){
   unnest_tbl(x, "glanced")
 }
 
+#' @rdname glance
 #' @export
 glance.mdl_ts <- function(x, ...){
   glance(x$fit, ...)
