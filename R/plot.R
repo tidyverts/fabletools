@@ -151,7 +151,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
   fc_resp <- object%@%"response"
   fc_key <- setdiff(key_vars(object), ".model")
-  has_keys <- any(duplicated(key_data(object)$.model))
+  has_keys <- anyDuplicated(key_data(object)$.model)
   
   aes_y <- if(length(fc_resp) > 1){
     sym("value")
@@ -179,7 +179,12 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
 
   # Change colours to be more appropriate for later facets
   fc_layer <- autolayer(object, level = level, ...)
-  fc_layer$mapping$colour <- set_expr(fc_layer$mapping$colour, sym(".model"))
+  if(sum(!duplicated(key_data(object)$.model)) > 1){
+    fc_layer$mapping$colour <- set_expr(fc_layer$mapping$colour, sym(".model"))
+  }
+  else{
+    fc_layer$mapping$colour <- NULL
+  }
   
   p <- ggplot(data, aes(x = !!index(object), y = !!aes_y)) + 
     fc_layer
