@@ -95,8 +95,6 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   R1 <- stats::cov2cor(W)
   W_h <- map(fc_var, function(var) diag(sqrt(var))%*%R1%*%t(diag(sqrt(var))))
   
-  S <- build_smat(key_data)
-  
   if(sparse){
     require_package("SparseM")
     require_package("methods")
