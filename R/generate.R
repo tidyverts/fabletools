@@ -4,6 +4,11 @@
 #' behaviour to the response. This is a tidy implementation of 
 #' `\link[stats]{simulate}`.
 #' 
+#' Innovations are sampled by the model's assumed error distribution. 
+#' If `bootstrap` is `TRUE`, innovations will be sampled from the model's 
+#' residuals. If `new_data` contains the `.innov` column, those values will be
+#' treated as innovations for the simulated paths..
+#' 
 #' @param x A mable.
 #' @param new_data The data to be generated (time index and exogenous regressors)
 #' @param h The simulation horizon (can be used instead of `new_data` for regular

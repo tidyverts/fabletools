@@ -26,6 +26,12 @@ Use a model's fitted distribution to simulate additional data with similar
 behaviour to the response. This is a tidy implementation of
 \code{\link[stats]{simulate}}.
 }
+\details{
+Innovations are sampled by the model's assumed error distribution.
+If \code{bootstrap} is \code{TRUE}, innovations will be sampled from the model's
+residuals. If \code{new_data} contains the \code{.innov} column, those values will be
+treated as innovations for the simulated paths..
+}
 \examples{
 library(dplyr)
 library(fable)
