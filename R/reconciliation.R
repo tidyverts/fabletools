@@ -102,18 +102,24 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
     t <- SparseM::t
     diag <- SparseM::diag
     
+    row_btm <- key_data %>%
+      dplyr::filter(
+        !!!map(colnames(key_data[-length(key_data)]), function(x){
+          expr(!is_aggregated(!!sym(x)))
+        })
+      )
+    row_btm <- as.integer(row_btm[[length(row_btm)]])
+    row_agg <- seq_len(NROW(key_data))[-row_btm]
+    
+    i_pos <- which(as.logical(S[row_btm,]))
     S <- SparseM::as.matrix.csr(S)
-    rs <- as.matrix(S%*%matrix(1, nrow=NCOL(S)))
-    row_agg <- which(rs!=1)
-    row_btm <- which(rs==1)
-    i_pos <- which(as.logical(as.matrix(S[row_btm,])))
-    J <- methods::new("matrix.csr", ra = rep(1,ncol(S)), ja =row_btm,
+    J <- methods::new("matrix.csr", ra = rep(1,ncol(S)), ja = row_btm,
                       ia = c((i_pos-1L)%/%ncol(S)+1L, ncol(S) + 1L), dimension = rev(dim(S)))
     
     U <- cbind(methods::as(diff(dim(J)), "matrix.diag.csr"), SparseM::as.matrix.csr(-S[row_agg,]))
     U <- U[, order(c(row_agg, row_btm))]
     
-    P <- J - J%*%W%*%t(U)%*%SparseM::solve(U%*%W%*%t(U))%*%U
+    P <- J - J%*%W%*%t(U)%*%SparseM::solve(U%*%W%*%t(U), eps = Inf)%*%U
   }
   else {
     R <- t(S)%*%solve(W)
@@ -126,7 +132,7 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   fc_point <- split(fc_point, row(fc_point))
   fc_var <- map(W_h, function(W) diag(S%*%P%*%W%*%t(P)%*%t(S)))
   fc_dist <- map2(fc_point, transpose_dbl(map(fc_var, sqrt)), dist_normal)
-    
+  
   # Update fables
   pmap(list(fc, fc_point, fc_dist), function(fc, point, dist){
     fc[[expr_text(attr(fc,"response")[[1]])]] <- point
@@ -142,7 +148,7 @@ build_smat <- function(key_data){
     unnest(!!row_col) %>% 
     dplyr::arrange(!!row_col) %>% 
     select(!!expr(-!!row_col)) %>% 
-    dplyr::mutate_all(factor) 
+    dplyr::mutate_all(factor)
   
   lvls <- invoke(paste, fct[stats::complete.cases(fct),])
   
