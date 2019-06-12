@@ -208,12 +208,13 @@ rd_features_tag <- function(){
     )
     set_names(fns, sprintf("\\item \\code{\\link[%s]{%s}}", pkg, names(fns)))
   })
-  features <- invoke(c, unname(features))
-  features <- split(names(features), features)
   
   if (length(features) == 0) {
     return("No features found in currently loaded packages.")
   }
+  
+  features <- invoke(c, unname(features))
+  features <- split(names(features), features)
   
   feature_links <- paste0(
     map2_chr(features, names(features), function(fns, tag) {
