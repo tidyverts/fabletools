@@ -56,7 +56,7 @@ aggregate_keys.tbl_ts <- function(.data, .spec = NULL, ...){
   .spec <- enexpr(.spec)
   if(is.null(.spec)){
     message(
-      sprintf("Key structural specification not found, defaulting to `structure = %s`",
+      sprintf("Key structural specification not found, defaulting to `.spec = %s`",
               paste(key_vars(.data), collapse = "*"))
     )
     .spec <- parse_expr(paste(key_vars(.data), collapse = "*"))
