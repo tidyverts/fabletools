@@ -1,7 +1,17 @@
 #' Produce forecasts
 #' 
 #' The forecast function allows you to produce future predictions of a time series
-#' from fitted models.
+#' from fitted models. If the response variable has been transformed in the
+#' model fomula, the transformation will be automatically back-transformed
+#' (and bias adjusted if `bias_adjust` is `TRUE`). More details about 
+#' transformations in the fable framework can be found in
+#' `vignette("transformations")`.
+#' 
+#' The forecasts returned contain both point forecasts and their distribution.
+#' A specific forecast interval can be extracted from the distribution using the
+#' [`hilo()`] function, and multiple intervals can be obtained using [`report()`].
+#' These intervals are stored in a single column using the `hilo` class, to
+#' extract the numerical upper and lower bounds you can use [`tidyr::unnest()`].
 #' 
 #' @param object The time series model used to produce the forecasts
 #' 
@@ -23,11 +33,18 @@ forecast <- function(object, ...){
 #' library(tsibble)
 #' library(tsibbledata)
 #' library(dplyr)
+#' library(tidyr)
 #' 
 #' # Forecasting with an ETS(M,Ad,A) model to Australian beer production
-#' aus_production %>%
+#' beer_fc <- aus_production %>%
 #'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) %>% 
-#'   forecast(h = "3 years") %>% 
+#'   forecast(h = "3 years")
+#' 
+#' # Compute 80% and 95% forecast intervals
+#' beer_fc %>% 
+#'   report(level = c(80, 95))
+#' 
+#' beer_fc %>% 
 #'   autoplot(aus_production)
 #' 
 #' # Forecasting with a seasonal naive and ETS(A,A,A) model to the monthly 
