@@ -193,3 +193,19 @@ type_sum.agg_key <- function(x){
 obj_sum.agg_key <- function(x){
   pillar::obj_sum(rm_class(x, "agg_key"))
 }
+
+#' Is the element an aggregation of smaller data
+#' 
+#' @param x An object.
+#' 
+#' @seealso [`aggregate_key`]
+#' 
+#' @export
+is_aggregated <- function(x){
+  if(inherits(x, "agg_key")){
+    is.na(x)
+  }
+  else{
+    rep(FALSE, length(x))
+  }
+}
