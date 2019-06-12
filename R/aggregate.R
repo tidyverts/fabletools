@@ -44,15 +44,15 @@ parse_aggregation <- function(spec){
 #' @examples 
 #' library(tsibble)
 #' tourism_grp <- tourism %>% 
-#'   aggregate_keys(Purpose * (State / Region), Trips = sum(Trips))
+#'   aggregate_key(Purpose * (State / Region), Trips = sum(Trips))
 #' 
 #' @export
-aggregate_keys <- function(.data, .spec, ...){
-  UseMethod("aggregate_keys")
+aggregate_key <- function(.data, .spec, ...){
+  UseMethod("aggregate_key")
 }
 
 #' @export
-aggregate_keys.tbl_ts <- function(.data, .spec = NULL, ...){
+aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){
   .spec <- enexpr(.spec)
   if(is.null(.spec)){
     message(
@@ -86,7 +86,7 @@ aggregate_keys.tbl_ts <- function(.data, .spec = NULL, ...){
 }
 
 
-# #' @rdname aggregate_keys
+# #' @rdname aggregate_key
 # #' 
 # #' @param .times Temporal aggregations to include. The default (NULL) will
 # #' automatically identify appropriate temporal aggregations. This can be specified

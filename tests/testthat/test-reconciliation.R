@@ -2,7 +2,7 @@ context("test-reconciliation")
 
 test_that("reconciliation", {
   lung_deaths_agg <- lung_deaths_long %>% 
-    aggregate_keys(key, value = sum(value))
+    aggregate_key(key, value = sum(value))
   expect_equal(n_keys(lung_deaths_agg), 3)
   expect_equal(
     lung_deaths_agg$value[72*2 + (1:72)], 
