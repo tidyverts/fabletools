@@ -18,5 +18,6 @@ Construct a feature set from features available in currently loaded packages.
 Lists of available features can be found in the following pages:
 \itemize{
 \item \link[=features_by_pkg]{Features by package}
+\item \link[=features_by_tag]{Features by tag}
 }
 }

@@ -45,6 +45,7 @@ features_impl <- function(.tbl, .var, features, ...){
 #' 
 #' Lists of available features can be found in the following pages:
 #' - [Features by package][features_by_pkg]
+#' - [Features by tag][features_by_tag]
 #' 
 #' @param .tbl A dataset
 #' @param .var,.vars The variable(s) to compute features on
@@ -129,7 +130,7 @@ feature_table <- function() {
       }
     },
     list = function() {
-      map(table, names)
+      map(table, function(x) map(x, `[[`, "tags"))
     }
   )
 }
@@ -155,6 +156,7 @@ register_feature <- function(fn, tags){
 #' Construct a feature set from features available in currently loaded packages.
 #' Lists of available features can be found in the following pages:
 #' - [Features by package][features_by_pkg]
+#' - [Features by tag][features_by_tag]
 #' 
 #' @param pkgs The package(s) from which to search for features. If `NULL`, 
 #' all registered features from currently loaded packages will be searched.
@@ -170,8 +172,8 @@ feature_set <- function(pkgs = NULL, tags = NULL){
   unname(map(f_set, `[[`, "fn"))
 }
 
-rd_features <- function(){
-  features <- feature_table$list()
+rd_features_pkg <- function(){
+  features <- map(feature_table$list(), names)
   
   if (length(features) == 0) {
     return("No features found in currently loaded packages.")
@@ -198,12 +200,57 @@ feature_links
   )
 }
 
+rd_features_tag <- function(){
+  features <- imap(feature_table$list(), function(fns, pkg){
+    fns <- set_names(
+      unlist(fns, use.names = FALSE), 
+      rep(names(fns), map_dbl(fns, length))
+    )
+    set_names(fns, sprintf("\\item \\code{\\link[%s]{%s}}", pkg, names(fns)))
+  })
+  features <- invoke(c, unname(features))
+  features <- split(names(features), features)
+  
+  if (length(features) == 0) {
+    return("No features found in currently loaded packages.")
+  }
+  
+  feature_links <- paste0(
+    map2_chr(features, names(features), function(fns, tag) {
+      sprintf(
+        "\\subsection{%s}{\n\\itemize{\n%s\n}\n}",
+        tag, paste0(fns, collapse = "\n")
+      )
+    }),
+    collapse = "\n"
+  )
+  
+  sprintf(
+    "See the following help topics for more details about each feature:\n%s",
+    feature_links
+  )
+}
+
 #' Features by package
 #' 
 #' This documentation lists all available in currently loaded packages. This is
 #' a useful reference for making a [`feature_set()`] from particular package(s).
 #' 
-#' \Sexpr[stage=render,results=rd]{fablelite:::rd_features()}
+#' \Sexpr[stage=render,results=rd]{fablelite:::rd_features_pkg()}
+#' 
+#' @seealso [features_by_tag]
 #' 
 #' @name features_by_pkg
+NULL
+
+#' Features by tag
+#' 
+#' This documentation lists all available in currently loaded packages. This is
+#' a useful reference for making a [`feature_set()`] from particular tag(s).
+#' 
+#' \Sexpr[stage=render,results=rd]{fablelite:::rd_features_tag()}
+#' 
+#' @seealso [features_by_pkg]
+#' 
+#' @name features_by_tag
 NULL
