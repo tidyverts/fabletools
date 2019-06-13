@@ -18,12 +18,21 @@ reconcile.mdl_df <- function(data, ...){
 
 #' Minimum trace forecast reconciliation
 #' 
+#' Reconciles a hierarchy using the minimum trace combination method. The 
+#' response variable of the hierarchy must be aggregated using sums.
+#' 
 #' @param models A column of models in a mable.
 #' @param method The reconciliation method to use.
-#' @param sparse Should the reconciliation be computed with sparse matrix algebra?
+#' @param sparse If TRUE, the reconciliation will be computed using sparse matrix algebra?
+#' 
+#' @seealso 
+#' [`reconcile()`], [`aggregate_key()`]
+#' 
+#' @references 
+#' Wickramasuriya, S. L., Athanasopoulos, G., & Hyndman, R. J. (2015). Forecasting hierarchical and grouped time series through trace minimization. Working paper 15/15, *Department of Econometrics & Business Statistics, Monash University.* http://robjhyndman.com/working-papers/mint/
 #' 
 #' @export
-trace_min <- function(models, method = c("shrink", "wls", "ols", "cov"),
+min_trace <- function(models, method = c("shrink", "wls", "ols", "cov"),
                  sparse = requireNamespace("SparseM")){
   structure(models, class = c("lst_mint_mdl", "lst_mdl"),
             method = match.arg(method), sparse = sparse)
@@ -64,10 +73,10 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
     # WLS
     W <- diag(diag(covm))
   } else if (method == "cov"){
-    # trace_min covariance
+    # min_trace covariance
     W <- covm
   } else if (method == "shrink"){
-    # trace_min shrink
+    # min_trace shrink
     tar <- diag(apply(res, 2, compose(crossprod, stats::na.omit))/n)
     corm <- stats::cov2cor(covm)
     xs <- scale(res, center = FALSE, scale = sqrt(diag(covm)))
@@ -86,7 +95,7 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   # Check positive definiteness of weights
   eigenvalues <- eigen(W, only.values = TRUE)[["values"]]
   if (any(eigenvalues < 1e-8)) {
-    abort("trace_min needs covariance matrix to be positive definite.", call. = FALSE)
+    abort("min_trace needs covariance matrix to be positive definite.", call. = FALSE)
   }
   
   # Reconciliation matrices
