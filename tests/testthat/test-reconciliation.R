@@ -22,7 +22,7 @@ test_that("reconciliation", {
   
   fc_agg <- fit_agg %>% forecast()
   expect_message(
-    fc_agg_reconciled <- fit_agg %>% reconcile(snaive = MinT(snaive)) %>% forecast(),
+    fc_agg_reconciled <- fit_agg %>% reconcile(snaive = trace_min(snaive)) %>% forecast(),
     "experimental"
   )
   
@@ -41,7 +41,7 @@ test_that("reconciliation", {
     model(ses = fable::ETS(value ~ error("A") + trend("A") + season("A")))
   fc_agg <- fit_agg %>% forecast()
   expect_message(
-    fc_agg_reconciled <- fit_agg %>% reconcile(ses = MinT(ses)) %>% forecast(),
+    fc_agg_reconciled <- fit_agg %>% reconcile(ses = trace_min(ses)) %>% forecast(),
     "experimental"
   )
   expect_equal(
@@ -56,7 +56,7 @@ test_that("reconciliation", {
   )
   
   expect_message(
-    fc_agg_reconciled <- fit_agg %>% reconcile(ses = MinT(ses, method = "wls")) %>% forecast(),
+    fc_agg_reconciled <- fit_agg %>% reconcile(ses = trace_min(ses, method = "wls")) %>% forecast(),
     "experimental"
   )
   expect_equal(
@@ -71,7 +71,7 @@ test_that("reconciliation", {
   )
   
   expect_message(
-    fc_agg_reconciled <- fit_agg %>% reconcile(ses = MinT(ses, method = "ols")) %>% forecast(),
+    fc_agg_reconciled <- fit_agg %>% reconcile(ses = trace_min(ses, method = "ols")) %>% forecast(),
     "experimental"
   )
   expect_equal(
@@ -86,7 +86,7 @@ test_that("reconciliation", {
   )
   
   expect_message(
-    fc_agg_reconciled <- fit_agg %>% reconcile(ses = MinT(ses, method = "cov")) %>% forecast(),
+    fc_agg_reconciled <- fit_agg %>% reconcile(ses = trace_min(ses, method = "cov")) %>% forecast(),
     "experimental"
   )
   expect_equal(
