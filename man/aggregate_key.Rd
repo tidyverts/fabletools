@@ -23,15 +23,23 @@ these concepts.}
 }
 \description{
 Uses the structural specification given in \code{.spec} to aggregate a time
-series. Commonly used in combination with forecast reconciliation.
+series. A grouped structure is specified using \code{grp1 * grp2}, and a nested
+structure is specified via \code{parent / child}. Aggregating the key structure is
+commonly used with forecast reconciliation to produce coherent forecasts over
+some hierarchy.
 }
 \details{
-A grouped structure is specified using \code{grp1 * grp2}, and a nested structure
-is specified via \code{parent / child}.
+This function is experimental, and is subject to change in the future.
+
+The way in which the measured variables are aggregated is specified in a
+similar way to how \code{[dplyr::summarise()]} is used.
 }
 \examples{
 library(tsibble)
 tourism_grp <- tourism \%>\% 
   aggregate_key(Purpose * (State / Region), Trips = sum(Trips))
 
+}
+\seealso{
+\code{\link[=reconcile]{reconcile()}}
 }

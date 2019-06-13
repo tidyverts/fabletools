@@ -32,14 +32,22 @@ parse_aggregation <- function(spec){
 #' Expand a dataset to include other levels of aggregation
 #' 
 #' Uses the structural specification given in `.spec` to aggregate a time
-#' series. Commonly used in combination with forecast reconciliation.
+#' series. A grouped structure is specified using `grp1 * grp2`, and a nested 
+#' structure is specified via `parent / child`. Aggregating the key structure is
+#' commonly used with forecast reconciliation to produce coherent forecasts over
+#' some hierarchy.
 #' 
-#' A grouped structure is specified using `grp1 * grp2`, and a nested structure 
-#' is specified via `parent / child`. 
+#' This function is experimental, and is subject to change in the future.
+#' 
+#' The way in which the measured variables are aggregated is specified in a
+#' similar way to how `[dplyr::summarise()]` is used.
 #' 
 #' @param .data A tsibble.
-#' @inheritParams dplyr::summarise
 #' @param .spec The specification of aggregation structure.
+#' @inheritParams dplyr::summarise
+#' 
+#' @seealso 
+#' [`reconcile()`]
 #' 
 #' @examples 
 #' library(tsibble)
