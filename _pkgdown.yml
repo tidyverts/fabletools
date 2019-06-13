@@ -20,16 +20,12 @@ reference:
     - decomposition_model
     - combination_model
     - null_model
-
-reference:
 - title: Forecast reconciliation
   desc: >
     Use reconciliation techniques to ensure that forecasts are coherent with the hierarchical structure of data.
   contents:
     - reconcile
     - min_trace
-
-reference:
 - title: Accuracy measures
   desc: >
     Functionality for evaluating model performance
@@ -45,8 +41,6 @@ reference:
     - ACF1
     - winkler_score
     - percentile_score
-    
-reference:
 - title: Methods
   desc: >
     The fablelite package facilitates the handling of key structures for the following functions
@@ -64,8 +58,6 @@ reference:
     - components.mdl_df
     - fitted.mdl_df
     - residuals.mdl_df
-    
-reference:
 - title: Graphics
   desc: >
     Some `autoplot()` and `autolayer()` methods are defined for classes commonly used within fablelite.
