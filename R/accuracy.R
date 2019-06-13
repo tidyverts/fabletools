@@ -1,3 +1,62 @@
+#' @rdname point_accuracy_measures
+#' @export
+ME <- function(.resid, na.rm = TRUE, ...){
+  mean(.resid, na.rm = na.rm)
+}
+
+#' @rdname point_accuracy_measures
+#' @export
+MSE <- function(.resid, na.rm = TRUE, ...){
+  mean(.resid ^ 2, na.rm = na.rm)
+}
+
+#' @rdname point_accuracy_measures
+#' @export
+RMSE <- function(.resid, na.rm = TRUE, ...){
+  sqrt(MSE(.resid, na.rm = na.rm))
+}
+
+#' @rdname point_accuracy_measures
+#' @export
+MAE <- function(.resid, na.rm = TRUE, ...){
+  mean(abs(.resid), na.rm = na.rm)
+}
+
+#' @rdname point_accuracy_measures
+#' @export
+MPE <- function(.resid, .actual, na.rm = TRUE, ...){
+  mean(.resid / .actual * 100, na.rm = na.rm)
+}
+#' @rdname point_accuracy_measures
+#' @export
+MAPE <- function(.resid, .actual, na.rm = TRUE, ...){
+  mean(abs(.resid / .actual * 100), na.rm = na.rm)
+}
+
+#' @rdname point_accuracy_measures
+#' @export
+MASE <- function(.resid, .train, demean = FALSE, na.rm = TRUE, .period, d = .period == 1, D = .period > 1, ...){
+  if (D > 0) { # seasonal differencing
+    .train <- diff(.train, lag = .period, differences = D)
+  }
+  if (d > 0) {
+    .train <- diff(.train, differences = d)
+  }
+  if(demean){
+    scale <- mean(abs(.train - mean(.train, na.rm = na.rm)), na.rm = na.rm)
+  }
+  else{
+    scale <- mean(abs(.train), na.rm = na.rm)
+  }
+  mase <- mean(abs(.resid / scale), na.rm = na.rm)
+}
+
+#' @rdname point_accuracy_measures
+#' @export
+ACF1 <- function(.resid, na.action = stats::na.pass, demean = TRUE, ...){
+  stats::acf(.resid, plot = FALSE, lag.max = 2, na.action = na.action, 
+             demean = demean)$acf[2, 1, 1]
+}
 #' Point estimate accuracy measures
 #' 
 #' @param .resid A vector of residuals from either the training (model accuracy)
@@ -17,84 +76,11 @@
 #' @param D Should the response model include a seasonal difference?
 #' @param na.action Function to handle missing values.
 #' 
-#' @name point-accuracy-measures
-NULL
-
-#' @rdname point-accuracy-measures
 #' @export
-ME <- function(.resid, na.rm = TRUE, ...){
-  mean(.resid, na.rm = na.rm)
-}
-
-#' @rdname point-accuracy-measures
-#' @export
-MSE <- function(.resid, na.rm = TRUE, ...){
-  mean(.resid ^ 2, na.rm = na.rm)
-}
-
-#' @rdname point-accuracy-measures
-#' @export
-RMSE <- function(.resid, na.rm = TRUE, ...){
-  sqrt(MSE(.resid, na.rm = na.rm))
-}
-
-#' @rdname point-accuracy-measures
-#' @export
-MAE <- function(.resid, na.rm = TRUE, ...){
-  mean(abs(.resid), na.rm = na.rm)
-}
-
-#' @rdname point-accuracy-measures
-#' @export
-MPE <- function(.resid, .actual, na.rm = TRUE, ...){
-  mean(.resid / .actual * 100, na.rm = na.rm)
-}
-#' @rdname point-accuracy-measures
-#' @export
-MAPE <- function(.resid, .actual, na.rm = TRUE, ...){
-  mean(abs(.resid / .actual * 100), na.rm = na.rm)
-}
-
-#' @rdname point-accuracy-measures
-#' @export
-MASE <- function(.resid, .train, demean = FALSE, na.rm = TRUE, .period, d = .period == 1, D = .period > 1, ...){
-  if (D > 0) { # seasonal differencing
-    .train <- diff(.train, lag = .period, differences = D)
-  }
-  if (d > 0) {
-    .train <- diff(.train, differences = d)
-  }
-  if(demean){
-    scale <- mean(abs(.train - mean(.train, na.rm = na.rm)), na.rm = na.rm)
-  }
-  else{
-    scale <- mean(abs(.train), na.rm = na.rm)
-  }
-  mase <- mean(abs(.resid / scale), na.rm = na.rm)
-}
-
-#' @rdname point-accuracy-measures
-#' @export
-ACF1 <- function(.resid, na.action = stats::na.pass, demean = TRUE, ...){
-  stats::acf(.resid, plot = FALSE, lag.max = 2, na.action = na.action, 
-             demean = demean)$acf[2, 1, 1]
-}
-
-#' @rdname point-accuracy-measures
-#' @export
-point_measures <- list(ME = ME, RMSE = RMSE, MAE = MAE,
+point_accuracy_measures <- list(ME = ME, RMSE = RMSE, MAE = MAE,
                        MPE = MPE, MAPE = MAPE, MASE = MASE, ACF1 = ACF1)
 
-#' Interval estimate accuracy measures
-#' 
-#' @inheritParams point-accuracy-measures
-#' @param .dist The distribution of fitted values from the model, or forecasted values from the forecast.
-#' @param level The level of the forecast interval.
-#' 
-#' @name interval-accuracy-measures
-NULL
-
-#' @rdname interval-accuracy-measures
+#' @rdname interval_accuracy_measures
 #' @export
 winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
   interval <- hilo(.dist, level)
@@ -114,17 +100,16 @@ winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
   mean(score, na.rm = na.rm)
 }
 
-#' @rdname interval-accuracy-measures
-#' @export
-interval_measures <- list(winkler = winkler_score)
-
-#' Distribution accuracy measures
+#' Interval estimate accuracy measures
 #' 
-#' @inheritParams interval-accuracy-measures
-#' @name dist-accuracy-measures
-NULL
+#' @inheritParams point_accuracy_measures
+#' @param .dist The distribution of fitted values from the model, or forecasted values from the forecast.
+#' @param level The level of the forecast interval.
+#' 
+#' @export
+interval_accuracy_measures <- list(winkler = winkler_score)
 
-#' @rdname dist-accuracy-measures
+#' @rdname distribution_accuracy_measures
 #' @export
 percentile_score <- function(.dist, .actual, na.rm = TRUE, ...){
   probs <- seq(0.01, 0.99, 0.01)
@@ -137,9 +122,11 @@ percentile_score <- function(.dist, .actual, na.rm = TRUE, ...){
     mean(na.rm = na.rm)
 }
 
-#' @rdname interval-accuracy-measures
+#' Distribution accuracy measures
+#' 
+#' @inheritParams interval_accuracy_measures
 #' @export
-distribution_measures <- list(percentile = percentile_score)
+distribution_accuracy_measures <- list(percentile = percentile_score)
 
 #' Evaluate accuracy of a forecast or model
 #' 
@@ -162,7 +149,7 @@ accuracy <- function(object, ...){
 
 #' @rdname accuracy
 #' 
-#' @param measures A list of accuracy measure functions to compute (such as [`point_measures`], [`interval_measures`], or [`distribution_measures`])
+#' @param measures A list of accuracy measure functions to compute (such as [`point_accuracy_measures`], [`interval_accuracy_measures`], or [`distribution_accuracy_measures`])
 #' 
 #' @examples 
 #' library(fable)
@@ -188,10 +175,13 @@ accuracy <- function(object, ...){
 #' # It is also possible to compute interval and distributional measures of
 #' # accuracy for models and forecasts which give forecast distributions.
 #' fc %>% 
-#'   accuracy(aus_production, measures = list(interval_measures, distribution_measures))
+#'   accuracy(
+#'     aus_production,
+#'     measures = list(interval_accuracy_measures, distribution_accuracy_measures)
+#'   )
 #' 
 #' @export
-accuracy.mdl_df <- function(object, measures = point_measures, ...){
+accuracy.mdl_df <- function(object, measures = point_accuracy_measures, ...){
   as_tibble(object) %>% 
     gather(".model", "fit", !!!syms(object%@%"models")) %>% 
     mutate(fit = map(!!sym("fit"), accuracy, measures = measures, ...)) %>% 
@@ -199,7 +189,7 @@ accuracy.mdl_df <- function(object, measures = point_measures, ...){
 }
 
 #' @export
-accuracy.mdl_ts <- function(object, measures = point_measures, ...){
+accuracy.mdl_ts <- function(object, measures = point_accuracy_measures, ...){
   dots <- dots_list(...)
   resp <- if(length(object$response) > 1) sym("value") else object$response[[1]]
   
@@ -267,7 +257,7 @@ accuracy.mdl_ts <- function(object, measures = point_measures, ...){
 #' 
 #' @rdname accuracy
 #' @export
-accuracy.fbl_ts <- function(object, data, measures = point_measures, ..., 
+accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..., 
                             by = NULL){
   resp <- object%@%"response"
   dist <- object%@%"dist"

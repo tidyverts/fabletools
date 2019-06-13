@@ -8,17 +8,18 @@
 \usage{
 accuracy(object, ...)
 
-\method{accuracy}{mdl_df}(object, measures = point_measures, ...)
+\method{accuracy}{mdl_df}(object, measures = point_accuracy_measures,
+  ...)
 
-\method{accuracy}{fbl_ts}(object, data, measures = point_measures, ...,
-  by = NULL)
+\method{accuracy}{fbl_ts}(object, data,
+  measures = point_accuracy_measures, ..., by = NULL)
 }
 \arguments{
 \item{object}{A model or forecast object}
 
 \item{...}{Additional arguments to be passed to measures that use it.}
 
-\item{measures}{A list of accuracy measure functions to compute (such as \code{\link{point_measures}}, \code{\link{interval_measures}}, or \code{\link{distribution_measures}})}
+\item{measures}{A list of accuracy measure functions to compute (such as \code{\link{point_accuracy_measures}}, \code{\link{interval_accuracy_measures}}, or \code{\link{distribution_accuracy_measures}})}
 
 \item{data}{A dataset containing the complete model dataset (both training and test data). The training portion of the data will be used in the computation of some accuracy measures, and the test data is used to compute the forecast errors.}
 
@@ -55,7 +56,10 @@ fc \%>\%
 # It is also possible to compute interval and distributional measures of
 # accuracy for models and forecasts which give forecast distributions.
 fc \%>\% 
-  accuracy(aus_production, measures = list(interval_measures, distribution_measures))
+  accuracy(
+    aus_production,
+    measures = list(interval_accuracy_measures, distribution_accuracy_measures)
+  )
 
 }
 \seealso{

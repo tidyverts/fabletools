@@ -2,7 +2,7 @@ context("test-accuracy")
 
 test_that("In-sample accuracy", {
   expect_warning(
-    accuracy(mbl, measures = interval_measures),
+    accuracy(mbl, measures = interval_accuracy_measures),
     'argument ".dist" is missing'
   ) %>% 
     {is.na(.[["winkler"]])} %>%
@@ -67,7 +67,7 @@ test_that("Out-of-sample accuracy", {
                 MASE = MASE(.resid, us_deaths_tr$value, .period = 12), ACF1 = ACF1(.resid))
   )
   
-  acc <- accuracy(fbl, us_deaths, measures = list(interval_measures, distribution_measures))
+  acc <- accuracy(fbl, us_deaths, measures = list(interval_accuracy_measures, distribution_accuracy_measures))
   expect_equal(acc$.type, "Test")
   expect_equal(colnames(acc), c(".model", ".type", "winkler", "percentile"))
   expect_true(!any(map_lgl(acc, compose(any, is.na))))
