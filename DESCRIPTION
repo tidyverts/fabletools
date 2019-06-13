@@ -1,7 +1,7 @@
 Package: fablelite
 Version: 0.0.0.9100
 Title: Core tools for fable extensions
-Description: The R package *fablelite* provides methods and tools for creating fable models. Data, model and forecast objects are all stored in a tidy format.
+Description: Provides tools, helpers and data structures which support models in the fable framework. Includes methods for model combination, accuracy evaluation, forecast reconciliation.
 Authors@R:
     c(person(given = "Mitchell",
              family = "O'Hara-Wild",

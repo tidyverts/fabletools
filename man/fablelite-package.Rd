@@ -6,7 +6,7 @@
 \alias{fablelite-package}
 \title{fablelite: Core tools for fable extensions}
 \description{
-The R package *fablelite* provides methods and tools for creating fable models. Data, model and forecast objects are all stored in a tidy format.
+Provides tools, helpers and data structures which support models in the fable framework. Includes methods for model combination, accuracy evaluation, forecast reconciliation.
 }
 \seealso{
 Useful links:
