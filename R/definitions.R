@@ -164,7 +164,7 @@ decomposition_definition <- R6::R6Class(NULL,
 #' @param .env The environment from which the user's objects can be found.
 #' 
 #' @export
-new_decomposition <- function(.class, .data, ..., .env = caller_env(n = 2)){
+new_decomposition_definition <- function(.class, .data, ..., .env = caller_env(n = 2)){
   dcmp <- new_model_definition(.class, ..., .env = .env)
   
   kv <- key_vars(.data)
