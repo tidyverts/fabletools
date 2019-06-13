@@ -14,7 +14,7 @@ decomposition_model(dcmp_fn, formula, ..., dcmp_args = list())
 
 \item{...}{Model definitions used to model the components (such as \code{\link[fable:ETS]{fable::ETS()}})}
 
-\item{dcmp_args}{Arguments to be passed to the decomposition function (\code{.f})}
+\item{dcmp_args}{Arguments to be passed to the decomposition function (\code{.dcmp_fn})}
 }
 \description{
 This function allows you to specify a decomposition combination model using

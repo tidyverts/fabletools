@@ -89,7 +89,7 @@ Please check that you have specified the decomposition models appropriately.")
 #' @param dcmp_fn The decomposition function (such as [feasts::STL()])
 #' @param formula The formula used to describe the decomposition
 #' @param ... Model definitions used to model the components (such as [fable::ETS()])
-#' @param dcmp_args Arguments to be passed to the decomposition function (`.f`)
+#' @param dcmp_args Arguments to be passed to the decomposition function (`.dcmp_fn`)
 #' 
 #' @examples 
 #' library(fable)

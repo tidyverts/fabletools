@@ -47,7 +47,7 @@ parse_aggregation <- function(spec){
 #' @inheritParams dplyr::summarise
 #' 
 #' @seealso 
-#' [`reconcile()`]
+#' [`reconcile()`], [`is_aggregated()`]
 #' 
 #' @examples 
 #' library(tsibble)

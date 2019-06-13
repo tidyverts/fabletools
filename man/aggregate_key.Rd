@@ -41,5 +41,5 @@ tourism_grp <- tourism \%>\%
 
 }
 \seealso{
-\code{\link[=reconcile]{reconcile()}}
+\code{\link[=reconcile]{reconcile()}}, \code{\link[=is_aggregated]{is_aggregated()}}
 }
