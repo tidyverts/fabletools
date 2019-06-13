@@ -21,7 +21,7 @@ test_that("reconciliation", {
     model(snaive = fable::SNAIVE(value))
   
   fc_agg <- fit_agg %>% forecast()
-  expect_message(
+  expect_warning(
     fc_agg_reconciled <- fit_agg %>% reconcile(snaive = min_trace(snaive)) %>% forecast(),
     "experimental"
   )
@@ -40,7 +40,7 @@ test_that("reconciliation", {
   fit_agg <- lung_deaths_agg %>% 
     model(ses = fable::ETS(value ~ error("A") + trend("A") + season("A")))
   fc_agg <- fit_agg %>% forecast()
-  expect_message(
+  expect_warning(
     fc_agg_reconciled <- fit_agg %>% reconcile(ses = min_trace(ses)) %>% forecast(),
     "experimental"
   )
@@ -55,7 +55,7 @@ test_that("reconciliation", {
     )
   )
   
-  expect_message(
+  expect_warning(
     fc_agg_reconciled <- fit_agg %>% reconcile(ses = min_trace(ses, method = "wls")) %>% forecast(),
     "experimental"
   )
@@ -70,7 +70,7 @@ test_that("reconciliation", {
     )
   )
   
-  expect_message(
+  expect_warning(
     fc_agg_reconciled <- fit_agg %>% reconcile(ses = min_trace(ses, method = "ols")) %>% forecast(),
     "experimental"
   )
@@ -85,7 +85,7 @@ test_that("reconciliation", {
     )
   )
   
-  expect_message(
+  expect_warning(
     fc_agg_reconciled <- fit_agg %>% reconcile(ses = min_trace(ses, method = "cov")) %>% forecast(),
     "experimental"
   )
