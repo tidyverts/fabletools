@@ -209,9 +209,4 @@ model_rhs <- function(model){
 }
 
 #' @export
-formula.mdl_ts <-  function(x, ...){
-  x$formula
-}
-
-#' @export
 length.mdl_ts <-  function(x) 1
