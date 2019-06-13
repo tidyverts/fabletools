@@ -2,7 +2,6 @@
 % Please edit documentation in R/model_decomposition.R
 \name{decomposition_model}
 \alias{decomposition_model}
-\alias{dcmp_model}
 \title{Decomposition modelling}
 \usage{
 decomposition_model(dcmp_fn, formula, ..., dcmp_args = list())

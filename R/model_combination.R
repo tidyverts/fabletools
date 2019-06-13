@@ -11,7 +11,6 @@ train_combination <- function(.data, specials, ..., cmbn_fn){
 
 #' Combination modelling
 #'
-#' @aliases cmbn_model
 #' @param ... Model definitions used in the combination (such as [fable::ETS()])
 #' @param cmbn_fn A function used to produce the combination
 #' 
@@ -26,13 +25,6 @@ combination_model <- function(..., cmbn_fn = combination_ensemble){
                                 specials = new_specials(xreg = function(...) NULL))
   new_model_definition(cmbn_model, !!quo(!!model_lhs(mdls[[1]])), ..., 
                        cmbn_fn = cmbn_fn)
-}
-
-#' @keywords internal
-#' @export
-cmbn_model <- function(...){
-  .Deprecated("combination_model")
-  combination_model(...)
 }
 
 #' Ensemble combination

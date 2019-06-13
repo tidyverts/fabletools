@@ -120,20 +120,12 @@ Please check that you have specified the decomposition models appropriately.")
 #' @seealso 
 #' [*Forecasting: Principles and Practice* - Forecasting Decomposition](https://otexts.com/fpp3/forecasting-decomposition.html)
 #' 
-#' @aliases dcmp_model
 #' @export
 decomposition_model <- function(dcmp_fn, formula, ..., dcmp_args = list()){
   dcmp_model <- new_model_class("dcmp_mdl", train = train_decomposition, 
                                 specials = new_specials(xreg = function(...) NULL))
   new_model_definition(dcmp_model, !!enquo(formula), ..., 
                        dcmp_fn = dcmp_fn, dcmp_args = dcmp_args)
-}
-
-#' @keywords internal
-#' @export
-dcmp_model <- function(...){
-  .Deprecated("decomposition_model")
-  decomposition_model(...)
 }
 
 #' @export

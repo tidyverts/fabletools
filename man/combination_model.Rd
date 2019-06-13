@@ -2,7 +2,6 @@
 % Please edit documentation in R/model_combination.R
 \name{combination_model}
 \alias{combination_model}
-\alias{cmbn_model}
 \title{Combination modelling}
 \usage{
 combination_model(..., cmbn_fn = combination_ensemble)
