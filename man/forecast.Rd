@@ -26,7 +26,7 @@ Refer to \code{vignette("transformations")} for more details.}
 \description{
 The forecast function allows you to produce future predictions of a time series
 from fitted models. If the response variable has been transformed in the
-model fomula, the transformation will be automatically back-transformed
+model formula, the transformation will be automatically back-transformed
 (and bias adjusted if \code{bias_adjust} is \code{TRUE}). More details about
 transformations in the fable framework can be found in
 \code{vignette("transformations")}.

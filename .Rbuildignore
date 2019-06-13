@@ -8,3 +8,5 @@ Makefile
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^tic\.R$
+^appveyor\.yml$
