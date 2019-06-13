@@ -1,19 +1,29 @@
 #' Forecast reconciliation 
 #' 
-#' Specifies the method used to reconcile forecasts across keys.
+#' This function allows you to specify the method used to reconcile forecasts
+#' in accordance with its key structure.
 #' 
-#' @param data A mable.
-#' @param ... Reconciliation specification
+#' @param .data A mable.
+#' @param ... Reconciliation methods applied to model columns within `.data`.
+#' 
+#' @examples 
+#' lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) %>% 
+#'   aggregate_key(key, value = sum(value))
+#' 
+#' lung_deaths_agg %>% 
+#'   model(ets = ETS(value)) %>% 
+#'   reconcile(ets = min_trace(ets))
 #' 
 #' @export
-reconcile <- function(data, ...){
+reconcile <- function(.data, ...){
   UseMethod("reconcile")
 }
 
+#' @rdname reconcile
 #' @export
-reconcile.mdl_df <- function(data, ...){
-  message("Note: reconciliation in fable is highly experimental. The interface will be refined in the near future.")
-  mutate(data, ...)
+reconcile.mdl_df <- function(.data, ...){
+  warn("Reconciliation in fable is highly experimental. The interface will likely be refined in the near future.")
+  mutate(.data, ...)
 }
 
 #' Minimum trace forecast reconciliation

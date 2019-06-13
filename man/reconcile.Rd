@@ -2,15 +2,28 @@
 % Please edit documentation in R/reconciliation.R
 \name{reconcile}
 \alias{reconcile}
+\alias{reconcile.mdl_df}
 \title{Forecast reconciliation}
 \usage{
-reconcile(data, ...)
+reconcile(.data, ...)
+
+\method{reconcile}{mdl_df}(.data, ...)
 }
 \arguments{
-\item{data}{A mable.}
+\item{.data}{A mable.}
 
-\item{...}{Reconciliation specification}
+\item{...}{Reconciliation methods applied to model columns within \code{.data}.}
 }
 \description{
-Specifies the method used to reconcile forecasts across keys.
+This function allows you to specify the method used to reconcile forecasts
+in accordance with its key structure.
+}
+\examples{
+lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) \%>\% 
+  aggregate_key(key, value = sum(value))
+
+lung_deaths_agg \%>\% 
+  model(ets = ETS(value)) \%>\% 
+  reconcile(ets = min_trace(ets))
+
 }
