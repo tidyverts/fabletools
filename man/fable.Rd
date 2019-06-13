@@ -14,5 +14,9 @@ fable(..., resp, dist)
 \item{dist}{The distribution variable (given as a bare or unquoted variable).}
 }
 \description{
-Create a fable object
+A fable (forecast table) data class (\code{fbl_ts}) which is a tsibble-like data
+structure for representing forecasts. In extension to the key and index from
+the tsibble (\code{tbl_ts}) class, a fable (\code{fbl_ts}) must contain columns of
+point forecasts for the response variable(s), and a single distribution
+column (\code{fcdist}).
 }

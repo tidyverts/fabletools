@@ -1,5 +1,11 @@
 #' Create a fable object
 #'
+#' A fable (forecast table) data class (`fbl_ts`) which is a tsibble-like data
+#' structure for representing forecasts. In extension to the key and index from 
+#' the tsibble (`tbl_ts`) class, a fable (`fbl_ts`) must contain columns of 
+#' point forecasts for the response variable(s), and a single distribution 
+#' column (`fcdist`).
+#'
 #' @param ... Arguments passed to [tsibble::tsibble()].
 #' @param resp The response variable (a list of expressions).
 #' @param dist The distribution variable (given as a bare or unquoted variable).

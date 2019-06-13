@@ -1,5 +1,12 @@
 #' Create a dable object
 #'
+#' A dable (decomposition table) data class (`dcmp_ts`) which is a tsibble-like
+#' data structure for representing decompositions. This data class is useful for
+#' representing decompositions, as its print method describes how its columns
+#' can be combined to produce the original data, and has a more appropriate
+#' `autoplot()` method for displaying decompositions. Beyond this, a dable
+#' (`dcmp_ts`) behaves very similarly to a tsibble (`tbl_ts`).
+#'
 #' @inheritParams fable
 #' @param ... Arguments passed to [tsibble::tsibble()].
 #' @param method The name of the decomposition method.

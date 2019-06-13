@@ -1,5 +1,11 @@
 #' Create a new mable
 #' 
+#' A mable (model table) data class (`mdl_df`) is a tibble-like data structure 
+#' for applying multiple models to a dataset. Each row of the mable refers to a
+#' different time series from the data (identified by the key columns). A mable
+#' must contain at least one column of time series models (`mdl_ts`), where the
+#' list column itself (`lst_mdl`) describes how these models are related.
+#' 
 #' @inheritParams tibble::tibble
 #' 
 #' @param key Structural variable(s) that identify each model.

@@ -13,6 +13,14 @@ authors:
     href: https://earo.me
 
 reference:
+- title: Data structures
+  desc: >
+    Data classes for models, forecasts and decompositions.
+  contents:
+    - mable
+    - fable
+    - dable
+
 - title: Models
   desc: >
     Models which make use of models from other packages, or are useful for programming.

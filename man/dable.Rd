@@ -20,5 +20,10 @@ dable(..., resp, method = NULL, seasons = list(), aliases = list())
 components.}
 }
 \description{
-Create a dable object
+A dable (decomposition table) data class (\code{dcmp_ts}) which is a tsibble-like
+data structure for representing decompositions. This data class is useful for
+representing decompositions, as its print method describes how its columns
+can be combined to produce the original data, and has a more appropriate
+\code{autoplot()} method for displaying decompositions. Beyond this, a dable
+(\code{dcmp_ts}) behaves very similarly to a tsibble (\code{tbl_ts}).
 }

@@ -17,5 +17,9 @@ unquote-splice via \code{\link{!!!}}. Use \code{:=} to create columns that start
 \item{models}{Identifiers for the columns containing model(s).}
 }
 \description{
-Create a new mable
+A mable (model table) data class (\code{mdl_df}) is a tibble-like data structure
+for applying multiple models to a dataset. Each row of the mable refers to a
+different time series from the data (identified by the key columns). A mable
+must contain at least one column of time series models (\code{mdl_ts}), where the
+list column itself (\code{lst_mdl}) describes how these models are related.
 }
