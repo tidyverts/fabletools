@@ -5,7 +5,7 @@
 \alias{cmbn_model}
 \title{Combination modelling}
 \usage{
-combination_model(..., cmbn_fn = cmbn_ensemble)
+combination_model(..., cmbn_fn = combination_ensemble)
 }
 \arguments{
 \item{...}{Model definitions used in the combination (such as \code{\link[fable:ETS]{fable::ETS()}})}

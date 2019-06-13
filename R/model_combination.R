@@ -16,7 +16,7 @@ train_combination <- function(.data, specials, ..., cmbn_fn){
 #' @param cmbn_fn A function used to produce the combination
 #' 
 #' @export
-combination_model <- function(..., cmbn_fn = cmbn_ensemble){
+combination_model <- function(..., cmbn_fn = combination_ensemble){
   mdls <- dots_list(...)
   if(!any(map_lgl(mdls, inherits, "mdl_defn"))){
     abort("`combination_model()` must contain at least one valid model definition.")
@@ -40,7 +40,7 @@ cmbn_model <- function(...){
 #' @param ... Estimated models used in the ensemble.
 #' 
 #' @export
-cmbn_ensemble <- function(...){
+combination_ensemble <- function(...){
   mdls <- dots_list(...)
   reduce(mdls, `+`)/length(mdls)
 }
