@@ -5,7 +5,7 @@
 #' model formula, the transformation will be automatically back-transformed
 #' (and bias adjusted if `bias_adjust` is `TRUE`). More details about 
 #' transformations in the fable framework can be found in
-#' `vignette("transformations")`.
+#' `vignette("transformations", package = "fable")`.
 #' 
 #' The forecasts returned contain both point forecasts and their distribution.
 #' A specific forecast interval can be extracted from the distribution using the
@@ -25,7 +25,7 @@ forecast <- function(object, ...){
 #' @param h The forecast horison (can be used instead of `new_data` for regular
 #' time series with no exogenous regressors).
 #' @param bias_adjust Use adjusted back-transformed mean for transformations. 
-#' Refer to `vignette("transformations")` for more details.
+#' Refer to `vignette("transformations", package = "fable")` for more details.
 #' @param ... Additional arguments for forecast model methods.
 #' 
 #' @examples 
