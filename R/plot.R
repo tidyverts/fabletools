@@ -8,6 +8,14 @@
 #' @param .vars A bare expression containing data you wish to plot. Multiple variables can be plotted using [`ggplot2::vars()`].
 #' @param ... Further arguments passed to [`ggplot2::geom_line()`], which can be used to specify fixed aesthetics such as `colour = "red"` or `size = 3`. 
 #' 
+#' @examples 
+#' library(fable)
+#' library(tsibbledata)
+#' library(tsibble)
+#' 
+#' tsibbledata::gafa_stock %>%
+#'  autoplot(vars(Close, log(Close)))
+#' 
 #' @importFrom ggplot2 ggplot aes geom_line guides guide_legend xlab
 #' @export
 autoplot.tbl_ts <- function(object, .vars = NULL, ...){
