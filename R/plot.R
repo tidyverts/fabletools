@@ -301,9 +301,27 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), ...){
   geom_forecast(mapping = mapping, stat = "identity", data = data, ...)
 }
 
+#' Decomposition plots
+#' 
+#' Produces a facetted plot of the components used to build the response 
+#' variable of the dable. Useful for visualising how the components contribute
+#' in a decomposition or model.
+#' 
+#' @param object A dable.
+#' @param .vars The column of the dable used to plot. By default, this will be the response variable of the decomposition.
+#' @param scale_bars If `TRUE`, each facet will include a scale bar which represents the same units across each facet.
+#' @inheritParams autoplot.tbl_ts
+#' 
+#' @examples 
+#' library(feasts)
+#' library(tsibbledata)
+#' aus_production %>% 
+#'   STL(Beer) %>% 
+#'   autoplot()
+#' 
 #' @importFrom ggplot2 ggplot geom_line geom_rect facet_grid vars ylab labs
 #' @export
-autoplot.dcmp_ts <- function(object, y = NULL, scale_bars = TRUE, ...){
+autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE, ...){
   method <- object%@%"method"
   idx <- index(object)
   keys <- key(object)
@@ -328,7 +346,7 @@ autoplot.dcmp_ts <- function(object, y = NULL, scale_bars = TRUE, ...){
   
   p <- object %>% 
     ggplot() + 
-    geom_line(line_aes) + 
+    geom_line(line_aes, ...) + 
     facet_grid(vars(!!sym(".var")), scales = "free_y") + 
     ylab(NULL) + 
     labs(
