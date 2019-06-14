@@ -1,3 +1,13 @@
+#' Plot time series from a tsibble
+#' 
+#' Produces a time series plot of one or more variables from a tsibble. If the
+#' tsibble contains a multiple keys, separate time series will be identified by
+#' colour.
+#' 
+#' @param object A tsibble.
+#' @param .vars A bare expression containing data you wish to plot. Multiple variables can be plotted using [`ggplot2::vars()`].
+#' @param ... Further arguments passed to [`ggplot2::geom_line()`], which can be used to specify fixed aesthetics such as `colour = "red"` or `size = 3`. 
+#' 
 #' @importFrom ggplot2 ggplot aes geom_line guides guide_legend xlab
 #' @export
 autoplot.tbl_ts <- function(object, .vars = NULL, ...){
@@ -54,6 +64,7 @@ autoplot.tbl_ts <- function(object, .vars = NULL, ...){
   p
 }
 
+#' @rdname autoplot.tbl_ts
 #' @importFrom ggplot2 ggplot aes geom_line guides guide_legend xlab
 #' @export
 autolayer.tbl_ts <- function(object, .vars = NULL, ...){
