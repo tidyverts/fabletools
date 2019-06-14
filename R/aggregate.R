@@ -51,7 +51,7 @@ parse_aggregation <- function(spec){
 #' 
 #' @examples 
 #' library(tsibble)
-#' tourism_grp <- tourism %>% 
+#' tourism %>% 
 #'   aggregate_key(Purpose * (State / Region), Trips = sum(Trips))
 #' 
 #' @export

@@ -36,7 +36,7 @@ similar way to how \code{[dplyr::summarise()]} is used.
 }
 \examples{
 library(tsibble)
-tourism_grp <- tourism \%>\% 
+tourism \%>\% 
   aggregate_key(Purpose * (State / Region), Trips = sum(Trips))
 
 }

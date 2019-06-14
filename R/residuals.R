@@ -1,3 +1,11 @@
+#' Extract residuals values from models
+#' 
+#' Extracts the residuals from each of the models in a mable. A tsibble will
+#' be returned containing these residuals.
+#' 
+#' @param object A mable or time series model.
+#' @param ... Other arguments passed to the model method for `residuals()`
+#' 
 #' @importFrom stats residuals
 #' @export
 residuals.mdl_df <- function(object, ...){
@@ -11,6 +19,8 @@ residuals.mdl_df <- function(object, ...){
   unnest_tsbl(out, "residuals", parent_key = kv)
 }
 
+#' @param type The type of residuals to compute. If `type="response"`, residuals on the back-transformed data will be computed.
+#' @rdname residuals.mdl_df
 #' @export
 residuals.mdl_ts <- function(object, type = "innovation", ...){
   if(type == "response"){

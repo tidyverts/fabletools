@@ -23,6 +23,7 @@ library(fable)
 library(tsibble)
 library(tsibbledata)
 
+# cmbn1 and cmbn2 are equivalent.
 aus_production \%>\%
   model(
     cmbn1 = combination_model(SNAIVE(Beer), TSLM(Beer ~ trend() + season())),
