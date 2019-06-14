@@ -20,7 +20,6 @@ reference:
     - mable
     - fable
     - dable
-
 - title: Models
   desc: >
     Models which make use of models from other packages, or are useful for programming.
@@ -33,6 +32,7 @@ reference:
     Use reconciliation techniques to ensure that forecasts are coherent with the hierarchical structure of data.
   contents:
     - aggregate_key
+    - is_aggregated
     - reconcile
     - min_trace
 - title: Accuracy evaluation
