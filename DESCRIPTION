@@ -1,7 +1,7 @@
 Package: fablelite
 Version: 0.0.0.9100
-Title: Core tools for fable extensions
-Description: Provides tools, helpers and data structures which support models in the fable framework. Includes methods for model combination, accuracy evaluation, forecast reconciliation.
+Title: Core tools for packages in the 'fable' framework
+Description: Provides tools, helpers and data structures for developing models and time series functions for the 'fable' framework. These tools support a consistent and tidy interface for time series modelling and analysis.
 Authors@R:
     c(person(given = "Mitchell",
              family = "O'Hara-Wild",
@@ -52,7 +52,7 @@ Remotes:
 ByteCompile: true
 VignetteBuilder: knitr
 License: GPL-3
-URL: https://github.com/tidyverts/fablelite
+URL: http://fablelite.tidyverts.org/
 BugReports: https://github.com/tidyverts/fablelite/issues
 Encoding: UTF-8
 LazyData: true

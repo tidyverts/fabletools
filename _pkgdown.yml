@@ -57,10 +57,10 @@ reference:
     - forecast
     - model
     - report
+    - stream
     - generate.mdl_df
     - interpolate.mdl_df
     - refit.mdl_df
-    - stream.mdl_df
     - augment.mdl_df
     - glance.mdl_df
     - tidy.mdl_df

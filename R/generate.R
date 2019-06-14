@@ -41,6 +41,7 @@ generate.mdl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
   unnest_tsbl(x, ".sim", parent_key = kv)
 }
 
+#' @rdname generate.mdl_df
 #' @export
 generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 

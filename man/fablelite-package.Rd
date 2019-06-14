@@ -4,14 +4,14 @@
 \name{fablelite-package}
 \alias{fablelite}
 \alias{fablelite-package}
-\title{fablelite: Core tools for fable extensions}
+\title{fablelite: Core tools for packages in the 'fable' framework}
 \description{
-Provides tools, helpers and data structures which support models in the fable framework. Includes methods for model combination, accuracy evaluation, forecast reconciliation.
+Provides tools, helpers and data structures for developing models and time series functions for the 'fable' framework. These tools support a consistent and tidy interface for time series modelling and analysis.
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/tidyverts/fablelite}
+  \item \url{http://fablelite.tidyverts.org/}
   \item Report bugs at \url{https://github.com/tidyverts/fablelite/issues}
 }
 

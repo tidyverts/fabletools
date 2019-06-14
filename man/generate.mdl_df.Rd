@@ -2,9 +2,13 @@
 % Please edit documentation in R/generate.R
 \name{generate.mdl_df}
 \alias{generate.mdl_df}
+\alias{generate.mdl_ts}
 \title{Generate responses from a mable}
 \usage{
 \method{generate}{mdl_df}(x, new_data = NULL, h = NULL, times = 1,
+  seed = NULL, ...)
+
+\method{generate}{mdl_ts}(x, new_data = NULL, h = NULL, times = 1,
   seed = NULL, ...)
 }
 \arguments{
