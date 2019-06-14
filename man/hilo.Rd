@@ -12,11 +12,9 @@ hilo(x, ...)
 \arguments{
 \item{x}{Object to create hilo from}
 
-\item{...}{Additional parameters passed on to other methods}
+\item{...}{Additional arguments for the distribution's quantile function.}
 
 \item{level}{The confidence levels for the plotted prediction intervals.}
-
-\item{...}{Additional arguments for the distribution's quantile function.}
 }
 \description{
 Used to extract a specified prediction interval at a particular confidence

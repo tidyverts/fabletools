@@ -44,7 +44,6 @@ new_hilo <- function(lower, upper, level = NULL) {
 #' level from a distribution.
 #' 
 #' @param x Object to create hilo from
-#' @param ... Additional parameters passed on to other methods
 #' @inheritParams hilo.fcdist
 #' 
 #' @export

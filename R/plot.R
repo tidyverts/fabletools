@@ -174,6 +174,8 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 #' 
 #' @param object A fable.
 #' @param data A tsibble with the same key structure as the fable.
+#' @param ... Further arguments passed used to specify fixed aesthetics for the forecasts such as `colour = "red"` or `size = 3`.
+#' @inheritParams hilo
 #' 
 #' @examples 
 #' library(fable)

@@ -13,6 +13,10 @@
 \item{object}{A fable.}
 
 \item{data}{A tsibble with the same key structure as the fable.}
+
+\item{level}{The confidence levels for the plotted prediction intervals.}
+
+\item{...}{Further arguments passed used to specify fixed aesthetics for the forecasts such as \code{colour = "red"} or \code{size = 3}.}
 }
 \description{
 Produces a forecast plot from a fable. As the original data is not included
