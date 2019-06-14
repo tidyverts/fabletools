@@ -8,8 +8,6 @@
 #' 
 #' @author Earo Wang & Mitchell O'Hara-Wild
 #' 
-#' @rdname hilo
-#' 
 #' @examples
 #' new_hilo(lower = rnorm(10), upper = rnorm(10) + 5, level = 95L)
 #'
@@ -40,10 +38,14 @@ new_hilo <- function(lower, upper, level = NULL) {
     add_class("hilo")
 }
 
-#' @rdname hilo
+#' Compute hilo intervals
+#' 
+#' Used to extract a specified prediction interval at a particular confidence 
+#' level from a distribution.
 #' 
 #' @param x Object to create hilo from
 #' @param ... Additional parameters passed on to other methods
+#' @inheritParams hilo.fcdist
 #' 
 #' @export
 hilo <- function(x, ...){

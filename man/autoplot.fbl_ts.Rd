@@ -13,8 +13,6 @@
 \item{object}{A fable.}
 
 \item{data}{A tsibble with the same key structure as the fable.}
-
-\item{level}{The confidence levels for the plotted prediction intervals.}
 }
 \description{
 Produces a forecast plot from a fable. As the original data is not included

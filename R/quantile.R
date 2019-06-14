@@ -234,13 +234,22 @@ length.fcdist <- function(x){
   NextMethod()
 }
 
-# #' @importFrom ggplot2 aes_
-# autoplot.fcdist <- function(q_fn, q_range = c(0.0001, 0.9999), precision = 0.01){
-#   tibble(x = seq(q_range[1], q_range[2], by = precision)) %>%
-#     mutate(!!"density":=q_fn(!!sym("x"))) %>%
-#     ggplot(aes_(x=~x, y=~density)) + 
-#     geom_line()
-# }
+#' @rdname hilo
+#' 
+#' @param level The confidence levels for the plotted prediction intervals.
+#' @param ... Additional arguments for the distribution's quantile function.
+#' 
+#' @examples 
+#' 
+#' dist_normal(10, 3) %>% hilo(95)
+#' 
+#' library(fable)
+#' library(tsibbledata)
+#' library(dplyr)
+#' aus_production %>%
+#'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) %>% 
+#'   forecast(h = "3 years") %>% 
+#'   mutate(interval = hilo(.distribution, 95))
 #' @export
 hilo.fcdist <- function(x, level = 95, ...){
   if(length(level)!=1){

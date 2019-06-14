@@ -174,7 +174,6 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 #' 
 #' @param object A fable.
 #' @param data A tsibble with the same key structure as the fable.
-#' @param level The confidence levels for the plotted prediction intervals.
 #' 
 #' @examples 
 #' library(fable)
