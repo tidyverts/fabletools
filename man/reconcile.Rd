@@ -19,6 +19,7 @@ This function allows you to specify the method used to reconcile forecasts
 in accordance with its key structure.
 }
 \examples{
+library(fable)
 lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) \%>\% 
   aggregate_key(key, value = sum(value))
 

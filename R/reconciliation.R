@@ -7,6 +7,7 @@
 #' @param ... Reconciliation methods applied to model columns within `.data`.
 #' 
 #' @examples 
+#' library(fable)
 #' lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) %>% 
 #'   aggregate_key(key, value = sum(value))
 #' 
@@ -39,7 +40,7 @@ reconcile.mdl_df <- function(.data, ...){
 #' [`reconcile()`], [`aggregate_key()`]
 #' 
 #' @references 
-#' Wickramasuriya, S. L., Athanasopoulos, G., & Hyndman, R. J. (2015). Forecasting hierarchical and grouped time series through trace minimization. Working paper 15/15, *Department of Econometrics & Business Statistics, Monash University.* [http://robjhyndman.com/working-papers/mint/]
+#' Wickramasuriya, S. L., Athanasopoulos, G., & Hyndman, R. J. (2015). Forecasting hierarchical and grouped time series through trace minimization. Working paper 15/15, *Department of Econometrics & Business Statistics, Monash University.* <http://robjhyndman.com/working-papers/mint/>
 #' 
 #' @export
 min_trace <- function(models, method = c("shrink", "wls", "ols", "cov"),
