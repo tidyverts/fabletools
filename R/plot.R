@@ -165,6 +165,28 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
              key = kv, index = !!idx, validate = FALSE) 
 }
 
+#' Plot a set of forecasts
+#' 
+#' Produces a forecast plot from a fable. As the original data is not included
+#' in the fable object, it will need to be specified via the `data` argument.
+#' The `data` argument can be used to specify a shorter period of data, which is
+#' useful to focus on the more recent observations.
+#' 
+#' @param object A fable.
+#' @param data A tsibble with the same key structure as the fable.
+#' @param level The confidence levels for the plotted prediction intervals.
+#' 
+#' @examples 
+#' library(fable)
+#' library(tsibbledata)
+#' 
+#' fc <- aus_production %>%
+#'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) %>% 
+#'   forecast(h = "3 years") 
+#' 
+#' fc %>% 
+#'   autoplot(aus_production)
+#' 
 #' @importFrom ggplot2 facet_wrap
 #' @export
 autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
@@ -225,6 +247,13 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
   p
 }
 
+#' @rdname autoplot.fbl_ts
+#' @examples 
+#' 
+#' aus_production %>% 
+#'   autoplot(Beer) + 
+#'   autolayer(fc)
+#' 
 #' @export
 autolayer.fbl_ts <- function(object, level = c(80, 95), ...){
   fc_key <- setdiff(key_vars(object), ".model")
