@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create evaluation environment for specials — new_specials • fablelite</title>
+<title>Minimum trace forecast reconciliation — min_trace • fablelite</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Create evaluation environment for specials — new_specials" />
+<meta property="og:title" content="Minimum trace forecast reconciliation — min_trace" />
 
-<meta property="og:description" content="Allows extension packages to make use of the formula parsing of specials." />
+<meta property="og:description" content="Reconciles a hierarchy using the minimum trace combination method. The
+response variable of the hierarchy must be aggregated using sums." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -102,35 +103,45 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create evaluation environment for specials</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fablelite/blob/master/R/specials.R'><code>R/specials.R</code></a></small>
-    <div class="hidden name"><code>new_specials.Rd</code></div>
+    <h1>Minimum trace forecast reconciliation</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fablelite/blob/master/R/reconciliation.R'><code>R/reconciliation.R</code></a></small>
+    <div class="hidden name"><code>min_trace.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Allows extension packages to make use of the formula parsing of specials.</p>
+    <p>Reconciles a hierarchy using the minimum trace combination method. The
+response variable of the hierarchy must be aggregated using sums.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>new_specials</span>(<span class='no'>...</span>, <span class='kw'>.required_specials</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>.xreg_specials</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>min_trace</span>(<span class='no'>models</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"shrink"</span>, <span class='st'>"wls"</span>, <span class='st'>"ols"</span>, <span class='st'>"cov"</span>),
+  <span class='kw'>sparse</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/ns-load'>requireNamespace</a></span>(<span class='st'>"SparseM"</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>A named set of functions which used to parse formula inputs</p></td>
+      <th>models</th>
+      <td><p>A column of models in a mable.</p></td>
     </tr>
     <tr>
-      <th>.required_specials</th>
-      <td><p>The names of specials which must be provided (and if not, are included with no inputs).</p></td>
+      <th>method</th>
+      <td><p>The reconciliation method to use.</p></td>
     </tr>
     <tr>
-      <th>.xreg_specials</th>
-      <td><p>The names of specials which will be only used as inputs to other specials (most commonly <code>xreg</code>).</p></td>
+      <th>sparse</th>
+      <td><p>If TRUE, the reconciliation will be computed using sparse matrix algebra?</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Wickramasuriya, S. L., Athanasopoulos, G., &amp; Hyndman, R. J. (2015). Forecasting hierarchical and grouped time series through trace minimization. Working paper 15/15, <em>Department of Econometrics &amp; Business Statistics, Monash University.</em> <a href='http://robjhyndman.com/working-papers/mint/'>http://robjhyndman.com/working-papers/mint/</a></p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='reconcile.html'>reconcile()</a></code>, <code><a href='aggregate_key.html'>aggregate_key()</a></code></p></div>
     
 
   </div>
@@ -138,7 +149,11 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#references">References</a></li>
+
+      <li><a href="#see-also">See also</a></li>
+          </ul>
 
   </div>
 </div>

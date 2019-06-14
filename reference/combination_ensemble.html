@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Distribution accuracy measures — dist-accuracy-measures • fablelite</title>
+<title>Ensemble combination — combination_ensemble • fablelite</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Distribution accuracy measures — dist-accuracy-measures" />
+<meta property="og:title" content="Ensemble combination — combination_ensemble" />
 
-<meta property="og:description" content="Distribution accuracy measures" />
+<meta property="og:description" content="Ensemble combination" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -78,6 +78,9 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
@@ -99,38 +102,25 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Distribution accuracy measures</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fablelite/blob/master/R/accuracy.R'><code>R/accuracy.R</code></a></small>
-    <div class="hidden name"><code>dist-accuracy-measures.Rd</code></div>
+    <h1>Ensemble combination</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fablelite/blob/master/R/model_combination.R'><code>R/model_combination.R</code></a></small>
+    <div class="hidden name"><code>combination_ensemble.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Distribution accuracy measures</p>
+    <p>Ensemble combination</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>percentile_score</span>(<span class='no'>.dist</span>, <span class='no'>.actual</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>combination_ensemble</span>(<span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>.dist</th>
-      <td><p>The distribution of fitted values from the model, or forecasted values from the forecast.</p></td>
-    </tr>
-    <tr>
-      <th>.actual</th>
-      <td><p>A vector of responses matching the fitted values
-(for forecast accuracy, <code>new_data</code> must be provided).</p></td>
-    </tr>
-    <tr>
-      <th>na.rm</th>
-      <td><p>Remove the missing values before calculating the accuracy measure</p></td>
-    </tr>
-    <tr>
       <th>...</th>
-      <td><p>Additional arguments for each measure.</p></td>
+      <td><p>Estimated models used in the ensemble.</p></td>
     </tr>
     </table>
     

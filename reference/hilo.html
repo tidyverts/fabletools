@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Construct hilo intervals — new_hilo • fablelite</title>
+<title>Compute hilo intervals — hilo • fablelite</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Construct hilo intervals — new_hilo" />
+<meta property="og:title" content="Compute hilo intervals — hilo" />
 
-<meta property="og:description" content="Construct hilo intervals" />
+<meta property="og:description" content="Used to extract a specified prediction interval at a particular confidence
+level from a distribution." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -78,6 +79,9 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
@@ -99,73 +103,59 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Construct hilo intervals</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fablelite/blob/master/R/hilo.R'><code>R/hilo.R</code></a></small>
+    <h1>Compute hilo intervals</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fablelite/blob/master/R/hilo.R'><code>R/hilo.R</code></a>, <a href='https://github.com/tidyverts/fablelite/blob/master/R/quantile.R'><code>R/quantile.R</code></a></small>
     <div class="hidden name"><code>hilo.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Construct hilo intervals</p>
+    <p>Used to extract a specified prediction interval at a particular confidence
+level from a distribution.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>new_hilo</span>(<span class='no'>lower</span>, <span class='no'>upper</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+    <pre class="usage"><span class='fu'>hilo</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
-<span class='fu'>hilo</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+<span class='co'># S3 method for fcdist</span>
+<span class='fu'>hilo</span>(<span class='no'>x</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>95</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>lower, upper</th>
-      <td><p>A numeric vector of values for lower and upper limits.</p></td>
-    </tr>
-    <tr>
-      <th>level</th>
-      <td><p>Default <code>NULL</code> does not include 'level'. Otherwise values of
-length 1 or as length of <code>lower</code>, expected between 0 and 100.</p></td>
-    </tr>
     <tr>
       <th>x</th>
       <td><p>Object to create hilo from</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional parameters passed on to other methods</p></td>
+      <td><p>Additional arguments for the distribution's quantile function.</p></td>
+    </tr>
+    <tr>
+      <th>level</th>
+      <td><p>The confidence levels for the plotted prediction intervals.</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A "hilo" object</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>new_hilo</span>(<span class='kw'>lower</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='fl'>10</span>), <span class='kw'>upper</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='fl'>10</span>) + <span class='fl'>5</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>95L</span>)</div><div class='output co'>#&gt; [-0.53992316, 5.650534]95
-#&gt; [-1.16946146, 5.343913]95
-#&gt; [ 0.55910599, 6.477532]95
-#&gt; [-1.81934725, 5.072026]95
-#&gt; [ 0.39334397, 7.126445]95
-#&gt; [ 0.04213411, 3.523803]95
-#&gt; [ 1.17966418, 5.407888]95
-#&gt; [-0.25692118, 6.393978]95
-#&gt; [-1.05633610, 5.360278]95
-#&gt; [ 0.19877721, 5.654550]95</div><div class='input'>
-</div></pre>
+    <pre class="examples"><div class='input'>
+<span class='fu'><a href='distributions.html'>dist_normal</a></span>(<span class='fl'>10</span>, <span class='fl'>3</span>) <span class='kw'>%&gt;%</span> <span class='fu'>hilo</span>(<span class='fl'>95</span>)</div><div class='output co'>#&gt; [4.120108, 15.87989]95</div><div class='input'>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>fable</span>)</div><div class='output co'>#&gt; <span class='error'>Error: package ‘fablelite’ required by ‘fable’ could not be found</span></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>tsibbledata</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)
+<span class='no'>aus_production</span> <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Log'>log</a></span>(<span class='no'>Beer</span>) ~ <span class='fu'>error</span>(<span class='st'>"M"</span>) + <span class='fu'>trend</span>(<span class='st'>"Ad"</span>) + <span class='fu'>season</span>(<span class='st'>"A"</span>))) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='forecast.html'>forecast</a></span>(<span class='kw'>h</span> <span class='kw'>=</span> <span class='st'>"3 years"</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>interval</span> <span class='kw'>=</span> <span class='fu'>hilo</span>(<span class='no'>.distribution</span>, <span class='fl'>95</span>))</div><div class='output co'>#&gt; <span class='error'>Error in ETS(log(Beer) ~ error("M") + trend("Ad") + season("A")): could not find function "ETS"</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-      
+            
       <li><a href="#examples">Examples</a></li>
     </ul>
 
-    <h2>Author</h2>
-    <p>Earo Wang &amp; Mitchell O'Hara-Wild</p>
   </div>
 </div>
 

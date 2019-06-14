@@ -33,7 +33,10 @@
 <meta property="og:title" content="Expand a dataset to include other levels of aggregation — aggregate_key" />
 
 <meta property="og:description" content="Uses the structural specification given in .spec to aggregate a time
-series. Commonly used in combination with forecast reconciliation." />
+series. A grouped structure is specified using grp1 * grp2, and a nested
+structure is specified via parent / child. Aggregating the key structure is
+commonly used with forecast reconciliation to produce coherent forecasts over
+some hierarchy." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -79,6 +82,9 @@ series. Commonly used in combination with forecast reconciliation." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
@@ -108,7 +114,10 @@ series. Commonly used in combination with forecast reconciliation." />
     <div class="ref-description">
     
     <p>Uses the structural specification given in <code>.spec</code> to aggregate a time
-series. Commonly used in combination with forecast reconciliation.</p>
+series. A grouped structure is specified using <code>grp1 * grp2</code>, and a nested
+structure is specified via <code>parent / child</code>. Aggregating the key structure is
+commonly used with forecast reconciliation to produce coherent forecasts over
+some hierarchy.</p>
     
     </div>
 
@@ -140,8 +149,13 @@ these concepts.</p></td>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>A grouped structure is specified using <code>grp1 * grp2</code>, and a nested structure
-is specified via <code>parent / child</code>.</p>
+    <p>This function is experimental, and is subject to change in the future.</p>
+<p>The way in which the measured variables are aggregated is specified in a
+similar way to how <code>[dplyr::summarise()]</code> is used.</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='reconcile.html'>reconcile()</a></code>, <code><a href='is_aggregated.html'>is_aggregated()</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -155,6 +169,8 @@ is specified via <code>parent / child</code>.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#details">Details</a></li>
+
+      <li><a href="#see-also">See also</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

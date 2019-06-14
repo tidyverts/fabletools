@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Helper to create a new decomposition function — new_decomposition • fablelite</title>
+<title>Decomposition plots — autoplot.dcmp_ts • fablelite</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,11 @@
 
 
 
-<meta property="og:title" content="Helper to create a new decomposition function — new_decomposition" />
+<meta property="og:title" content="Decomposition plots — autoplot.dcmp_ts" />
 
-<meta property="og:description" content="Helper to create a new decomposition function" />
+<meta property="og:description" content="Produces a faceted plot of the components used to build the response
+variable of the dable. Useful for visualising how the components contribute
+in a decomposition or model." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -78,6 +80,9 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
@@ -99,47 +104,59 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Helper to create a new decomposition function</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fablelite/blob/master/R/definitions.R'><code>R/definitions.R</code></a></small>
-    <div class="hidden name"><code>new_decomposition.Rd</code></div>
+    <h1>Decomposition plots</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fablelite/blob/master/R/plot.R'><code>R/plot.R</code></a></small>
+    <div class="hidden name"><code>autoplot.dcmp_ts.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Helper to create a new decomposition function</p>
+    <p>Produces a faceted plot of the components used to build the response
+variable of the dable. Useful for visualising how the components contribute
+in a decomposition or model.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>new_decomposition</span>(<span class='no'>.class</span>, <span class='no'>.data</span>, <span class='no'>...</span>, <span class='kw'>.env</span> <span class='kw'>=</span> <span class='fu'>caller_env</span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>2</span>))</pre>
+    <pre class="usage"><span class='co'># S3 method for dcmp_ts</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/autoplot'>autoplot</a></span>(<span class='no'>object</span>, <span class='kw'>.vars</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scale_bars</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>.class</th>
-      <td><p>A decomposition class (typically created with <code><a href='new-dcmp-class.html'>new_decomposition_class()</a></code>).</p></td>
+      <th>object</th>
+      <td><p>A dable.</p></td>
     </tr>
     <tr>
-      <th>.data</th>
-      <td><p>A tsibble.</p></td>
+      <th>.vars</th>
+      <td><p>The column of the dable used to plot. By default, this will be the response variable of the decomposition.</p></td>
+    </tr>
+    <tr>
+      <th>scale_bars</th>
+      <td><p>If <code>TRUE</code>, each facet will include a scale bar which represents the same units across each facet.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>The user inputs, such as the formula and any control parameters.</p></td>
-    </tr>
-    <tr>
-      <th>.env</th>
-      <td><p>The environment from which the user's objects can be found.</p></td>
+      <td><p>Further arguments passed to <code><a href='https://www.rdocumentation.org/packages/ggplot2/topics/geom_path'>ggplot2::geom_line()</a></code>, which can be used to specify fixed aesthetics such as <code>colour = "red"</code> or <code>size = 3</code>.</p></td>
     </tr>
     </table>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>feasts</span>)</div><div class='output co'>#&gt; <span class='error'>Error: package ‘fablelite’ required by ‘feasts’ could not be found</span></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>tsibbledata</span>)
+<span class='no'>aus_production</span> <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://feasts.tidyverts.org/reference/STL.html'>STL</a></span>(<span class='no'>Beer</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/autoplot'>autoplot</a></span>()</div><div class='output co'>#&gt; <span class='error'>Error in STL(., Beer): could not find function "STL"</span></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+            
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

@@ -82,6 +82,9 @@ used to train the model." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
@@ -121,11 +124,12 @@ used to train the model.</p>
     <pre class="usage"><span class='fu'>accuracy</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for mdl_df</span>
-<span class='fu'>accuracy</span>(<span class='no'>object</span>, <span class='kw'>measures</span> <span class='kw'>=</span> <span class='no'>point_measures</span>, <span class='no'>...</span>)
+<span class='fu'>accuracy</span>(<span class='no'>object</span>, <span class='kw'>measures</span> <span class='kw'>=</span> <span class='no'>point_accuracy_measures</span>,
+  <span class='no'>...</span>)
 
 <span class='co'># S3 method for fbl_ts</span>
-<span class='fu'>accuracy</span>(<span class='no'>object</span>, <span class='no'>data</span>, <span class='kw'>measures</span> <span class='kw'>=</span> <span class='no'>point_measures</span>, <span class='no'>...</span>,
-  <span class='kw'>by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+<span class='fu'>accuracy</span>(<span class='no'>object</span>, <span class='no'>data</span>,
+  <span class='kw'>measures</span> <span class='kw'>=</span> <span class='no'>point_accuracy_measures</span>, <span class='no'>...</span>, <span class='kw'>by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -140,7 +144,7 @@ used to train the model.</p>
     </tr>
     <tr>
       <th>measures</th>
-      <td><p>A list of accuracy measure functions to compute (such as <code><a href='point-accuracy-measures.html'>point_measures</a></code>, <code><a href='interval-accuracy-measures.html'>interval_measures</a></code>, or <code><a href='interval-accuracy-measures.html'>distribution_measures</a></code>)</p></td>
+      <td><p>A list of accuracy measure functions to compute (such as <code><a href='point_accuracy_measures.html'>point_accuracy_measures</a></code>, <code><a href='interval_accuracy_measures.html'>interval_accuracy_measures</a></code>, or <code><a href='distribution_accuracy_measures.html'>distribution_accuracy_measures</a></code>)</p></td>
     </tr>
     <tr>
       <th>data</th>
@@ -184,7 +188,10 @@ used to train the model.</p>
 <span class='co'># It is also possible to compute interval and distributional measures of</span>
 <span class='co'># accuracy for models and forecasts which give forecast distributions.</span>
 <span class='no'>fc</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>accuracy</span>(<span class='no'>aus_production</span>, <span class='kw'>measures</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='no'>interval_measures</span>, <span class='no'>distribution_measures</span>))</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'fc' not found</span></div><div class='input'>
+  <span class='fu'>accuracy</span>(
+    <span class='no'>aus_production</span>,
+    <span class='kw'>measures</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='no'>interval_accuracy_measures</span>, <span class='no'>distribution_accuracy_measures</span>)
+  )</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'fc' not found</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

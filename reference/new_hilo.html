@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create evaluation environment for specials — new_specials • fablelite</title>
+<title>Construct hilo intervals — new_hilo • fablelite</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Create evaluation environment for specials — new_specials" />
+<meta property="og:title" content="Construct hilo intervals — new_hilo" />
 
-<meta property="og:description" content="Allows extension packages to make use of the formula parsing of specials." />
+<meta property="og:description" content="Construct hilo intervals" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -102,44 +102,63 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create evaluation environment for specials</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fablelite/blob/master/R/specials.R'><code>R/specials.R</code></a></small>
-    <div class="hidden name"><code>new_specials.Rd</code></div>
+    <h1>Construct hilo intervals</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fablelite/blob/master/R/hilo.R'><code>R/hilo.R</code></a></small>
+    <div class="hidden name"><code>new_hilo.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Allows extension packages to make use of the formula parsing of specials.</p>
+    <p>Construct hilo intervals</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>new_specials</span>(<span class='no'>...</span>, <span class='kw'>.required_specials</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>.xreg_specials</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>new_hilo</span>(<span class='no'>lower</span>, <span class='no'>upper</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>A named set of functions which used to parse formula inputs</p></td>
+      <th>lower, upper</th>
+      <td><p>A numeric vector of values for lower and upper limits.</p></td>
     </tr>
     <tr>
-      <th>.required_specials</th>
-      <td><p>The names of specials which must be provided (and if not, are included with no inputs).</p></td>
-    </tr>
-    <tr>
-      <th>.xreg_specials</th>
-      <td><p>The names of specials which will be only used as inputs to other specials (most commonly <code>xreg</code>).</p></td>
+      <th>level</th>
+      <td><p>Default <code>NULL</code> does not include 'level'. Otherwise values of
+length 1 or as length of <code>lower</code>, expected between 0 and 100.</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>A "hilo" object</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>new_hilo</span>(<span class='kw'>lower</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='fl'>10</span>), <span class='kw'>upper</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='fl'>10</span>) + <span class='fl'>5</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>95L</span>)</div><div class='output co'>#&gt; [-0.53992316, 5.650534]95
+#&gt; [-1.16946146, 5.343913]95
+#&gt; [ 0.55910599, 6.477532]95
+#&gt; [-1.81934725, 5.072026]95
+#&gt; [ 0.39334397, 7.126445]95
+#&gt; [ 0.04213411, 3.523803]95
+#&gt; [ 1.17966418, 5.407888]95
+#&gt; [-0.25692118, 6.393978]95
+#&gt; [-1.05633610, 5.360278]95
+#&gt; [ 0.19877721, 5.654550]95</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
+    <h2>Author</h2>
+    <p>Earo Wang &amp; Mitchell O'Hara-Wild</p>
   </div>
 </div>
 

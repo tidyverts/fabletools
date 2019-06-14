@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create evaluation environment for specials — new_specials • fablelite</title>
+<title>Point estimate accuracy measures — ME • fablelite</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Create evaluation environment for specials — new_specials" />
+<meta property="og:title" content="Point estimate accuracy measures — ME" />
 
-<meta property="og:description" content="Allows extension packages to make use of the formula parsing of specials." />
+<meta property="og:description" content="Point estimate accuracy measures" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -102,35 +102,88 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create evaluation environment for specials</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fablelite/blob/master/R/specials.R'><code>R/specials.R</code></a></small>
-    <div class="hidden name"><code>new_specials.Rd</code></div>
+    <h1>Point estimate accuracy measures</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fablelite/blob/master/R/accuracy.R'><code>R/accuracy.R</code></a></small>
+    <div class="hidden name"><code>point_accuracy_measures.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Allows extension packages to make use of the formula parsing of specials.</p>
+    <p>Point estimate accuracy measures</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>new_specials</span>(<span class='no'>...</span>, <span class='kw'>.required_specials</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>.xreg_specials</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>ME</span>(<span class='no'>.resid</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+
+<span class='fu'>MSE</span>(<span class='no'>.resid</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+
+<span class='fu'>RMSE</span>(<span class='no'>.resid</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+
+<span class='fu'>MAE</span>(<span class='no'>.resid</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+
+<span class='fu'>MPE</span>(<span class='no'>.resid</span>, <span class='no'>.actual</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+
+<span class='fu'>MAPE</span>(<span class='no'>.resid</span>, <span class='no'>.actual</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+
+<span class='fu'>MASE</span>(<span class='no'>.resid</span>, <span class='no'>.train</span>, <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>.period</span>,
+  <span class='kw'>d</span> <span class='kw'>=</span> <span class='no'>.period</span> <span class='kw'>==</span> <span class='fl'>1</span>, <span class='kw'>D</span> <span class='kw'>=</span> <span class='no'>.period</span> <span class='kw'>&gt;</span> <span class='fl'>1</span>, <span class='no'>...</span>)
+
+<span class='fu'>ACF1</span>(<span class='no'>.resid</span>, <span class='kw'>na.action</span> <span class='kw'>=</span> <span class='kw pkg'>stats</span><span class='kw ns'>::</span><span class='no'><a href='https://www.rdocumentation.org/packages/stats/topics/na.fail'>na.pass</a></span>, <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+
+<span class='no'>point_accuracy_measures</span></pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>.resid</th>
+      <td><p>A vector of residuals from either the training (model accuracy)
+or test (forecast accuracy) data.</p></td>
+    </tr>
+    <tr>
+      <th>na.rm</th>
+      <td><p>Remove the missing values before calculating the accuracy measure</p></td>
+    </tr>
+    <tr>
       <th>...</th>
-      <td><p>A named set of functions which used to parse formula inputs</p></td>
+      <td><p>Additional arguments for each measure.</p></td>
     </tr>
     <tr>
-      <th>.required_specials</th>
-      <td><p>The names of specials which must be provided (and if not, are included with no inputs).</p></td>
+      <th>.actual</th>
+      <td><p>A vector of responses matching the fitted values
+(for forecast accuracy, <code>new_data</code> must be provided).</p></td>
     </tr>
     <tr>
-      <th>.xreg_specials</th>
-      <td><p>The names of specials which will be only used as inputs to other specials (most commonly <code>xreg</code>).</p></td>
+      <th>.train</th>
+      <td><p>A vector of responses used to train the model
+(for forecast accuracy, the <code>orig_data</code> must be provided).</p></td>
+    </tr>
+    <tr>
+      <th>demean</th>
+      <td><p>Should the response be demeaned (MASE)</p></td>
+    </tr>
+    <tr>
+      <th>.period</th>
+      <td><p>The seasonal period of the data (defaulting to 'smallest' seasonal period).
+from a model, or forecasted values from the forecast.</p></td>
+    </tr>
+    <tr>
+      <th>d</th>
+      <td><p>Should the response model include a first difference?</p></td>
+    </tr>
+    <tr>
+      <th>D</th>
+      <td><p>Should the response model include a seasonal difference?</p></td>
+    </tr>
+    <tr>
+      <th>na.action</th>
+      <td><p>Function to handle missing values.</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+
+    <p>An object of class <code>list</code> of length 7.</p>
     
 
   </div>
@@ -138,7 +191,9 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#format">Format</a></li>
+          </ul>
 
   </div>
 </div>

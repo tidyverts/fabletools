@@ -22,13 +22,22 @@
     <loc>https://fablelite.tidyverts.org/reference/augment.html</loc>
   </url>
   <url>
+    <loc>https://fablelite.tidyverts.org/reference/autoplot.dcmp_ts.html</loc>
+  </url>
+  <url>
+    <loc>https://fablelite.tidyverts.org/reference/autoplot.fbl_ts.html</loc>
+  </url>
+  <url>
+    <loc>https://fablelite.tidyverts.org/reference/autoplot.tbl_ts.html</loc>
+  </url>
+  <url>
     <loc>https://fablelite.tidyverts.org/reference/bias_adjust.html</loc>
   </url>
   <url>
     <loc>https://fablelite.tidyverts.org/reference/box_cox.html</loc>
   </url>
   <url>
-    <loc>https://fablelite.tidyverts.org/reference/cmbn_ensemble.html</loc>
+    <loc>https://fablelite.tidyverts.org/reference/combination_ensemble.html</loc>
   </url>
   <url>
     <loc>https://fablelite.tidyverts.org/reference/combination_model.html</loc>
@@ -49,7 +58,7 @@
     <loc>https://fablelite.tidyverts.org/reference/definitions.html</loc>
   </url>
   <url>
-    <loc>https://fablelite.tidyverts.org/reference/dist-accuracy-measures.html</loc>
+    <loc>https://fablelite.tidyverts.org/reference/distribution_accuracy_measures.html</loc>
   </url>
   <url>
     <loc>https://fablelite.tidyverts.org/reference/distributions.html</loc>
@@ -106,7 +115,7 @@
     <loc>https://fablelite.tidyverts.org/reference/interpolate.html</loc>
   </url>
   <url>
-    <loc>https://fablelite.tidyverts.org/reference/interval-accuracy-measures.html</loc>
+    <loc>https://fablelite.tidyverts.org/reference/interval_accuracy_measures.html</loc>
   </url>
   <url>
     <loc>https://fablelite.tidyverts.org/reference/is_aggregated.html</loc>
@@ -127,6 +136,9 @@
     <loc>https://fablelite.tidyverts.org/reference/mable.html</loc>
   </url>
   <url>
+    <loc>https://fablelite.tidyverts.org/reference/min_trace.html</loc>
+  </url>
+  <url>
     <loc>https://fablelite.tidyverts.org/reference/model.html</loc>
   </url>
   <url>
@@ -145,7 +157,10 @@
     <loc>https://fablelite.tidyverts.org/reference/new-model-class.html</loc>
   </url>
   <url>
-    <loc>https://fablelite.tidyverts.org/reference/new_decomposition.html</loc>
+    <loc>https://fablelite.tidyverts.org/reference/new_decomposition_definition.html</loc>
+  </url>
+  <url>
+    <loc>https://fablelite.tidyverts.org/reference/new_hilo.html</loc>
   </url>
   <url>
     <loc>https://fablelite.tidyverts.org/reference/new_specials.html</loc>
@@ -166,7 +181,7 @@
     <loc>https://fablelite.tidyverts.org/reference/parse_model_rhs.html</loc>
   </url>
   <url>
-    <loc>https://fablelite.tidyverts.org/reference/point-accuracy-measures.html</loc>
+    <loc>https://fablelite.tidyverts.org/reference/point_accuracy_measures.html</loc>
   </url>
   <url>
     <loc>https://fablelite.tidyverts.org/reference/reconcile.html</loc>
@@ -197,9 +212,6 @@
   </url>
   <url>
     <loc>https://fablelite.tidyverts.org/reference/tidy.html</loc>
-  </url>
-  <url>
-    <loc>https://fablelite.tidyverts.org/reference/trace_min.html</loc>
   </url>
   <url>
     <loc>https://fablelite.tidyverts.org/reference/traverse.html</loc>

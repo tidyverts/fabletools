@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Interval estimate accuracy measures — interval-accuracy-measures • fablelite</title>
+<title>Plot time series from a tsibble — autoplot.tbl_ts • fablelite</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,11 @@
 
 
 
-<meta property="og:title" content="Interval estimate accuracy measures — interval-accuracy-measures" />
+<meta property="og:title" content="Plot time series from a tsibble — autoplot.tbl_ts" />
 
-<meta property="og:description" content="Interval estimate accuracy measures" />
+<meta property="og:description" content="Produces a time series plot of one or more variables from a tsibble. If the
+tsibble contains a multiple keys, separate time series will be identified by
+colour." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -78,6 +80,9 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
@@ -99,62 +104,58 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Interval estimate accuracy measures</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fablelite/blob/master/R/accuracy.R'><code>R/accuracy.R</code></a></small>
-    <div class="hidden name"><code>interval-accuracy-measures.Rd</code></div>
+    <h1>Plot time series from a tsibble</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fablelite/blob/master/R/plot.R'><code>R/plot.R</code></a></small>
+    <div class="hidden name"><code>autoplot.tbl_ts.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Interval estimate accuracy measures</p>
+    <p>Produces a time series plot of one or more variables from a tsibble. If the
+tsibble contains a multiple keys, separate time series will be identified by
+colour.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>winkler_score</span>(<span class='no'>.dist</span>, <span class='no'>.actual</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>95</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='co'># S3 method for tbl_ts</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/autoplot'>autoplot</a></span>(<span class='no'>object</span>, <span class='kw'>.vars</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
-<span class='no'>interval_measures</span>
-
-<span class='no'>distribution_measures</span></pre>
+<span class='co'># S3 method for tbl_ts</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/autolayer'>autolayer</a></span>(<span class='no'>object</span>, <span class='kw'>.vars</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>.dist</th>
-      <td><p>The distribution of fitted values from the model, or forecasted values from the forecast.</p></td>
+      <th>object</th>
+      <td><p>A tsibble.</p></td>
     </tr>
     <tr>
-      <th>.actual</th>
-      <td><p>A vector of responses matching the fitted values
-(for forecast accuracy, <code>new_data</code> must be provided).</p></td>
-    </tr>
-    <tr>
-      <th>level</th>
-      <td><p>The level of the forecast interval.</p></td>
-    </tr>
-    <tr>
-      <th>na.rm</th>
-      <td><p>Remove the missing values before calculating the accuracy measure</p></td>
+      <th>.vars</th>
+      <td><p>A bare expression containing data you wish to plot. Multiple variables can be plotted using <code><a href='https://www.rdocumentation.org/packages/ggplot2/topics/vars'>ggplot2::vars()</a></code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional arguments for each measure.</p></td>
+      <td><p>Further arguments passed to <code><a href='https://www.rdocumentation.org/packages/ggplot2/topics/geom_path'>ggplot2::geom_line()</a></code>, which can be used to specify fixed aesthetics such as <code>colour = "red"</code> or <code>size = 3</code>.</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>An object of class <code>list</code> of length 1.</p>
-    
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>fable</span>)</div><div class='output co'>#&gt; <span class='error'>Error: package ‘fablelite’ required by ‘fable’ could not be found</span></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>tsibbledata</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>tsibble</span>)
 
+<span class='kw pkg'>tsibbledata</span><span class='kw ns'>::</span><span class='no'><a href='https://tsibbledata.tidyverts.org/reference/gafa_stock.html'>gafa_stock</a></span> <span class='kw'>%&gt;%</span>
+ <span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/autoplot'>autoplot</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/vars.html'>vars</a></span>(<span class='no'>Close</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Log'>log</a></span>(<span class='no'>Close</span>)))</div><div class='img'><img src='autoplot.tbl_ts-1.png' alt='' width='700' height='433' /></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#format">Format</a></li>
-          </ul>
+            
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

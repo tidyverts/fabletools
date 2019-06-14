@@ -32,7 +32,8 @@
 
 <meta property="og:title" content="Forecast reconciliation — reconcile" />
 
-<meta property="og:description" content="Specifies the method used to reconcile forecasts across keys." />
+<meta property="og:description" content="This function allows you to specify the method used to reconcile forecasts
+in accordance with its key structure." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -78,6 +79,9 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
@@ -106,32 +110,46 @@
 
     <div class="ref-description">
     
-    <p>Specifies the method used to reconcile forecasts across keys.</p>
+    <p>This function allows you to specify the method used to reconcile forecasts
+in accordance with its key structure.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>reconcile</span>(<span class='no'>data</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>reconcile</span>(<span class='no'>.data</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for mdl_df</span>
+<span class='fu'>reconcile</span>(<span class='no'>.data</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
+      <th>.data</th>
       <td><p>A mable.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Reconciliation specification</p></td>
+      <td><p>Reconciliation methods applied to model columns within <code>.data</code>.</p></td>
     </tr>
     </table>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>fable</span>)</div><div class='output co'>#&gt; <span class='error'>Error: package ‘fablelite’ required by ‘fable’ could not be found</span></div><div class='input'><span class='no'>lung_deaths_agg</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/as-tsibble.html'>as_tsibble</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>(<span class='no'>mdeaths</span>, <span class='no'>fdeaths</span>)) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='aggregate_key.html'>aggregate_key</a></span>(<span class='no'>key</span>, <span class='kw'>value</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/sum'>sum</a></span>(<span class='no'>value</span>))
+
+<span class='no'>lung_deaths_agg</span> <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='no'>value</span>)) <span class='kw'>%&gt;%</span>
+  <span class='fu'>reconcile</span>(<span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='min_trace.html'>min_trace</a></span>(<span class='no'>ets</span>))</div><div class='output co'>#&gt; <span class='error'>Error in ETS(value): could not find function "ETS"</span></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+            
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

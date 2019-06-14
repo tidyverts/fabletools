@@ -75,6 +75,9 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
@@ -110,6 +113,32 @@
     <tbody>
       <tr>
         <th colspan="2">
+          <h2 id="section-data-structures" class="hasAnchor"><a href="#section-data-structures" class="anchor"></a>Data structures</h2>
+          <p class="section-desc"><p>Data classes for models, forecasts and decompositions.</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="mable.html">mable()</a></code> </p>
+        </td>
+        <td><p>Create a new mable</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fable.html">fable()</a></code> </p>
+        </td>
+        <td><p>Create a fable object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="dable.html">dable()</a></code> </p>
+        </td>
+        <td><p>Create a dable object</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
           <h2 id="section-models" class="hasAnchor"><a href="#section-models" class="anchor"></a>Models</h2>
           <p class="section-desc"><p>Models which make use of models from other packages, or are useful for programming.</p></p>
         </th>
@@ -143,14 +172,26 @@
       <tr>
         
         <td>
+          <p><code><a href="aggregate_key.html">aggregate_key()</a></code> </p>
+        </td>
+        <td><p>Expand a dataset to include other levels of aggregation</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="reconcile.html">reconcile()</a></code> </p>
         </td>
         <td><p>Forecast reconciliation</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="min_trace.html">min_trace()</a></code> </p>
+        </td>
+        <td><p>Minimum trace forecast reconciliation</p></td>
       </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-accuracy-measures" class="hasAnchor"><a href="#section-accuracy-measures" class="anchor"></a>Accuracy measures</h2>
+          <h2 id="section-accuracy-evaluation" class="hasAnchor"><a href="#section-accuracy-evaluation" class="anchor"></a>Accuracy evaluation</h2>
           <p class="section-desc"><p>Functionality for evaluating model performance</p></p>
         </th>
       </tr>
@@ -163,19 +204,19 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="point-accuracy-measures.html">ME()</a></code> <code><a href="point-accuracy-measures.html">MSE()</a></code> <code><a href="point-accuracy-measures.html">RMSE()</a></code> <code><a href="point-accuracy-measures.html">MAE()</a></code> <code><a href="point-accuracy-measures.html">MPE()</a></code> <code><a href="point-accuracy-measures.html">MAPE()</a></code> <code><a href="point-accuracy-measures.html">MASE()</a></code> <code><a href="point-accuracy-measures.html">ACF1()</a></code> <code><a href="point-accuracy-measures.html">point_measures</a></code> </p>
+          <p><code><a href="point_accuracy_measures.html">ME()</a></code> <code><a href="point_accuracy_measures.html">MSE()</a></code> <code><a href="point_accuracy_measures.html">RMSE()</a></code> <code><a href="point_accuracy_measures.html">MAE()</a></code> <code><a href="point_accuracy_measures.html">MPE()</a></code> <code><a href="point_accuracy_measures.html">MAPE()</a></code> <code><a href="point_accuracy_measures.html">MASE()</a></code> <code><a href="point_accuracy_measures.html">ACF1()</a></code> <code><a href="point_accuracy_measures.html">point_accuracy_measures</a></code> </p>
         </td>
         <td><p>Point estimate accuracy measures</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="interval-accuracy-measures.html">winkler_score()</a></code> <code><a href="interval-accuracy-measures.html">interval_measures</a></code> <code><a href="interval-accuracy-measures.html">distribution_measures</a></code> </p>
+          <p><code><a href="interval_accuracy_measures.html">winkler_score()</a></code> <code><a href="interval_accuracy_measures.html">interval_accuracy_measures</a></code> </p>
         </td>
         <td><p>Interval estimate accuracy measures</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="dist-accuracy-measures.html">percentile_score()</a></code> </p>
+          <p><code><a href="distribution_accuracy_measures.html">percentile_score()</a></code> <code><a href="distribution_accuracy_measures.html">distribution_accuracy_measures</a></code> </p>
         </td>
         <td><p>Distribution accuracy measures</p></td>
       </tr>
@@ -183,7 +224,7 @@
       <tr>
         <th colspan="2">
           <h2 id="section-methods" class="hasAnchor"><a href="#section-methods" class="anchor"></a>Methods</h2>
-          <p class="section-desc"><p>The fablelite package facilitates the handling of key structures for the following functions</p></p>
+          <p class="section-desc"><p>The fablelite package facilitates the handling of key structures for these generics.</p></p>
         </th>
       </tr>
       <tr>
@@ -263,394 +304,21 @@
       <tr>
         
         <td>
-          <p><code><a href="accuracy.html">accuracy()</a></code> </p>
+          <p><code><a href="autoplot.tbl_ts.html">autoplot(<i>&lt;tbl_ts&gt;</i>)</a></code> <code><a href="autoplot.tbl_ts.html">autolayer(<i>&lt;tbl_ts&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Evaluate accuracy of a forecast or model</p></td>
+        <td><p>Plot time series from a tsibble</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="aggregate_key.html">aggregate_key()</a></code> </p>
+          <p><code><a href="autoplot.fbl_ts.html">autoplot(<i>&lt;fbl_ts&gt;</i>)</a></code> <code><a href="autoplot.fbl_ts.html">autolayer(<i>&lt;fbl_ts&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Expand a dataset to include other levels of aggregation</p></td>
+        <td><p>Plot a set of forecasts</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="as-dable.html">as_dable()</a></code> </p>
+          <p><code><a href="autoplot.dcmp_ts.html">autoplot(<i>&lt;dcmp_ts&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Coerce to a dable object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="as-fable.html">as_fable()</a></code> </p>
-        </td>
-        <td><p>Coerce to a fable object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="as_mable.html">as_mable()</a></code> </p>
-        </td>
-        <td><p>Coerce a dataset to a mable</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="augment.html">augment(<i>&lt;mdl_df&gt;</i>)</a></code> <code><a href="augment.html">augment(<i>&lt;mdl_ts&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Augment a mable</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="bias_adjust.html">bias_adjust()</a></code> </p>
-        </td>
-        <td><p>Bias adjust back-transformation functions</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="box_cox.html">box_cox()</a></code> <code><a href="box_cox.html">inv_box_cox()</a></code> </p>
-        </td>
-        <td><p>Box Cox Transformation</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cmbn_ensemble.html">cmbn_ensemble()</a></code> </p>
-        </td>
-        <td><p>Ensemble combination</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="combination_model.html">combination_model()</a></code> </p>
-        </td>
-        <td><p>Combination modelling</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="components.html">components(<i>&lt;mdl_df&gt;</i>)</a></code> <code><a href="components.html">components(<i>&lt;mdl_ts&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Extract components from a fitted model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="construct_fc.html">construct_fc()</a></code> </p>
-        </td>
-        <td><p>Construct a new set of forecasts</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="dable.html">dable()</a></code> </p>
-        </td>
-        <td><p>Create a dable object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="decomposition_model.html">decomposition_model()</a></code> </p>
-        </td>
-        <td><p>Decomposition modelling</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="definitions.html">model_definition</a></code> <code><a href="definitions.html">decomposition_definition</a></code> </p>
-        </td>
-        <td><p>R6 Objects</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="dist-accuracy-measures.html">percentile_score()</a></code> </p>
-        </td>
-        <td><p>Distribution accuracy measures</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="distributions.html">dist_normal()</a></code> <code><a href="distributions.html">dist_mv_normal()</a></code> <code><a href="distributions.html">dist_sim()</a></code> <code><a href="distributions.html">dist_unknown()</a></code> </p>
-        </td>
-        <td><p>Distributions for intervals</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="estimate.html">estimate()</a></code> </p>
-        </td>
-        <td><p>Estimate a model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fable.html">fable()</a></code> </p>
-        </td>
-        <td><p>Create a fable object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fablelite-package.html">fablelite-package</a></code> </p>
-        </td>
-        <td><p>fablelite: Core tools for fable extensions</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fcdist.html">new_fcdist()</a></code> <code><a href="fcdist.html">new_fcdist_env()</a></code> </p>
-        </td>
-        <td><p>Create a forecast distribution object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="feature_set.html">feature_set()</a></code> </p>
-        </td>
-        <td><p>Create a feature set from tags</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="features.html">features()</a></code> <code><a href="features.html">features_at()</a></code> <code><a href="features.html">features_all()</a></code> <code><a href="features.html">features_if()</a></code> </p>
-        </td>
-        <td><p>Extract features from a dataset</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="features_by_pkg.html">features_by_pkg</a></code> </p>
-        </td>
-        <td><p>Features by package</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="features_by_tag.html">features_by_tag</a></code> </p>
-        </td>
-        <td><p>Features by tag</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="forecast.html">forecast()</a></code> </p>
-        </td>
-        <td><p>Produce forecasts</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="freq_tools.html">common_periods()</a></code> <code><a href="freq_tools.html">get_frequencies()</a></code> </p>
-        </td>
-        <td><p>Extract frequencies for common seasonal periods</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="generate.mdl_df.html">generate(<i>&lt;mdl_df&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Generate responses from a mable</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="geom_forecast.html">GeomForecast</a></code> <code><a href="geom_forecast.html">geom_forecast()</a></code> <code><a href="geom_forecast.html">StatForecast</a></code> </p>
-        </td>
-        <td><p>Forecast plot</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="glance.html">glance(<i>&lt;mdl_df&gt;</i>)</a></code> <code><a href="glance.html">glance(<i>&lt;mdl_ts&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Glance a mable</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="guide_level.html">guide_level()</a></code> </p>
-        </td>
-        <td><p>Level shade bar guide</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="hilo.html">new_hilo()</a></code> <code><a href="hilo.html">hilo()</a></code> </p>
-        </td>
-        <td><p>Construct hilo intervals</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="interpolate.html">interpolate(<i>&lt;mdl_df&gt;</i>)</a></code> <code><a href="interpolate.html">interpolate(<i>&lt;mdl_ts&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Interpolate missing values</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="interval-accuracy-measures.html">winkler_score()</a></code> <code><a href="interval-accuracy-measures.html">interval_measures</a></code> <code><a href="interval-accuracy-measures.html">distribution_measures</a></code> </p>
-        </td>
-        <td><p>Interval estimate accuracy measures</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="is_aggregated.html">is_aggregated()</a></code> </p>
-        </td>
-        <td><p>Is the element an aggregation of smaller data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="is_fable.html">is_fable()</a></code> </p>
-        </td>
-        <td><p>Is the object a fable</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="is_hilo.html">is_hilo()</a></code> </p>
-        </td>
-        <td><p>Is the object a hilo</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="is_mable.html">is_mable()</a></code> </p>
-        </td>
-        <td><p>Is the object a mable</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="is_model.html">is_model()</a></code> </p>
-        </td>
-        <td><p>Is the object a model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="mable.html">mable()</a></code> </p>
-        </td>
-        <td><p>Create a new mable</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="model.html">model()</a></code> </p>
-        </td>
-        <td><p>Estimate models</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="model_lhs.html">model_lhs()</a></code> </p>
-        </td>
-        <td><p>Extract the left hand side of a model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="model_rhs.html">model_rhs()</a></code> </p>
-        </td>
-        <td><p>Extract the right hand side of a model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="model_sum.html">model_sum()</a></code> </p>
-        </td>
-        <td><p>Provide a succinct summary of a model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="new-dcmp-class.html">new_decomposition_class()</a></code> </p>
-        </td>
-        <td><p>Create a new class of decomposition</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="new-model-class.html">new_model_class()</a></code> <code><a href="new-model-class.html">new_model_definition()</a></code> </p>
-        </td>
-        <td><p>Create a new class of models</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="new_decomposition.html">new_decomposition()</a></code> </p>
-        </td>
-        <td><p>Helper to create a new decomposition function</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="new_specials.html">new_specials()</a></code> </p>
-        </td>
-        <td><p>Create evaluation environment for specials</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="new_transformation.html">new_transformation()</a></code> <code><a href="new_transformation.html">invert_transformation()</a></code> </p>
-        </td>
-        <td><p>Create a new modelling transformation</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="parse_model.html">parse_model()</a></code> </p>
-        </td>
-        <td><p>Parse the model specification for specials</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="parse_model_lhs.html">parse_model_lhs()</a></code> </p>
-        </td>
-        <td><p>Parse the RHS of the model formula for transformations</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="parse_model_rhs.html">parse_model_rhs()</a></code> </p>
-        </td>
-        <td><p>Parse the RHS of the model formula for specials</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="point-accuracy-measures.html">ME()</a></code> <code><a href="point-accuracy-measures.html">MSE()</a></code> <code><a href="point-accuracy-measures.html">RMSE()</a></code> <code><a href="point-accuracy-measures.html">MAE()</a></code> <code><a href="point-accuracy-measures.html">MPE()</a></code> <code><a href="point-accuracy-measures.html">MAPE()</a></code> <code><a href="point-accuracy-measures.html">MASE()</a></code> <code><a href="point-accuracy-measures.html">ACF1()</a></code> <code><a href="point-accuracy-measures.html">point_measures</a></code> </p>
-        </td>
-        <td><p>Point estimate accuracy measures</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="reconcile.html">reconcile()</a></code> </p>
-        </td>
-        <td><p>Forecast reconciliation</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="refit.html">refit(<i>&lt;mdl_df&gt;</i>)</a></code> <code><a href="refit.html">refit(<i>&lt;mdl_ts&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Refit a mable to a new dataset</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="register_feature.html">register_feature()</a></code> </p>
-        </td>
-        <td><p>Register a feature function</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="report.html">report()</a></code> </p>
-        </td>
-        <td><p>Report information about an object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="response.html">response()</a></code> </p>
-        </td>
-        <td><p>Extract the response variable from a model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="scale_level.html">scale_level_gradient()</a></code> <code><a href="scale_level.html">scale_level_continuous()</a></code> </p>
-        </td>
-        <td><p>Level colour scales</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="scale_tsibble.html">scale_x_yearquarter()</a></code> <code><a href="scale_tsibble.html">scale_x_yearmonth()</a></code> <code><a href="scale_tsibble.html">scale_x_yearweek()</a></code> </p>
-        </td>
-        <td><p>tsibble datetime scales
-This set of scales defines new scales for aggregate time structures defined in tsibble.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="stream.html">stream()</a></code> </p>
-        </td>
-        <td><p>Extend a fitted model with new data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tidy.html">tidy(<i>&lt;mdl_df&gt;</i>)</a></code> <code><a href="tidy.html">tidy(<i>&lt;mdl_ts&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Extract model coefficients from a mable</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="trace_min.html">trace_min()</a></code> </p>
-        </td>
-        <td><p>Minimum trace forecast reconciliation</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="traverse.html">traverse()</a></code> </p>
-        </td>
-        <td><p>Recursively traverse an object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="validate_formula.html">validate_formula()</a></code> </p>
-        </td>
-        <td><p>Validate the user provided model</p></td>
+        <td><p>Decomposition plots</p></td>
       </tr>
     </tbody>
     </table>
@@ -659,9 +327,10 @@ This set of scales defines new scales for aggregate time structures defined in t
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#section-data-structures">Data structures</a></li>
       <li><a href="#section-models">Models</a></li>
       <li><a href="#section-forecast-reconciliation">Forecast reconciliation</a></li>
-      <li><a href="#section-accuracy-measures">Accuracy measures</a></li>
+      <li><a href="#section-accuracy-evaluation">Accuracy evaluation</a></li>
       <li><a href="#section-methods">Methods</a></li>
       <li><a href="#section-graphics">Graphics</a></li>
     </ul>

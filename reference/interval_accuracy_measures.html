@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Point estimate accuracy measures — point-accuracy-measures • fablelite</title>
+<title>Interval estimate accuracy measures — winkler_score • fablelite</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Point estimate accuracy measures — point-accuracy-measures" />
+<meta property="og:title" content="Interval estimate accuracy measures — winkler_score" />
 
-<meta property="og:description" content="Point estimate accuracy measures" />
+<meta property="og:description" content="Interval estimate accuracy measures" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -78,6 +78,9 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
@@ -99,43 +102,36 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Point estimate accuracy measures</h1>
+    <h1>Interval estimate accuracy measures</h1>
     <small class="dont-index">Source: <a href='https://github.com/tidyverts/fablelite/blob/master/R/accuracy.R'><code>R/accuracy.R</code></a></small>
-    <div class="hidden name"><code>point-accuracy-measures.Rd</code></div>
+    <div class="hidden name"><code>interval_accuracy_measures.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Point estimate accuracy measures</p>
+    <p>Interval estimate accuracy measures</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>ME</span>(<span class='no'>.resid</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>winkler_score</span>(<span class='no'>.dist</span>, <span class='no'>.actual</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>95</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
 
-<span class='fu'>MSE</span>(<span class='no'>.resid</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
-
-<span class='fu'>RMSE</span>(<span class='no'>.resid</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
-
-<span class='fu'>MAE</span>(<span class='no'>.resid</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
-
-<span class='fu'>MPE</span>(<span class='no'>.resid</span>, <span class='no'>.actual</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
-
-<span class='fu'>MAPE</span>(<span class='no'>.resid</span>, <span class='no'>.actual</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
-
-<span class='fu'>MASE</span>(<span class='no'>.resid</span>, <span class='no'>.train</span>, <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>.period</span>,
-  <span class='kw'>d</span> <span class='kw'>=</span> <span class='no'>.period</span> <span class='kw'>==</span> <span class='fl'>1</span>, <span class='kw'>D</span> <span class='kw'>=</span> <span class='no'>.period</span> <span class='kw'>&gt;</span> <span class='fl'>1</span>, <span class='no'>...</span>)
-
-<span class='fu'>ACF1</span>(<span class='no'>.resid</span>, <span class='kw'>na.action</span> <span class='kw'>=</span> <span class='kw pkg'>stats</span><span class='kw ns'>::</span><span class='no'><a href='https://www.rdocumentation.org/packages/stats/topics/na.fail'>na.pass</a></span>, <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
-
-<span class='no'>point_measures</span></pre>
+<span class='no'>interval_accuracy_measures</span></pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>.resid</th>
-      <td><p>A vector of residuals from either the training (model accuracy)
-or test (forecast accuracy) data.</p></td>
+      <th>.dist</th>
+      <td><p>The distribution of fitted values from the model, or forecasted values from the forecast.</p></td>
+    </tr>
+    <tr>
+      <th>.actual</th>
+      <td><p>A vector of responses matching the fitted values
+(for forecast accuracy, <code>new_data</code> must be provided).</p></td>
+    </tr>
+    <tr>
+      <th>level</th>
+      <td><p>The level of the forecast interval.</p></td>
     </tr>
     <tr>
       <th>na.rm</th>
@@ -145,42 +141,11 @@ or test (forecast accuracy) data.</p></td>
       <th>...</th>
       <td><p>Additional arguments for each measure.</p></td>
     </tr>
-    <tr>
-      <th>.actual</th>
-      <td><p>A vector of responses matching the fitted values
-(for forecast accuracy, <code>new_data</code> must be provided).</p></td>
-    </tr>
-    <tr>
-      <th>.train</th>
-      <td><p>A vector of responses used to train the model
-(for forecast accuracy, the <code>orig_data</code> must be provided).</p></td>
-    </tr>
-    <tr>
-      <th>demean</th>
-      <td><p>Should the response be demeaned (MASE)</p></td>
-    </tr>
-    <tr>
-      <th>.period</th>
-      <td><p>The seasonal period of the data (defaulting to 'smallest' seasonal period).
-from a model, or forecasted values from the forecast.</p></td>
-    </tr>
-    <tr>
-      <th>d</th>
-      <td><p>Should the response model include a first difference?</p></td>
-    </tr>
-    <tr>
-      <th>D</th>
-      <td><p>Should the response model include a seasonal difference?</p></td>
-    </tr>
-    <tr>
-      <th>na.action</th>
-      <td><p>Function to handle missing values.</p></td>
-    </tr>
     </table>
     
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>An object of class <code>list</code> of length 7.</p>
+    <p>An object of class <code>list</code> of length 1.</p>
     
 
   </div>
