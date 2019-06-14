@@ -35,7 +35,7 @@ reference:
     - aggregate_key
     - reconcile
     - min_trace
-- title: Accuracy measures
+- title: Accuracy evaluation
   desc: >
     Functionality for evaluating model performance
   contents:
@@ -52,7 +52,7 @@ reference:
     - percentile_score
 - title: Methods
   desc: >
-    The fablelite package facilitates the handling of key structures for the following functions
+    The fablelite package facilitates the handling of key structures for these generics.
   contents:
     - forecast
     - model
