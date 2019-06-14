@@ -17,7 +17,13 @@ model(.data, ...)
 \item{.safely}{If a model encounters an error, rather than aborting the process a \link[=null_model]{NULL model} will be returned instead. This allows for an error to occur when computing many models, without losing the results of the successful models.}
 }
 \description{
-Trains specified model definition(s) to a dataset.
+Trains specified model definition(s) to a dataset. This function will
+estimate the a set of model definitions (passed via \code{...}) to each series
+within \code{.data} (as identified by the key structure). The result will be a
+mable (a model table), which neatly stores the estimated models in a tabular
+structure. Rows of the data identify different series within the data, and
+each model column contains all models from that model definition. Each cell
+in the mable identifies a single model.
 }
 \section{Parallel}{
 

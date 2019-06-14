@@ -1,6 +1,12 @@
 #' Estimate models
 #' 
-#' Trains specified model definition(s) to a dataset.
+#' Trains specified model definition(s) to a dataset. This function will 
+#' estimate the a set of model definitions (passed via `...`) to each series
+#' within `.data` (as identified by the key structure). The result will be a
+#' mable (a model table), which neatly stores the estimated models in a tabular
+#' structure. Rows of the data identify different series within the data, and
+#' each model column contains all models from that model definition. Each cell
+#' in the mable identifies a single model.
 #' 
 #' @param .data A data structure suitable for the models (such as a `tsibble`)
 #' @param ... Definitions for the models to be used (such as [`fable::ETS()`])
