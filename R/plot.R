@@ -302,7 +302,7 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), ...){
 
 #' Decomposition plots
 #' 
-#' Produces a facetted plot of the components used to build the response 
+#' Produces a faceted plot of the components used to build the response 
 #' variable of the dable. Useful for visualising how the components contribute
 #' in a decomposition or model.
 #' 
@@ -326,16 +326,16 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE, ...){
   keys <- key(object)
   n_keys <- n_keys(object)
   
-  y <- enquo(y)
-  if(quo_is_null(y)){
-    y <- object%@%"resp"
+  .vars <- enquo(.vars)
+  if(quo_is_null(.vars)){
+    .vars <- object%@%"resp"
   }
-  dcmp_str <- dcmp <- (object%@%"aliases")[[as_string(get_expr(y))]]
+  dcmp_str <- dcmp <- (object%@%"aliases")[[as_string(get_expr(.vars))]]
   if(!is.null(dcmp_str)){
     dcmp_str <- expr_text(dcmp_str)
   }
   object <- object %>% 
-    transmute(!!y, !!!syms(all.vars(dcmp))) %>% 
+    transmute(!!.vars, !!!syms(all.vars(dcmp))) %>% 
     gather(".var", ".val", !!!syms(measured_vars(.)), factor_key = TRUE)
   
   line_aes <- aes(x = !!idx, y = !!sym(".val"))
@@ -350,7 +350,7 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE, ...){
     ylab(NULL) + 
     labs(
       title = paste(method%||%"A", "decomposition"), 
-      subtitle = paste(c(expr_text(get_expr(y)), dcmp_str), collapse = " = ")
+      subtitle = paste(c(expr_text(get_expr(.vars)), dcmp_str), collapse = " = ")
     )
   
   # Rangebars

@@ -17,7 +17,7 @@
 \item{...}{Further arguments passed to \code{\link[ggplot2:geom_line]{ggplot2::geom_line()}}, which can be used to specify fixed aesthetics such as \code{colour = "red"} or \code{size = 3}.}
 }
 \description{
-Produces a facetted plot of the components used to build the response
+Produces a faceted plot of the components used to build the response
 variable of the dable. Useful for visualising how the components contribute
 in a decomposition or model.
 }
