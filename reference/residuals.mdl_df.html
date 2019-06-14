@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Combination modelling — combination_model • fablelite</title>
+<title>Extract residuals values from models — residuals.mdl_df • fablelite</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,10 +30,11 @@
 
 
 
-<meta property="og:title" content="Combination modelling — combination_model" />
+<meta property="og:title" content="Extract residuals values from models — residuals.mdl_df" />
 
-<meta property="og:description" content="Combines multiple model definitions (passed via ...) to produce a model
-combination definition using some combination function (cmbn_fn)." />
+<meta property="og:description" content="Extracts the residuals from each of the models in a mable. A tsibble will
+be returned containing these residuals. Residuals will be automatically
+back-transformed." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -98,59 +99,49 @@ combination definition using some combination function (cmbn_fn)." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Combination modelling</h1>
+    <h1>Extract residuals values from models</h1>
     
-    <div class="hidden name"><code>combination_model.Rd</code></div>
+    <div class="hidden name"><code>residuals.mdl_df.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Combines multiple model definitions (passed via <code>...</code>) to produce a model
-combination definition using some combination function (<code>cmbn_fn</code>).</p>
+    <p>Extracts the residuals from each of the models in a mable. A tsibble will
+be returned containing these residuals. Residuals will be automatically
+back-transformed.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>combination_model</span>(<span class='no'>...</span>, <span class='kw'>cmbn_fn</span> <span class='kw'>=</span> <span class='no'>combination_ensemble</span>)</pre>
+    <pre class="usage"><span class='co'># S3 method for mdl_df</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/residuals'>residuals</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for mdl_ts</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/residuals'>residuals</a></span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"innovation"</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>Model definitions used in the combination (such as <code><a href='https://fable.tidyverts.org/reference/ETS.html'>fable::ETS()</a></code>)</p></td>
+      <th>object</th>
+      <td><p>A mable or time series model.</p></td>
     </tr>
     <tr>
-      <th>cmbn_fn</th>
-      <td><p>A function used to produce the combination</p></td>
+      <th>...</th>
+      <td><p>Other arguments passed to the model method for <code><a href='https://www.rdocumentation.org/packages/stats/topics/residuals'>residuals()</a></code></p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>The type of residuals to compute. If <code>type="response"</code>, residuals on the back-transformed data will be computed.</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>A combination model can also be produced using mathematical operations.</p>
-    
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>fable</span>)</div><div class='output co'>#&gt; <span class='error'>Error: package ‘fablelite’ required by ‘fable’ could not be found</span></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>tsibble</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>tsibbledata</span>)
-
-<span class='co'># cmbn1 and cmbn2 are equivalent.</span>
-<span class='no'>aus_production</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='model.html'>model</a></span>(
-    <span class='kw'>cmbn1</span> <span class='kw'>=</span> <span class='fu'>combination_model</span>(<span class='fu'><a href='https://fable.tidyverts.org/reference/RW.html'>SNAIVE</a></span>(<span class='no'>Beer</span>), <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='no'>Beer</span> ~ <span class='fu'>trend</span>() + <span class='fu'>season</span>())),
-    <span class='kw'>cmbn2</span> <span class='kw'>=</span> (<span class='fu'><a href='https://fable.tidyverts.org/reference/RW.html'>SNAIVE</a></span>(<span class='no'>Beer</span>) + <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='no'>Beer</span> ~ <span class='fu'>trend</span>() + <span class='fu'>season</span>()))/<span class='fl'>2</span>
-  )</div><div class='output co'>#&gt; <span class='error'>Error in SNAIVE(Beer): could not find function "SNAIVE"</span></div><div class='input'>  
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#details">Details</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+                </ul>
 
   </div>
 </div>
