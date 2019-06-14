@@ -12,5 +12,21 @@ combination_model(..., cmbn_fn = combination_ensemble)
 \item{cmbn_fn}{A function used to produce the combination}
 }
 \description{
-Combination modelling
+Combines multiple model definitions (passed via \code{...}) to produce a model
+combination definition using some combination function (\code{cmbn_fn}).
+}
+\details{
+A combination model can also be produced using mathematical operations.
+}
+\examples{
+library(fable)
+library(tsibble)
+library(tsibbledata)
+
+aus_production \%>\%
+  model(
+    cmbn1 = combination_model(SNAIVE(Beer), TSLM(Beer ~ trend() + season())),
+    cmbn2 = (SNAIVE(Beer) + TSLM(Beer ~ trend() + season()))/2
+  )
+  
 }

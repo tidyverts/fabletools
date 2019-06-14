@@ -10,10 +10,27 @@ train_combination <- function(.data, specials, ..., cmbn_fn){
 }
 
 #' Combination modelling
+#' 
+#' Combines multiple model definitions (passed via `...`) to produce a model
+#' combination definition using some combination function (`cmbn_fn`).
+#' 
+#' A combination model can also be produced using mathematical operations.
 #'
 #' @param ... Model definitions used in the combination (such as [fable::ETS()])
 #' @param cmbn_fn A function used to produce the combination
 #' 
+#' @examples 
+#' library(fable)
+#' library(tsibble)
+#' library(tsibbledata)
+#' 
+#' # cmbn1 and cmbn2 are equivalent.
+#' aus_production %>%
+#'   model(
+#'     cmbn1 = combination_model(SNAIVE(Beer), TSLM(Beer ~ trend() + season())),
+#'     cmbn2 = (SNAIVE(Beer) + TSLM(Beer ~ trend() + season()))/2
+#'   )
+#'   
 #' @export
 combination_model <- function(..., cmbn_fn = combination_ensemble){
   mdls <- dots_list(...)
