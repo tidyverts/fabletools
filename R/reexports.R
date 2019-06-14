@@ -1,9 +1,13 @@
-#' @importFrom tsibble %>%
+#' @importFrom dplyr %>%
 #' @export
-tsibble::`%>%`
+dplyr::`%>%`
 
 #' @export
 tsibble::as_tsibble
+
+#' @importFrom dplyr vars
+#' @export
+dplyr::vars
 
 #' @importFrom ggplot2 autoplot
 #' @export
