@@ -86,7 +86,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
       out <- furrr::future_map2(
         rep(lst_data, length(models)),
         rep(models, each = length(lst_data)),
-        estimate, .progress = getOption("dplyr.show_progress", TRUE)
+        estimate, .progress = isTRUE(getOption("dplyr.show_progress")) && interactive() && is.null(getOption("knitr.in.progress"))
       )
       unname(split(out, rep(seq_len(num_mdl), each = num_key)))
     }
