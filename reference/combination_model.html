@@ -110,18 +110,23 @@ combination definition using some combination function (<code>cmbn_fn</code>).</
     
     </div>
 
-    <pre class="usage"><span class='fu'>combination_model</span>(<span class='no'>...</span>, <span class='kw'>cmbn_fn</span> <span class='kw'>=</span> <span class='no'>combination_ensemble</span>)</pre>
+    <pre class="usage"><span class='fu'>combination_model</span>(<span class='no'>...</span>, <span class='kw'>cmbn_fn</span> <span class='kw'>=</span> <span class='no'>combination_ensemble</span>,
+  <span class='kw'>cmbn_args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>...</th>
-      <td><p>Model definitions used in the combination (such as <code><a href='https://fable.tidyverts.org/reference/ETS.html'>fable::ETS()</a></code>)</p></td>
+      <td><p>Model definitions used in the combination (such as <code><a href='https://fable.tidyverts.org/reference/ETS.html'>fable::ETS()</a></code>).</p></td>
     </tr>
     <tr>
       <th>cmbn_fn</th>
-      <td><p>A function used to produce the combination</p></td>
+      <td><p>A function used to produce the combination.</p></td>
+    </tr>
+    <tr>
+      <th>cmbn_args</th>
+      <td><p>Additional arguments passed to <code>cmbn_fn</code>.</p></td>
     </tr>
     </table>
     
