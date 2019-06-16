@@ -135,15 +135,16 @@ model_sum.decomposition_model <- function(x){
 
 #' @export
 report.model_combination <- function(object, ...){
+  is_mdl_cmbn <- function(x) inherits(x, "model_combination")
   comb_expr <- traverse(
     object, .f = function(resp, comb) eval(expr(substitute(!!comb, resp))),
-    .h = function(x) if(is_model(x)) x[["response"]][[1]] else x%@%"combination",
-    base = is_model)
+    .h = function(x) if(is_model(x)) x[["response"]][[1]] else if (is_mdl_cmbn(x)) x%@%"combination" else x,
+    base = compose(`!`, is_mdl_cmbn))
   
   cmbn <- sprintf("Combination: %s", expr_text(comb_expr))
   cat(sprintf("%s\n\n%s\n\n", cmbn, strrep("=", nchar(cmbn))))
   
-  traverse(object, .h = function(x) if(is_model(x)) {report(x);cat("\n")}, base = is_model)
+  traverse(object, .h = function(x) if(is_model(x)) {report(x);cat("\n")}, base = compose(`!`, is_mdl_cmbn))
   
   invisible(object)
 }
