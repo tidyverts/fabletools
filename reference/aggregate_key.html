@@ -158,18 +158,18 @@ similar way to how <code>[dplyr::summarise()]</code> is used.</p>
 <span class='no'>tourism</span> <span class='kw'>%&gt;%</span>
   <span class='fu'>aggregate_key</span>(<span class='no'>Purpose</span> * (<span class='no'>State</span> / <span class='no'>Region</span>), <span class='kw'>Trips</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/sum'>sum</a></span>(<span class='no'>Trips</span>))</div><div class='output co'>#&gt; # A tsibble: 34,000 x 5 [1Q]
 #&gt; # Key:       Purpose, State, Region [425]
-#&gt;    Quarter Purpose  State Region   Trips
-#&gt;      &lt;qtr&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;    &lt;dbl&gt;
-#&gt;  1 1998 Q1 Business ACT   Canberra 150. 
-#&gt;  2 1998 Q2 Business ACT   Canberra  99.9
-#&gt;  3 1998 Q3 Business ACT   Canberra 130. 
-#&gt;  4 1998 Q4 Business ACT   Canberra 102. 
-#&gt;  5 1999 Q1 Business ACT   Canberra  95.5
-#&gt;  6 1999 Q2 Business ACT   Canberra 229. 
-#&gt;  7 1999 Q3 Business ACT   Canberra 109. 
-#&gt;  8 1999 Q4 Business ACT   Canberra 159. 
-#&gt;  9 2000 Q1 Business ACT   Canberra 105. 
-#&gt; 10 2000 Q2 Business ACT   Canberra 202. 
+#&gt;    Purpose State   Region  Quarter  Trips
+#&gt;    &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;qtr&gt;  &lt;dbl&gt;
+#&gt;  1 &lt;total&gt; &lt;total&gt; &lt;total&gt; 1998 Q1 23182.
+#&gt;  2 &lt;total&gt; &lt;total&gt; &lt;total&gt; 1998 Q2 20323.
+#&gt;  3 &lt;total&gt; &lt;total&gt; &lt;total&gt; 1998 Q3 19827.
+#&gt;  4 &lt;total&gt; &lt;total&gt; &lt;total&gt; 1998 Q4 20830.
+#&gt;  5 &lt;total&gt; &lt;total&gt; &lt;total&gt; 1999 Q1 22087.
+#&gt;  6 &lt;total&gt; &lt;total&gt; &lt;total&gt; 1999 Q2 21458.
+#&gt;  7 &lt;total&gt; &lt;total&gt; &lt;total&gt; 1999 Q3 19914.
+#&gt;  8 &lt;total&gt; &lt;total&gt; &lt;total&gt; 1999 Q4 20028.
+#&gt;  9 &lt;total&gt; &lt;total&gt; &lt;total&gt; 2000 Q1 22339.
+#&gt; 10 &lt;total&gt; &lt;total&gt; &lt;total&gt; 2000 Q2 19941.
 #&gt; # … with 33,990 more rows</div><div class='input'>
 </div></pre>
   </div>
