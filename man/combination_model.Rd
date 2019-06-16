@@ -4,12 +4,15 @@
 \alias{combination_model}
 \title{Combination modelling}
 \usage{
-combination_model(..., cmbn_fn = combination_ensemble)
+combination_model(..., cmbn_fn = combination_ensemble,
+  cmbn_args = list())
 }
 \arguments{
-\item{...}{Model definitions used in the combination (such as \code{\link[fable:ETS]{fable::ETS()}})}
+\item{...}{Model definitions used in the combination (such as \code{\link[fable:ETS]{fable::ETS()}}).}
 
-\item{cmbn_fn}{A function used to produce the combination}
+\item{cmbn_fn}{A function used to produce the combination.}
+
+\item{cmbn_args}{Additional arguments passed to \code{cmbn_fn}.}
 }
 \description{
 Combines multiple model definitions (passed via \code{...}) to produce a model

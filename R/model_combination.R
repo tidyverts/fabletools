@@ -1,4 +1,4 @@
-train_combination <- function(.data, specials, ..., cmbn_fn){
+train_combination <- function(.data, specials, ..., cmbn_fn, cmbn_args){
   mdls <- dots_list(...)
   
   # Estimate model definitions
@@ -6,7 +6,7 @@ train_combination <- function(.data, specials, ..., cmbn_fn){
   mdls[mdl_def] <- mdls[mdl_def] %>% 
     map(function(x) estimate(self$data, x))
   
-  do.call(cmbn_fn, mdls)
+  do.call(cmbn_fn, c(mdls, cmbn_args))
 }
 
 #' Combination modelling
@@ -16,8 +16,9 @@ train_combination <- function(.data, specials, ..., cmbn_fn){
 #' 
 #' A combination model can also be produced using mathematical operations.
 #'
-#' @param ... Model definitions used in the combination (such as [fable::ETS()])
-#' @param cmbn_fn A function used to produce the combination
+#' @param ... Model definitions used in the combination (such as [fable::ETS()]).
+#' @param cmbn_fn A function used to produce the combination.
+#' @param cmbn_args Additional arguments passed to `cmbn_fn`.
 #' 
 #' @examples 
 #' library(fable)
@@ -39,7 +40,8 @@ train_combination <- function(.data, specials, ..., cmbn_fn){
 #'     )
 #'   )
 #' @export
-combination_model <- function(..., cmbn_fn = combination_ensemble){
+combination_model <- function(..., cmbn_fn = combination_ensemble,
+                              cmbn_args = list()){
   mdls <- dots_list(...)
   if(!any(map_lgl(mdls, inherits, "mdl_defn"))){
     abort("`combination_model()` must contain at least one valid model definition.")
@@ -48,7 +50,7 @@ combination_model <- function(..., cmbn_fn = combination_ensemble){
   cmbn_model <- new_model_class("cmbn_mdl", train = train_combination, 
                                 specials = new_specials(xreg = function(...) NULL))
   new_model_definition(cmbn_model, !!quo(!!model_lhs(mdls[[1]])), ..., 
-                       cmbn_fn = cmbn_fn)
+                       cmbn_fn = cmbn_fn, cmbn_args = cmbn_args)
 }
 
 #' Ensemble combination
@@ -59,16 +61,31 @@ combination_model <- function(..., cmbn_fn = combination_ensemble){
 #' @export
 combination_ensemble <- function(..., weights = c("equal", "inv_var")){
   mdls <- dots_list(...)
+  
+  if(all(map_lgl(mdls, inherits, "mdl_defn"))){
+    return(combination_model(..., cmbn_args = list(weights = weights)))
+  }
+  
   weights <- match.arg(weights)
+  
   if(weights == "equal"){
     out <- reduce(mdls, `+`)/length(mdls)
   }
   else if(weights == "inv_var") {
-    inv_var <- map_dbl(mdls, function(x) 1/var(residuals(x)$.resid, na.rm = TRUE))
-    weights <- inv_var/sum(inv_var)
-    out <- reduce(map2(weights, mdls, `*`), `+`)
+    out <- map(transpose(mdls), function(x){
+      inv_var <- map_dbl(x, function(x) 1/var(residuals(x)$.resid, na.rm = TRUE))
+      weights <- inv_var/sum(inv_var)
+      reduce(map2(weights, x, `*`), `+`)
+    })
   }
-  out$response <- mdls[[1]]$response
+  
+  if(is_model(out)){
+    out$response <- mdls[[1]]$response
+  }
+  else{
+    out <- add_class(map(out, `[[<-`, "response", mdls[[1]][[1]]$response), 
+                     "lst_mdl")
+  }
   out
 }
 
