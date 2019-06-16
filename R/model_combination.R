@@ -24,13 +24,20 @@ train_combination <- function(.data, specials, ..., cmbn_fn){
 #' library(tsibble)
 #' library(tsibbledata)
 #' 
-#' # cmbn1 and cmbn2 are equivalent.
+#' # cmbn1 and cmbn2 are equivalent and equally weighted.
 #' aus_production %>%
 #'   model(
 #'     cmbn1 = combination_model(SNAIVE(Beer), TSLM(Beer ~ trend() + season())),
 #'     cmbn2 = (SNAIVE(Beer) + TSLM(Beer ~ trend() + season()))/2
 #'   )
-#'   
+#' 
+#' # An inverse variance weighted ensemble.
+#' aus_production %>%
+#'   model(
+#'     cmbn1 = combination_model(
+#'       SNAIVE(Beer), TSLM(Beer ~ trend() + season()), weights = "inv_var"
+#'     )
+#'   )
 #' @export
 combination_model <- function(..., cmbn_fn = combination_ensemble){
   mdls <- dots_list(...)
@@ -47,11 +54,22 @@ combination_model <- function(..., cmbn_fn = combination_ensemble){
 #' Ensemble combination
 #' 
 #' @param ... Estimated models used in the ensemble.
+#' @param weights The method used to weight each model in the ensemble.
 #' 
 #' @export
-combination_ensemble <- function(...){
+combination_ensemble <- function(..., weights = c("equal", "inv_var")){
   mdls <- dots_list(...)
-  reduce(mdls, `+`)/length(mdls)
+  weights <- match.arg(weights)
+  if(weights == "equal"){
+    out <- reduce(mdls, `+`)/length(mdls)
+  }
+  else if(weights == "inv_var") {
+    inv_var <- map_dbl(mdls, function(x) 1/var(residuals(x)$.resid, na.rm = TRUE))
+    weights <- inv_var/sum(inv_var)
+    out <- reduce(map2(weights, mdls, `*`), `+`)
+  }
+  out$response <- mdls[[1]]$response
+  out
 }
 
 new_model_combination <- function(x, combination){

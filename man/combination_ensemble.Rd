@@ -4,10 +4,12 @@
 \alias{combination_ensemble}
 \title{Ensemble combination}
 \usage{
-combination_ensemble(...)
+combination_ensemble(..., weights = c("equal", "inv_var"))
 }
 \arguments{
 \item{...}{Estimated models used in the ensemble.}
+
+\item{weights}{The method used to weight each model in the ensemble.}
 }
 \description{
 Ensemble combination

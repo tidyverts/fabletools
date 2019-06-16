@@ -23,11 +23,18 @@ library(fable)
 library(tsibble)
 library(tsibbledata)
 
-# cmbn1 and cmbn2 are equivalent.
+# cmbn1 and cmbn2 are equivalent and equally weighted.
 aus_production \%>\%
   model(
     cmbn1 = combination_model(SNAIVE(Beer), TSLM(Beer ~ trend() + season())),
     cmbn2 = (SNAIVE(Beer) + TSLM(Beer ~ trend() + season()))/2
   )
-  
+
+# An inverse variance weighted ensemble.
+aus_production \%>\%
+  model(
+    cmbn1 = combination_model(
+      SNAIVE(Beer), TSLM(Beer ~ trend() + season()), weights = "inv_var"
+    )
+  )
 }
