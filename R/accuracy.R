@@ -312,7 +312,9 @@ accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..
   # Extract training data (min key index, max grp index)
   extract_train <- function(idx, ...){
     cnds <- dots_list(...)
-    cnds <- map2(syms(names(cnds)), cnds, call2, .fn = "==")
+    cnds <- map2(syms(names(cnds)), cnds, function(x, y){
+      if(is.na(y)) expr(is.na(!!x)) else expr(!!x == !!y)
+    })
     eval_tidy(resp, data = filter(data, !!index(data) < idx, !!!cnds))
   }
   mutual_keys <- intersect(key(data), key(object))
