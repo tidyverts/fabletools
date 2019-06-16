@@ -81,15 +81,17 @@ aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){
   }))
   
   kv <- setdiff(colnames(agg_dt), c(as_string(idx), ".rows"))
-  agg_dt <- agg_dt[c(as_string(idx), kv, ".rows")]
+  agg_dt <- agg_dt[c(kv, as_string(idx), ".rows")]
   
   .data <- dplyr::new_grouped_df(.data, groups = agg_dt)
   
   # Compute aggregates
-  .data <- ungroup(summarise(.data, ...))
+  .data <- summarise(.data, ...)
+  key_dt <- group_data(group_by(.data, !!!syms(kv)))
+  .data <- ungroup(.data)
   
   # Return tsibble
-  as_tsibble(.data, key = kv, index = !!idx) %>% 
+  build_tsibble_meta(.data, key_data = key_dt, index = as_string(idx), index2 = as_string(idx), ordered = TRUE) %>% 
     mutate(!!!set_names(map(kv, function(x) expr(agg_key(!!sym(x)))), kv))
 }
 

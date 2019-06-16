@@ -5,7 +5,7 @@ test_that("reconciliation", {
     aggregate_key(key, value = sum(value))
   expect_equal(n_keys(lung_deaths_agg), 3)
   expect_equal(
-    lung_deaths_agg$value[72*2 + (1:72)], 
+    lung_deaths_agg$value[1:72], 
     lung_deaths_long$value[1:72] + lung_deaths_long$value[72 + (1:72)]
   )
   expect_output(
@@ -13,7 +13,7 @@ test_that("reconciliation", {
     "<total>"
   )
   expect_output(
-    print(tail(lung_deaths_agg)),
+    print(lung_deaths_agg),
     "<total>"
   )
   
