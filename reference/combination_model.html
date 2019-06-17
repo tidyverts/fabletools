@@ -149,7 +149,8 @@ combination definition using some combination function (<code>cmbn_fn</code>).</
 <span class='no'>aus_production</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(
     <span class='kw'>cmbn1</span> <span class='kw'>=</span> <span class='fu'>combination_model</span>(
-      <span class='fu'><a href='https://fable.tidyverts.org/reference/RW.html'>SNAIVE</a></span>(<span class='no'>Beer</span>), <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='no'>Beer</span> ~ <span class='fu'>trend</span>() + <span class='fu'>season</span>()), <span class='kw'>weights</span> <span class='kw'>=</span> <span class='st'>"inv_var"</span>
+      <span class='fu'><a href='https://fable.tidyverts.org/reference/RW.html'>SNAIVE</a></span>(<span class='no'>Beer</span>), <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='no'>Beer</span> ~ <span class='fu'>trend</span>() + <span class='fu'>season</span>()),
+      <span class='kw'>cmbn_args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>weights</span> <span class='kw'>=</span> <span class='st'>"inv_var"</span>)
     )
   )</div><div class='output co'>#&gt; <span class='error'>Error in SNAIVE(Beer): could not find function "SNAIVE"</span></div></pre>
   </div>
