@@ -36,7 +36,8 @@ train_combination <- function(.data, specials, ..., cmbn_fn, cmbn_args){
 #' aus_production %>%
 #'   model(
 #'     cmbn1 = combination_model(
-#'       SNAIVE(Beer), TSLM(Beer ~ trend() + season()), weights = "inv_var"
+#'       SNAIVE(Beer), TSLM(Beer ~ trend() + season()), 
+#'       cmbn_args = list(weights = "inv_var")
 #'     )
 #'   )
 #' @export
@@ -72,11 +73,13 @@ combination_ensemble <- function(..., weights = c("equal", "inv_var")){
     out <- reduce(mdls, `+`)/length(mdls)
   }
   else if(weights == "inv_var") {
-    out <- map(transpose(mdls), function(x){
+    out <- if(is_model(mdls[[1]])) list(mdls) else transpose(mdls)
+    out <- map(out, function(x){
       inv_var <- map_dbl(x, function(x) 1/var(residuals(x)$.resid, na.rm = TRUE))
       weights <- inv_var/sum(inv_var)
       reduce(map2(weights, x, `*`), `+`)
     })
+    if(is_model(mdls[[1]])) out <- out[[1]]
   }
   
   if(is_model(out)){

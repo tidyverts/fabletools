@@ -37,7 +37,8 @@ aus_production \%>\%
 aus_production \%>\%
   model(
     cmbn1 = combination_model(
-      SNAIVE(Beer), TSLM(Beer ~ trend() + season()), weights = "inv_var"
+      SNAIVE(Beer), TSLM(Beer ~ trend() + season()), 
+      cmbn_args = list(weights = "inv_var")
     )
   )
 }
