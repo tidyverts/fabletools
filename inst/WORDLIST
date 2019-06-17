@@ -10,6 +10,7 @@ geoms
 ggplot
 ggproto
 hilo
+hms
 horison
 JRSS
 lifecycle
