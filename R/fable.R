@@ -65,14 +65,13 @@ as_fable.tbl_df <- function(x, resp, dist, ...){
 #' @rdname as-fable
 #' @export
 as_fable.fbl_ts <- function(x, resp, dist, ...){
-  if(!missing(resp)){
-    x%@%"response" <- resp
+  if(missing(resp)){
+    resp <- x%@%"response"
   }
-  if(!missing(dist)){
-    x%@%"dist" <- enexpr(dist)
+  if(missing(dist)){
+    dist <- x%@%"dist"
   }
-  validate_fable(x)
-  x
+  as_fable(update_tsibble(x, ...), resp = resp, dist = !!enexpr(dist))
 }
 
 #' @rdname as-fable
