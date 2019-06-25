@@ -77,7 +77,7 @@ aus_economy <- global_economy \%>\%
 fit <- aus_economy \%>\% 
   model(lm = ARIMA(log(GDP) ~ Population))
 
-future_aus <- new_data(global_economy, n = 10) \%>\% 
+future_aus <- new_data(aus_economy, n = 10) \%>\% 
   mutate(Population = last(aus_economy$Population))
 
 fit \%>\% 
