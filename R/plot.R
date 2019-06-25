@@ -193,7 +193,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
   fc_resp <- object%@%"response"
   fc_key <- setdiff(key_vars(object), ".model")
-  has_keys <- anyDuplicated(key_data(object)$.model)
+  common_models <- duplicated(key_data(object)[[".model"]] %||% rep(TRUE, NROW(key_data)))
   
   aes_y <- if(length(fc_resp) > 1){
     sym("value")
@@ -221,7 +221,7 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
 
   # Change colours to be more appropriate for later facets
   fc_layer <- autolayer(object, level = level, ...)
-  if(sum(!duplicated(key_data(object)$.model)) > 1){
+  if(sum(!common_models) > 1){
     fc_layer$mapping$colour <- set_expr(fc_layer$mapping$colour, sym(".model"))
   }
   else{
@@ -240,7 +240,7 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
       facet_wrap(vars(!!!syms(c(".response", fc_key))),
                  ncol = length(fc_resp), scales = "free_y") +
       ggplot2::ylab(NULL)
-  } else if(has_keys){
+  } else if(any(common_models)){
     p <- p + facet_wrap(vars(!!!syms(fc_key)),
                         ncol = 1, scales = "free_y")
   }
@@ -259,7 +259,7 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
 autolayer.fbl_ts <- function(object, level = c(80, 95), ...){
   fc_key <- setdiff(key_vars(object), ".model")
   key_data <- key_data(object)
-  distinct_mdls <- duplicated(key_data[[".model"]])
+  common_models <- duplicated(key_data[[".model"]] %||% rep(TRUE, NROW(key_data)))
   data <- fortify(object, level = level) %>% 
     dplyr::mutate_if(~inherits(., "agg_key"), compose(trimws, format))
   if(length(object%@%"response") > 1){
@@ -288,11 +288,11 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), ...){
   if(NROW(key_data) > 1){
     useful_keys <- fc_key[map_lgl(key_data[fc_key], function(x) sum(!duplicated(x)) > 1)]
     col <- c(
-      if(sum(distinct_mdls) > 1) syms(useful_keys) else NULL,
-      if(sum(!distinct_mdls) > 1) syms(".model") else NULL
+      if(any(common_models)) syms(useful_keys) else NULL,
+      if(sum(!common_models) > 1) syms(".model") else NULL
     )
     
-    mapping$colour <- expr(interaction(!!!col, sep = "/"))
+    mapping$colour <- if(length(col)==1) col[[1]] else expr(interaction(!!!col, sep = "/"))
     grp <- c(grp, syms(".model"))
   }
   if(length(grp) > 0){
