@@ -103,6 +103,14 @@ select.mdl_df <- function (.data, ...){
 }
 
 #' @export
+rename.mdl_df <- function (.data, ...){
+  kv <- key_data(.data)
+  .data <- NextMethod()
+  mdls <- names(which(map_lgl(.data, inherits, "lst_mdl")))
+  as_mable(.data, key = kv, models = mdls)
+}
+
+#' @export
 mutate.mdl_df <- function (.data, ...){
   key <- key(.data)
   .data <- mutate(as_tibble(.data), ...)
