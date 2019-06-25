@@ -174,7 +174,7 @@ extract the numerical upper and lower bounds you can use <code><a href='https://
 <span class='no'>beer_fc</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='report.html'>report</a></span>(<span class='kw'>level</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>80</span>, <span class='fl'>95</span>))</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'beer_fc' not found</span></div><div class='input'>
 <span class='no'>beer_fc</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/autoplot'>autoplot</a></span>(<span class='no'>aus_production</span>)</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'beer_fc' not found</span></div><div class='input'>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>aus_production</span>)</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'beer_fc' not found</span></div><div class='input'>
 <span class='co'># Forecasting with a seasonal naive and ETS(A,A,A) model to the monthly </span>
 <span class='co'># "Food retailing" turnover for each Australian state/territory.</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)
@@ -185,7 +185,7 @@ extract the numerical upper and lower bounds you can use <code><a href='https://
     <span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Log'>log</a></span>(<span class='no'>Turnover</span>) ~ <span class='fu'>error</span>(<span class='st'>"A"</span>) + <span class='fu'>trend</span>(<span class='st'>"A"</span>) + <span class='fu'>season</span>(<span class='st'>"A"</span>)),
   ) <span class='kw'>%&gt;%</span>
   <span class='fu'>forecast</span>(<span class='kw'>h</span> <span class='kw'>=</span> <span class='st'>"2 years 6 months"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/autoplot'>autoplot</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>aus_retail</span>, <span class='no'>Month</span> <span class='kw'>&gt;=</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/period.html'>yearmonth</a></span>(<span class='st'>"2000 Jan"</span>)), <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>90</span>)</div><div class='output co'>#&gt; <span class='error'>Error in SNAIVE(Turnover): could not find function "SNAIVE"</span></div><div class='input'>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>aus_retail</span>, <span class='no'>Month</span> <span class='kw'>&gt;=</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/period.html'>yearmonth</a></span>(<span class='st'>"2000 Jan"</span>)), <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>90</span>)</div><div class='output co'>#&gt; <span class='error'>Error in SNAIVE(Turnover): could not find function "SNAIVE"</span></div><div class='input'>
 <span class='co'># Forecast GDP with a dynamic regression model on log(GDP) using population and</span>
 <span class='co'># an automatically chosen ARIMA error structure. Assume that population is fixed</span>
 <span class='co'># in the future.</span>
@@ -198,7 +198,7 @@ extract the numerical upper and lower bounds you can use <code><a href='https://
 
 <span class='no'>fit</span> <span class='kw'>%&gt;%</span>
   <span class='fu'>forecast</span>(<span class='kw'>new_data</span> <span class='kw'>=</span> <span class='no'>future_aus</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/autoplot'>autoplot</a></span>(<span class='no'>aus_economy</span>)</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'fit' not found</span></div><div class='input'>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>aus_economy</span>)</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'fit' not found</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

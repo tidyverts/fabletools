@@ -142,7 +142,7 @@ and see the way in which components are combined to give forecasts.</p>
 <span class='no'>aus_production</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Log'>log</a></span>(<span class='no'>Beer</span>) ~ <span class='fu'>error</span>(<span class='st'>"M"</span>) + <span class='fu'>trend</span>(<span class='st'>"Ad"</span>) + <span class='fu'>season</span>(<span class='st'>"A"</span>))) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://www.rdocumentation.org/packages/generics/topics/components'>components</a></span>() <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/autoplot'>autoplot</a></span>()</div><div class='output co'>#&gt; <span class='error'>Error in ETS(log(Beer) ~ error("M") + trend("Ad") + season("A")): could not find function "ETS"</span></div><div class='input'>  
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>()</div><div class='output co'>#&gt; <span class='error'>Error in ETS(log(Beer) ~ error("M") + trend("Ad") + season("A")): could not find function "ETS"</span></div><div class='input'>  
 
 </div></pre>
   </div>

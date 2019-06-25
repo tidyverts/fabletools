@@ -162,7 +162,7 @@ method, giving a combination model for the response of the decomposition.</p>
 <span class='co'># Identify an appropriate decomposition</span>
 <span class='no'>vic_food</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://feasts.tidyverts.org/reference/STL.html'>STL</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Log'>log</a></span>(<span class='no'>Turnover</span>) ~ <span class='fu'>season</span>(<span class='kw'>window</span> <span class='kw'>=</span> <span class='fl'>Inf</span>)) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/autoplot'>autoplot</a></span>()</div><div class='output co'>#&gt; <span class='error'>Error in STL(., log(Turnover) ~ season(window = Inf)): could not find function "STL"</span></div><div class='input'>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>()</div><div class='output co'>#&gt; <span class='error'>Error in STL(., log(Turnover) ~ season(window = Inf)): could not find function "STL"</span></div><div class='input'>
 <span class='co'># Use an ARIMA model to seasonally adjusted data, and SNAIVE to season_year</span>
 <span class='co'># Any model can be used, and seasonal components will default to use SNAIVE.</span>
 <span class='no'>my_dcmp_spec</span> <span class='kw'>&lt;-</span> <span class='fu'>decomposition_model</span>(
@@ -172,7 +172,7 @@ method, giving a combination model for the response of the decomposition.</p>
 <span class='no'>vic_food</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='no'>my_dcmp_spec</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='forecast.html'>forecast</a></span>(<span class='kw'>h</span><span class='kw'>=</span><span class='st'>"5 years"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/autoplot'>autoplot</a></span>(<span class='no'>vic_food</span>)</div><div class='output co'>#&gt; <span class='error'>Error in dots_list(...): object 'my_dcmp_spec' not found</span></div><div class='input'>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>vic_food</span>)</div><div class='output co'>#&gt; <span class='error'>Error in dots_list(...): object 'my_dcmp_spec' not found</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
