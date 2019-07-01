@@ -322,9 +322,9 @@ accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..
   mutual_keys <- set_names(mutual_keys, map_chr(mutual_keys, as_string))
   .train <- as_tibble(object) %>% 
     group_by(!!!key(object), !!!grp) %>% 
-    filter(row_number() == which.min(!!index(object))) %>% 
+    filter(dplyr::row_number() == which.min(!!index(object))) %>% 
     group_by(!!!grp) %>% 
-    filter(row_number() == which.max(!!index(object))) %>% 
+    filter(dplyr::row_number() == which.max(!!index(object))) %>% 
     transmute(.train = pmap(list2(!!index(object), !!!mutual_keys), extract_train))
   aug <- left_join(aug, .train, by = map_chr(grp, as_string))
 
