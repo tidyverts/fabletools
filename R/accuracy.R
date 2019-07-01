@@ -262,6 +262,10 @@ accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..
   resp <- object%@%"response"
   dist <- object%@%"dist"
   
+  if(is.null(by)){
+    by <- intersect(c(".model", ".response", key_vars(data)), colnames(object))
+  }
+  
   if(length(resp) > 1){
     object <- as_tsibble(object) %>% 
       # select(!!expr(-!!attr(object, "dist"))) %>% 
@@ -273,10 +277,6 @@ accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..
   }
   else{
     resp <- resp[[1]]
-  }
-  
-  if(is.null(by)){
-    by <- intersect(c(".model", ".response", key_vars(data)), colnames(object))
   }
   
   grp <- c(syms(by), groups(object))
