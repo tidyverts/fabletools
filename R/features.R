@@ -17,10 +17,13 @@ features_impl <- function(.tbl, .var, features, ...){
       fmls <- formals(fn)[-1]
       fn_safe <- possibly(fn, tibble(.rows = 1))
       tbl <- invoke(dplyr::bind_rows, map(key_dt[[".rows"]], function(i){
-        do.call(fn_safe, c(list(x[i]), dots[intersect(names(fmls), names(dots))]))
+        out <- do.call(fn_safe, c(list(x[i]), dots[intersect(names(fmls), names(dots))]))
+        if(is.null(names(out))) names(out) <- rep(".?", length(out))
+        out
       }))
+      names(tbl)[names(tbl) == ".?"] <- ""
       if(is.character(nm) && nzchar(nm)){
-        tbl <- set_names(tbl, sprintf("%s_%s", nm, colnames(tbl)))
+        names(tbl) <- sprintf("%s%s%s", nm, ifelse(nzchar(names(tbl)), "_", ""), names(tbl))
       }
       tbl
     })

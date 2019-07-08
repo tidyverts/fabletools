@@ -19,6 +19,10 @@ test_that("features()", {
   ) %>%
     colnames() %>%
     expect_equal(c("first", "last"))
+  
+  features(lung_deaths_wide, mdeaths, features = list(a = mean, b = min, max)) %>% 
+    colnames() %>% 
+    expect_equal(c("a", "b", "V1"))
 })
 
 test_that("Scoped variants of features()", {
