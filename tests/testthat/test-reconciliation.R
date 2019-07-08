@@ -45,8 +45,8 @@ test_that("reconciliation", {
     "experimental"
   )
   expect_equal(
-    fc_agg_reconciled$value[1:24],
-    fc_agg_reconciled$value[24 + (1:24)] + fc_agg_reconciled$value[48 + (1:24)],
+    fc_agg_reconciled$value[48 + (1:24)],
+    fc_agg_reconciled$value[(1:24)] + fc_agg_reconciled$value[24 + (1:24)],
   )
   expect_failure(
     expect_equal(
@@ -60,8 +60,8 @@ test_that("reconciliation", {
     "experimental"
   )
   expect_equal(
-    fc_agg_reconciled$value[1:24],
-    fc_agg_reconciled$value[24 + (1:24)] + fc_agg_reconciled$value[48 + (1:24)],
+    fc_agg_reconciled$value[48 + (1:24)],
+    fc_agg_reconciled$value[(1:24)] + fc_agg_reconciled$value[24 + (1:24)],
   )
   expect_failure(
     expect_equal(
@@ -75,8 +75,8 @@ test_that("reconciliation", {
     "experimental"
   )
   expect_equal(
-    fc_agg_reconciled$value[1:24],
-    fc_agg_reconciled$value[24 + (1:24)] + fc_agg_reconciled$value[48 + (1:24)],
+    fc_agg_reconciled$value[48 + (1:24)],
+    fc_agg_reconciled$value[(1:24)] + fc_agg_reconciled$value[24 + (1:24)],
   )
   expect_failure(
     expect_equal(
@@ -90,8 +90,8 @@ test_that("reconciliation", {
     "experimental"
   )
   expect_equal(
-    fc_agg_reconciled$value[1:24],
-    fc_agg_reconciled$value[24 + (1:24)] + fc_agg_reconciled$value[48 + (1:24)],
+    fc_agg_reconciled$value[48 + (1:24)],
+    fc_agg_reconciled$value[(1:24)] + fc_agg_reconciled$value[24 + (1:24)],
   )
   expect_failure(
     expect_equal(
