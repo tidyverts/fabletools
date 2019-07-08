@@ -13,4 +13,18 @@ register_feature(fn, tags)
 }
 \description{
 Allows users to find and use features from your package using \code{\link[=feature_set]{feature_set()}}.
+If the features are being registered from within a package, this feature
+registration should happen at load time using \code{[.onLoad()]}.
+}
+\examples{
+
+\dontrun{
+tukey_five <- function(x){
+  setNames(fivenum(x), c("min", "hinge_lwr", "med", "hinge_upr", "max"))
+}
+
+register_feature(tukey_five, tags = c("boxplot", "simple"))
+
+}
+
 }

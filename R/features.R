@@ -143,9 +143,22 @@ feature_table <- feature_table()
 #' Register a feature function
 #' 
 #' Allows users to find and use features from your package using [`feature_set()`].
+#' If the features are being registered from within a package, this feature
+#' registration should happen at load time using `[.onLoad()]`.
 #' 
 #' @param fn The feature function
 #' @param tags Identifying tags
+#' 
+#' @examples 
+#' 
+#' \dontrun{
+#' tukey_five <- function(x){
+#'   setNames(fivenum(x), c("min", "hinge_lwr", "med", "hinge_upr", "max"))
+#' }
+#' 
+#' register_feature(tukey_five, tags = c("boxplot", "simple"))
+#' 
+#' }
 #' 
 #' @export
 register_feature <- function(fn, tags){
@@ -165,6 +178,13 @@ register_feature <- function(fn, tags){
 #' all registered features from currently loaded packages will be searched.
 #' @param tags Tags used to identify similar groups of features. If `NULL`,
 #' all tags will be included.
+#' 
+#' @section Registering features:
+#' Features can be registered for use with the `feature_set()` function using
+#' [`register_feature()`]. This function allows you to register a feature along
+#' with the tags associated with it. If the features are being registered from
+#' within a package, this feature registration should happen at load time using
+#' `[.onLoad()]`.
 #' 
 #' @export
 feature_set <- function(pkgs = NULL, tags = NULL){
