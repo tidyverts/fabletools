@@ -133,13 +133,24 @@ all tags will be included.</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="registering-features"><a class="anchor" href="#registering-features"></a>Registering features</h2>
+
+    
+    <p>Features can be registered for use with the <code>feature_set()</code> function using
+<code><a href='register_feature.html'>register_feature()</a></code>. This function allows you to register a feature along
+with the tags associated with it. If the features are being registered from
+within a package, this feature registration should happen at load time using
+<code>[.onLoad()]</code>.</p>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#registering-features">Registering features</a></li>
+          </ul>
 
   </div>
 </div>
