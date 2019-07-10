@@ -11,9 +11,7 @@ install:
   - ps: Bootstrap
   - cmd: R -q -e "writeLines('options(repos = \'https://cloud.r-project.org\')', '~/.Rprofile')"
   - cmd: R -q -e "getOption('repos')"
-  - cmd: R -q -e "if (!requireNamespace('remotes')) install.packages('remotes')"
-  - cmd: R -q -e "if (getRversion() < '3.2' && !requireNamespace('curl')) install.packages('curl')"
-  - cmd: R -q -e "remotes::install_cran('tic', type = 'binary', upgrade = 'always'); print(tic::dsl_load()); tic::prepare_all_stages()"
+  - cmd: R -q -e "install.packages('remotes'); remotes::install_github('ropenscilabs/tic'); tic::prepare_all_stages()"
 
 cache:
 - C:\RLibrary
@@ -36,15 +34,9 @@ on_finish: R -q -e "tic::after_script()"
 #  - 7z a failure.zip *.Rcheck\*
 #  - appveyor PushArtifact failure.zip
 
-environment:
-  # R_QPDF=true makes sure that R CMD check doesn't complain
-  # about a missing qpdf executable
-  R_QPDF: "true"
-  # The example below will not work for your repository,
-  # you need to encrypt your own token.
-  # Please follow https://ci.appveyor.com/tools/encrypt .
-  #GITHUB_PAT:
-  #  secure: VXO22OHLkl4YhVIomSMwCZyOTx03Xf2WICaVng9xH7gISlAg8a+qrt1DtFtk8sK5
+#environment:
+#  GITHUB_PAT:
+#    secure: VXO22OHLkl4YhVIomSMwCZyOTx03Xf2WICaVng9xH7gISlAg8a+qrt1DtFtk8sK5
 
 artifacts:
   - path: '*.Rcheck\**\*.log'
