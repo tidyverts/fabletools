@@ -199,7 +199,7 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
     sym("value")
   }
   else{
-    sym(expr_text(fc_resp[[1]]))
+    fc_resp[[1]]
   }
 
   if (!is.null(data)){
