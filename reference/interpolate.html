@@ -140,17 +140,17 @@
 <span class='no'>olympic_running</span></div><div class='output co'>#&gt; # A tsibble: 312 x 4 [4Y]
 #&gt; # Key:       Length, Sex [14]
 #&gt;     Year Length Sex    Time
-#&gt;    &lt;dbl&gt; &lt;fct&gt;  &lt;chr&gt; &lt;dbl&gt;
-#&gt;  1  1896 100m   men    12  
-#&gt;  2  1900 100m   men    11  
-#&gt;  3  1904 100m   men    11  
-#&gt;  4  1908 100m   men    10.8
-#&gt;  5  1912 100m   men    10.8
-#&gt;  6  1916 100m   men    NA  
-#&gt;  7  1920 100m   men    10.8
-#&gt;  8  1924 100m   men    10.6
-#&gt;  9  1928 100m   men    10.8
-#&gt; 10  1932 100m   men    10.3
+#&gt;    &lt;int&gt;  &lt;int&gt; &lt;chr&gt; &lt;dbl&gt;
+#&gt;  1  1896    100 men    12  
+#&gt;  2  1900    100 men    11  
+#&gt;  3  1904    100 men    11  
+#&gt;  4  1908    100 men    10.8
+#&gt;  5  1912    100 men    10.8
+#&gt;  6  1916    100 men    NA  
+#&gt;  7  1920    100 men    10.8
+#&gt;  8  1924    100 men    10.6
+#&gt;  9  1928    100 men    10.8
+#&gt; 10  1932    100 men    10.3
 #&gt; # … with 302 more rows</div><div class='input'>
 <span class='no'>olympic_running</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='no'>Time</span> ~ <span class='fu'>trend</span>())) <span class='kw'>%&gt;%</span>
