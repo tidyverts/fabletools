@@ -10,3 +10,4 @@ Makefile
 ^pkgdown$
 ^tic\.R$
 ^appveyor\.yml$
+^cran-comments\.md$
