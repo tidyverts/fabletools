@@ -9,7 +9,8 @@ fable(..., resp, dist)
 \arguments{
 \item{...}{Arguments passed to \code{\link[tsibble:tsibble]{tsibble::tsibble()}}.}
 
-\item{resp}{The response variable (a list of expressions).}
+\item{resp}{The response variable(s). A single response can be specified
+directly via \code{resp = y}, multiple responses should be use \code{resp = c(y, z)}.}
 
 \item{dist}{The distribution variable (given as a bare or unquoted variable).}
 }

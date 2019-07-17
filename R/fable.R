@@ -7,13 +7,14 @@
 #' column (`fcdist`).
 #'
 #' @param ... Arguments passed to [tsibble::tsibble()].
-#' @param resp The response variable (a list of expressions).
+#' @param resp The response variable(s). A single response can be specified
+#' directly via `resp = y`, multiple responses should be use `resp = c(y, z)`.
 #' @param dist The distribution variable (given as a bare or unquoted variable).
 #'
 #' @export
 fable <- function(..., resp, dist){
   tsbl <- tsibble(...)
-  as_fable(tsbl, resp, !!enquo(dist))
+  as_fable(tsbl, !!enquo(resp), !!enquo(dist))
 }
 
 #' Is the object a fable
@@ -40,6 +41,18 @@ as_fable <- function(x, ...){
 #' @rdname as-fable
 #' @export
 as_fable.tbl_ts <- function(x, resp, dist, ...){
+  resp <- enquo(resp)
+  if(quo_is_call(resp) && call_name(resp) == "c"){
+    resp[[1]] <- rlang::exprs
+    resp <- eval_tidy(resp)
+  }
+  else if(possibly(compose(is.list, eval_tidy), FALSE)(resp)){
+    resp <- eval_tidy(resp)
+  }
+  else{
+    resp <- list(get_expr(resp))
+  }
+
   fbl <- new_tsibble(x, class = "fbl_ts",
                      response = resp, dist = enexpr(dist))
   validate_fable(fbl)
@@ -51,7 +64,7 @@ as_fable.tbl_ts <- function(x, resp, dist, ...){
 as_fable.grouped_ts <- function(x, resp, dist, ...){
   fbl <- structure(x, class = c("grouped_fbl", "grouped_ts", "grouped_df", 
                                 "fbl_ts", "tbl_ts", "tbl_df", "tbl", "data.frame"),
-                   response = resp, dist = enexpr(dist))
+                   response = !!enquo(resp), dist = enexpr(dist))
   validate_fable(fbl)
   fbl
 }
@@ -59,7 +72,7 @@ as_fable.grouped_ts <- function(x, resp, dist, ...){
 #' @rdname as-fable
 #' @export
 as_fable.tbl_df <- function(x, resp, dist, ...){
-  as_fable(as_tsibble(x, ...), resp = resp, dist = !!enexpr(dist))
+  as_fable(as_tsibble(x, ...), resp = !!enquo(resp), dist = !!enexpr(dist))
 }
 
 #' @rdname as-fable
@@ -71,7 +84,7 @@ as_fable.fbl_ts <- function(x, resp, dist, ...){
   if(missing(dist)){
     dist <- x%@%"dist"
   }
-  as_fable(update_tsibble(x, ...), resp = resp, dist = !!enexpr(dist))
+  as_fable(update_tsibble(x, ...), resp = !!enquo(resp), dist = !!enexpr(dist))
 }
 
 #' @rdname as-fable
