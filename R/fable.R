@@ -62,9 +62,21 @@ as_fable.tbl_ts <- function(x, resp, dist, ...){
 #' @rdname as-fable
 #' @export
 as_fable.grouped_ts <- function(x, resp, dist, ...){
+  resp <- enquo(resp)
+  if(quo_is_call(resp) && call_name(resp) == "c"){
+    resp[[1]] <- rlang::exprs
+    resp <- eval_tidy(resp)
+  }
+  else if(possibly(compose(is.list, eval_tidy), FALSE)(resp)){
+    resp <- eval_tidy(resp)
+  }
+  else{
+    resp <- list(get_expr(resp))
+  }
+  
   fbl <- structure(x, class = c("grouped_fbl", "grouped_ts", "grouped_df", 
                                 "fbl_ts", "tbl_ts", "tbl_df", "tbl", "data.frame"),
-                   response = !!enquo(resp), dist = enexpr(dist))
+                   response = resp, dist = enexpr(dist))
   validate_fable(fbl)
   fbl
 }
