@@ -4,13 +4,14 @@
 \alias{dable}
 \title{Create a dable object}
 \usage{
-dable(..., resp, method = NULL, seasons = list(), aliases = list())
+dable(..., response, method = NULL, seasons = list(),
+  aliases = list())
 }
 \arguments{
 \item{...}{Arguments passed to \code{\link[tsibble:tsibble]{tsibble::tsibble()}}.}
 
-\item{resp}{The response variable(s). A single response can be specified
-directly via \code{resp = y}, multiple responses should be use \code{resp = c(y, z)}.}
+\item{response}{The response variable(s). A single response can be specified
+directly via \code{response = y}, multiple responses should be use \code{response = c(y, z)}.}
 
 \item{method}{The name of the decomposition method.}
 

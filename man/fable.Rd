@@ -4,15 +4,15 @@
 \alias{fable}
 \title{Create a fable object}
 \usage{
-fable(..., resp, dist)
+fable(..., response, distribution)
 }
 \arguments{
 \item{...}{Arguments passed to \code{\link[tsibble:tsibble]{tsibble::tsibble()}}.}
 
-\item{resp}{The response variable(s). A single response can be specified
-directly via \code{resp = y}, multiple responses should be use \code{resp = c(y, z)}.}
+\item{response}{The response variable(s). A single response can be specified
+directly via \code{response = y}, multiple responses should be use \code{response = c(y, z)}.}
 
-\item{dist}{The distribution variable (given as a bare or unquoted variable).}
+\item{distribution}{The distribution variable (given as a bare or unquoted variable).}
 }
 \description{
 A fable (forecast table) data class (\code{fbl_ts}) which is a tsibble-like data

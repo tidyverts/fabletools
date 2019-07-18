@@ -11,25 +11,25 @@
 \usage{
 as_fable(x, ...)
 
-\method{as_fable}{tbl_ts}(x, resp, dist, ...)
+\method{as_fable}{tbl_ts}(x, response, distribution, ...)
 
-\method{as_fable}{grouped_ts}(x, resp, dist, ...)
+\method{as_fable}{grouped_ts}(x, response, distribution, ...)
 
-\method{as_fable}{tbl_df}(x, resp, dist, ...)
+\method{as_fable}{tbl_df}(x, response, distribution, ...)
 
-\method{as_fable}{fbl_ts}(x, resp, dist, ...)
+\method{as_fable}{fbl_ts}(x, response, distribution, ...)
 
-\method{as_fable}{grouped_df}(x, resp, dist, ...)
+\method{as_fable}{grouped_df}(x, response, distribution, ...)
 }
 \arguments{
 \item{x}{Object to be coerced to a fable (\code{fbl_ts})}
 
 \item{...}{Additional arguments passed to methods}
 
-\item{resp}{The response variable(s). A single response can be specified
-directly via \code{resp = y}, multiple responses should be use \code{resp = c(y, z)}.}
+\item{response}{The response variable(s). A single response can be specified
+directly via \code{response = y}, multiple responses should be use \code{response = c(y, z)}.}
 
-\item{dist}{The distribution variable (given as a bare or unquoted variable).}
+\item{distribution}{The distribution variable (given as a bare or unquoted variable).}
 }
 \description{
 Coerce to a fable object

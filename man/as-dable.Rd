@@ -8,10 +8,10 @@
 \usage{
 as_dable(x, ...)
 
-\method{as_dable}{tbl_df}(x, resp, method = NULL, seasons = list(),
+\method{as_dable}{tbl_df}(x, response, method = NULL, seasons = list(),
   aliases = list(), ...)
 
-\method{as_dable}{tbl_ts}(x, resp, method = NULL, seasons = list(),
+\method{as_dable}{tbl_ts}(x, response, method = NULL, seasons = list(),
   aliases = list(), ...)
 }
 \arguments{
@@ -19,8 +19,8 @@ as_dable(x, ...)
 
 \item{...}{Additional arguments passed to methods}
 
-\item{resp}{The response variable(s). A single response can be specified
-directly via \code{resp = y}, multiple responses should be use \code{resp = c(y, z)}.}
+\item{response}{The response variable(s). A single response can be specified
+directly via \code{response = y}, multiple responses should be use \code{response = c(y, z)}.}
 
 \item{method}{The name of the decomposition method.}
 

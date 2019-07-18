@@ -7,14 +7,14 @@
 #' column (`fcdist`).
 #'
 #' @param ... Arguments passed to [tsibble::tsibble()].
-#' @param resp The response variable(s). A single response can be specified
-#' directly via `resp = y`, multiple responses should be use `resp = c(y, z)`.
-#' @param dist The distribution variable (given as a bare or unquoted variable).
+#' @param response The response variable(s). A single response can be specified
+#' directly via `response = y`, multiple responses should be use `response = c(y, z)`.
+#' @param distribution The distribution variable (given as a bare or unquoted variable).
 #'
 #' @export
-fable <- function(..., resp, dist){
+fable <- function(..., response, distribution){
   tsbl <- tsibble(...)
-  as_fable(tsbl, !!enquo(resp), !!enquo(dist))
+  as_fable(tsbl, !!enquo(response), !!enquo(distribution))
 }
 
 #' Is the object a fable
@@ -40,63 +40,65 @@ as_fable <- function(x, ...){
 
 #' @rdname as-fable
 #' @export
-as_fable.tbl_ts <- function(x, resp, dist, ...){
-  resp <- enquo(resp)
-  if(quo_is_call(resp) && call_name(resp) == "c"){
-    resp[[1]] <- rlang::exprs
-    resp <- eval_tidy(resp)
+as_fable.tbl_ts <- function(x, response, distribution, ...){
+  response <- enquo(response)
+  if(quo_is_call(response) && call_name(response) == "c"){
+    response[[1]] <- rlang::exprs
+    response <- eval_tidy(response)
   }
-  else if(possibly(compose(is.list, eval_tidy), FALSE)(resp)){
-    resp <- eval_tidy(resp)
+  else if(possibly(compose(is.list, eval_tidy), FALSE)(response)){
+    response <- eval_tidy(response)
   }
   else{
-    resp <- list(get_expr(resp))
+    response <- list(get_expr(response))
   }
 
   fbl <- new_tsibble(x, class = "fbl_ts",
-                     response = resp, dist = enexpr(dist))
+                     response = response, dist = enexpr(distribution))
   validate_fable(fbl)
   fbl
 }
 
 #' @rdname as-fable
 #' @export
-as_fable.grouped_ts <- function(x, resp, dist, ...){
-  resp <- enquo(resp)
-  if(quo_is_call(resp) && call_name(resp) == "c"){
-    resp[[1]] <- rlang::exprs
-    resp <- eval_tidy(resp)
+as_fable.grouped_ts <- function(x, response, distribution, ...){
+  response <- enquo(response)
+  if(quo_is_call(response) && call_name(response) == "c"){
+    response[[1]] <- rlang::exprs
+    response <- eval_tidy(response)
   }
-  else if(possibly(compose(is.list, eval_tidy), FALSE)(resp)){
-    resp <- eval_tidy(resp)
+  else if(possibly(compose(is.list, eval_tidy), FALSE)(response)){
+    response <- eval_tidy(response)
   }
   else{
-    resp <- list(get_expr(resp))
+    response <- list(get_expr(response))
   }
   
   fbl <- structure(x, class = c("grouped_fbl", "grouped_ts", "grouped_df", 
                                 "fbl_ts", "tbl_ts", "tbl_df", "tbl", "data.frame"),
-                   response = resp, dist = enexpr(dist))
+                   response = response, dist = enexpr(distribution))
   validate_fable(fbl)
   fbl
 }
 
 #' @rdname as-fable
 #' @export
-as_fable.tbl_df <- function(x, resp, dist, ...){
-  as_fable(as_tsibble(x, ...), resp = !!enquo(resp), dist = !!enexpr(dist))
+as_fable.tbl_df <- function(x, response, distribution, ...){
+  as_fable(as_tsibble(x, ...), response = !!enquo(response),
+           distribution = !!enexpr(distribution))
 }
 
 #' @rdname as-fable
 #' @export
-as_fable.fbl_ts <- function(x, resp, dist, ...){
-  if(missing(resp)){
-    resp <- x%@%"response"
+as_fable.fbl_ts <- function(x, response, distribution, ...){
+  if(missing(response)){
+    response <- x%@%"response"
   }
-  if(missing(dist)){
-    dist <- x%@%"dist"
+  if(missing(distribution)){
+    distribution <- x%@%"dist"
   }
-  as_fable(update_tsibble(x, ...), resp = !!enquo(resp), dist = !!enexpr(dist))
+  as_fable(update_tsibble(x, ...), response = !!enquo(response),
+           distribution = !!enexpr(distribution))
 }
 
 #' @rdname as-fable
@@ -111,7 +113,7 @@ as_tsibble.fbl_ts <- function(x, ...){
 #' @export
 as_tsibble.grouped_fbl <- function(x, ...){
   structure(x, class=setdiff(class(x), c("grouped_fbl", "fbl_ts")),
-            resp = NULL, dist = NULL)
+            response = NULL, dist = NULL)
 }
 
 validate_fable <- function(fbl){

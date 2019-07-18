@@ -16,9 +16,9 @@
 #' components.
 #'
 #' @export
-dable <- function(..., resp, method = NULL, seasons = list(), aliases = list()){
+dable <- function(..., response, method = NULL, seasons = list(), aliases = list()){
   tsbl <- tsibble(...)
-  as_dable(tsbl, !!enexpr(resp), method = method, seasons = seasons, aliases = aliases)
+  as_dable(tsbl, !!enexpr(response), method = method, seasons = seasons, aliases = aliases)
 }
 
 #' Coerce to a dable object
@@ -34,8 +34,8 @@ as_dable <- function(x, ...){
 
 #' @rdname as-dable
 #' @export
-as_dable.tbl_df <- function(x, resp, method = NULL, seasons = list(), aliases = list(), ...){
-  as_dable(as_tsibble(x, ...), resp = !!enexpr(resp), method = method,
+as_dable.tbl_df <- function(x, response, method = NULL, seasons = list(), aliases = list(), ...){
+  as_dable(as_tsibble(x, ...), response = !!enexpr(response), method = method,
            seasons = seasons, aliases = aliases)
 }
 
@@ -44,8 +44,8 @@ as_dable.tbl_df <- function(x, resp, method = NULL, seasons = list(), aliases = 
 #' @inheritParams dable
 #' 
 #' @export
-as_dable.tbl_ts <- function(x, resp, method = NULL, seasons = list(), aliases = list(), ...){
-  new_tsibble(x, method = method, resp = enexpr(resp), 
+as_dable.tbl_ts <- function(x, response, method = NULL, seasons = list(), aliases = list(), ...){
+  new_tsibble(x, method = method, resp = enexpr(response), 
               seasons = seasons, aliases = aliases, class = "dcmp_ts")
 }
 
@@ -70,7 +70,7 @@ rbind.dcmp_ts <- function(...){
   attrs <- combine_dcmp_attr(dots)
   
   as_dable(invoke("rbind", map(dots, as_tsibble)), 
-           method = attrs[["method"]], resp = !!attrs[["response"]], 
+           method = attrs[["method"]], response = !!attrs[["response"]], 
            seasons = attrs[["seasons"]], aliases = attrs[["aliases"]])
 }
 
