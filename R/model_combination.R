@@ -12,7 +12,9 @@ train_combination <- function(.data, specials, ..., cmbn_fn, cmbn_args){
 #' Combination modelling
 #' 
 #' Combines multiple model definitions (passed via `...`) to produce a model
-#' combination definition using some combination function (`cmbn_fn`).
+#' combination definition using some combination function (`cmbn_fn`). Currently
+#' distributional forecasts are only supported for models producing normally
+#' distributed forecasts.
 #' 
 #' A combination model can also be produced using mathematical operations.
 #'
@@ -244,7 +246,14 @@ forecast.model_combination <- function(object, new_data, specials, ...){
   if(all(mdls)){
     fc_sd <- object %>% 
       map(`[[`, expr_text(attr(object[[1]],"dist"))) %>% 
-      map(function(x) map_dbl(x, `[[`, "sd")) %>% 
+      map(function(x){
+        if(is_dist_normal(x)){
+          map_dbl(x, `[[`, "sd")
+        }
+        else{
+          rep(0, length(x))
+        }
+      }) %>% 
       transpose_dbl()
     fc_cov <- suppressWarnings(stats::cov2cor(fc_cov))
     fc_cov[!is.finite(fc_cov)] <- 0 # In case of perfect forecasts

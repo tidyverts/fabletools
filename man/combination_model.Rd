@@ -16,7 +16,9 @@ combination_model(..., cmbn_fn = combination_ensemble,
 }
 \description{
 Combines multiple model definitions (passed via \code{...}) to produce a model
-combination definition using some combination function (\code{cmbn_fn}).
+combination definition using some combination function (\code{cmbn_fn}). Currently
+distributional forecasts are only supported for models producing normally
+distributed forecasts.
 }
 \details{
 A combination model can also be produced using mathematical operations.
