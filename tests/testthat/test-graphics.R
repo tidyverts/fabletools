@@ -20,7 +20,8 @@ test_that("autoplot.tbl_ts()", {
     list(x = "index [1M]", y = "value")
   )
   
-  p <- autoplot(us_deaths, log(value))
+  lambda <- 0
+  p <- autoplot(us_deaths, box_cox(value, lambda))
   expect_silent(print(p))
   
   expect_equal(
@@ -32,7 +33,7 @@ test_that("autoplot.tbl_ts()", {
   
   expect_identical(
     p_built$plot$labels[c("x", "y")],
-    list(x = "index [1M]", y = "log(value)")
+    list(x = "index [1M]", y = "box_cox(value, lambda)")
   )
   
   p <- autoplot(lung_deaths_long, value)
@@ -113,7 +114,8 @@ test_that("autolayer.tbl_ts()", {
     list(x = "index", y = "value")
   )
   
-  p <- ggplot() + autolayer(us_deaths, log(value))
+  lambda <- 0
+  p <- ggplot() + autolayer(us_deaths, box_cox(value, lambda))
   expect_silent(print(p))
   expect_equal(
     ggplot2::layer_data(p)$y,
@@ -124,7 +126,7 @@ test_that("autolayer.tbl_ts()", {
   
   expect_identical(
     p_built$plot$labels[c("x", "y")],
-    list(x = "index", y = "log(value)")
+    list(x = "index", y = "box_cox(value, lambda)")
   )
   
   p <- ggplot() + autolayer(lung_deaths_long, value)

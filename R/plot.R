@@ -44,8 +44,8 @@ autoplot.tbl_ts <- function(object, .vars = NULL, ...){
     y <- sym("value")
   }
   else{
-    y <- get_expr(quo_vars)
-    .vars <- as_quosures(list(y), env = empty_env())
+    y <- quo_vars
+    .vars <- list(y)
   }
   
   aes_spec <- list(x = index(object), y = y)
@@ -100,8 +100,8 @@ autolayer.tbl_ts <- function(object, .vars = NULL, ...){
     y <- sym("value")
   }
   else{
-    y <- get_expr(quo_vars)
-    .vars <- as_quosures(list(y), env = empty_env())
+    y <- quo_vars
+    .vars <- list(y)
   }
   
   aes_spec <- list(x = index(object), y = y)
