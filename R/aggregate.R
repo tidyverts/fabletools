@@ -183,6 +183,11 @@ format.agg_key <- function(x, ..., na_chr = "<total>"){
   agg_key(NextMethod())
 }
 
+#' @export
+unique.agg_key <- function(x, incomparables = FALSE, ...){
+  agg_key(NextMethod())
+}
+
 pillar_shaft.agg_key <- function(x, ...) {
   if(requireNamespace("crayon")){
     na_chr <- crayon::style("<total>", crayon::make_style("#999999", grey = TRUE))
