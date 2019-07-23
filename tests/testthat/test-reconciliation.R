@@ -10,11 +10,11 @@ test_that("reconciliation", {
   )
   expect_output(
     print(lung_deaths_agg$key),
-    "<total>"
+    "<aggregated>"
   )
   expect_output(
     print(lung_deaths_agg),
-    "<total>"
+    "<aggregated>"
   )
   
   fit_agg <- lung_deaths_agg %>% 
