@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute hilo intervals — hilo • fablelite</title>
+<title>Compute hilo intervals — hilo.fbl_ts • fablelite</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,10 +30,10 @@
 
 
 
-<meta property="og:title" content="Compute hilo intervals — hilo" />
+<meta property="og:title" content="Compute hilo intervals — hilo.fbl_ts" />
 
 <meta property="og:description" content="Used to extract a specified prediction interval at a particular confidence
-level from a distribution." />
+level from a distribution or fable." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -106,11 +106,14 @@ level from a distribution." />
     <div class="ref-description">
     
     <p>Used to extract a specified prediction interval at a particular confidence
-level from a distribution.</p>
+level from a distribution or fable.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>hilo</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='co'># S3 method for fbl_ts</span>
+<span class='fu'>hilo</span>(<span class='no'>x</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>80</span>, <span class='fl'>95</span>), <span class='no'>...</span>)
+
+<span class='fu'>hilo</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for fcdist</span>
 <span class='fu'>hilo</span>(<span class='no'>x</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>95</span>, <span class='no'>...</span>)</pre>
@@ -123,12 +126,12 @@ level from a distribution.</p>
       <td><p>Object to create hilo from</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Additional arguments for the distribution's quantile function.</p></td>
-    </tr>
-    <tr>
       <th>level</th>
       <td><p>The confidence levels for the plotted prediction intervals.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional arguments for the distribution's quantile function.</p></td>
     </tr>
     </table>
     
