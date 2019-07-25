@@ -13,7 +13,7 @@
 \method{tidy}{mdl_ts}(x, ...)
 }
 \arguments{
-\item{x}{A mable.}
+\item{x, object}{A mable.}
 
 \item{...}{Arguments for model methods.}
 }

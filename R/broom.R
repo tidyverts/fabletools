@@ -92,7 +92,7 @@ glance.mdl_ts <- function(x, ...){
 #' This function will obtain the coefficients (and associated statistics) for
 #' each model in the mable.
 #' 
-#' @param x A mable.
+#' @param x,object A mable.
 #' @param ... Arguments for model methods.
 #' 
 #' @examples 
