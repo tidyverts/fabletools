@@ -18,7 +18,7 @@ test_that("fable dplyr verbs", {
     expect_equal(2)
   
   expect_equal(
-    colnames(report(fbl_complex, level = c(50, 80, 95))),
+    colnames(hilo(fbl_complex, level = c(50, 80, 95))),
     c("key", ".model", "index", "value", "50%", "80%", "95%")
   )
   

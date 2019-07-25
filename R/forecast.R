@@ -42,7 +42,7 @@ forecast <- function(object, ...){
 #' 
 #' # Compute 80% and 95% forecast intervals
 #' beer_fc %>% 
-#'   report(level = c(80, 95))
+#'   hilo(level = c(80, 95))
 #' 
 #' beer_fc %>% 
 #'   autoplot(aus_production)
