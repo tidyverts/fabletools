@@ -138,12 +138,13 @@ tbl_sum.fbl_ts <- function(x){
   out
 }
 
+#' @rdname hilo
 #' @export
-report.fbl_ts <- function(object, level = c(80, 95), ...){
-  object %>%
+hilo.fbl_ts <- function(x, level = c(80, 95), ...){
+  x %>%
     transmute(
-      !!!(object%@%"response"),
-      !!!set_names(map(level,function(.x) expr(hilo(!!(object%@%"dist"), !!.x))),
+      !!!(x%@%"response"),
+      !!!set_names(map(level,function(.x) expr(hilo(!!(x%@%"dist"), !!.x))),
                    paste0(level, "%")))
 }
 

@@ -41,7 +41,7 @@ new_hilo <- function(lower, upper, level = NULL) {
 #' Compute hilo intervals
 #' 
 #' Used to extract a specified prediction interval at a particular confidence 
-#' level from a distribution.
+#' level from a distribution or fable.
 #' 
 #' @param x Object to create hilo from
 #' @inheritParams hilo.fcdist
