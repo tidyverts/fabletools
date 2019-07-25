@@ -2,10 +2,13 @@
 % Please edit documentation in R/broom.R
 \name{tidy.mdl_df}
 \alias{tidy.mdl_df}
+\alias{coef.mdl_df}
 \alias{tidy.mdl_ts}
 \title{Extract model coefficients from a mable}
 \usage{
 \method{tidy}{mdl_df}(x, ...)
+
+\method{coef}{mdl_df}(object, ...)
 
 \method{tidy}{mdl_ts}(x, ...)
 }
