@@ -40,7 +40,7 @@ reconcile.mdl_df <- function(.data, ...){
 #' [`reconcile()`], [`aggregate_key()`]
 #' 
 #' @references 
-#' Wickramasuriya, S. L., Athanasopoulos, G., & Hyndman, R. J. (2015). Forecasting hierarchical and grouped time series through trace minimization. Working paper 15/15, *Department of Econometrics & Business Statistics, Monash University.* <http://robjhyndman.com/working-papers/mint/>
+#' Wickramasuriya, S. L., Athanasopoulos, G., & Hyndman, R. J. (2019). Optimal forecast reconciliation for hierarchical and grouped time series through trace minimization. Journal of the American Statistical Association, 1-45. https://doi.org/10.1080/01621459.2018.1448825 
 #' 
 #' @export
 min_trace <- function(models, method = c("shrink", "wls", "ols", "cov"),
