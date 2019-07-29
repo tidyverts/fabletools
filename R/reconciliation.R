@@ -60,7 +60,8 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   if(length(unique(map(fc, interval))) > 1){
     abort("Reconciliation of temporal hierarchies is not yet supported.")
   }
-  fc_point <- fc %>% map(`[[`, expr_text(attr(fc[[1]],"response")[[1]])) %>% 
+  fc_point <- fc %>% 
+    map(`[[`, expr_text(attr(fc[[1]],"response")[[1]])) %>% 
     invoke(cbind, .) %>% 
     as.matrix()
   fc_var <- fc %>% 
