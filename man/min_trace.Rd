@@ -19,7 +19,7 @@ Reconciles a hierarchy using the minimum trace combination method. The
 response variable of the hierarchy must be aggregated using sums.
 }
 \references{
-Wickramasuriya, S. L., Athanasopoulos, G., & Hyndman, R. J. (2015). Forecasting hierarchical and grouped time series through trace minimization. Working paper 15/15, \emph{Department of Econometrics & Business Statistics, Monash University.} \url{http://robjhyndman.com/working-papers/mint/}
+Wickramasuriya, S. L., Athanasopoulos, G., & Hyndman, R. J. (2019). Optimal forecast reconciliation for hierarchical and grouped time series through trace minimization. Journal of the American Statistical Association, 1-45. https://doi.org/10.1080/01621459.2018.1448825
 }
 \seealso{
 \code{\link[=reconcile]{reconcile()}}, \code{\link[=aggregate_key]{aggregate_key()}}
