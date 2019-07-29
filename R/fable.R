@@ -54,7 +54,8 @@ as_fable.tbl_ts <- function(x, response, distribution, ...){
   }
 
   fbl <- new_tsibble(x, class = "fbl_ts",
-                     response = response, dist = enexpr(distribution))
+                     response = response, dist = enexpr(distribution),
+                     mdl_nm = ".model")
   validate_fable(fbl)
   fbl
 }
@@ -76,7 +77,8 @@ as_fable.grouped_ts <- function(x, response, distribution, ...){
   
   fbl <- structure(x, class = c("grouped_fbl", "grouped_ts", "grouped_df", 
                                 "fbl_ts", "tbl_ts", "tbl_df", "tbl", "data.frame"),
-                   response = response, dist = enexpr(distribution))
+                   response = response, dist = enexpr(distribution),
+                   mdl_nm = ".model")
   validate_fable(fbl)
   fbl
 }
@@ -113,7 +115,7 @@ as_tsibble.fbl_ts <- function(x, ...){
 #' @export
 as_tsibble.grouped_fbl <- function(x, ...){
   structure(x, class=setdiff(class(x), c("grouped_fbl", "fbl_ts")),
-            response = NULL, dist = NULL)
+            response = NULL, dist = NULL, mdl_nm = NULL)
 }
 
 validate_fable <- function(fbl){
