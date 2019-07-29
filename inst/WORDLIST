@@ -7,6 +7,7 @@ Backtransformations
 boxcox
 dable
 datetime
+doi
 geoms
 ggplot
 ggproto
@@ -19,6 +20,7 @@ mable
 MASE
 MinT
 obj
+org
 quosure
 stat
 tibble
