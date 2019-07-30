@@ -16,6 +16,6 @@ if (Sys.getenv("BUILD_PKGDOWN") != "" && ci()$get_branch() == "master") {
       prepare_call = remotes::install_github("r-lib/pkgbuild")
     ) %>%
     add_step(step_build_pkgdown(run_dont_run = TRUE)) %>%
-    add_code_step(system('echo "fablelite.tidyverts.org" > docs/CNAME')) %>%
+    add_code_step(system('echo "fabletools.tidyverts.org" > docs/CNAME')) %>%
     add_step(step_do_push_deploy(path = "docs"))
 }

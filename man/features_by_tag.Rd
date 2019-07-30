@@ -8,7 +8,7 @@ This documentation lists all available in currently loaded packages. This is
 a useful reference for making a \code{\link[=feature_set]{feature_set()}} from particular tag(s).
 }
 \details{
-\Sexpr[stage=render,results=rd]{fablelite:::rd_features_tag()}
+\Sexpr[stage=render,results=rd]{fabletools:::rd_features_tag()}
 }
 \seealso{
 \link{features_by_pkg}

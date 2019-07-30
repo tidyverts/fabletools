@@ -260,7 +260,7 @@ rd_features_tag <- function(){
 #' This documentation lists all available in currently loaded packages. This is
 #' a useful reference for making a [`feature_set()`] from particular package(s).
 #' 
-#' \Sexpr[stage=render,results=rd]{fablelite:::rd_features_pkg()}
+#' \Sexpr[stage=render,results=rd]{fabletools:::rd_features_pkg()}
 #' 
 #' @seealso [features_by_tag]
 #' 
@@ -272,7 +272,7 @@ NULL
 #' This documentation lists all available in currently loaded packages. This is
 #' a useful reference for making a [`feature_set()`] from particular tag(s).
 #' 
-#' \Sexpr[stage=render,results=rd]{fablelite:::rd_features_tag()}
+#' \Sexpr[stage=render,results=rd]{fabletools:::rd_features_tag()}
 #' 
 #' @seealso [features_by_pkg]
 #' 

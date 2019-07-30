@@ -1,4 +1,4 @@
-# fablelite 0.1.0
+# fabletools 0.1.0
 
 * First release.
 
@@ -14,7 +14,7 @@
 * Added methods to train a model definition to a dataset. `model()` is the recommended interface, which can fit many model definitions to each time series in the input dataset returning a mable (`mdl_df`). The lower level interface for model estimation is accessible using `estimate()` which will return a time series model (`mdl_ts`), however using this interface is discouraged.
 
 ### Forecasting
-* Added `forecast()`, which allows you to produce future predictions of a time series from fitted models. The methods provided in fablelite handle the application of new data (such as the future index or exogenous regressors) to model specials, giving a simple and consistent interface to forecasting any model. The forecast methods will automatically backtransform and bias adjust any transformations specified in the model formula. This function returns a fable (`fbl_ts`) object.
+* Added `forecast()`, which allows you to produce future predictions of a time series from fitted models. The methods provided in fabletools handle the application of new data (such as the future index or exogenous regressors) to model specials, giving a simple and consistent interface to forecasting any model. The forecast methods will automatically backtransform and bias adjust any transformations specified in the model formula. This function returns a fable (`fbl_ts`) object.
 * Added a forecast distribution class (`fcdist`) which is used to describe the distribution of forecasts. Common forecast distributions have been added to the package, including the normal distribution (`dist_normal()`), multivariate normal (`dist_mv_normal()`) and simulated/sampled distributions (`dist_sim()`). In addition to this, `dist_unknown()` is available for methods that don't support distributional forecasts. A new distribution can be added using the `new_fcdist()` function. The forecast distribution class handles transformations on the distribution, and is used to create forecast intervals of the `hilo` class using the `hilo()` function. Mathematical operations on the normal distribution are supported.
 * Added tools for working with transformations in models, including automatic back-transformation, transformation classes (`new_transformation()`), and bias adjustment (`bias_adjust()`) methods.
 * Added `aggregate_key()`, which is used to compute all levels of aggregation in a specified key structure. It supports nested structures using `parent / key` and crossed structures using `keyA * keyB`.

@@ -1,4 +1,4 @@
-url: https://fablelite.tidyverts.org
+url: https://fabletools.tidyverts.org
 
 template:
   params:
@@ -52,7 +52,7 @@ reference:
     - percentile_score
 - title: Methods
   desc: >
-    The fablelite package facilitates the handling of key structures for these generics.
+    The fabletools package facilitates the handling of key structures for these generics.
   contents:
     - forecast
     - model
@@ -69,7 +69,7 @@ reference:
     - residuals.mdl_df
 - title: Graphics
   desc: >
-    Some `autoplot()` and `autolayer()` methods are defined for classes commonly used within fablelite.
+    Some `autoplot()` and `autolayer()` methods are defined for classes commonly used within fabletools.
   contents:
     - autoplot.tbl_ts
     - autolayer.tbl_ts
