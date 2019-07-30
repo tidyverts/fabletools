@@ -3,6 +3,6 @@ pkgdown: 1.3.0
 pkgdown_sha: ~
 articles: []
 urls:
-  reference: https://fablelite.tidyverts.org/reference
-  article: https://fablelite.tidyverts.org/articles
+  reference: https://fabletools.tidyverts.org/reference
+  article: https://fabletools.tidyverts.org/articles
 
