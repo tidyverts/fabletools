@@ -28,3 +28,4 @@ Apologies for the added complexity in reviewing this submission.
 * Fixed URL in description.
 * Removed VignetteBuilder field from DESCRIPTION.
 * Conditionally require suggested packages in examples and tests.
+* Fix registration of guide_train.level_guide to ggplot2::guide_train.

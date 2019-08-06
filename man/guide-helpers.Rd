@@ -5,7 +5,7 @@
 \alias{guide_geom.guide_level}
 \title{Helper methods for guides}
 \usage{
-guide_train.level_guide(guide, scale, aesthetic)
+\method{guide_train}{level_guide}(guide, scale, aesthetic)
 
 \method{guide_geom}{guide_level}(guide, layers, default_mapping)
 }
