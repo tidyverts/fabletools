@@ -1,6 +1,9 @@
 context("test-decomposition-model")
 
 test_that("Decomposition modelling", {
+  skip_if_not_installed("fable")
+  skip_if_not_installed("feasts")
+  
   mdl_dcmp <- us_deaths %>%
     model(decomposition_model(feasts::STL, value, fable::NAIVE(season_adjust)))
   

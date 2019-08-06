@@ -1,6 +1,8 @@
 context("test-combination")
 
 test_that("Combination modelling", {
+  skip_if_not_installed("fable")
+  
   mbl_cmbn <- mbl %>% 
     transmute(combination = (ets + ets)/2)
   
