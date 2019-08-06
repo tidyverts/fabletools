@@ -1,5 +1,5 @@
 Package: fabletools
-Version: 0.0.0.9100
+Version: 0.1.0
 Title: Core tools for packages in the 'fable' framework
 Description: Provides tools, helpers and data structures for developing models and time series functions for 'fable' and extension packages. These tools support a consistent and tidy interface for time series modelling and analysis.
 Authors@R:
