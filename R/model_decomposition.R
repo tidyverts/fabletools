@@ -93,6 +93,8 @@ Please check that you have specified the decomposition models appropriately.")
 #' 
 #' @examples 
 #' if (requireNamespace("fable", quietly = TRUE) && requireNamespace("feasts", quietly = TRUE)) {
+#' library(fable)
+#' library(feasts)
 #' library(tsibble)
 #' library(dplyr)
 #' 

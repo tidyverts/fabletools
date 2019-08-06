@@ -8,6 +8,7 @@
 #' 
 #' @examples 
 #' if (requireNamespace("fable", quietly = TRUE)) {
+#' library(fable)
 #' lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) %>% 
 #'   aggregate_key(key, value = sum(value))
 #' 

@@ -24,6 +24,7 @@ train_combination <- function(.data, specials, ..., cmbn_fn, cmbn_args){
 #' 
 #' @examples 
 #' if (requireNamespace("fable", quietly = TRUE)) {
+#' library(fable)
 #' library(tsibble)
 #' library(tsibbledata)
 #' 

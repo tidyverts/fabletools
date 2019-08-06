@@ -22,6 +22,7 @@ with or without re-estimation of the parameters.
 }
 \examples{
 if (requireNamespace("fable", quietly = TRUE)) {
+library(fable)
 
 fit <- as_tsibble(mdeaths) \%>\% 
   model(ETS(value ~ error("M") + trend("A") + season("A")))

@@ -40,6 +40,7 @@ extract the numerical upper and lower bounds you can use \code{\link[tidyr:unnes
 }
 \examples{
 if (requireNamespace("fable", quietly = TRUE)) {
+library(fable)
 library(tsibble)
 library(tsibbledata)
 library(dplyr)

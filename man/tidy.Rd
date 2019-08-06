@@ -23,6 +23,7 @@ each model in the mable.
 }
 \examples{
 if (requireNamespace("fable", quietly = TRUE)) {
+library(fable)
 library(tsibbledata)
 
 olympic_running \%>\%

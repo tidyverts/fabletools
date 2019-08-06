@@ -25,6 +25,7 @@ A combination model can also be produced using mathematical operations.
 }
 \examples{
 if (requireNamespace("fable", quietly = TRUE)) {
+library(fable)
 library(tsibble)
 library(tsibbledata)
 

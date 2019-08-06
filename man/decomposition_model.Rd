@@ -28,6 +28,8 @@ method, giving a combination model for the response of the decomposition.
 }
 \examples{
 if (requireNamespace("fable", quietly = TRUE) && requireNamespace("feasts", quietly = TRUE)) {
+library(fable)
+library(feasts)
 library(tsibble)
 library(dplyr)
 

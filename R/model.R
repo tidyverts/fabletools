@@ -31,6 +31,7 @@ model <- function(.data, ...){
 #' 
 #' @examples 
 #' if (requireNamespace("fable", quietly = TRUE)) {
+#' library(fable)
 #' library(tsibbledata)
 #' 
 #' # Training an ETS(M,Ad,A) model to Australian beer production

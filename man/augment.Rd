@@ -20,6 +20,7 @@ residuals.
 }
 \examples{
 if (requireNamespace("fable", quietly = TRUE)) {
+library(fable)
 library(tsibbledata)
 
 # Forecasting with an ETS(M,Ad,A) model to Australian beer production

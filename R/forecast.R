@@ -30,6 +30,7 @@ forecast <- function(object, ...){
 #' 
 #' @examples 
 #' if (requireNamespace("fable", quietly = TRUE)) {
+#' library(fable)
 #' library(tsibble)
 #' library(tsibbledata)
 #' library(dplyr)

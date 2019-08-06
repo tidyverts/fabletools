@@ -23,6 +23,7 @@ colour.
 }
 \examples{
 if (requireNamespace("fable", quietly = TRUE)) {
+library(fable)
 library(tsibbledata)
 library(tsibble)
 

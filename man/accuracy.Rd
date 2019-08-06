@@ -34,6 +34,7 @@ used to train the model.
 }
 \examples{
 if (requireNamespace("fable", quietly = TRUE)) {
+library(fable)
 library(tsibble)
 library(tsibbledata)
 library(dplyr)

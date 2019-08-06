@@ -8,6 +8,7 @@
 #' 
 #' @examples 
 #' if (requireNamespace("fable", quietly = TRUE)) {
+#' library(fable)
 #' library(tsibbledata)
 #' 
 #' # Forecasting with an ETS(M,Ad,A) model to Australian beer production
@@ -67,6 +68,7 @@ augment.mdl_ts <- function(x, ...){
 #' 
 #' @examples 
 #' if (requireNamespace("fable", quietly = TRUE)) {
+#' library(fable)
 #' library(tsibbledata)
 #' 
 #' olympic_running %>%
@@ -99,6 +101,7 @@ glance.mdl_ts <- function(x, ...){
 #' 
 #' @examples 
 #' if (requireNamespace("fable", quietly = TRUE)) {
+#' library(fable)
 #' library(tsibbledata)
 #' 
 #' olympic_running %>%

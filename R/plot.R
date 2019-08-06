@@ -10,6 +10,7 @@
 #' 
 #' @examples 
 #' if (requireNamespace("fable", quietly = TRUE)) {
+#' library(fable)
 #' library(tsibbledata)
 #' library(tsibble)
 #' 
@@ -179,8 +180,9 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 #' @inheritParams hilo
 #' 
 #' @examples 
-#' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(tsibbledata)
+#' if (requireNamespace("fable", quietly = TRUE)) {
+#' library(fable)
 #' 
 #' fc <- aus_production %>%
 #'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) %>% 
@@ -253,9 +255,11 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
 #' @rdname autoplot.fbl_ts
 #' @examples 
 #' 
+#' if (requireNamespace("fable", quietly = TRUE)) {
 #' aus_production %>% 
 #'   autoplot(Beer) + 
 #'   autolayer(fc)
+#' }
 #' 
 #' @export
 autolayer.fbl_ts <- function(object, level = c(80, 95), ...){
@@ -317,6 +321,7 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), ...){
 #' 
 #' @examples 
 #' if (requireNamespace("feasts", quietly = TRUE)) {
+#' library(feasts)
 #' library(tsibbledata)
 #' aus_production %>% 
 #'   STL(Beer) %>% 

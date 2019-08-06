@@ -21,6 +21,7 @@ Uses a fitted model to interpolate missing values from a dataset.
 }
 \examples{
 if (requireNamespace("fable", quietly = TRUE)) {
+library(fable)
 library(tsibbledata)
 
 # The fastest running times for the olympics are missing for years during 

@@ -38,6 +38,7 @@ treated as innovations for the simulated paths..
 }
 \examples{
 if (requireNamespace("fable", quietly = TRUE)) {
+library(fable)
 library(dplyr)
 UKLungDeaths <- as_tsibble(cbind(mdeaths, fdeaths), pivot_longer = FALSE)
 UKLungDeaths \%>\% 

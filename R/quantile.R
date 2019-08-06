@@ -244,6 +244,7 @@ length.fcdist <- function(x){
 #' dist_normal(10, 3) %>% hilo(95)
 #' 
 #' if (requireNamespace("fable", quietly = TRUE)) {
+#' library(fable)
 #' library(tsibbledata)
 #' library(dplyr)
 #' aus_production %>%
