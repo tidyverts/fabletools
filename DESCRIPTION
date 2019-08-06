@@ -51,7 +51,7 @@ Suggests:
 ByteCompile: true
 VignetteBuilder: knitr
 License: GPL-3
-URL: http://fablelite.tidyverts.org/
+URL: http://fabletools.tidyverts.org/
 BugReports: https://github.com/tidyverts/fabletools/issues
 Encoding: UTF-8
 LazyData: true
