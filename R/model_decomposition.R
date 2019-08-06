@@ -82,13 +82,13 @@ Please check that you have specified the decomposition models appropriately.")
 #' models are used to fit each of the components from the resulting 
 #' decomposition. These models are specified after the decomposition formula.
 #' All non-seasonal decomposition components must be specified, and any
-#' unspecified seasonal components will be forecasted using [fable::SNAIVE()]. 
+#' unspecified seasonal components will be forecasted using seasonal naive. 
 #' These component models will be combined according to the decomposition 
 #' method, giving a combination model for the response of the decomposition.
 #' 
-#' @param dcmp_fn The decomposition function (such as [feasts::STL()])
+#' @param dcmp_fn The decomposition function
 #' @param formula The formula used to describe the decomposition
-#' @param ... Model definitions used to model the components (such as [fable::ETS()])
+#' @param ... Model definitions used to model the components
 #' @param dcmp_args Arguments to be passed to the decomposition function (`.dcmp_fn`)
 #' 
 #' @examples 

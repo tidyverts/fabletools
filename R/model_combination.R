@@ -18,7 +18,7 @@ train_combination <- function(.data, specials, ..., cmbn_fn, cmbn_args){
 #' 
 #' A combination model can also be produced using mathematical operations.
 #'
-#' @param ... Model definitions used in the combination (such as [fable::ETS()]).
+#' @param ... Model definitions used in the combination.
 #' @param cmbn_fn A function used to produce the combination.
 #' @param cmbn_args Additional arguments passed to `cmbn_fn`.
 #' 

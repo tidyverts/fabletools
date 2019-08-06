@@ -102,7 +102,7 @@ Refer to the documentation in ?model for more details.")
 #' user inputs.
 #' @param ... Further arguments to [R6::R6Class()]. This can be useful to set up
 #' additional elements used in the other functions. For example, to use 
-#' [`fable::common_xregs`], an `origin` element in the model is used to store
+#' `common_xregs`, an `origin` element in the model is used to store
 #' the origin for `trend()` and `fourier()` specials. To use these specials, you
 #' must add an `origin` element to the object (say with `origin = NULL`).
 #' @param .env The environment from which functions should inherit from.
@@ -211,7 +211,7 @@ new_decomposition_definition <- function(.class, .data, ..., .env = caller_env(n
 #' user inputs.
 #' @param ... Further arguments to [R6::R6Class()]. This can be useful to set up
 #' additional elements used in the other functions. For example, to use 
-#' [`fable::common_xregs`], an `origin` element in the model is used to store
+#' `common_xregs`, an `origin` element in the model is used to store
 #' the origin for `trend()` and `fourier()` specials. To use these specials, you
 #' must add an `origin` element to the object (say with `origin = NULL`).
 #' @param .env The environment from which functions should inherit from.

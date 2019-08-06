@@ -9,7 +9,7 @@
 #' in the mable identifies a single model.
 #' 
 #' @param .data A data structure suitable for the models (such as a `tsibble`)
-#' @param ... Definitions for the models to be used (such as [`fable::ETS()`])
+#' @param ... Definitions for the models to be used
 #'
 #' @rdname model
 #' @export

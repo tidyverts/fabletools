@@ -8,7 +8,7 @@ combination_model(..., cmbn_fn = combination_ensemble,
   cmbn_args = list())
 }
 \arguments{
-\item{...}{Model definitions used in the combination (such as \code{\link[fable:ETS]{fable::ETS()}}).}
+\item{...}{Model definitions used in the combination.}
 
 \item{cmbn_fn}{A function used to produce the combination.}
 

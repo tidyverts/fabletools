@@ -33,7 +33,7 @@ user inputs.}
 
 \item{...}{Further arguments to \code{\link[R6:R6Class]{R6::R6Class()}}. This can be useful to set up
 additional elements used in the other functions. For example, to use
-\code{\link[fable:common_xregs]{fable::common_xregs}}, an \code{origin} element in the model is used to store
+\code{common_xregs}, an \code{origin} element in the model is used to store
 the origin for \code{trend()} and \code{fourier()} specials. To use these specials, you
 must add an \code{origin} element to the object (say with \code{origin = NULL}).}
 
