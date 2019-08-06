@@ -20,7 +20,7 @@
 Uses a fitted model to interpolate missing values from a dataset.
 }
 \examples{
-library(fable)
+if (requireNamespace("fable", quietly = TRUE)) {
 library(tsibbledata)
 
 # The fastest running times for the olympics are missing for years during 
@@ -30,5 +30,6 @@ olympic_running
 olympic_running \%>\% 
   model(TSLM(Time ~ trend())) \%>\% 
   interpolate(olympic_running)
+}
 
 }

@@ -9,12 +9,13 @@
 #' @param ... Further arguments passed to [`ggplot2::geom_line()`], which can be used to specify fixed aesthetics such as `colour = "red"` or `size = 3`. 
 #' 
 #' @examples 
-#' library(fable)
+#' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(tsibbledata)
 #' library(tsibble)
 #' 
 #' tsibbledata::gafa_stock %>%
 #'  autoplot(vars(Close, log(Close)))
+#' }
 #' 
 #' @importFrom ggplot2 ggplot aes geom_line guides guide_legend xlab
 #' @export
@@ -178,7 +179,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 #' @inheritParams hilo
 #' 
 #' @examples 
-#' library(fable)
+#' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(tsibbledata)
 #' 
 #' fc <- aus_production %>%
@@ -187,6 +188,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 #' 
 #' fc %>% 
 #'   autoplot(aus_production)
+#' }
 #' 
 #' @importFrom ggplot2 facet_wrap
 #' @export
@@ -314,11 +316,12 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), ...){
 #' @inheritParams autoplot.tbl_ts
 #' 
 #' @examples 
-#' library(feasts)
+#' if (requireNamespace("feasts", quietly = TRUE)) {
 #' library(tsibbledata)
 #' aus_production %>% 
 #'   STL(Beer) %>% 
 #'   autoplot()
+#' }
 #' 
 #' @importFrom ggplot2 ggplot geom_line geom_rect facet_grid vars ylab labs
 #' @export

@@ -21,7 +21,7 @@ Applies a fitted model to a new dataset. For most methods this can be done
 with or without re-estimation of the parameters.
 }
 \examples{
-library(fable)
+if (requireNamespace("fable", quietly = TRUE)) {
 
 fit <- as_tsibble(mdeaths) \%>\% 
   model(ETS(value ~ error("M") + trend("A") + season("A")))
@@ -30,5 +30,6 @@ fit \%>\% report()
 fit \%>\% 
   refit(as_tsibble(fdeaths)) \%>\% 
   report(reinitialise = TRUE)
+}
 
 }

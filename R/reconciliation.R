@@ -7,13 +7,14 @@
 #' @param ... Reconciliation methods applied to model columns within `.data`.
 #' 
 #' @examples 
-#' library(fable)
+#' if (requireNamespace("fable", quietly = TRUE)) {
 #' lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) %>% 
 #'   aggregate_key(key, value = sum(value))
 #' 
 #' lung_deaths_agg %>% 
 #'   model(ets = ETS(value)) %>% 
 #'   reconcile(ets = min_trace(ets))
+#' }
 #' 
 #' @export
 reconcile <- function(.data, ...){

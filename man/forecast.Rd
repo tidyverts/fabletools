@@ -39,7 +39,7 @@ These intervals are stored in a single column using the \code{hilo} class, to
 extract the numerical upper and lower bounds you can use \code{\link[tidyr:unnest]{tidyr::unnest()}}.
 }
 \examples{
-library(fable)
+if (requireNamespace("fable", quietly = TRUE)) {
 library(tsibble)
 library(tsibbledata)
 library(dplyr)
@@ -83,5 +83,6 @@ future_aus <- new_data(aus_economy, n = 10) \%>\%
 fit \%>\% 
   forecast(new_data = future_aus) \%>\% 
   autoplot(aus_economy)
+}
 
 }

@@ -30,7 +30,7 @@ model <- function(.data, ...){
 #' 
 #' 
 #' @examples 
-#' library(fable)
+#' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(tsibbledata)
 #' 
 #' # Training an ETS(M,Ad,A) model to Australian beer production
@@ -46,6 +46,7 @@ model <- function(.data, ...){
 #'     snaive = SNAIVE(Turnover),
 #'     ets = ETS(log(Turnover) ~ error("A") + trend("A") + season("A")),
 #'   )
+#' }
 #' 
 #' @export
 model.tbl_ts <- function(.data, ..., .safely = TRUE){

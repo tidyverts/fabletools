@@ -10,7 +10,7 @@
 #' @param ... Other arguments passed to methods.
 #' 
 #' @examples 
-#' library(fable)
+#' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(tsibbledata)
 #' 
 #' # Forecasting with an ETS(M,Ad,A) model to Australian beer production
@@ -18,7 +18,7 @@
 #'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) %>% 
 #'   components() %>% 
 #'   autoplot()
-#'   
+#' }
 #'
 #' @rdname components
 #' @export

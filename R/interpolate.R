@@ -7,7 +7,7 @@
 #' @param ... Other arguments passed to interpolate methods.
 #' 
 #' @examples 
-#' library(fable)
+#' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(tsibbledata)
 #' 
 #' # The fastest running times for the olympics are missing for years during 
@@ -17,6 +17,7 @@
 #' olympic_running %>% 
 #'   model(TSLM(Time ~ trend())) %>% 
 #'   interpolate(olympic_running)
+#' }
 #' 
 #' @rdname interpolate
 #' @export

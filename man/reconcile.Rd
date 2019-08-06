@@ -19,12 +19,13 @@ This function allows you to specify the method used to reconcile forecasts
 in accordance with its key structure.
 }
 \examples{
-library(fable)
+if (requireNamespace("fable", quietly = TRUE)) {
 lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) \%>\% 
   aggregate_key(key, value = sum(value))
 
 lung_deaths_agg \%>\% 
   model(ets = ETS(value)) \%>\% 
   reconcile(ets = min_trace(ets))
+}
 
 }

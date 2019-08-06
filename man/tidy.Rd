@@ -22,11 +22,12 @@ This function will obtain the coefficients (and associated statistics) for
 each model in the mable.
 }
 \examples{
-library(fable)
+if (requireNamespace("fable", quietly = TRUE)) {
 library(tsibbledata)
 
 olympic_running \%>\%
   model(lm = TSLM(log(Time) ~ trend())) \%>\% 
   tidy()
+}
 
 }

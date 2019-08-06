@@ -35,7 +35,7 @@ according to that plan.
 }
 
 \examples{
-library(fable)
+if (requireNamespace("fable", quietly = TRUE)) {
 library(tsibbledata)
 
 # Training an ETS(M,Ad,A) model to Australian beer production
@@ -51,5 +51,6 @@ aus_retail \%>\%
     snaive = SNAIVE(Turnover),
     ets = ETS(log(Turnover) ~ error("A") + trend("A") + season("A")),
   )
+}
 
 }

@@ -33,7 +33,7 @@ need to provide a complete dataset that includes the future data and data
 used to train the model.
 }
 \examples{
-library(fable)
+if (requireNamespace("fable", quietly = TRUE)) {
 library(tsibble)
 library(tsibbledata)
 library(dplyr)
@@ -60,6 +60,7 @@ fc \%>\%
     aus_production,
     measures = list(interval_accuracy_measures, distribution_accuracy_measures)
   )
+}
 
 }
 \seealso{
