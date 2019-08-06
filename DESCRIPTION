@@ -48,10 +48,6 @@ Suggests:
     tsibbledata,
     lubridate,
     SparseM
-Remotes:
-    tidyverts/fable,
-    tidyverts/feasts,
-    tidyverts/tsibbledata
 ByteCompile: true
 VignetteBuilder: knitr
 License: GPL-3
