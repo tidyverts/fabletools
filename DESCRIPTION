@@ -49,7 +49,6 @@ Suggests:
     lubridate,
     SparseM
 ByteCompile: true
-VignetteBuilder: knitr
 License: GPL-3
 URL: http://fabletools.tidyverts.org/
 BugReports: https://github.com/tidyverts/fabletools/issues

@@ -26,3 +26,4 @@ Apologies for the added complexity in reviewing this submission.
 ## Re-submission
 
 * Fixed URL in description.
+* Removed VignetteBuilder field from DESCRIPTION.
