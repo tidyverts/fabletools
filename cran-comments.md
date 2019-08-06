@@ -30,3 +30,4 @@ Apologies for the added complexity in reviewing this submission.
 * Conditionally require suggested packages in examples and tests.
 * Fix registration of guide_train.level_guide to ggplot2::guide_train.
 * Sped up example for reconciliation to be <10s on win-builder.
+* Added Additional_repositories for suggested packages not yet on CRAN.
