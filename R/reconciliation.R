@@ -9,12 +9,13 @@
 #' @examples 
 #' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(fable)
-#' lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) %>% 
+#' lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) %>%
 #'   aggregate_key(key, value = sum(value))
 #' 
-#' lung_deaths_agg %>% 
-#'   model(ets = ETS(value)) %>% 
-#'   reconcile(ets = min_trace(ets))
+#' lung_deaths_agg %>%
+#'   model(lm = TSLM(value ~ trend() + season())) %>%
+#'   reconcile(lm = min_trace(lm)) %>% 
+#'   forecast()
 #' }
 #' 
 #' @export
