@@ -48,14 +48,14 @@ forecast <- function(object, ...){
 #' beer_fc %>% 
 #'   autoplot(aus_production)
 #' 
-#' # Forecasting with a seasonal naive and ETS(A,A,A) model to the monthly 
+#' # Forecasting with a seasonal naive and linear model to the monthly 
 #' # "Food retailing" turnover for each Australian state/territory.
 #' library(dplyr)
 #' aus_retail %>% 
 #'   filter(Industry == "Food retailing") %>% 
 #'   model(
 #'     snaive = SNAIVE(Turnover),
-#'     ets = ETS(log(Turnover) ~ error("A") + trend("A") + season("A")),
+#'     ets = TSLM(log(Turnover) ~ trend() + season()),
 #'   ) %>% 
 #'   forecast(h = "2 years 6 months") %>% 
 #'   autoplot(filter(aus_retail, Month >= yearmonth("2000 Jan")), level = 90)
