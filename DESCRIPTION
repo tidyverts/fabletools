@@ -48,6 +48,9 @@ Suggests:
     tsibbledata,
     lubridate,
     SparseM
+Remotes:
+    tidyverts/fable,
+    tidyverts/feasts
 Additional_repositories: https://tidyverts.org/
 ByteCompile: true
 License: GPL-3
