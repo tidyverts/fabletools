@@ -23,7 +23,6 @@ train_combination <- function(.data, specials, ..., cmbn_fn, cmbn_args){
 #' @param cmbn_args Additional arguments passed to `cmbn_fn`.
 #' 
 #' @examples 
-#' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(fable)
 #' library(tsibble)
 #' library(tsibbledata)
@@ -43,7 +42,6 @@ train_combination <- function(.data, specials, ..., cmbn_fn, cmbn_args){
 #'       cmbn_args = list(weights = "inv_var")
 #'     )
 #'   )
-#' }
 #' @export
 combination_model <- function(..., cmbn_fn = combination_ensemble,
                               cmbn_args = list()){

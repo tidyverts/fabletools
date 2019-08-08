@@ -1,8 +1,6 @@
 context("test-hilo.R")
 
 test_that("Extracting intervals from a distribution", {
-  skip_if_not_installed("fable")
-  
   fc_sum <- fbl %>% 
     mutate("80%" := hilo(!!(fbl%@%"dist"), 80))
   

@@ -22,13 +22,11 @@ tsibble contains a multiple keys, separate time series will be identified by
 colour.
 }
 \examples{
-if (requireNamespace("fable", quietly = TRUE)) {
 library(fable)
 library(tsibbledata)
 library(tsibble)
 
 tsibbledata::gafa_stock \%>\%
  autoplot(vars(Close, log(Close)))
-}
 
 }

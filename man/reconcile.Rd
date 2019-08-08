@@ -19,15 +19,29 @@ This function allows you to specify the method used to reconcile forecasts
 in accordance with its key structure.
 }
 \examples{
+<<<<<<< HEAD
 if (requireNamespace("fable", quietly = TRUE)) {
+<<<<<<< HEAD
 library(fable)
 lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) \%>\%
+=======
+=======
+library(fable)
+>>>>>>> parent of 7745779... Conditionally require fable and feasts in examples for first release
+lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) \%>\% 
+>>>>>>> parent of 5c510b1... Fixed attaching pkgs in examples
   aggregate_key(key, value = sum(value))
 
+<<<<<<< HEAD
 lung_deaths_agg \%>\%
   model(lm = TSLM(value ~ trend() + season())) \%>\%
   reconcile(lm = min_trace(lm)) \%>\% 
   forecast()
 }
+=======
+lung_deaths_agg \%>\% 
+  model(ets = ETS(value)) \%>\% 
+  reconcile(ets = min_trace(ets))
+>>>>>>> parent of 7745779... Conditionally require fable and feasts in examples for first release
 
 }

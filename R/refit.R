@@ -8,7 +8,6 @@
 #' @param ... Additional optional arguments for refit methods.
 #' 
 #' @examples 
-#' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(fable)
 #' 
 #' fit <- as_tsibble(mdeaths) %>% 
@@ -18,7 +17,6 @@
 #' fit %>% 
 #'   refit(as_tsibble(fdeaths)) %>% 
 #'   report(reinitialise = TRUE)
-#' }
 #' 
 #' @rdname refit
 #' @export

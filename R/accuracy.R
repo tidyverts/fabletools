@@ -152,7 +152,6 @@ accuracy <- function(object, ...){
 #' @param measures A list of accuracy measure functions to compute (such as [`point_accuracy_measures`], [`interval_accuracy_measures`], or [`distribution_accuracy_measures`])
 #' 
 #' @examples 
-#' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(fable)
 #' library(tsibble)
 #' library(tsibbledata)
@@ -180,7 +179,6 @@ accuracy <- function(object, ...){
 #'     aus_production,
 #'     measures = list(interval_accuracy_measures, distribution_accuracy_measures)
 #'   )
-#' }
 #' 
 #' @export
 accuracy.mdl_df <- function(object, measures = point_accuracy_measures, ...){

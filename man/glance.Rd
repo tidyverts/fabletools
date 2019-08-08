@@ -21,12 +21,10 @@ information criterion, and other relevant summary statistics. Each model
 will be represented with a row of output.
 }
 \examples{
-if (requireNamespace("fable", quietly = TRUE)) {
 library(fable)
 library(tsibbledata)
 
 olympic_running \%>\%
   model(lm = TSLM(log(Time) ~ trend())) \%>\% 
   glance()
-}
 }

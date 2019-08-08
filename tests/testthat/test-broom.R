@@ -1,8 +1,6 @@
 context("test-broom")
 
 test_that("augment", {
-  skip_if_not_installed("fable")
-  
   aug <- augment(mbl)
   expect_equal(aug$index, us_deaths_tr$index)
   expect_equal(aug$.fitted, fitted(mbl)$.fitted)
@@ -25,8 +23,6 @@ test_that("augment", {
 })
 
 test_that("glance", {
-  skip_if_not_installed("fable")
-  
   gl <- glance(mbl)
   expect_equal(NROW(gl), 1)
   gl_multi <- glance(mbl_multi)
@@ -41,8 +37,6 @@ test_that("glance", {
 })
 
 test_that("tidy", {
-  skip_if_not_installed("fable")
-  
   td <- tidy(mbl)
   expect_equal(unique(td$.model), "ets")
   td_multi <- tidy(mbl_multi)

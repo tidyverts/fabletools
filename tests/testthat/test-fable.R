@@ -1,8 +1,6 @@
 context("test-fable")
 
 test_that("fable dplyr verbs", {
-  skip_if_not_installed("fable")
-  
   fbl_complex %>% filter(key == "mdeaths") %>% 
     expect_s3_class("fbl_ts") %>% 
     NROW %>% 

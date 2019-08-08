@@ -1,8 +1,6 @@
 context("test-accuracy")
 
 test_that("In-sample accuracy", {
-  skip_if_not_installed("fable")
-  
   expect_warning(
     accuracy(mbl, measures = interval_accuracy_measures),
     'argument ".dist" is missing'
@@ -46,8 +44,6 @@ test_that("In-sample accuracy", {
 
 
 test_that("Out-of-sample accuracy", {
-  skip_if_not_installed("fable")
-  
   expect_warning(
     accuracy(fbl, head(us_deaths)),
     "12 observations are missing between 1978 Jan and 1978 Dec"

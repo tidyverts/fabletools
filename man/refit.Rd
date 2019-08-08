@@ -21,7 +21,6 @@ Applies a fitted model to a new dataset. For most methods this can be done
 with or without re-estimation of the parameters.
 }
 \examples{
-if (requireNamespace("fable", quietly = TRUE)) {
 library(fable)
 
 fit <- as_tsibble(mdeaths) \%>\% 
@@ -31,6 +30,5 @@ fit \%>\% report()
 fit \%>\% 
   refit(as_tsibble(fdeaths)) \%>\% 
   report(reinitialise = TRUE)
-}
 
 }

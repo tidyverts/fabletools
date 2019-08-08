@@ -1,8 +1,6 @@
 context("test-generate")
 
 test_that("generate", {
-  skip_if_not_installed("fable")
-  
   gen <- mbl %>% generate()
   expect_equal(NROW(gen), 24)
   expect_equal(gen$index, yearmonth("1978 Jan") + 0:23)
@@ -25,8 +23,6 @@ test_that("generate", {
 })
 
 test_that("generate seed setting", {
-  skip_if_not_installed("fable")
-  
   seed <- rnorm(1)
   expect_equal(
     mbl %>% generate(seed = seed),

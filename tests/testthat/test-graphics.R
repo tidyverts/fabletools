@@ -188,8 +188,6 @@ test_that("autolayer.tbl_ts()", {
 })
 
 test_that("autoplot.fbl_ts()", {
-  skip_if_not_installed("fable")
-  
   p <- autoplot(fbl)
   expect_silent(print(p))
   
@@ -264,8 +262,6 @@ test_that("autoplot.fbl_ts()", {
 })
 
 test_that("autolayer.fbl_ts()", {
-  skip_if_not_installed("fable")
-  
   p <- autoplot(us_deaths, value) + autolayer(fbl)
   expect_silent(print(p))
   
@@ -321,8 +317,6 @@ test_that("autolayer.fbl_ts()", {
 })
 
 test_that("autoplot_dcmp_ts()", {
-  skip_if_not_installed("feasts")
-  
   p <- autoplot(dcmp)
   expect_silent(print(p))
   
