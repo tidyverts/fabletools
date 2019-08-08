@@ -31,3 +31,10 @@ Apologies for the added complexity in reviewing this submission.
 * Fix registration of guide_train.level_guide to ggplot2::guide_train.
 * Sped up examples to be <10s on win-builder.
 * Added Additional_repositories for suggested packages not yet on CRAN.
+* Fixed package title's title case.
+
+> If there are references describing the (theoretical background of)
+methods in your package, please add these in the Description field of
+your DESCRIPTION file in the form
+
+There are no published references for the package's methods yet.
