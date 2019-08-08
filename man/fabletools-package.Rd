@@ -4,7 +4,7 @@
 \name{fabletools-package}
 \alias{fabletools}
 \alias{fabletools-package}
-\title{fabletools: Core tools for packages in the 'fable' framework}
+\title{fabletools: Core Tools for Packages in the 'fable' Framework}
 \description{
 Provides tools, helpers and data structures for developing models and time series functions for 'fable' and extension packages. These tools support a consistent and tidy interface for time series modelling and analysis.
 }
