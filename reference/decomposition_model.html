@@ -38,7 +38,7 @@ decomposition method provided to dcmp_fn with the given formula. Secondary
 models are used to fit each of the components from the resulting
 decomposition. These models are specified after the decomposition formula.
 All non-seasonal decomposition components must be specified, and any
-unspecified seasonal components will be forecasted using fable::SNAIVE().
+unspecified seasonal components will be forecasted using seasonal naive.
 These component models will be combined according to the decomposition
 method, giving a combination model for the response of the decomposition." />
 <meta name="twitter:card" content="summary" />
@@ -71,7 +71,7 @@ method, giving a combination model for the response of the decomposition." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -118,7 +118,7 @@ decomposition method provided to <code>dcmp_fn</code> with the given formula. Se
 models are used to fit each of the components from the resulting
 decomposition. These models are specified after the decomposition formula.
 All non-seasonal decomposition components must be specified, and any
-unspecified seasonal components will be forecasted using <code><a href='https://fable.tidyverts.org/reference/RW.html'>fable::SNAIVE()</a></code>.
+unspecified seasonal components will be forecasted using seasonal naive.
 These component models will be combined according to the decomposition
 method, giving a combination model for the response of the decomposition.</p>
     
@@ -131,7 +131,7 @@ method, giving a combination model for the response of the decomposition.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>dcmp_fn</th>
-      <td><p>The decomposition function (such as <code><a href='https://feasts.tidyverts.org/reference/STL.html'>feasts::STL()</a></code>)</p></td>
+      <td><p>The decomposition function</p></td>
     </tr>
     <tr>
       <th>formula</th>
@@ -139,7 +139,7 @@ method, giving a combination model for the response of the decomposition.</p>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Model definitions used to model the components (such as <code><a href='https://fable.tidyverts.org/reference/ETS.html'>fable::ETS()</a></code>)</p></td>
+      <td><p>Model definitions used to model the components</p></td>
     </tr>
     <tr>
       <th>dcmp_args</th>
@@ -167,8 +167,8 @@ method, giving a combination model for the response of the decomposition.</p>
 <span class='co'># Any model can be used, and seasonal components will default to use SNAIVE.</span>
 <span class='no'>my_dcmp_spec</span> <span class='kw'>&lt;-</span> <span class='fu'>decomposition_model</span>(
   <span class='no'>STL</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Log'>log</a></span>(<span class='no'>Turnover</span>) ~ <span class='fu'>season</span>(<span class='kw'>window</span> <span class='kw'>=</span> <span class='fl'>Inf</span>),
-  <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='no'>season_adjust</span>), <span class='fu'><a href='https://fable.tidyverts.org/reference/RW.html'>SNAIVE</a></span>(<span class='no'>season_year</span>)
-)</div><div class='output co'>#&gt; <span class='error'>Error in ETS(season_adjust): could not find function "ETS"</span></div><div class='input'>
+  <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='no'>season_adjust</span> ~ <span class='fu'>season</span>(<span class='st'>"N"</span>)), <span class='fu'><a href='https://fable.tidyverts.org/reference/RW.html'>SNAIVE</a></span>(<span class='no'>season_year</span>)
+)</div><div class='output co'>#&gt; <span class='error'>Error in ETS(season_adjust ~ season("N")): could not find function "ETS"</span></div><div class='input'>
 <span class='no'>vic_food</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='no'>my_dcmp_spec</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='forecast.html'>forecast</a></span>(<span class='kw'>h</span><span class='kw'>=</span><span class='st'>"5 years"</span>) <span class='kw'>%&gt;%</span>
