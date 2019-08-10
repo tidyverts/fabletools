@@ -124,3 +124,9 @@ coef.mdl_df <- function(object, ...){
 tidy.mdl_ts <- function(x, ...){
   tidy(x$fit, ...)
 }
+
+#' @rdname tidy
+#' @export
+coef.mdl_ts <- function(object, ...){
+  tidy(object, ...)
+}
