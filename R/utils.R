@@ -27,6 +27,7 @@ custom_error <- function(.f, error){
   }
 }
 
+#' @importFrom tibble new_tibble
 make_future_data <- function(.data, h = NULL){
   n <- get_frequencies(h, .data, .auto = "smallest")
   if(length(n) > 1){
@@ -34,7 +35,22 @@ make_future_data <- function(.data, h = NULL){
     n <- min(n)
   }
   if(is.null(h)) n <- n*2
-  tsibble::new_data(.data, round(n))
+  
+  # tsibble::new_data(.data, round(n))
+  # Re-implemented here using a simpler/faster method
+  
+  idx <- index_var(.data)
+  itvl <- interval(.data)
+  tunit <- time_unit(itvl)
+  
+  idx_max <- max(.data[[idx]])
+  
+  .data <- list2(!!idx := seq(idx_max + tunit, by = tunit, length.out = n))
+  build_tsibble_meta(
+    new_tibble(.data, nrow = n),
+    key_data = new_tibble(list(.rows = list(seq_len(n))), nrow = 1),
+    index = idx, index2 = idx, ordered = TRUE, interval = itvl
+  )
 }
 
 bind_new_data <- function(object, new_data){
