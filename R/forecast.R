@@ -158,12 +158,20 @@ These required variables can be provided by specifying `new_data`.",
   fc[["dist"]] <- update_fcdist(fc[["dist"]], transformation = bt)
   fc[["point"]] <- set_names(fc[["point"]], map_chr(object$response, expr_text))
   
+  idx <- index_var(new_data)
   mv <- measured_vars(new_data)
   cn <- c(names(fc[["point"]]), ".distribution")
   new_data[names(fc[["point"]])] <- fc[["point"]]
   new_data[[".distribution"]] <- fc[["dist"]]
   
-  as_fable(new_data[c(index_var(new_data), cn, mv)],
+  fbl <- build_tsibble_meta(
+    as_tibble(new_data)[c(idx, cn, mv)],
+    key_data(new_data),
+    index = idx, index2 = idx, ordered = is_ordered(new_data),
+    interval = interval(new_data)
+  )
+  
+  as_fable(fbl,
            resp = object$response,
            dist = !!sym(".distribution")
   )
