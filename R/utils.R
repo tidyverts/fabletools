@@ -45,7 +45,7 @@ make_future_data <- function(.data, h = NULL){
   
   idx_max <- max(.data[[idx]])
   
-  .data <- list2(!!idx := seq(idx_max + tunit, by = tunit, length.out = n))
+  .data <- list2(!!idx := seq(idx_max, by = tunit, length.out = n+1)[-1])
   build_tsibble_meta(
     new_tibble(.data, nrow = n),
     key_data = new_tibble(list(.rows = list(seq_len(n))), nrow = 1),
