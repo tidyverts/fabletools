@@ -168,9 +168,10 @@ nest_keys <- function(.data, nm = "data"){
   idx2 <- as_string(index2(.data))
   out[[nm]] <- map(row_indices, function(x, i, j){
     out <- x[i,j]
-    build_tsibble(out, index = idx, index2 = idx2,
-                  ordered = is_ordered(x), interval = is_regular(x),
-                  validate = FALSE)
+    build_tsibble_meta(out, 
+                       key_data = as_tibble(list(.rows = list(seq_along(i)))),
+                       index = idx, index2 = idx2,
+                       ordered = is_ordered(x), interval = is_regular(x))
   }, x = .data, j = col_nest)
   out
 }

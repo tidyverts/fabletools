@@ -158,11 +158,12 @@ These required variables can be provided by specifying `new_data`.",
   fc[["dist"]] <- update_fcdist(fc[["dist"]], transformation = bt)
   fc[["point"]] <- set_names(fc[["point"]], map_chr(object$response, expr_text))
   
-  out <- mutate(new_data, 
-                !!!(fc[["point"]]),
-                .distribution = fc[["dist"]])
-  out <- select(out, !!index(out), names(fc[["point"]]), !!sym(".distribution"), seq_along(out))
-  as_fable(out,
+  mv <- measured_vars(new_data)
+  cn <- c(names(fc[["point"]]), ".distribution")
+  new_data[names(fc[["point"]])] <- fc[["point"]]
+  new_data[[".distribution"]] <- fc[["dist"]]
+  
+  as_fable(new_data[c(index_var(new_data), cn, mv)],
            resp = object$response,
            dist = !!sym(".distribution")
   )
