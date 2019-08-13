@@ -56,7 +56,7 @@ test_that("reconciliation", {
   )
   
   expect_warning(
-    fc_agg_reconciled <- fit_agg %>% reconcile(ses = min_trace(ses, method = "wls")) %>% forecast(),
+    fc_agg_reconciled <- fit_agg %>% reconcile(ses = min_trace(ses, method = "wls_var")) %>% forecast(),
     "experimental"
   )
   expect_equal(
@@ -86,7 +86,7 @@ test_that("reconciliation", {
   )
   
   expect_warning(
-    fc_agg_reconciled <- fit_agg %>% reconcile(ses = min_trace(ses, method = "cov")) %>% forecast(),
+    fc_agg_reconciled <- fit_agg %>% reconcile(ses = min_trace(ses, method = "mint_cov")) %>% forecast(),
     "experimental"
   )
   expect_equal(

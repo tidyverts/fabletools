@@ -1,5 +1,9 @@
 # fabletools (development version)
 
+## Breaking changes
+
+* Updated methods available for `min_trace()` reconciliation.
+
 # fabletools 0.1.0
 
 * First release.
