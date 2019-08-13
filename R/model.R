@@ -192,7 +192,7 @@ model_lhs <- function(model){
     f <- get_expr(f)
   }
   
-  if(is_formula(f)){
+  if(is.formula(f)){
     f_lhs(f)
   }
   else{
@@ -206,7 +206,7 @@ model_lhs <- function(model){
 #' 
 #' @export
 model_rhs <- function(model){
-  if(is_formula(model$formula)){
+  if(is.formula(model$formula)){
     f_rhs(model$formula)
   }
   else{

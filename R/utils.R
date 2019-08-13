@@ -205,3 +205,7 @@ bind_row_attrb <- function(x){
   }
   x
 }
+
+is.formula <- function(x) {
+  inherits(x, "formula")
+}

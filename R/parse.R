@@ -63,7 +63,7 @@ validate_formula <- function(model, data = NULL){
     model$formula <- guess_response(data)
   }
   else{
-    if(possibly(compose(is_formula, eval_tidy), FALSE)(model$formula)){
+    if(possibly(compose(is.formula, eval_tidy), FALSE)(model$formula)){
       f_env <- get_env(model$formula)
       model$formula <- eval_tidy(model$formula)
       environment(model$formula) <- f_env
