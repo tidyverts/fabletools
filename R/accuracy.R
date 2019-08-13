@@ -280,7 +280,7 @@ accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..
   }
   
   grp <- c(syms(by), groups(object))
-  by <- union(expr_text(index(object)), by)
+  by <- union(index_var(object), by)
   
   
   if(!(".model" %in% by)){
@@ -288,13 +288,13 @@ accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..
   }
   
   if(NROW(missing_test <- suppressWarnings(anti_join(object, data, by = intersect(colnames(data), by)))) > 0){
-    n_miss <- length(unique(missing_test[[as_string(index(missing_test))]]))
+    n_miss <- length(unique(missing_test[[index_var(missing_test)]]))
     warn(sprintf(
       "The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
 %i %s %s", 
       n_miss, 
       ifelse(n_miss==1, "observation is missing at", "observations are missing between"),
-      paste(unique(range(missing_test[[expr_text(index(missing_test))]])), collapse = " and ")
+      paste(unique(range(missing_test[[index_var(missing_test)]])), collapse = " and ")
     ))
   }
   

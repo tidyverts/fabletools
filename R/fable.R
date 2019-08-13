@@ -52,7 +52,7 @@ as_fable.tbl_ts <- function(x, response, distribution, ...){
   else{
     response <- list(get_expr(response))
   }
-
+  
   fbl <- new_tsibble(x, class = "fbl_ts",
                      response = response, dist = enexpr(distribution),
                      model_cn = ".model")
@@ -127,7 +127,7 @@ validate_fable <- function(fbl){
   }
   if (!(as_string(fbl%@%"dist") %in% names(fbl))){
     abort(sprintf("Could not find distribution variable `%s` in the fable.",
-          as_string(fbl%@%"dist")))
+                  as_string(fbl%@%"dist")))
   }
   if (!inherits(fbl[[expr_text(fbl%@%"dist")]], "fcdist")){
     abort('Distribution variable must be of class "fcdist"')

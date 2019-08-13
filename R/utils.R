@@ -180,8 +180,8 @@ nest_keys <- function(.data, nm = "data"){
   if(is_empty(col_nest)){
     col_nest <- rlang::missing_arg()
   }
-  idx <- as_string(index(.data))
-  idx2 <- as_string(index2(.data))
+  idx <- index_var(.data)
+  idx2 <- index2_var(.data)
   ordered <- is_ordered(.data)
   interval <- is_regular(.data)
   out[[nm]] <- map(row_indices, function(x, i, j){

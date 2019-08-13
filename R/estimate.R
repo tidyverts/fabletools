@@ -26,7 +26,7 @@ estimate.tbl_ts <- function(.data, .model, ...){
   # Compute response data (as attributes shouldn't change, using this approach should be much faster)
   .dt_attr <- attributes(.data)
   resp <- map(parsed$expressions, eval_tidy, data = .data, env = .model$specials)
-  .data <- unclass(.data)[expr_text(index(.data))]
+  .data <- unclass(.data)[index_var(.data)]
   .data[map_chr(parsed$expressions, expr_text)] <- resp
   attributes(.data) <- c(attributes(.data), .dt_attr[setdiff(names(.dt_attr), names(attributes(.data)))])
   

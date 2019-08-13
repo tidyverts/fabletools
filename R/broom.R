@@ -30,7 +30,7 @@ augment.mdl_df <- function(x, ...){
 augment.mdl_ts <- function(x, ...){
   tryCatch(augment(x[["fit"]], ...),
            error = function(e){
-             idx <- as_string(index(x$data))
+             idx <- index_var(x$data)
              resp <- x$response
              if(length(resp) > 1){
                response(x) %>% 
