@@ -180,6 +180,9 @@ build_smat <- function(key_data){
   smat <- map(fct, function(x){
     mat <- rep(0, length(x)*length(levels(x)))
     i <- which(!is.na(x))
+    if(length(i) == length(x) && length(levels(x)) > 1){
+      abort("Reconciliation of disjoint hierarchical structures is not yet supported.")
+    }
     j <- as.numeric(x[i])
     mat[i + length(x) * (j-1)] <- 1
     mat <- matrix(mat, nrow = length(x), ncol = length(levels(x)),
