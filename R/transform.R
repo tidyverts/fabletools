@@ -105,6 +105,9 @@ bias_adjust <- function(bt, sd){
     warn("Could not bias adjust the point forecasts as the forecast standard deviation is unknown. Perhaps your series is too short or insufficient bootstrap samples are used.")
     return(bt)
   }
+  if(is.name(body(bt))){
+    return(bt)
+  }
   function(x){
     h <- .Machine$double.eps^(1/4)
     f0 <- bt(x)

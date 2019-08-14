@@ -147,16 +147,13 @@ These required variables can be provided by specifying `new_data`.",
     set_env(bt, env)
   })
   
-  if(isTRUE(bias_adjust)){
-    # Faster version of bias_adjust(bt, fc[["sd"]]^2)(fc[["mean"]]) 
-    fc[["point"]] <- pmap(list(fc[["point"]], fc[["sd"]], bt), function(fc, sd, bt) bias_adjust(bt,sd)(fc))
-  }
-  else{
-    fc[["point"]] <- map2(fc[["point"]], bt, function(fc, bt) bt(fc))
-  }
-  
   fc[["dist"]] <- update_fcdist(fc[["dist"]], transformation = bt)
-  fc[["point"]] <- set_names(fc[["point"]], map_chr(object$response, expr_text))
+  if(isTRUE(bias_adjust)){
+    # Bias adjust transformation with sd
+    bt <- map2(bt, fc[["sd"]], fabletools::bias_adjust)
+  }
+  fc[["point"]] <- map2(fc[["point"]], bt, function(fc, bt) bt(fc))
+  names(fc[["point"]]) <- map_chr(object$response, expr_text)
   
   idx <- index_var(new_data)
   mv <- measured_vars(new_data)
