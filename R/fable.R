@@ -120,16 +120,17 @@ as_tsibble.grouped_fbl <- function(x, ...){
 
 validate_fable <- function(fbl){
   stopifnot(inherits(fbl, "fbl_ts"))
-  if (!all(map_chr(fbl%@%"response", expr_text) %in% names(fbl))){
-    bad_resp <- map_chr(fbl%@%"response", expr_text)
-    bad_resp <- paste0(setdiff(bad_resp, names(fbl)), collapse = ", ")
+  chr_resp <- map_chr(attr(fbl, "response"), expr_text)
+  chr_dist <- as_string(attr(fbl, "dist"))
+  if (!all(chr_resp %in% names(fbl))){
+    bad_resp <- paste0(setdiff(chr_resp, names(fbl)), collapse = ", ")
     abort(sprintf("Could not find response variable(s) in the fable: %s", bad_resp))
   }
-  if (!(as_string(fbl%@%"dist") %in% names(fbl))){
+  if (!(chr_dist %in% names(fbl))){
     abort(sprintf("Could not find distribution variable `%s` in the fable.",
-                  as_string(fbl%@%"dist")))
+                  chr_dist))
   }
-  if (!inherits(fbl[[expr_text(fbl%@%"dist")]], "fcdist")){
+  if (!inherits(fbl[[chr_dist]], "fcdist")){
     abort('Distribution variable must be of class "fcdist"')
   }
 }
