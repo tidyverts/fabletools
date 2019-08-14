@@ -3,7 +3,7 @@ parse_specials <- function(call = NULL, specials = NULL){
     call <- enexpr(call)
     
     # Don't parse xreg_specials - leave them to the xregs
-    nm <- setdiff(names(specials), specials%@%"xreg_specials")
+    nm <- setdiff(names(specials), attr(specials, "xreg_specials"))
     
     parsed <- traverse_call(!!call,
                             .f = function(.x, ...) {
