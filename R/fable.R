@@ -96,10 +96,21 @@ as_fable.fbl_ts <- function(x, response, distribution, ...){
   if(missing(response)){
     response <- x%@%"response"
   }
+  else{
+    quo_response <- enquo(response)
+    # If the response (from user input) needs converting
+    if(quo_is_call(quo_response) && call_name(quo_response) == "c"){
+      response[[1]] <- rlang::exprs
+      response <- eval_tidy(quo_response)
+    }
+    else{
+      response <- list(get_expr(quo_response))
+    }
+  }
   if(missing(distribution)){
     distribution <- x%@%"dist"
   }
-  as_fable(update_tsibble(x, ...), response = !!enquo(response),
+  as_fable(update_tsibble(x, ...), response = response,
            distribution = !!enexpr(distribution))
 }
 
