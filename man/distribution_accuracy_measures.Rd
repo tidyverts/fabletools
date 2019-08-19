@@ -3,11 +3,14 @@
 \docType{data}
 \name{percentile_score}
 \alias{percentile_score}
+\alias{CRPS}
 \alias{distribution_accuracy_measures}
 \title{Distribution accuracy measures}
-\format{An object of class \code{list} of length 1.}
+\format{An object of class \code{list} of length 2.}
 \usage{
 percentile_score(.dist, .actual, na.rm = TRUE, ...)
+
+CRPS(.dist, .actual, n_quantiles = 1000, na.rm = TRUE, ...)
 
 distribution_accuracy_measures
 }
@@ -20,6 +23,8 @@ distribution_accuracy_measures
 \item{na.rm}{Remove the missing values before calculating the accuracy measure}
 
 \item{...}{Additional arguments for each measure.}
+
+\item{n_quantiles}{The number of quantiles to use in approximating CRPS when an exact solution is not available.}
 }
 \description{
 Distribution accuracy measures

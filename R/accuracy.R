@@ -122,11 +122,35 @@ percentile_score <- function(.dist, .actual, na.rm = TRUE, ...){
     mean(na.rm = na.rm)
 }
 
+#' @rdname distribution_accuracy_measures
+#' @export
+CRPS <- function(.dist, .actual, n_quantiles = 1000, na.rm = TRUE, ...){
+  if(is_dist_normal(.dist)){
+    mean <- map_dbl(.dist, `[[`, "mean")
+    sd <- map_dbl(.dist, `[[`, "sd")
+    z <- (.actual-mean)/sd
+    z <- sd*(z*(2*pnorm(z)-1)+2*dnorm(z)-1/sqrt(pi))
+    mean(z, na.rm = na.rm)
+  }
+  else{
+    probs <- seq(0, 1, length.out = n_quantiles + 2)[seq_len(n_quantiles) + 1]
+    percentiles <- quantile(.dist, probs)
+    if(length(percentiles[[1]]) > 1) abort("Percentile scores are not supported for multivariate distributions.")
+    z <- map2_dbl(percentiles, probs, function(percentile, prob){
+      L <- ifelse(.actual < percentile[[1]], (1-prob), prob)*abs(percentile[[1]]-.actual)
+      mean(L, na.rm = na.rm)
+    })
+    2 * mean(z, na.rm = na.rm)
+  }
+}
+
 #' Distribution accuracy measures
 #' 
 #' @inheritParams interval_accuracy_measures
+#' @param n_quantiles The number of quantiles to use in approximating CRPS when an exact solution is not available.
+#' 
 #' @export
-distribution_accuracy_measures <- list(percentile = percentile_score)
+distribution_accuracy_measures <- list(percentile = percentile_score, CRPS = CRPS)
 
 #' Evaluate accuracy of a forecast or model
 #' 
