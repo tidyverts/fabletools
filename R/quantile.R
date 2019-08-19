@@ -6,8 +6,10 @@
 #' @rdname fcdist
 #' @export
 new_fcdist <- function(..., .env){
-  pmap(dots_list(...), list, .env = .env) %>%
-    structure(class = "fcdist")
+  structure(
+    pmap(dots_list(...), list, .env = .env),
+    class = "fcdist"
+  )
 }
 
 #' @param quantile A distribution function producing quantiles (such as `qnorm`)
