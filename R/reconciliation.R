@@ -35,7 +35,9 @@ reconcile.mdl_df <- function(.data, ...){
 #' 
 #' @param models A column of models in a mable.
 #' @param method The reconciliation method to use.
-#' @param sparse If TRUE, the reconciliation will be computed using sparse matrix algebra?
+#' @param sparse If TRUE, the reconciliation will be computed using sparse 
+#' matrix algebra? By default, sparse matrices will be used if the MatrixM 
+#' package is installed.
 #' 
 #' @seealso 
 #' [`reconcile()`], [`aggregate_key()`]
@@ -45,7 +47,10 @@ reconcile.mdl_df <- function(.data, ...){
 #' 
 #' @export
 min_trace <- function(models, method = c("wls_var", "ols", "wls_struct", "mint_cov", "mint_shrink"),
-                 sparse = requireNamespace("SparseM")){
+                 sparse = NULL){
+  if(is.null(sparse)){
+    sparse <- requireNamespace("SparseM", quietly = TRUE)
+  }
   structure(models, class = c("lst_mint_mdl", "lst_mdl"),
             method = match.arg(method), sparse = sparse)
 }
