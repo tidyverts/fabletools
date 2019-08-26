@@ -79,6 +79,10 @@ forecast <- function(object, ...){
 forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
   kv <- c(key_vars(object), ".model")
   mdls <- object%@%"models"
+  if(!is.null(h) && !is.null(new_data)){
+    warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
+    h <- NULL
+  }
   if(!is.null(new_data)){
     object <- bind_new_data(object, new_data)
   }
@@ -109,6 +113,10 @@ forecast.lst_mdl <- function(object, new_data = NULL, key_data, ...){
 
 #' @export
 forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
+  if(!is.null(h) && !is.null(new_data)){
+    warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
+    h <- NULL
+  }
   if(is.null(new_data)){
     new_data <- make_future_data(object$data, h)
   }
