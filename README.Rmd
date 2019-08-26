@@ -24,8 +24,14 @@ The R package *fabletools* provides tools for building modelling packages, with 
 
 ## Installation
 
+You could install the **stable** version on [CRAN](https://cran.r-project.org/package=fabletools):
+
+```{r, eval = FALSE}
+install.packages("fabletools")
+```
+
 You can install the **development** version from
-[GitHub](https://github.com/tidyverts/fabletools)
+[GitHub](https://github.com/tidyverts/fabletools):
 
 ```{r gh-installation, eval = FALSE}
 # install.packages("devtools")

@@ -19,8 +19,15 @@ needing to depend on the models supported by *fable*.
 
 ## Installation
 
+You could install the **stable** version on
+[CRAN](https://cran.r-project.org/package=fabletools):
+
+``` r
+install.packages("fabletools")
+```
+
 You can install the **development** version from
-[GitHub](https://github.com/tidyverts/fabletools)
+[GitHub](https://github.com/tidyverts/fabletools):
 
 ``` r
 # install.packages("devtools")
