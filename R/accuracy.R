@@ -129,7 +129,7 @@ CRPS <- function(.dist, .actual, n_quantiles = 1000, na.rm = TRUE, ...){
     mean <- map_dbl(.dist, `[[`, "mean")
     sd <- map_dbl(.dist, `[[`, "sd")
     z <- (.actual-mean)/sd
-    z <- sd*(z*(2*pnorm(z)-1)+2*dnorm(z)-1/sqrt(pi))
+    z <- sd*(z*(2*stats::pnorm(z)-1)+2*stats::dnorm(z)-1/sqrt(pi))
     mean(z, na.rm = na.rm)
   }
   else{

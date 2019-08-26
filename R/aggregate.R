@@ -40,7 +40,7 @@ aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){
   }
   
   # Key combinations
-  tm <- terms(new_formula(lhs = NULL, rhs = .spec), env = empty_env())
+  tm <- stats::terms(new_formula(lhs = NULL, rhs = .spec), env = empty_env())
   key_comb <- attr(tm, "factors")
   key_vars <- rownames(key_comb)
   key_comb <- map(split(key_comb, col(key_comb)), function(x) key_vars[x!=0])
