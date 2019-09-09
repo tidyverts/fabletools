@@ -172,10 +172,10 @@ nest_grps <- function(.data, nm = "data"){
 }
 
 nest_keys <- function(.data, nm = "data"){
-  out <- key_data(.data)
+  out <- unclass(key_data(.data))
   key <- key_vars(.data)
-  row_indices <- out[[NCOL(out)]]
-  out[[NCOL(out)]] <- NULL
+  row_indices <- out[[length(out)]]
+  out[[length(out)]] <- NULL
   col_nest <- -match(key, colnames(.data))
   if(is_empty(col_nest)){
     col_nest <- NULL
@@ -193,7 +193,7 @@ nest_keys <- function(.data, nm = "data"){
       interval = if(length(i) > 1) interval else interval(.data)
     )
   }, x = as_tibble(.data), j = col_nest)
-  out
+  as_tibble(out)
 }
 
 bind_row_attrb <- function(x){
