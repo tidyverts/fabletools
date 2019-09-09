@@ -178,7 +178,7 @@ nest_keys <- function(.data, nm = "data"){
   out[[NCOL(out)]] <- NULL
   col_nest <- -match(key, colnames(.data))
   if(is_empty(col_nest)){
-    col_nest <- rlang::missing_arg()
+    col_nest <- NULL
   }
   idx <- index_var(.data)
   idx2 <- index2_var(.data)
