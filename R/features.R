@@ -12,6 +12,8 @@ features_impl <- function(.tbl, .var, features, ...){
   
   .resp <- map(.var, eval_tidy, data = .tbl)
   key_dt <- key_data(.tbl)
+  
+  # Compute features
   out <- map(.resp, function(x){
     res <- imap(features, function(fn, nm){
       fmls <- formals(fn)[-1]
@@ -37,7 +39,8 @@ features_impl <- function(.tbl, .var, features, ...){
   })
   out <- transpose(out)
   
-  err <- flatten(out$error)
+  # Report errors
+  err <- flatten(unname(out$error))
   imap(err, function(err, nm){
     err <- compact(err)
     if((tot_err <- length(err)) > 0){
