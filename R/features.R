@@ -13,22 +13,46 @@ features_impl <- function(.tbl, .var, features, ...){
   .resp <- map(.var, eval_tidy, data = .tbl)
   key_dt <- key_data(.tbl)
   out <- map(.resp, function(x){
-    tbl <- imap(features, function(fn, nm){
+    res <- imap(features, function(fn, nm){
       fmls <- formals(fn)[-1]
-      fn_safe <- possibly(fn, tibble(.rows = 1))
-      tbl <- invoke(dplyr::bind_rows, map(key_dt[[".rows"]], function(i){
+      fn_safe <- safely(fn, tibble(.rows = 1))
+      res <- transpose(map(key_dt[[".rows"]], function(i){
         out <- do.call(fn_safe, c(list(x[i]), dots[intersect(names(fmls), names(dots))]))
         if(is.null(names(out))) names(out) <- rep(".?", length(out))
         out
       }))
+      err <- compact(res[["error"]])
+      tbl <- invoke(dplyr::bind_rows, res[["result"]])
+      
       names(tbl)[names(tbl) == ".?"] <- ""
       if(is.character(nm) && nzchar(nm)){
         names(tbl) <- sprintf("%s%s%s", nm, ifelse(nzchar(names(tbl)), "_", ""), names(tbl))
       }
-      tbl
+      list(error = err, result = tbl)
     })
-    invoke(dplyr::bind_cols, tbl)
+    res <- transpose(res)
+    res[["result"]] <- invoke(dplyr::bind_cols, res[["result"]])
+    res
   })
+  out <- transpose(out)
+  
+  err <- flatten(out$error)
+  imap(err, function(err, nm){
+    err <- compact(err)
+    if((tot_err <- length(err)) > 0){
+      err_msg <- table(map_chr(err, function(x) x[["message"]]))
+      warn(
+        sprintf("%i error%s encountered for feature %s\n%s\n",
+                tot_err,
+                if(tot_err > 1) sprintf("s (%i unique)", length(err_msg)) else "", 
+                nm,
+                paste0("[", err_msg, "] ", names(err_msg), collapse = "\n")
+        )
+      )
+    }
+  })
+  
+  out <- out[["result"]]
   
   if(!is.null(names(out))){
     out <- imap(out, function(tbl, nm){

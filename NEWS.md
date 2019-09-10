@@ -2,7 +2,11 @@
 
 ## Breaking changes
 
-* Updated methods available for `min_trace()` reconciliation.
+* Updated method names available for `min_trace()` reconciliation.
+
+## Improvements
+
+* Improved error messaging for failing features.
 
 # fabletools 0.1.0
 
