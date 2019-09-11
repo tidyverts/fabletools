@@ -50,6 +50,7 @@ aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){
   }
   
   idx <- index2(.data)
+  intvl <- interval(.data)
   .data <- as_tibble(.data)
   
   agg_dt <- bind_row_attrb(map(key_comb, function(x){
@@ -67,7 +68,9 @@ aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){
   .data <- ungroup(.data)
   
   # Return tsibble
-  build_tsibble_meta(.data, key_data = key_dt, index = as_string(idx), index2 = as_string(idx), ordered = TRUE) %>% 
+  build_tsibble_meta(.data, key_data = key_dt, index = as_string(idx), 
+                     index2 = as_string(idx), ordered = TRUE,
+                     interval = intvl) %>% 
     mutate(!!!set_names(map(kv, function(x) expr(agg_key(!!sym(x)))), kv))
 }
 
