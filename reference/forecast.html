@@ -8,21 +8,25 @@
 
 <title>Produce forecasts — forecast • fabletools</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,8 +34,8 @@
 
 
 
-<meta property="og:title" content="Produce forecasts — forecast" />
 
+<meta property="og:title" content="Produce forecasts — forecast" />
 <meta property="og:description" content="The forecast function allows you to produce future predictions of a time series
 from fitted models. If the response variable has been transformed in the
 model formula, the transformation will be automatically back-transformed
@@ -39,6 +43,7 @@ model formula, the transformation will be automatically back-transformed
 transformations in the fable framework can be found in
 vignette(&quot;transformations&quot;, package = &quot;fable&quot;)." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -50,6 +55,7 @@ vignette(&quot;transformations&quot;, package = &quot;fable&quot;)." />
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
 
 
   </head>
@@ -76,7 +82,7 @@ vignette(&quot;transformations&quot;, package = &quot;fable&quot;)." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -87,7 +93,6 @@ vignette(&quot;transformations&quot;, package = &quot;fable&quot;)." />
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
@@ -97,6 +102,7 @@ vignette(&quot;transformations&quot;, package = &quot;fable&quot;)." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -108,14 +114,12 @@ vignette(&quot;transformations&quot;, package = &quot;fable&quot;)." />
     </div>
 
     <div class="ref-description">
-    
     <p>The forecast function allows you to produce future predictions of a time series
 from fitted models. If the response variable has been transformed in the
 model formula, the transformation will be automatically back-transformed
 (and bias adjusted if <code>bias_adjust</code> is <code>TRUE</code>). More details about
 transformations in the fable framework can be found in
 <code><a href='https://fable.tidyverts.org/articles/transformations.html'>vignette("transformations", package = "fable")</a></code>.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>forecast</span>(<span class='no'>object</span>, <span class='no'>...</span>)
@@ -123,7 +127,7 @@ transformations in the fable framework can be found in
 <span class='co'># S3 method for mdl_df</span>
 <span class='fu'>forecast</span>(<span class='no'>object</span>, <span class='kw'>new_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>h</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>bias_adjust</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -150,7 +154,7 @@ time series with no exogenous regressors).</p></td>
 Refer to <code><a href='https://fable.tidyverts.org/articles/transformations.html'>vignette("transformations", package = "fable")</a></code> for more details.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The forecasts returned contain both point forecasts and their distribution.
@@ -158,61 +162,77 @@ A specific forecast interval can be extracted from the distribution using the
 <code><a href='hilo.html'>hilo()</a></code> function, and multiple intervals can be obtained using <code><a href='report.html'>report()</a></code>.
 These intervals are stored in a single column using the <code>hilo</code> class, to
 extract the numerical upper and lower bounds you can use <code><a href='https://tidyr.tidyverse.org/reference/unnest.html'>tidyr::unnest()</a></code>.</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>fable</span>)</div><div class='output co'>#&gt; <span class='error'>Error: package ‘fabletools’ required by ‘fable’ could not be found</span></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>tsibble</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>tsibbledata</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>tidyr</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>fable</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibble</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibbledata</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tidyr</span>)
 
 <span class='co'># Forecasting with an ETS(M,Ad,A) model to Australian beer production</span>
 <span class='no'>beer_fc</span> <span class='kw'>&lt;-</span> <span class='no'>aus_production</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Log'>log</a></span>(<span class='no'>Beer</span>) ~ <span class='fu'>error</span>(<span class='st'>"M"</span>) + <span class='fu'>trend</span>(<span class='st'>"Ad"</span>) + <span class='fu'>season</span>(<span class='st'>"A"</span>))) <span class='kw'>%&gt;%</span>
-  <span class='fu'>forecast</span>(<span class='kw'>h</span> <span class='kw'>=</span> <span class='st'>"3 years"</span>)</div><div class='output co'>#&gt; <span class='error'>Error in ETS(log(Beer) ~ error("M") + trend("Ad") + season("A")): could not find function "ETS"</span></div><div class='input'>
+  <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Beer</span>) ~ <span class='fu'>error</span>(<span class='st'>"M"</span>) + <span class='fu'>trend</span>(<span class='st'>"Ad"</span>) + <span class='fu'>season</span>(<span class='st'>"A"</span>))) <span class='kw'>%&gt;%</span>
+  <span class='fu'>forecast</span>(<span class='kw'>h</span> <span class='kw'>=</span> <span class='st'>"3 years"</span>)
+
 <span class='co'># Compute 80% and 95% forecast intervals</span>
 <span class='no'>beer_fc</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='hilo.html'>hilo</a></span>(<span class='kw'>level</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>80</span>, <span class='fl'>95</span>))</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'beer_fc' not found</span></div><div class='input'>
+  <span class='fu'><a href='hilo.html'>hilo</a></span>(<span class='kw'>level</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>80</span>, <span class='fl'>95</span>))</div><div class='output co'>#&gt; # A tsibble: 12 x 5 [1Q]
+#&gt; # Key:       .model [1]
+#&gt;    .model Quarter  Beer                  `80%`                  `95%`
+#&gt;    &lt;chr&gt;    &lt;qtr&gt; &lt;dbl&gt;                 &lt;hilo&gt;                 &lt;hilo&gt;
+#&gt;  1 ets    2010 Q3  407. [388.3086, 425.8337]80 [378.9423, 436.3591]95
+#&gt;  2 ets    2010 Q4  483. [459.8714, 506.5468]80 [448.2540, 519.6750]95
+#&gt;  3 ets    2011 Q1  419. [398.6325, 439.3894]80 [388.4926, 450.8578]95
+#&gt;  4 ets    2011 Q2  384. [365.3574, 403.7254]80 [355.8271, 414.5385]95
+#&gt;  5 ets    2011 Q3  405. [382.4128, 427.7091]80 [371.2483, 440.5715]95
+#&gt;  6 ets    2011 Q4  481. [452.3059, 509.7606]80 [438.2139, 526.1534]95
+#&gt;  7 ets    2012 Q1  417. [391.5386, 443.0498]80 [378.9369, 457.7836]95
+#&gt;  8 ets    2012 Q2  383. [358.4021, 407.8355]80 [346.3522, 422.0245]95
+#&gt;  9 ets    2012 Q3  403. [374.7091, 432.7834]80 [360.6877, 449.6076]95
+#&gt; 10 ets    2012 Q4  479. [442.8408, 516.4800]80 [425.1726, 537.9426]95
+#&gt; 11 ets    2013 Q1  416. [383.0362, 449.4648]80 [367.1605, 468.8992]95
+#&gt; 12 ets    2013 Q2  382. [350.3968, 414.1880]80 [335.2233, 432.9358]95</div><div class='input'>
 <span class='no'>beer_fc</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>aus_production</span>)</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'beer_fc' not found</span></div><div class='input'>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>aus_production</span>)</div><div class='img'><img src='forecast-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Forecasting with a seasonal naive and linear model to the monthly </span>
 <span class='co'># "Food retailing" turnover for each Australian state/territory.</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
 <span class='no'>aus_retail</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>Industry</span> <span class='kw'>==</span> <span class='st'>"Food retailing"</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(
     <span class='kw'>snaive</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/RW.html'>SNAIVE</a></span>(<span class='no'>Turnover</span>),
-    <span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Log'>log</a></span>(<span class='no'>Turnover</span>) ~ <span class='fu'>trend</span>() + <span class='fu'>season</span>()),
+    <span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Turnover</span>) ~ <span class='fu'>trend</span>() + <span class='fu'>season</span>()),
   ) <span class='kw'>%&gt;%</span>
   <span class='fu'>forecast</span>(<span class='kw'>h</span> <span class='kw'>=</span> <span class='st'>"2 years 6 months"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>aus_retail</span>, <span class='no'>Month</span> <span class='kw'>&gt;=</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/period.html'>yearmonth</a></span>(<span class='st'>"2000 Jan"</span>)), <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>90</span>)</div><div class='output co'>#&gt; <span class='error'>Error in SNAIVE(Turnover): could not find function "SNAIVE"</span></div><div class='input'>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>aus_retail</span>, <span class='no'>Month</span> <span class='kw'>&gt;=</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/period.html'>yearmonth</a></span>(<span class='st'>"2000 Jan"</span>)), <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>90</span>)</div><div class='img'><img src='forecast-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Forecast GDP with a dynamic regression model on log(GDP) using population and</span>
 <span class='co'># an automatically chosen ARIMA error structure. Assume that population is fixed</span>
 <span class='co'># in the future.</span>
 <span class='no'>aus_economy</span> <span class='kw'>&lt;-</span> <span class='no'>global_economy</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>Country</span> <span class='kw'>==</span> <span class='st'>"Australia"</span>)
 <span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='no'>aus_economy</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>lm</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ARIMA.html'>ARIMA</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Log'>log</a></span>(<span class='no'>GDP</span>) ~ <span class='no'>Population</span>))</div><div class='output co'>#&gt; <span class='error'>Error in ARIMA(log(GDP) ~ Population): could not find function "ARIMA"</span></div><div class='input'>
+  <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>lm</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ARIMA.html'>ARIMA</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>GDP</span>) ~ <span class='no'>Population</span>))</div><div class='output co'>#&gt; <span class='warning'>Warning: 1 error encountered for lm</span>
+#&gt; <span class='warning'>[1] The `urca` package must be installed to use this functionality. It can be installed with install.packages("urca")</span></div><div class='input'>
 <span class='no'>future_aus</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/new-data.html'>new_data</a></span>(<span class='no'>aus_economy</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>10</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>Population</span> <span class='kw'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/nth.html'>last</a></span>(<span class='no'>aus_economy</span>$<span class='no'>Population</span>))
 
 <span class='no'>fit</span> <span class='kw'>%&gt;%</span>
   <span class='fu'>forecast</span>(<span class='kw'>new_data</span> <span class='kw'>=</span> <span class='no'>future_aus</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>aus_economy</span>)</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'fit' not found</span></div><div class='input'>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>aus_economy</span>)</div><div class='img'><img src='forecast-3.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#details">Details</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -220,13 +240,16 @@ extract the numerical upper and lower bounds you can use <code><a href='https://
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 
