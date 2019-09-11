@@ -183,14 +183,14 @@ nest_keys <- function(.data, nm = "data"){
   idx <- index_var(.data)
   idx2 <- index2_var(.data)
   ordered <- is_ordered(.data)
-  interval <- is_regular(.data)
+  regular <- is_regular(.data)
   out[[nm]] <- map(row_indices, function(x, i, j){
     out <- if(is.null(j)) x[i,] else x[i,j]
     build_tsibble_meta(
       out, 
       key_data = as_tibble(list(.rows = list(seq_along(i)))),
       index = idx, index2 = idx2, ordered = ordered, 
-      interval = if(length(i) > 1) interval else interval(.data)
+      interval = if(length(i) > 1 && regular) interval_pull(out[[idx]]) else interval(.data)
     )
   }, x = as_tibble(.data), j = col_nest)
   as_tibble(out)
