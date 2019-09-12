@@ -7,6 +7,7 @@
 ## Improvements
 
 * Improved error messaging for failing features.
+* Transformations of features are now computed for separately for each key, allowing transformations such as `scale(value)` to be used.
 
 # fabletools 0.1.0
 

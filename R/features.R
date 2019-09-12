@@ -10,8 +10,15 @@ features_impl <- function(.tbl, .var, features, ...){
     dots$.period <- get_frequencies(NULL, .tbl, .auto = "smallest")
   }
   
-  .resp <- map(.var, eval_tidy, data = .tbl)
+  # Compute response
   key_dt <- key_data(.tbl)
+  .resp <- unclass(
+    dplyr::transmute(
+      dplyr::new_grouped_df(as_tibble(.tbl), key_dt),
+      !!!.var
+    )
+  )[-seq_len(NCOL(key_dt) - 1)]
+  names(.resp) <- names(.var)
   
   # Compute features
   out <- map(.resp, function(x){
