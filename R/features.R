@@ -17,7 +17,12 @@ features_impl <- function(.tbl, .var, features, ...){
       dplyr::new_grouped_df(as_tibble(.tbl), key_dt),
       !!!.var
     )
-  )[-seq_len(NCOL(key_dt) - 1)]
+  )
+  
+  if(NCOL(key_dt) > 1){
+    .resp <- .resp[-seq_len(NCOL(key_dt) - 1)]
+  }
+  
   names(.resp) <- names(.var)
   
   # Compute features
