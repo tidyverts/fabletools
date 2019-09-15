@@ -107,7 +107,10 @@ test_that("Model parsing scope", {
 
 
 test_that("Model response identification", {
-  dt <- as_tsibble(list(index = Sys.Date() - 1:10, GDP = rnorm(10), CPI = rnorm(10)))
+  dt <- tsibble(
+    idx = Sys.Date() - 1:10, GDP = rnorm(10), CPI = rnorm(10),
+    index = idx
+  )
   
   # Untransformed response
   mdl <- model(dt, no_specials(GDP))
