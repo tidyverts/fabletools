@@ -9,7 +9,7 @@
 * Improved error messaging for failing features.
 * Added Continuous Ranked Probability Score (`CRPS()`) accuracy measure.
 * Transformations of features are now computed for separately for each key, allowing transformations such as `scale(value)` to be used.
-* Added structural scaling method for MinT (`min_trace()`) forecast reconciliation (@GeorgeAthana).
+* Added structural scaling method for MinT (`min_trace(method = "wls_struct")`) forecast reconciliation (@GeorgeAthana).
 * Performance improvements.
 * Documentation improvements.
 
