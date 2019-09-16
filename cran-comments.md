@@ -6,35 +6,11 @@
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 2 notes
 
-* This is a new release.
-
-## Comments
-
-This is a joint submission with fable and feasts. These packages are
-interdependent in their examples and functionality, so all packages will need
-to be installed prior to checking the packages.
-
-fabletools should be installed first, and then fable and feasts.
-
-Unfortunately due to this dependency, the packages could not be tested using 
-win-builder. Instead these packages have been checked on Windows using AppVeyor.
-
-Apologies for the added complexity in reviewing this submission.
-
-## Re-submission
-
-* Fixed URL in description.
-* Removed VignetteBuilder field from DESCRIPTION.
-* Conditionally require suggested packages in examples and tests.
-* Fix registration of guide_train.level_guide to ggplot2::guide_train.
-* Sped up examples to be <10s on win-builder.
-* Added Additional_repositories for suggested packages not yet on CRAN.
-* Fixed package title's title case.
-
-> If there are references describing the (theoretical background of)
-methods in your package, please add these in the Description field of
-your DESCRIPTION file in the form
-
-There are no published references for the package's methods yet.
+Suggests or Enhances not in mainstream repositories:
+  fable
+Availability using Additional_repositories specification:
+  fable   yes   https://tidyverts.org/
+  
+* Package suggested but not available for checking: 'fable'
