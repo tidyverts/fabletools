@@ -12,17 +12,12 @@ features_impl <- function(.tbl, .var, features, ...){
   
   # Compute response
   key_dt <- key_data(.tbl)
-  .resp <- unclass(
-    dplyr::transmute(
-      dplyr::new_grouped_df(as_tibble(.tbl), key_dt),
-      !!!.var
-    )
-  )
-  
-  if(NCOL(key_dt) > 1){
-    .resp <- .resp[-seq_len(NCOL(key_dt) - 1)]
+  .tbl <- as_tibble(.tbl)
+  if(NROW(key_dt) > 1){
+    .tbl <- dplyr::new_grouped_df(.tbl, key_dt)
   }
-  
+  .resp <- unclass(dplyr::transmute(.tbl, !!!.var))
+  .resp <- .resp[seq_along(.var) + NCOL(key_dt) - 1]
   names(.resp) <- names(.var)
   
   # Compute features
