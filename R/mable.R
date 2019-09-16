@@ -90,16 +90,23 @@ gather.mdl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE
   as_mable(tbl, key = c(key_vars(data), key), models = mdls)
 }
 
+# Adapted from tsibble:::select_tsibble
 #' @export
 select.mdl_df <- function (.data, ...){
-  key <- key(.data)
-  .data <- select(as_tibble(.data), !!!key(.data), ...)
+  sel_data <- select(as_tibble(.data), ...)
+  sel_vars <- names(sel_data)
   
-  mdls <- names(which(map_lgl(.data, inherits, "lst_mdl")))
+  kv <- key_vars(.data)
+  key_vars <- intersect(sel_vars, kv)
+  key_nochange <- all(is.element(kv, key_vars))
+  
+  mdls <- names(which(map_lgl(sel_data, inherits, "lst_mdl")))
   if(is_empty(mdls)){
     abort("A mable must contain at least one model. To remove all models, first convert to a tibble with `as_tibble()`.")
   }
-  as_mable(.data, key = key, models = mdls)
+  as_mable(sel_data,
+           key = if(key_nochange) key_data(.data) else kv,
+           models = mdls)
 }
 
 #' @export

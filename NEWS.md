@@ -1,5 +1,9 @@
 # fabletools (development version)
 
+## Bug fixes
+
+* Fixed `select.mdl_df()` usage with negative select values (#120)
+
 # fabletools 0.1.1
 
 ## Breaking changes
