@@ -18,13 +18,14 @@
 #' @param ... Additional arguments for individual simulation methods.
 #' 
 #' @examples
-#' library(dplyr)
+#' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(fable)
+#' library(dplyr)
 #' UKLungDeaths <- as_tsibble(cbind(mdeaths, fdeaths), pivot_longer = FALSE)
 #' UKLungDeaths %>% 
 #'   model(lm = TSLM(mdeaths ~ fourier("year", K = 4) + fdeaths)) %>% 
 #'   generate(UKLungDeaths, times = 5)
-#' 
+#' }
 #' @export
 generate.mdl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   kv <- c(key_vars(x), ".model")

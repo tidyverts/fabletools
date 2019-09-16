@@ -27,6 +27,7 @@ level from a distribution or fable.
 
 dist_normal(10, 3) \%>\% hilo(95)
 
+if (requireNamespace("fable", quietly = TRUE)) {
 library(fable)
 library(tsibbledata)
 library(dplyr)
@@ -34,4 +35,5 @@ aus_production \%>\%
   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) \%>\% 
   forecast(h = "3 years") \%>\% 
   mutate(interval = hilo(.distribution, 95))
+}
 }

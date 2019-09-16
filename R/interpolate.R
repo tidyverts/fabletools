@@ -7,6 +7,7 @@
 #' @param ... Other arguments passed to interpolate methods.
 #' 
 #' @examples 
+#' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(fable)
 #' library(tsibbledata)
 #' 
@@ -17,6 +18,7 @@
 #' olympic_running %>% 
 #'   model(TSLM(Time ~ trend())) %>% 
 #'   interpolate(olympic_running)
+#' }
 #' 
 #' @rdname interpolate
 #' @export

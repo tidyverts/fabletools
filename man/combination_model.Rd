@@ -24,6 +24,7 @@ distributed forecasts.
 A combination model can also be produced using mathematical operations.
 }
 \examples{
+if (requireNamespace("fable", quietly = TRUE)) {
 library(fable)
 library(tsibble)
 library(tsibbledata)
@@ -43,4 +44,5 @@ aus_production \%>\%
       cmbn_args = list(weights = "inv_var")
     )
   )
+}
 }

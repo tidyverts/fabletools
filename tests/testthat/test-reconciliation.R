@@ -17,6 +17,8 @@ test_that("reconciliation", {
     "<aggregated>"
   )
   
+  skip_if_not_installed("fable")
+  
   fit_agg <- lung_deaths_agg %>% 
     model(snaive = fable::SNAIVE(value))
   

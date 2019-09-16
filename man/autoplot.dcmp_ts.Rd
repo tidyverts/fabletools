@@ -22,10 +22,12 @@ variable of the dable. Useful for visualising how the components contribute
 in a decomposition or model.
 }
 \examples{
+if (requireNamespace("feasts", quietly = TRUE)) {
 library(feasts)
 library(tsibbledata)
 aus_production \%>\% 
   STL(Beer) \%>\% 
   autoplot()
+}
 
 }

@@ -35,6 +35,7 @@ according to that plan.
 }
 
 \examples{
+if (requireNamespace("fable", quietly = TRUE)) {
 library(fable)
 library(tsibbledata)
 
@@ -51,5 +52,6 @@ aus_retail \%>\%
     snaive = SNAIVE(Turnover),
     ets = ETS(log(Turnover) ~ error("A") + trend("A") + season("A")),
   )
+}
 
 }

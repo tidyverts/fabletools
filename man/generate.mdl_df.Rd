@@ -37,11 +37,12 @@ residuals. If \code{new_data} contains the \code{.innov} column, those values wi
 treated as innovations for the simulated paths..
 }
 \examples{
-library(dplyr)
+if (requireNamespace("fable", quietly = TRUE)) {
 library(fable)
+library(dplyr)
 UKLungDeaths <- as_tsibble(cbind(mdeaths, fdeaths), pivot_longer = FALSE)
 UKLungDeaths \%>\% 
   model(lm = TSLM(mdeaths ~ fourier("year", K = 4) + fdeaths)) \%>\% 
   generate(UKLungDeaths, times = 5)
-
+}
 }

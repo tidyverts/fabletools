@@ -19,6 +19,7 @@ Uses a fitted model to augment the response variable with fitted values and
 residuals.
 }
 \examples{
+if (requireNamespace("fable", quietly = TRUE)) {
 library(fable)
 library(tsibbledata)
 
@@ -26,5 +27,6 @@ library(tsibbledata)
 aus_production \%>\%
   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) \%>\% 
   augment(type = "response")
+}
 
 }

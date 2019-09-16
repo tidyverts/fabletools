@@ -245,6 +245,7 @@ length.fcdist <- function(x){
 #' 
 #' dist_normal(10, 3) %>% hilo(95)
 #' 
+#' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(fable)
 #' library(tsibbledata)
 #' library(dplyr)
@@ -252,6 +253,7 @@ length.fcdist <- function(x){
 #'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) %>% 
 #'   forecast(h = "3 years") %>% 
 #'   mutate(interval = hilo(.distribution, 95))
+#' }
 #' @export
 hilo.fcdist <- function(x, level = 95, ...){
   if(length(level)!=1){

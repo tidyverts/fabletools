@@ -20,6 +20,7 @@
 Uses a fitted model to interpolate missing values from a dataset.
 }
 \examples{
+if (requireNamespace("fable", quietly = TRUE)) {
 library(fable)
 library(tsibbledata)
 
@@ -30,5 +31,6 @@ olympic_running
 olympic_running \%>\% 
   model(TSLM(Time ~ trend())) \%>\% 
   interpolate(olympic_running)
+}
 
 }

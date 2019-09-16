@@ -29,6 +29,7 @@ forecast <- function(object, ...){
 #' @param ... Additional arguments for forecast model methods.
 #' 
 #' @examples 
+#' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(fable)
 #' library(tsibble)
 #' library(tsibbledata)
@@ -73,6 +74,7 @@ forecast <- function(object, ...){
 #' fit %>% 
 #'   forecast(new_data = future_aus) %>% 
 #'   autoplot(aus_economy)
+#' }
 #' 
 #' @rdname forecast
 #' @export

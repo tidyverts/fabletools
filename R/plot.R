@@ -9,12 +9,14 @@
 #' @param ... Further arguments passed to [`ggplot2::geom_line()`], which can be used to specify fixed aesthetics such as `colour = "red"` or `size = 3`. 
 #' 
 #' @examples 
+#' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(fable)
 #' library(tsibbledata)
 #' library(tsibble)
 #' 
 #' tsibbledata::gafa_stock %>%
 #'  autoplot(vars(Close, log(Close)))
+#' }
 #' 
 #' @importFrom ggplot2 ggplot aes geom_line guides guide_legend xlab
 #' @export
@@ -178,8 +180,9 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 #' @inheritParams hilo
 #' 
 #' @examples 
-#' library(fable)
 #' library(tsibbledata)
+#' if (requireNamespace("fable", quietly = TRUE)) {
+#' library(fable)
 #' 
 #' fc <- aus_production %>%
 #'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) %>% 
@@ -187,6 +190,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 #' 
 #' fc %>% 
 #'   autoplot(aus_production)
+#' }
 #' 
 #' @importFrom ggplot2 facet_wrap
 #' @export
@@ -251,9 +255,11 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
 #' @rdname autoplot.fbl_ts
 #' @examples 
 #' 
+#' if (requireNamespace("fable", quietly = TRUE)) {
 #' aus_production %>% 
 #'   autoplot(Beer) + 
 #'   autolayer(fc)
+#' }
 #' 
 #' @export
 autolayer.fbl_ts <- function(object, level = c(80, 95), ...){
@@ -314,11 +320,13 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), ...){
 #' @inheritParams autoplot.tbl_ts
 #' 
 #' @examples 
+#' if (requireNamespace("feasts", quietly = TRUE)) {
 #' library(feasts)
 #' library(tsibbledata)
 #' aus_production %>% 
 #'   STL(Beer) %>% 
 #'   autoplot()
+#' }
 #' 
 #' @importFrom ggplot2 ggplot geom_line geom_rect facet_grid vars ylab labs
 #' @export

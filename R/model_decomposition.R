@@ -92,10 +92,11 @@ Please check that you have specified the decomposition models appropriately.")
 #' @param dcmp_args Arguments to be passed to the decomposition function (`.dcmp_fn`)
 #' 
 #' @examples 
+#' if (requireNamespace("fable", quietly = TRUE) && requireNamespace("feasts", quietly = TRUE)) {
 #' library(fable)
+#' library(feasts)
 #' library(tsibble)
 #' library(dplyr)
-#' library(feasts)
 #' 
 #' vic_food <- tsibbledata::aus_retail %>% 
 #'   filter(State == "Victoria", Industry == "Food retailing")
@@ -116,6 +117,7 @@ Please check that you have specified the decomposition models appropriately.")
 #'   model(my_dcmp_spec) %>% 
 #'   forecast(h="5 years") %>% 
 #'   autoplot(vic_food)
+#' }
 #' 
 #' @seealso 
 #' [*Forecasting: Principles and Practice* - Forecasting Decomposition](https://otexts.com/fpp3/forecasting-decomposition.html)

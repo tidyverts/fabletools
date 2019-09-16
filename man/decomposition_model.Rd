@@ -27,10 +27,11 @@ These component models will be combined according to the decomposition
 method, giving a combination model for the response of the decomposition.
 }
 \examples{
+if (requireNamespace("fable", quietly = TRUE) && requireNamespace("feasts", quietly = TRUE)) {
 library(fable)
+library(feasts)
 library(tsibble)
 library(dplyr)
-library(feasts)
 
 vic_food <- tsibbledata::aus_retail \%>\% 
   filter(State == "Victoria", Industry == "Food retailing")
@@ -51,6 +52,7 @@ vic_food \%>\%
   model(my_dcmp_spec) \%>\% 
   forecast(h="5 years") \%>\% 
   autoplot(vic_food)
+}
 
 }
 \seealso{
