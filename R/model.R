@@ -65,7 +65,6 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   num_key <- n_keys(.data)
   num_mdl <- length(models)
   num_est <- num_mdl * num_key
-  pb <- dplyr::progress_estimated(num_est, min_time = 5)
   
   keys <- key(.data)
   .data <- nest_keys(.data, "lst_data")
@@ -88,17 +87,20 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
       out <- furrr::future_map2(
         rep(lst_data, length(models)),
         rep(models, each = length(lst_data)),
-        estimate, .progress = isTRUE(getOption("dplyr.show_progress")) && interactive() && is.null(getOption("knitr.in.progress"))
+        estimate, .progress = isTRUE(getOption("dplyr.show_progress")) && interactive() && num_est > 1 && is.null(getOption("knitr.in.progress"))
       )
       unname(split(out, rep(seq_len(num_mdl), each = num_key)))
     }
   }
   else{
+    pb <- if(num_est > 1) dplyr::progress_estimated(num_est, min_time = 5) else NULL
     eval_models <- function(models, lst_data){
       map(models, function(model){
         map(lst_data, function(dt, mdl){
           out <- estimate(dt, mdl)
-          pb$tick()$print()
+          if(!is.null(pb)){
+            pb$tick()$print()
+          }
           out
         }, model)
       })
