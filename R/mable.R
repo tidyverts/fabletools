@@ -108,7 +108,7 @@ select.mdl_df <- function (.data, ...){
     abort("A mable must contain at least one model. To remove all models, first convert to a tibble with `as_tibble()`.")
   }
   as_mable(sel_data,
-           key = if(key_nochange) key_data(.data) else kv,
+           key = if(key_nochange) key_data(.data) else key_vars,
            models = mdls)
 }
 
