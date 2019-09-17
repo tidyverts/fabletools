@@ -55,6 +55,9 @@ as_mable.tbl_df <- function(x, key = NULL, models = NULL, ...){
   }
   else{
     key_data <- group_data(group_by(x, !!!syms(key)))
+    if(any(map_int(key_data[[length(key_data)]], length) > 1)){
+      abort("The result is not a valid mable. The key variables must uniquely identify each row.")
+    }
   }
   
   tibble::new_tibble(x, key = key_data, models = models,
