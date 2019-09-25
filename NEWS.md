@@ -2,7 +2,8 @@
 
 ## Bug fixes
 
-* Fixed `select.mdl_df()` usage with negative select values (#120)
+* Fixed `select.mdl_df()` usage with negative select values (#120).
+* Fixed `features()` for a tsibble with key variables but only one series.
 
 # fabletools 0.1.1
 

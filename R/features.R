@@ -13,7 +13,7 @@ features_impl <- function(.tbl, .var, features, ...){
   # Compute response
   key_dt <- key_data(.tbl)
   .tbl <- as_tibble(.tbl)
-  if(NROW(key_dt) > 1){
+  if(NCOL(key_dt) > 1){
     .tbl <- dplyr::new_grouped_df(.tbl, key_dt)
   }
   .resp <- unclass(dplyr::transmute(.tbl, !!!.var))
