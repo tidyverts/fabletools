@@ -5,7 +5,7 @@ train_decomposition <- function(.data, specials, ..., dcmp_fn,
   # Extract raw original data
   dcmp <- do.call(dcmp_fn, list2(self$data, self$formula, !!!dcmp_args))
   
-  dcmp_method <- (dcmp%@%"aliases")[[as_string(dcmp%@%"resp")]]
+  dcmp_method <- (dcmp%@%"aliases")[[as_string(dcmp%@%"response")]]
   structure <- dcmp%@%"seasons"
   aliases <- dcmp%@%"aliases"
   

@@ -338,7 +338,7 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE, ...){
   
   .vars <- enquo(.vars)
   if(quo_is_null(.vars)){
-    .vars <- object%@%"resp"
+    .vars <- object%@%"response"
   }
   dcmp_str <- dcmp <- (object%@%"aliases")[[as_string(get_expr(.vars))]]
   if(!is.null(dcmp_str)){

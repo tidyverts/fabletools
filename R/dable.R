@@ -45,7 +45,7 @@ as_dable.tbl_df <- function(x, response, method = NULL, seasons = list(), aliase
 #' 
 #' @export
 as_dable.tbl_ts <- function(x, response, method = NULL, seasons = list(), aliases = list(), ...){
-  new_tsibble(x, method = method, resp = enexpr(response), 
+  new_tsibble(x, method = method, response = enexpr(response), 
               seasons = seasons, aliases = aliases, class = "dcmp_ts")
 }
 
@@ -54,8 +54,14 @@ as_tsibble.dcmp_ts <- function(x, ...){
   new_tsibble(x)
 }
 
+#' @export
+`[.dcmp_ts` <- function (x, i, j, drop = FALSE){
+  as_dable(NextMethod(), response = !!(x%@%"response"), method = x%@%"method",
+           seasons = x%@%"seasons", aliases = x%@%"aliases")
+}
+
 tbl_sum.dcmp_ts <- function(x){
-  response <- as_string(x%@%"resp")
+  response <- as_string(x%@%"response")
   method <- expr_text((x%@%"aliases")[[response]])
   out <- NextMethod()
   names(out)[1] <- "A dable"
@@ -75,7 +81,7 @@ rbind.dcmp_ts <- function(...){
 }
 
 combine_dcmp_attr <- function(lst_dcmp){
-  resp <- map(lst_dcmp, function(x) x%@%"resp")
+  resp <- map(lst_dcmp, function(x) x%@%"response")
   method <- map(lst_dcmp, function(x) x%@%"method")
   strc <- map(lst_dcmp, function(x) x%@%"seasons")
   aliases <- map(lst_dcmp, function(x) x%@%"aliases")
