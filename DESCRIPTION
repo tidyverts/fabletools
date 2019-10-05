@@ -39,7 +39,7 @@ Suggests:
     crayon,
     digest,
     fable,
-    furrr,
+    future.apply,
     knitr,
     methods,
     pillar (>= 1.0.1),
