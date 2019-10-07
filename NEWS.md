@@ -1,5 +1,9 @@
 # fabletools (development version)
 
+## Improvements
+
+* Added MAAPE accuracy measure.
+
 ## Bug fixes
 
 * Fixed `select.mdl_df()` usage with negative select values (#120).
