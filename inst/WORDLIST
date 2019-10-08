@@ -1,7 +1,6 @@
 AppVeyor
 asn
 atanh
-Athanasopoulos
 backtransform
 Backtransformations
 boxcox
@@ -13,11 +12,13 @@ formals
 geoms
 ggplot
 ggproto
+Heeyoung
 hilo
 hms
 horison
 JRSS
 lifecycle
+MAAPE
 mable
 MASE
 MatrixM
@@ -26,6 +27,7 @@ obj
 org
 quosure
 stat
+Sungil
 tibble
 tsibble
 Wickramasuriya
