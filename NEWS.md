@@ -3,6 +3,7 @@
 ## Improvements
 
 * Added MAAPE accuracy measure.
+* Added support for exogenous regressors in decomposition models.
 
 ## Bug fixes
 

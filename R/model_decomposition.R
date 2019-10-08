@@ -9,6 +9,9 @@ train_decomposition <- function(.data, specials, ..., dcmp_fn,
   structure <- dcmp%@%"seasons"
   aliases <- dcmp%@%"aliases"
   
+  xreg_vars <- setdiff(names(self$data), names(.data))
+  dcmp[xreg_vars] <- self$data[xreg_vars]
+  
   req_vars <- all.vars(dcmp_method)
   
   dcmp_ops <- traverse(dcmp_method,
