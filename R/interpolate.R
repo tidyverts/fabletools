@@ -63,6 +63,8 @@ Does your interpolation data include all variables required by the model?", e$me
     set_names(map_chr(object$response, as_string))
   
   new_data <- transmute(new_data, !!!resp)
-  
-  interpolate(object[["fit"]], new_data = new_data, specials = specials, ...)
+  new_data <- interpolate(object[["fit"]], new_data = new_data, specials = specials, ...)
+  new_data[names(resp)] <- map2(new_data[names(resp)], object$transformation,
+                                function(x, f) invert_transformation(f)(x))
+  new_data
 }
