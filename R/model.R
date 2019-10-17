@@ -82,12 +82,14 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   }
   
   if(is_attached("package:future")){
-    require_package("furrr")
+    require_package("future.apply")
     eval_models <- function(models, lst_data){
-      out <- furrr::future_map2(
+      out <- future.apply::future_mapply(
         rep(lst_data, length(models)),
         rep(models, each = length(lst_data)),
-        estimate, .progress = isTRUE(getOption("dplyr.show_progress")) && interactive() && num_est > 1 && is.null(getOption("knitr.in.progress"))
+        FUN = estimate,
+        SIMPLIFY = FALSE,
+        future.globals = FALSE
       )
       unname(split(out, rep(seq_len(num_mdl), each = num_key)))
     }
