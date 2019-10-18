@@ -23,9 +23,8 @@ null_model <- function(formula, ...){
 #' @param x The object to be tested.
 #' @export
 is_null_model <- function(x){
-  if(is_model(x)){
-    is_null_model(x[["fit"]])
-  }
+  if(is_model(x)) return(is_null_model(x[["fit"]]))
+  if(inherits(x, "lst_mdl")) return(map_lgl(x, is_null_model))
   inherits(x, "null_mdl")
 }
 
