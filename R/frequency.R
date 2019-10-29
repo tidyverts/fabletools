@@ -31,6 +31,7 @@ common_periods.tbl_ts <- function(x){
 #' @rdname freq_tools
 #' @export
 common_periods.interval <- function(x){
+  x <- vctrs::vec_data(x)
   freq_sec <- c(year = 31557600, week = 604800, day = 86400, hour = 3600, minute = 60, second = 1,
                 millisecond = 1e-3, microsecond = 1e-6, nanosecond = 1e-9)
   nm <- names(x)[x!=0]
