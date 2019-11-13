@@ -38,6 +38,7 @@ make_future_data <- function(.data, h = NULL){
   
   # tsibble::new_data(.data, round(n))
   # Re-implemented here using a simpler/faster method
+  n <- round(n)
   
   idx <- index_var(.data)
   itvl <- interval(.data)
