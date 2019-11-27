@@ -5,12 +5,17 @@
 \alias{new_model_definition}
 \title{Create a new class of models}
 \usage{
-new_model_class(model = "Unknown model", train = function(.data,
-  formula, specials, ...)
-  abort("This model has not defined a training method."),
-  specials = new_specials(), check = function(.data) { },
-  prepare = function(...) { }, ..., .env = caller_env(),
-  .inherit = model_definition)
+new_model_class(
+  model = "Unknown model",
+  train = function(.data, formula, specials, ...)
+    abort("This model has not defined a training method."),
+  specials = new_specials(),
+  check = function(.data) { },
+  prepare = function(...) { },
+  ...,
+  .env = caller_env(),
+  .inherit = model_definition
+)
 
 new_model_definition(.class, ..., .env = caller_env(n = 2))
 }
@@ -53,5 +58,5 @@ This function produces a new R6 model definition. An understanding of R6 is
 not required, however could be useful to provide more sophisticated model
 interfaces. All functions have access to \code{self}, allowing the functions for
 training the model and evaluating specials to access the model class itself.
-This can be useful to obtain elements set in the %TODO
+This can be useful to obtain elements set in the \%TODO
 }

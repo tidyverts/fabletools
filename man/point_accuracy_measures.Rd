@@ -26,8 +26,16 @@ MPE(.resid, .actual, na.rm = TRUE, ...)
 
 MAPE(.resid, .actual, na.rm = TRUE, ...)
 
-MASE(.resid, .train, demean = FALSE, na.rm = TRUE, .period,
-  d = .period == 1, D = .period > 1, ...)
+MASE(
+  .resid,
+  .train,
+  demean = FALSE,
+  na.rm = TRUE,
+  .period,
+  d = .period == 1,
+  D = .period > 1,
+  ...
+)
 
 ACF1(.resid, na.action = stats::na.pass, demean = TRUE, ...)
 

@@ -4,8 +4,7 @@
 \alias{autoplot.dcmp_ts}
 \title{Decomposition plots}
 \usage{
-\method{autoplot}{dcmp_ts}(object, .vars = NULL, scale_bars = TRUE,
-  ...)
+\method{autoplot}{dcmp_ts}(object, .vars = NULL, scale_bars = TRUE, ...)
 }
 \arguments{
 \item{object}{A dable.}

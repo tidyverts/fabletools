@@ -8,11 +8,9 @@
 \usage{
 accuracy(object, ...)
 
-\method{accuracy}{mdl_df}(object, measures = point_accuracy_measures,
-  ...)
+\method{accuracy}{mdl_df}(object, measures = point_accuracy_measures, ...)
 
-\method{accuracy}{fbl_ts}(object, data,
-  measures = point_accuracy_measures, ..., by = NULL)
+\method{accuracy}{fbl_ts}(object, data, measures = point_accuracy_measures, ..., by = NULL)
 }
 \arguments{
 \item{object}{A model or forecast object}

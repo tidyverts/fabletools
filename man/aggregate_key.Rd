@@ -32,12 +32,12 @@ some hierarchy.
 This function is experimental, and is subject to change in the future.
 
 The way in which the measured variables are aggregated is specified in a
-similar way to how \code{[dplyr::summarise()]} is used.
+similar way to how \verb{[dplyr::summarise()]} is used.
 }
 \examples{
 library(tsibble)
 tourism \%>\% 
-  aggregate_key(Purpose * (State / Region), Trips = sum(Trips))
+  aggregate_key(Purpose * (State / Region), Trips = sum(Trips)) 
 
 }
 \seealso{

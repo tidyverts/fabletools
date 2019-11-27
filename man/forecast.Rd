@@ -7,8 +7,7 @@
 \usage{
 forecast(object, ...)
 
-\method{forecast}{mdl_df}(object, new_data = NULL, h = NULL,
-  bias_adjust = TRUE, ...)
+\method{forecast}{mdl_df}(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...)
 }
 \arguments{
 \item{object}{The time series model used to produce the forecasts}

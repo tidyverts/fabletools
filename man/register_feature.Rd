@@ -14,7 +14,7 @@ register_feature(fn, tags)
 \description{
 Allows users to find and use features from your package using \code{\link[=feature_set]{feature_set()}}.
 If the features are being registered from within a package, this feature
-registration should happen at load time using \code{[.onLoad()]}.
+registration should happen at load time using \verb{[.onLoad()]}.
 }
 \examples{
 

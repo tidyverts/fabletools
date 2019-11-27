@@ -27,6 +27,6 @@ Features can be registered for use with the \code{feature_set()} function using
 \code{\link[=register_feature]{register_feature()}}. This function allows you to register a feature along
 with the tags associated with it. If the features are being registered from
 within a package, this feature registration should happen at load time using
-\code{[.onLoad()]}.
+\verb{[.onLoad()]}.
 }
 

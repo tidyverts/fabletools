@@ -8,11 +8,9 @@
 \usage{
 as_dable(x, ...)
 
-\method{as_dable}{tbl_df}(x, response, method = NULL, seasons = list(),
-  aliases = list(), ...)
+\method{as_dable}{tbl_df}(x, response, method = NULL, seasons = list(), aliases = list(), ...)
 
-\method{as_dable}{tbl_ts}(x, response, method = NULL, seasons = list(),
-  aliases = list(), ...)
+\method{as_dable}{tbl_ts}(x, response, method = NULL, seasons = list(), aliases = list(), ...)
 }
 \arguments{
 \item{x}{Object to be coerced to a dable (\code{dcmp_ts})}

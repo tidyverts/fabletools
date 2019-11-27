@@ -4,8 +4,7 @@
 \alias{combination_model}
 \title{Combination modelling}
 \usage{
-combination_model(..., cmbn_fn = combination_ensemble,
-  cmbn_args = list())
+combination_model(..., cmbn_fn = combination_ensemble, cmbn_args = list())
 }
 \arguments{
 \item{...}{Model definitions used in the combination.}

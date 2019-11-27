@@ -24,8 +24,7 @@ get_frequencies(period, ...)
 
 \method{get_frequencies}{numeric}(period, ...)
 
-\method{get_frequencies}{NULL}(period, data, ..., .auto = c("smallest",
-  "largest", "all"))
+\method{get_frequencies}{`NULL`}(period, data, ..., .auto = c("smallest", "largest", "all"))
 
 \method{get_frequencies}{character}(period, data, ...)
 

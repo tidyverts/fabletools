@@ -4,8 +4,11 @@
 \alias{min_trace}
 \title{Minimum trace forecast reconciliation}
 \usage{
-min_trace(models, method = c("wls_var", "ols", "wls_struct", "mint_cov",
-  "mint_shrink"), sparse = NULL)
+min_trace(
+  models,
+  method = c("wls_var", "ols", "wls_struct", "mint_cov", "mint_shrink"),
+  sparse = NULL
+)
 }
 \arguments{
 \item{models}{A column of models in a mable.}

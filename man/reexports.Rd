@@ -25,9 +25,9 @@ below to see their documentation.
 \describe{
   \item{dplyr}{\code{\link[dplyr]{\%>\%}}, \code{\link[dplyr]{vars}}}
 
-  \item{generics}{\code{\link[generics]{equation}}, \code{\link[generics]{interpolate}}, \code{\link[generics]{components}}, \code{\link[generics]{augment}}, \code{\link[generics]{glance}}, \code{\link[generics]{tidy}}, \code{\link[generics]{generate}}, \code{\link[generics]{refit}}}
+  \item{generics}{\code{\link[generics]{augment}}, \code{\link[generics]{components}}, \code{\link[generics]{equation}}, \code{\link[generics]{generate}}, \code{\link[generics]{glance}}, \code{\link[generics]{interpolate}}, \code{\link[generics]{refit}}, \code{\link[generics]{tidy}}}
 
-  \item{ggplot2}{\code{\link[ggplot2]{autoplot}}, \code{\link[ggplot2]{autolayer}}}
+  \item{ggplot2}{\code{\link[ggplot2]{autolayer}}, \code{\link[ggplot2]{autoplot}}}
 
   \item{tsibble}{\code{\link[tsibble]{as_tsibble}}}
 }}

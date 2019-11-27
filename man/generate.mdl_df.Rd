@@ -5,11 +5,9 @@
 \alias{generate.mdl_ts}
 \title{Generate responses from a mable}
 \usage{
-\method{generate}{mdl_df}(x, new_data = NULL, h = NULL, times = 1,
-  seed = NULL, ...)
+\method{generate}{mdl_df}(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...)
 
-\method{generate}{mdl_ts}(x, new_data = NULL, h = NULL, times = 1,
-  seed = NULL, ...)
+\method{generate}{mdl_ts}(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...)
 }
 \arguments{
 \item{x}{A mable.}
@@ -28,7 +26,7 @@ time series with no exogenous regressors).}
 \description{
 Use a model's fitted distribution to simulate additional data with similar
 behaviour to the response. This is a tidy implementation of
-\code{\link[stats]{simulate}}.
+\verb{\link[stats]\{simulate\}}.
 }
 \details{
 Innovations are sampled by the model's assumed error distribution.

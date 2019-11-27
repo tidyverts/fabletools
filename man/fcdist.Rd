@@ -7,8 +7,7 @@
 \usage{
 new_fcdist(..., .env)
 
-new_fcdist_env(quantile, transformation = list(identity),
-  display = NULL)
+new_fcdist_env(quantile, transformation = list(identity), display = NULL)
 }
 \arguments{
 \item{...}{Arguments for \code{f} function}

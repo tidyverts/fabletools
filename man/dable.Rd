@@ -4,8 +4,7 @@
 \alias{dable}
 \title{Create a dable object}
 \usage{
-dable(..., response, method = NULL, seasons = list(),
-  aliases = list())
+dable(..., response, method = NULL, seasons = list(), aliases = list())
 }
 \arguments{
 \item{...}{Arguments passed to \code{\link[tsibble:tsibble]{tsibble::tsibble()}}.}

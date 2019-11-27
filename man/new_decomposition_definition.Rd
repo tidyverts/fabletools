@@ -4,8 +4,7 @@
 \alias{new_decomposition_definition}
 \title{Helper to create a new decomposition function}
 \usage{
-new_decomposition_definition(.class, .data, ..., .env = caller_env(n =
-  2))
+new_decomposition_definition(.class, .data, ..., .env = caller_env(n = 2))
 }
 \arguments{
 \item{.class}{A decomposition class (typically created with \code{\link[=new_decomposition_class]{new_decomposition_class()}}).}

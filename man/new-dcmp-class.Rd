@@ -4,13 +4,18 @@
 \alias{new_decomposition_class}
 \title{Create a new class of decomposition}
 \usage{
-new_decomposition_class(method = "Unknown model",
+new_decomposition_class(
+  method = "Unknown model",
   train = function(.data, formula, specials, ...)
-  abort("This decomposition has not defined a training method."),
-  specials = new_specials(), check = function(.data) {     if
-  (NROW(.data) == 0)          abort("There is no data to decompose!") },
-  prepare = function(...) { }, ..., .env = caller_env(),
-  .inherit = decomposition_definition)
+    abort("This decomposition has not defined a training method."),
+  specials = new_specials(),
+  check = function(.data) {     if (NROW(.data) == 0)         
+    abort("There is no data to decompose!") },
+  prepare = function(...) { },
+  ...,
+  .env = caller_env(),
+  .inherit = decomposition_definition
+)
 }
 \arguments{
 \item{method}{The name of the decomposition method}
@@ -49,5 +54,5 @@ This function produces a new R6 decomposition definition. An understanding of R6
 not required, however could be useful to provide more sophisticated model
 interfaces. All functions have access to \code{self}, allowing the functions for
 training the model and evaluating specials to access the model class itself.
-This can be useful to obtain elements set in the %TODO
+This can be useful to obtain elements set in the \%TODO
 }
