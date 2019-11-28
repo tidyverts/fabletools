@@ -122,6 +122,9 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
   if(is.null(new_data)){
     new_data <- make_future_data(object$data, h)
   }
+  if(NROW(new_data) == 0){
+    abort("There are no forecasts to be made. Check that your forecast horizon includes at least one future value.")
+  }
   
   # Compute specials with new_data
   object$model$stage <- "forecast"
