@@ -32,7 +32,8 @@ Imports:
     tidyr (>= 0.8.3),
     generics,
     R6,
-    utils
+    utils,
+    vctrs
 Suggests:
     colorspace,
     covr,
