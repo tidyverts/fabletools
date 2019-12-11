@@ -173,6 +173,50 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   })
 }
 
+bottom_up <- function(models){
+  structure(models, class = c("lst_btmup_mdl", "lst_mdl"))
+}
+
+#' @importFrom utils combn
+#' @export
+forecast.lst_btmup_mdl <- function(object, key_data, ...){
+  method <- object%@%"method"
+  
+  # Keep only bottom layer
+  S <- build_smat(key_data)
+  object <- object[rowSums(S) == 1]
+  
+  # Get forecasts
+  fc <- NextMethod()
+  if(length(unique(map(fc, interval))) > 1){
+    abort("Reconciliation of temporal hierarchies is not yet supported.")
+  }
+  fc_point <- fc %>% 
+    map(`[[`, expr_text(attr(fc[[1]],"response")[[1]])) %>% 
+    invoke(cbind, .) %>% 
+    as.matrix()
+  fc_var <- fc %>% 
+    map(`[[`, expr_text(attr(fc[[1]],"dist"))) %>% 
+    map(function(x){
+      if(!is_dist_normal(x)) abort("Reconciliation of non-normal forecasts is not yet supported.")
+      map_dbl(x, `[[`, "sd")^2
+    }) %>% 
+    transpose_dbl()
+  
+  # Apply to forecasts
+  fc_point <- as.matrix(S%*%t(fc_point))
+  fc_point <- split(fc_point, row(fc_point))
+  fc_var <- map(fc_var, function(W) diag(S%*%diag(W)%*%t(S)))
+  fc_dist <- map2(fc_point, transpose_dbl(map(fc_var, sqrt)), dist_normal)
+  
+  # Update fables
+  pmap(list(rep_along(fc_point, fc[1]), fc_point, fc_dist), function(fc, point, dist){
+    fc[[expr_text(attr(fc,"response")[[1]])]] <- point
+    fc[[expr_text(attr(fc,"dist"))]] <- dist
+    fc
+  })
+}
+
 build_smat <- function(key_data){
   row_col <- sym(colnames(key_data)[length(key_data)])
   
