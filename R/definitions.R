@@ -1,10 +1,3 @@
-#' R6 Objects
-#' 
-#' Suitable for inheritance when creating new models or definitions.
-#' 
-#' @rdname definitions
-#' 
-#' @export
 model_definition <- R6::R6Class(NULL,
   public = list(
     model = "Unknown model",
@@ -140,8 +133,6 @@ new_model_definition <- function(.class, ..., .env = caller_env(n = 2)){
   add_class(.class$new(..., .env = .env), "mdl_defn")
 }
 
-#' @rdname definitions 
-#' @export
 decomposition_definition <- R6::R6Class(NULL,
   public = list(
     model = "Unknown decomposition",

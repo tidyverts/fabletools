@@ -37,7 +37,7 @@ similar way to how \verb{[dplyr::summarise()]} is used.
 \examples{
 library(tsibble)
 tourism \%>\% 
-  aggregate_key(Purpose * (State / Region), Trips = sum(Trips)) 
+  aggregate_key(Purpose * (State / Region), Trips = sum(Trips))
 
 }
 \seealso{
