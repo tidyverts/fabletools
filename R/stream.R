@@ -24,7 +24,7 @@ stream.mdl_df <- function(object, new_data, ...){
     transmute(
       !!!key(object),
       !!sym(".model"),
-      .fit = map2(!!sym(".fit"), !!sym("new_data"), stream, ...)
+      .fit = structure(map2(!!sym(".fit"), !!sym("new_data"), stream, ...), class=c("lst_mdl", "list"))
     ) %>%
     spread(".model", ".fit") %>% 
     as_mable(key = key(object), models = object%@%"models")
