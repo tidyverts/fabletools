@@ -3,14 +3,11 @@
 \name{stream}
 \alias{stream}
 \alias{stream.mdl_df}
-\alias{stream.mdl_ts}
 \title{Extend a fitted model with new data}
 \usage{
 stream(object, ...)
 
 \method{stream}{mdl_df}(object, new_data, ...)
-
-\method{stream}{mdl_ts}(object, new_data, ...)
 }
 \arguments{
 \item{object}{An object (such as a model) which can be extended with additional data.}

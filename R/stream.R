@@ -24,11 +24,11 @@ stream.mdl_df <- function(object, new_data, ...){
               stream, new_data[["new_data"]], ...)
 }
 
+#' @export
 stream.lst_mdl <- function(object, new_data, ...){
   add_class(map2(object, new_data, stream, ...), class(object))
 }
 
-#' @rdname stream
 #' @export
 stream.mdl_ts <- function(object, new_data, ...){
   # Compute specials with new_data
