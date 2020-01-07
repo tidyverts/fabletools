@@ -15,13 +15,14 @@ test_that("In-sample accuracy", {
   expect_equal(dim(acc), c(1,9))
   expect_true(!any(map_lgl(acc, compose(any, is.na))))
   expect_equal(
-    acc,
+    as.list(acc),
     as_tibble(augment(mbl, type = "response")) %>% 
       group_by(.model) %>% 
       summarise(.type = "Training", ME = mean(.resid), RMSE = sqrt(mean(.resid^2)),
                 MAE = mean(abs(.resid)), MPE = mean(.resid/value*100),
                 MAPE = mean(abs(.resid/value)*100),
-                MASE = MASE(.resid, value, .period = 12), ACF1 = ACF1(.resid))
+                MASE = MASE(.resid, value, .period = 12), ACF1 = ACF1(.resid)) %>% 
+      as.list()
   )
   
   acc_multi <- accuracy(mbl_multi)
@@ -58,7 +59,7 @@ test_that("Out-of-sample accuracy", {
   expect_equal(dim(acc), c(1,9))
   expect_true(!any(map_lgl(acc, compose(any, is.na))))
   expect_equal(
-    acc,
+    as.list(acc),
     as_tibble(fbl) %>% 
       mutate(
         actual = semi_join(us_deaths, fbl, by = "index")$value,
@@ -68,7 +69,8 @@ test_that("Out-of-sample accuracy", {
       summarise(.type = "Test", ME = mean(.resid), RMSE = sqrt(mean(.resid^2)),
                 MAE = mean(abs(.resid)), MPE = mean(.resid/actual*100),
                 MAPE = mean(abs(.resid/actual)*100),
-                MASE = MASE(.resid, us_deaths_tr$value, .period = 12), ACF1 = ACF1(.resid))
+                MASE = MASE(.resid, us_deaths_tr$value, .period = 12), ACF1 = ACF1(.resid)) %>% 
+      as.list()
   )
   
   acc <- accuracy(fbl, us_deaths, measures = list(interval_accuracy_measures, distribution_accuracy_measures))
