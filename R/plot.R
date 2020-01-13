@@ -176,6 +176,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 #' 
 #' @param object A fable.
 #' @param data A tsibble with the same key structure as the fable.
+#' @param show_gap Setting this to `FALSE` will connect the historical observations with the forecasts.
 #' @param ... Further arguments passed used to specify fixed aesthetics for the forecasts such as `colour = "red"` or `size = 3`.
 #' @inheritParams hilo
 #' 
@@ -194,7 +195,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 #' 
 #' @importFrom ggplot2 facet_wrap
 #' @export
-autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
+autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = TRUE, ...){
   fc_resp <- object%@%"response"
   fc_key <- setdiff(key_vars(object), ".model")
   common_models <- duplicated(key_data(object)[[".model"]] %||% rep(TRUE, NROW(key_data)))
@@ -224,7 +225,8 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
   }
 
   # Change colours to be more appropriate for later facets
-  fc_layer <- autolayer(object, level = level, ...)
+  fc_layer <- autolayer(object, data = data, level = level, 
+                        show_gap = show_gap, ...)
   if(sum(!common_models) > 1){
     fc_layer$mapping$colour <- set_expr(fc_layer$mapping$colour, sym(".model"))
   }
@@ -262,23 +264,48 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), ...){
 #' }
 #' 
 #' @export
-autolayer.fbl_ts <- function(object, level = c(80, 95), ...){
+autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95), 
+                             show_gap = TRUE, ...){
   fc_key <- setdiff(key_vars(object), ".model")
   key_data <- key_data(object)
+  resp_var <- map_chr(object%@%"response", as_string)
+  idx <- index(object)
   common_models <- duplicated(key_data[[".model"]] %||% rep(TRUE, NROW(key_data)))
-  data <- fortify(object, level = level) %>% 
+  
+  if(!show_gap && is.null(data)){
+    warn("Could not connect forecasts to last observation as `data` was not provided. Setting `show_gap = FALSE`.")
+  }
+  if(!show_gap){
+    gap <- key_data(object)
+    gap[ncol(gap)] <- NULL
+    last_obs <- filter(group_by_key(data), !!idx == max(!!idx))
+    if (length(key_vars(last_obs)) == 0) {
+      gap[names(last_obs)] <- last_obs
+    }
+    else {
+      gap <- left_join(gap, last_obs, by = key_vars(last_obs))
+    }
+    if (length(resp_var) > 1) abort("`show_gap = FALSE` is not yet supported for multivariate forecasts.")
+    gap[[as_string(object%@%"dist")]] <- dist_normal(gap[[resp_var]], 0)
+    gap <- as_fable(gap, index = !!idx, response = object%@%"response",
+                    distribution = !!(object%@%"dist"))
+    object <- rbind(gap, object)
+  }
+  
+  fc_data <- fortify(object, level = level) %>% 
     dplyr::mutate_if(~inherits(., "agg_key"), compose(trimws, format))
+  
   if(length(object%@%"response") > 1){
     resp <- sym("value")
     grp <- syms(".response")
   }
   else{
-    resp <- sym(expr_text((object%@%"response")[[1]]))
+    resp <- sym(resp_var)
     grp <- NULL
   }
   
   mapping <- aes(
-    x = !!index(data),
+    x = !!idx,
     y = !!resp
   )
   
@@ -305,7 +332,7 @@ autolayer.fbl_ts <- function(object, level = c(80, 95), ...){
     mapping$group <- expr(interaction(!!!map(grp, function(x) expr(format(!!x))), sep = "/"))
   }
   
-  geom_forecast(mapping = mapping, stat = "identity", data = data, ...)
+  geom_forecast(mapping = mapping, stat = "identity", data = fc_data, ...)
 }
 
 #' Decomposition plots

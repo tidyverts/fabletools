@@ -5,9 +5,9 @@
 \alias{autolayer.fbl_ts}
 \title{Plot a set of forecasts}
 \usage{
-\method{autoplot}{fbl_ts}(object, data = NULL, level = c(80, 95), ...)
+\method{autoplot}{fbl_ts}(object, data = NULL, level = c(80, 95), show_gap = TRUE, ...)
 
-\method{autolayer}{fbl_ts}(object, level = c(80, 95), ...)
+\method{autolayer}{fbl_ts}(object, data = NULL, level = c(80, 95), show_gap = TRUE, ...)
 }
 \arguments{
 \item{object}{A fable.}
@@ -15,6 +15,8 @@
 \item{data}{A tsibble with the same key structure as the fable.}
 
 \item{level}{The confidence levels for the plotted prediction intervals.}
+
+\item{show_gap}{Setting this to \code{FALSE} will connect the historical observations with the forecasts.}
 
 \item{...}{Further arguments passed used to specify fixed aesthetics for the forecasts such as \code{colour = "red"} or \code{size = 3}.}
 }
