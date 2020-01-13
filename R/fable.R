@@ -142,7 +142,7 @@ validate_fable <- function(fbl){
     abort(sprintf("Could not find response variable(s) in the fable: %s", bad_resp))
   }
   if (!(chr_dist %in% names(fbl))){
-    abort(sprintf("Could not find distribution variable `%s` in the fable.",
+    abort(sprintf("Could not find distribution variable `%s` in the fable. A fable must contain a distribution, if you want to remove it convert to a tsibble with `as_tsibble()`.",
                   chr_dist))
   }
   if (!inherits(fbl[[chr_dist]], "fcdist")){
