@@ -28,8 +28,10 @@ fbl_mv <- mbl_mv %>% forecast(h = 12)
 
 if (requireNamespace("feasts", quietly = TRUE)) {
 dcmp <- us_deaths %>%
-  feasts::STL(value)
+  model(feasts::STL(value)) %>% 
+  components()
 
 dcmp_multi <- lung_deaths_long %>%
-  feasts::STL(value)
+  model(feasts::STL(value)) %>% 
+  components()
 }
