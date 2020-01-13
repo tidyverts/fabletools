@@ -7,6 +7,13 @@
 * Forecast plots via `autoplot.fbl_ts()` and `autolayer.fbl_ts()` now support
   the `show_gap` argument. This can be used to connect the historical observations
   to the forecasts (#113).
+  
+## Breaking changes
+
+* Decompositions are now treated as models. 
+  To access the decomposed values, you will now have to use `components()`.
+  For example, `tourism %>% STL(Trips)` is now `tourism %>% model(STL(Trips)) %>% components()`.
+  This change allows for more flexible decomposition specifications, and better interfaces for decomposition modelling.
 
 ## Bug fixes
 

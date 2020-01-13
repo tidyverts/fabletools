@@ -5,7 +5,7 @@ test_that("Decomposition modelling", {
   skip_if_not_installed("feasts")
   
   mdl_dcmp <- us_deaths %>%
-    model(decomposition_model(feasts::STL, value, fable::NAIVE(season_adjust)))
+    model(decomposition_model(feasts::STL(value), fable::NAIVE(season_adjust)))
   
   expect_output(
     report(mdl_dcmp),
