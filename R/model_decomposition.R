@@ -89,10 +89,8 @@ Please check that you have specified the decomposition models appropriately.")
 #' These component models will be combined according to the decomposition 
 #' method, giving a combination model for the response of the decomposition.
 #' 
-#' @param dcmp_fn The decomposition function
-#' @param formula The formula used to describe the decomposition
+#' @param dcmp A model definition which supports extracting decomposed [`components()`].
 #' @param ... Model definitions used to model the components
-#' @param dcmp_args Arguments to be passed to the decomposition function (`.dcmp_fn`)
 #' 
 #' @examples 
 #' if (requireNamespace("fable", quietly = TRUE) && requireNamespace("feasts", quietly = TRUE)) {

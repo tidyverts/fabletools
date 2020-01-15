@@ -7,13 +7,9 @@
 decomposition_model(dcmp, ...)
 }
 \arguments{
+\item{dcmp}{A model definition which supports extracting decomposed \code{\link[=components]{components()}}.}
+
 \item{...}{Model definitions used to model the components}
-
-\item{dcmp_fn}{The decomposition function}
-
-\item{formula}{The formula used to describe the decomposition}
-
-\item{dcmp_args}{Arguments to be passed to the decomposition function (\code{.dcmp_fn})}
 }
 \description{
 This function allows you to specify a decomposition combination model using
