@@ -4,6 +4,7 @@ This submission resolves issues on the CRAN check page.
 * local ubuntu 18.04 install, R 3.6.1
 * ubuntu 14.04 (on travis-ci), R-devel, R 3.6.2, R 3.5.3
 * macOS 10.13 (on travis-ci), R 3.6.2
+* macOS 15.6 (on R-hub), R 3.6.2
 * windows server 2012 R2 (on AppVeyor), R 3.6.2
 
 ## R CMD check results
