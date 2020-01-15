@@ -1,4 +1,4 @@
-# fabletools (development version)
+# fabletools 0.1.2
 
 ## Improvements
 
