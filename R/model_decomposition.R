@@ -104,7 +104,8 @@ Please check that you have specified the decomposition models appropriately.")
 #'   
 #' # Identify an appropriate decomposition
 #' vic_food %>% 
-#'   STL(log(Turnover) ~ season(window = Inf)) %>% 
+#'   model(STL(log(Turnover) ~ season(window = Inf))) %>% 
+#'   components() %>% 
 #'   autoplot()
 #'   
 #' # Use an ARIMA model to seasonally adjusted data, and SNAIVE to season_year

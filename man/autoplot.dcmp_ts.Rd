@@ -25,7 +25,8 @@ if (requireNamespace("feasts", quietly = TRUE)) {
 library(feasts)
 library(tsibbledata)
 aus_production \%>\% 
-  STL(Beer) \%>\% 
+  model(STL(Beer)) \%>\%
+  components() \%>\%  
   autoplot()
 }
 

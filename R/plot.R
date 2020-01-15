@@ -351,7 +351,8 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
 #' library(feasts)
 #' library(tsibbledata)
 #' aus_production %>% 
-#'   STL(Beer) %>% 
+#'   model(STL(Beer)) %>%
+#'   components() %>%  
 #'   autoplot()
 #' }
 #' 
