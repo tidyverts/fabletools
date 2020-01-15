@@ -282,6 +282,21 @@ forecast.model_combination <- function(object, new_data, specials, ...){
 }
 
 #' @export
+generate.model_combination <- function(x, new_data, specials, ...){
+  if(".innov" %in% new_data){
+    abort("Providing innovations for simulating combination models is not supported.")
+  }
+  
+  mdls <- map_lgl(x, is_model)
+  expr <- attr(x, "combination")
+  x[mdls] <- map(x[mdls], generate, new_data, ...)
+  out <- x[[which(mdls)[1]]]
+  sims <- map(x, function(x) if(is_tsibble(x)) x[[".sim"]] else x)
+  out[[".sim"]] <- eval_tidy(expr, sims)
+  out
+}
+
+#' @export
 fitted.model_combination <- function(object, ...){
   mdls <- map_lgl(object, is_model)
   expr <- attr(object, "combination")

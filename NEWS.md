@@ -4,6 +4,7 @@
 
 * Added MAAPE accuracy measure.
 * Added support for exogenous regressors in decomposition models.
+* Added support for generating data from combination models.
 * Forecast plots via `autoplot.fbl_ts()` and `autolayer.fbl_ts()` now support
   the `show_gap` argument. This can be used to connect the historical observations
   to the forecasts (#113).
