@@ -5,3 +5,4 @@
 Makefile
 inst/doc
 tests/testthat/Rplots.pdf
+revdep
