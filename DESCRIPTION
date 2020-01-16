@@ -44,7 +44,7 @@ Suggests:
     knitr,
     methods,
     pillar (>= 1.0.1),
-    feasts,
+    feasts (>= 0.1.2),
     rmarkdown,
     scales,
     spelling,
@@ -52,7 +52,6 @@ Suggests:
     tsibbledata,
     lubridate,
     SparseM
-Additional_repositories: https://tidyverts.org/
 ByteCompile: true
 License: GPL-3
 URL: http://fabletools.tidyverts.org/
