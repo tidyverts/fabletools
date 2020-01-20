@@ -35,7 +35,7 @@ according to that plan.
 }
 
 \examples{
-if (requireNamespace("fable", quietly = TRUE)) {
+if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)) {
 library(fable)
 library(tsibbledata)
 
@@ -44,10 +44,13 @@ aus_production \%>\%
   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A")))
 
 # Training a seasonal naive and ETS(A,A,A) model to the monthly 
-# "Food retailing" turnover for each Australian state/territory.
+# "Food retailing" turnover for selected Australian states.
 library(dplyr)
 aus_retail \%>\% 
-  filter(Industry == "Food retailing") \%>\% 
+  filter(
+    Industry == "Food retailing",
+    State \%in\% c("Victoria", "New South Wales", "Queensland")
+  ) \%>\% 
   model(
     snaive = SNAIVE(Turnover),
     ets = ETS(log(Turnover) ~ error("A") + trend("A") + season("A")),
