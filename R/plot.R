@@ -287,7 +287,8 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
     }
     if (length(resp_var) > 1) abort("`show_gap = FALSE` is not yet supported for multivariate forecasts.")
     gap[[as_string(object%@%"dist")]] <- dist_normal(gap[[resp_var]], 0)
-    gap <- as_fable(gap, index = !!idx, response = object%@%"response",
+    gap <- as_fable(gap, index = !!idx, key = key_vars(object),
+                    response = object%@%"response",
                     distribution = !!(object%@%"dist"))
     object <- rbind(gap, object)
   }
