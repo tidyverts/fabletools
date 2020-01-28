@@ -272,6 +272,11 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
   idx <- index(object)
   common_models <- duplicated(key_data[[".model"]] %||% rep(TRUE, NROW(key_data)))
   
+  if(isFALSE(level)){
+    warn("Plot argument `level` should be a numeric vector of levels to display. Setting `level = NULL` will remove the intervals from the plot.")
+    level <- NULL
+  }
+  
   if(!show_gap && is.null(data)){
     warn("Could not connect forecasts to last observation as `data` was not provided. Setting `show_gap = FALSE`.")
   }
