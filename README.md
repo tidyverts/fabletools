@@ -3,10 +3,8 @@
 
 # fabletools
 
-[![Travis build
-status](https://travis-ci.org/tidyverts/fabletools.svg?branch=master)](https://travis-ci.org/tidyverts/fabletools)
-[![AppVeyor Build
-Status](https://ci.appveyor.com/api/projects/status/github/tidyverts/fabletools?branch=master&svg=true)](https://ci.appveyor.com/project/tidyverts/fabletools)
+[![R build
+status](https://github.com/tidyverts/fabletools/workflows/R-CMD-check/badge.svg)](https://github.com/tidyverts/fabletools)
 [![Code test
 coverage](https://codecov.io/gh/tidyverts/fabletools/branch/master/graph/badge.svg)](https://codecov.io/gh/tidyverts/fabletools?branch=master)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
