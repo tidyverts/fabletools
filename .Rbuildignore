@@ -13,3 +13,4 @@ Makefile
 ^cran-comments\.md$
 ^revdep$
 ^\.github/workflows/R-CMD-check\.yaml$
+^\.lintr$
