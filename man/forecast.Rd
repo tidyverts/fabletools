@@ -22,6 +22,20 @@ time series with no exogenous regressors).}
 \item{bias_adjust}{Use adjusted back-transformed mean for transformations.
 Refer to \code{vignette("transformations", package = "fable")} for more details.}
 }
+\value{
+A tsibble containing the following columns:
+\itemize{
+\item \code{.model}: The name of the model used to obtain the forecast. Taken from
+the names of the \code{...} arguments, if provided. If no names were provided,
+this is contructed from the class and formula of the model.
+\item The point forecast, which by default is the mean. The name of this column
+will be the same as the dependent variable in the model(s).
+\item \code{.distribution}. A column of objects of class \code{dist}, representing the
+statistical distribution of the forecast in the given time period.
+\item All columns in \code{new_data}, excluding those whose names conflict with the
+above.
+}
+}
 \description{
 The forecast function allows you to produce future predictions of a time series
 from fitted models. If the response variable has been transformed in the
