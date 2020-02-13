@@ -53,11 +53,15 @@ aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){
   intvl <- interval(.data)
   .data <- as_tibble(.data)
   
-  agg_dt <- bind_row_attrb(map(key_comb, function(x){
-    group_data(group_by(.data, !!idx, !!!syms(x)))
+  kv <- unique(unlist(key_comb, recursive = FALSE))
+  agg_dt <- vctrs::vec_rbind(!!!map(key_comb, function(x){
+    gd <- group_data(group_by(.data, !!idx, !!!syms(x)))
+    agg_keys <- setdiff(kv, x)
+    agg_cols <- rep(list(agg_vec(NA_character_, aggregated = TRUE)), length(agg_keys))
+    gd[agg_keys] <- agg_cols
+    gd
   }))
   
-  kv <- setdiff(colnames(agg_dt), c(as_string(idx), ".rows"))
   agg_dt <- agg_dt[c(kv, as_string(idx), ".rows")]
   
   .data <- dplyr::new_grouped_df(.data, groups = agg_dt)
@@ -70,8 +74,7 @@ aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){
   # Return tsibble
   build_tsibble_meta(.data, key_data = key_dt, index = as_string(idx), 
                      index2 = as_string(idx), ordered = TRUE,
-                     interval = intvl) %>% 
-    mutate(!!!set_names(map(kv, function(x) expr(agg_key(!!sym(x)))), kv))
+                     interval = intvl)
 }
 
 
@@ -140,34 +143,23 @@ aggregate_index.tbl_ts <- function(.data, .times = NULL, ...){
     mutate(!!!set_names(map(kv, function(x) expr(agg_key(!!sym(x)))), kv))
 }
 
-agg_key <- function(x){
-  add_class(x, "agg_key")
+agg_vec <- function(x = character(), aggregated = logical(vec_size(x))){
+  vec_assert(aggregated, ptype = logical())
+  vctrs::new_rcrd(list(x = x, agg = aggregated), class = "agg_vec")
 }
 
 #' @export
-print.agg_key <- function(x, ...){
-  print(trimws(format(x, ...)))
-}
-
-#' @export
-format.agg_key <- function(x, ..., na_chr = "<aggregated>"){
-  na_pos <- is.na(x)
-  out <- NextMethod(na.encode = FALSE)
-  out[na_pos] <- na_chr
+format.agg_vec <- function(x, ..., na_chr = "<aggregated>"){
+  n <- vec_size(x)
+  x <- vec_data(x)
+  is_agg <- x[["agg"]]
+  out <- character(length = n)
+  out[is_agg] <- na_chr
+  out[!is_agg] <- format(x[["x"]][!is_agg], ...)
   out 
 }
 
-#' @export
-`[.agg_key` <- function(...){
-  agg_key(NextMethod())
-}
-
-#' @export
-unique.agg_key <- function(x, incomparables = FALSE, ...){
-  agg_key(NextMethod())
-}
-
-pillar_shaft.agg_key <- function(x, ...) {
+pillar_shaft.agg_vec <- function(x, ...) {
   if(requireNamespace("crayon")){
     na_chr <- crayon::style("<aggregated>", crayon::make_style("#999999", grey = TRUE))
   }
@@ -180,13 +172,22 @@ pillar_shaft.agg_key <- function(x, ...) {
   pillar::new_pillar_shaft_simple(out, align = "left", min_width = 10)
 }
 
-type_sum.agg_key <- function(x){
-  pillar::type_sum(rm_class(x, "agg_key"))
+vec_ptype2.agg_vec <- function(x, y, ...) UseMethod("vec_ptype2.agg_vec", y)
+vec_ptype2.agg_vec.default <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+  vec_default_ptype2(x, y, x_arg = x_arg, y_arg = y_arg)
+}
+vec_ptype2.agg_vec.agg_vec <- function(x, y, ...) agg_vec()
+vec_ptype2.agg_vec.default <- function(x, y, ...) agg_vec()
+vec_ptype2.default.agg_vec <- function(x, y, ...) agg_vec()
+
+vec_ptype_abbr.agg_vec <- function(x, ...) {
+  vctrs::vec_ptype_abbr(vec_data(x)[["x"]], ...)
 }
 
-obj_sum.agg_key <- function(x){
-  pillar::obj_sum(rm_class(x, "agg_key"))
-}
+vec_cast.agg_vec <- function(x, to, ...) UseMethod("vec_cast.agg_vec")
+vec_cast.agg_vec.agg_vec <- function(x, to, ...) x
+vec_cast.agg_vec.default <- function(x, to, ...) agg_vec(x)
+vec_cast.character.agg_vec <- function(x, to, ...) trimws(format(x))
 
 #' Is the element an aggregation of smaller data
 #' 
@@ -196,10 +197,8 @@ obj_sum.agg_key <- function(x){
 #' 
 #' @export
 is_aggregated <- function(x){
-  if(inherits(x, "agg_key")){
-    is.na(x)
-  }
-  else{
-    rep(FALSE, length(x))
-  }
+  vec_assert(x, agg_vec())
+  vec_data(x)[["agg"]]
 }
+
+scale_type.agg_vec <- function(x) "discrete"
