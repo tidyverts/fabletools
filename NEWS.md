@@ -1,5 +1,14 @@
 # fabletools (development version)
 
+## Improvements
+
+* Documentation improvements
+
+## Bug fixes
+
+* Fixed `show_gap` option not working when more than one forecast is plotted
+* `aggregate_key()` no longer drops key variables, instead they are kept as <aggregated>
+
 # fabletools 0.1.2
 
 ## Improvements
