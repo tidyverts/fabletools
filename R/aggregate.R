@@ -49,20 +49,18 @@ aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){
     key_comb <- c(list(chr()), key_comb)
   }
   
-  idx <- index2(.data)
+  idx <- index2_var(.data)
   intvl <- interval(.data)
   .data <- as_tibble(.data)
   
   kv <- unique(unlist(key_comb, recursive = FALSE))
   agg_dt <- vctrs::vec_rbind(!!!map(key_comb, function(x){
-    gd <- group_data(group_by(.data, !!idx, !!!syms(x)))
+    gd <- group_data(group_by(.data, !!!syms(c(idx, x))))
     agg_keys <- setdiff(kv, x)
     agg_cols <- rep(list(agg_vec(NA_character_, aggregated = TRUE)), length(agg_keys))
     gd[agg_keys] <- agg_cols
-    gd
+    gd[c(idx, kv, ".rows")]
   }))
-  
-  agg_dt <- agg_dt[c(kv, as_string(idx), ".rows")]
   
   .data <- dplyr::new_grouped_df(.data, groups = agg_dt)
   
@@ -72,7 +70,7 @@ aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){
   .data <- ungroup(.data)
   
   # Return tsibble
-  build_tsibble_meta(.data, key_data = key_dt, index = as_string(idx), 
+  build_tsibble_meta(.data, key_data = key_dt, index = idx, 
                      index2 = as_string(idx), ordered = TRUE,
                      interval = intvl)
 }
