@@ -29,10 +29,10 @@ forecast <- function(object, ...){
 #' @param ... Additional arguments for forecast model methods.
 #' 
 #' @return
-#' A tsibble containing the following columns:
+#' A fable containing the following columns:
 #' - `.model`: The name of the model used to obtain the forecast. Taken from
-#'   the names of the `...` arguments, if provided. If no names were provided,
-#'   this is contructed from the class and formula of the model.
+#'   the column names of models in the provided mable. If no names were
+#'   provided, this is contructed from the class and formula of the model.
 #' - The point forecast, which by default is the mean. The name of this column
 #'   will be the same as the dependent variable in the model(s).
 #' - `.distribution`. A column of objects of class `dist`, representing the
