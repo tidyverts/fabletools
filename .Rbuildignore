@@ -12,4 +12,5 @@ Makefile
 ^appveyor\.yml$
 ^cran-comments\.md$
 ^revdep$
+^\.lintr$
 ^\.github$
