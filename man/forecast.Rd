@@ -26,11 +26,10 @@ Refer to \code{vignette("transformations", package = "fable")} for more details.
 A fable containing the following columns:
 \itemize{
 \item \code{.model}: The name of the model used to obtain the forecast. Taken from
-the column names of models in the provided mable. If no names were
-provided, this is contructed from the class and formula of the model.
+the column names of models in the provided mable.
 \item The point forecast, which by default is the mean. The name of this column
 will be the same as the dependent variable in the model(s).
-\item \code{.distribution}. A column of objects of class \code{dist}, representing the
+\item \code{.distribution}. A column of objects of class \code{fcdist}, representing the
 statistical distribution of the forecast in the given time period.
 \item All columns in \code{new_data}, excluding those whose names conflict with the
 above.
