@@ -170,21 +170,27 @@ pillar_shaft.agg_vec <- function(x, ...) {
   pillar::new_pillar_shaft_simple(out, align = "left", min_width = 10)
 }
 
+#' @export
 vec_ptype2.agg_vec <- function(x, y, ...) UseMethod("vec_ptype2.agg_vec", y)
-vec_ptype2.agg_vec.default <- function(x, y, ..., x_arg = "x", y_arg = "y") {
-  vec_default_ptype2(x, y, x_arg = x_arg, y_arg = y_arg)
-}
+#' @export
 vec_ptype2.agg_vec.agg_vec <- function(x, y, ...) agg_vec()
+#' @export
 vec_ptype2.agg_vec.default <- function(x, y, ...) agg_vec()
-vec_ptype2.default.agg_vec <- function(x, y, ...) agg_vec()
+#' @export
+vec_ptype2.character.agg_vec <- function(x, y, ...) agg_vec()
 
+#' @export
 vec_ptype_abbr.agg_vec <- function(x, ...) {
   vctrs::vec_ptype_abbr(vec_data(x)[["x"]], ...)
 }
 
+#' @export
 vec_cast.agg_vec <- function(x, to, ...) UseMethod("vec_cast.agg_vec")
+#' @export
 vec_cast.agg_vec.agg_vec <- function(x, to, ...) x
+#' @export
 vec_cast.agg_vec.default <- function(x, to, ...) agg_vec(x)
+#' @export
 vec_cast.character.agg_vec <- function(x, to, ...) trimws(format(x))
 
 #' Is the element an aggregation of smaller data
