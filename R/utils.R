@@ -42,7 +42,7 @@ make_future_data <- function(.data, h = NULL){
   
   idx <- index_var(.data)
   itvl <- interval(.data)
-  tunit <- time_unit(itvl)
+  tunit <- default_time_units(itvl)
   
   idx_max <- max(.data[[idx]])
   if(is.factor(idx_max)){
