@@ -134,7 +134,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
     })
   }
   
-  fits <- map(fits, add_class, "lst_mdl")
+  fits <- map(fits, list_of_models)
   
   .data %>% 
     transmute(
@@ -142,52 +142,6 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
       !!!fits
     ) %>% 
     as_mable(keys, names(fits))
-}
-
-new_model <- function(fit, model, data, response, transformation){
-  if(is_model(fit)) return(fit)
-  structure(list(fit = fit, model = model, data = data,
-                 response = response, transformation = transformation),
-            class = "mdl_ts")
-}
-
-#' Is the object a model
-#' 
-#' @param x An object.
-#' 
-#' @export
-is_model <- function(x){
-  inherits(x, "mdl_ts")
-}
-
-type_sum.mdl_ts <-  function(x){
-  model_sum(x[["fit"]])
-}
-
-#' Provide a succinct summary of a model
-#' 
-#' Similarly to pillar's type_sum and obj_sum, model_sum is used to provide brief model summaries.
-#' 
-#' @param x The model to summarise
-#' 
-#' @export
-model_sum <- function(x){
-  UseMethod("model_sum")
-}
-
-#' @export
-model_sum.default <- function(x){
-  tibble::type_sum(x)
-}
-
-#' @export
-model_sum.mdl_ts <-  function(x){
-  model_sum(x$fit)
-}
-
-#' @export
-print.mdl_ts <-  function(x, ...){
-  report(x)
 }
 
 #' Extract the left hand side of a model
@@ -222,6 +176,3 @@ model_rhs <- function(model){
     expr(NULL)
   }
 }
-
-#' @export
-length.mdl_ts <-  function(x) 1
