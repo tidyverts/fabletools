@@ -73,7 +73,7 @@ some hierarchy." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
       </span>
     </div>
 
@@ -93,7 +93,12 @@ some hierarchy." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/tidyverts/fabletools">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -108,7 +113,7 @@ some hierarchy." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Expand a dataset to include other levels of aggregation</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/aggregate.R'><code>R/aggregate.R</code></a></small>
     <div class="hidden name"><code>aggregate_key.Rd</code></div>
     </div>
 
@@ -138,9 +143,9 @@ some hierarchy.</p>
       <td><p>Name-value pairs of summary functions. The name will be the
 name of the variable in the result. The value should be an expression
 that returns a single value like <code><a href='https://rdrr.io/r/base/Extremes.html'>min(x)</a></code>, <code>n()</code>, or <code><a href='https://rdrr.io/r/base/sum.html'>sum(is.na(y))</a></code>.</p>
-<p>The arguments in <code>...</code> are automatically <a href='https://rlang.r-lib.org/reference/quotation.html'>quoted</a> and
+<p>The arguments in <code>...</code> are automatically <a href='https://rlang.r-lib.org/reference/nse-defuse.html'>quoted</a> and
 <a href='https://rlang.r-lib.org/reference/eval_tidy.html'>evaluated</a> in the context of the data
-frame. They support <a href='https://rlang.r-lib.org/reference/quasiquotation.html'>unquoting</a> and
+frame. They support <a href='https://rlang.r-lib.org/reference/nse-force.html'>unquoting</a> and
 splicing. See <code>vignette("programming")</code> for an introduction to
 these concepts.</p></td>
     </tr>
@@ -158,21 +163,7 @@ similar way to how <code>[dplyr::summarise()]</code> is used.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibble</span>)
 <span class='no'>tourism</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>aggregate_key</span>(<span class='no'>Purpose</span> * (<span class='no'>State</span> / <span class='no'>Region</span>), <span class='kw'>Trips</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='no'>Trips</span>))</div><div class='output co'>#&gt; # A tsibble: 34,000 x 5 [1Q]
-#&gt; # Key:       Purpose, State, Region [425]
-#&gt;    Purpose      State        Region       Quarter  Trips
-#&gt;    &lt;chr&gt;        &lt;chr&gt;        &lt;chr&gt;          &lt;qtr&gt;  &lt;dbl&gt;
-#&gt;  1 &lt;aggregated&gt; &lt;aggregated&gt; &lt;aggregated&gt; 1998 Q1 23182.
-#&gt;  2 &lt;aggregated&gt; &lt;aggregated&gt; &lt;aggregated&gt; 1998 Q2 20323.
-#&gt;  3 &lt;aggregated&gt; &lt;aggregated&gt; &lt;aggregated&gt; 1998 Q3 19827.
-#&gt;  4 &lt;aggregated&gt; &lt;aggregated&gt; &lt;aggregated&gt; 1998 Q4 20830.
-#&gt;  5 &lt;aggregated&gt; &lt;aggregated&gt; &lt;aggregated&gt; 1999 Q1 22087.
-#&gt;  6 &lt;aggregated&gt; &lt;aggregated&gt; &lt;aggregated&gt; 1999 Q2 21458.
-#&gt;  7 &lt;aggregated&gt; &lt;aggregated&gt; &lt;aggregated&gt; 1999 Q3 19914.
-#&gt;  8 &lt;aggregated&gt; &lt;aggregated&gt; &lt;aggregated&gt; 1999 Q4 20028.
-#&gt;  9 &lt;aggregated&gt; &lt;aggregated&gt; &lt;aggregated&gt; 2000 Q1 22339.
-#&gt; 10 &lt;aggregated&gt; &lt;aggregated&gt; &lt;aggregated&gt; 2000 Q2 19941.
-#&gt; # … with 33,990 more rows</div><div class='input'>
+  <span class='fu'>aggregate_key</span>(<span class='no'>Purpose</span> * (<span class='no'>State</span> / <span class='no'>Region</span>), <span class='kw'>Trips</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='no'>Trips</span>))</div><div class='output co'>#&gt; <span class='error'>Error: No common type for `..1$Purpose` &lt;agg_vec&gt; and `..2$Purpose` &lt;character&gt;.</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -194,7 +185,7 @@ similar way to how <code>[dplyr::summarise()]</code> is used.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>

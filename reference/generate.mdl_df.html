@@ -38,7 +38,7 @@
 <meta property="og:title" content="Generate responses from a mable — generate.mdl_df" />
 <meta property="og:description" content="Use a model's fitted distribution to simulate additional data with similar
 behaviour to the response. This is a tidy implementation of
-simulate." />
+\link[stats]{simulate}." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -71,7 +71,7 @@ simulate." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
       </span>
     </div>
 
@@ -91,7 +91,12 @@ simulate." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/tidyverts/fabletools">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -106,23 +111,21 @@ simulate." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Generate responses from a mable</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/generate.R'><code>R/generate.R</code></a></small>
     <div class="hidden name"><code>generate.mdl_df.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>Use a model's fitted distribution to simulate additional data with similar
 behaviour to the response. This is a tidy implementation of
-<code><a href='https://rdrr.io/r/stats/simulate.html'>simulate</a></code>.</p>
+<code>\link[stats]{simulate}</code>.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for mdl_df</span>
-<span class='fu'><a href='https://rdrr.io/pkg/generics/man/generate.html'>generate</a></span>(<span class='no'>x</span>, <span class='kw'>new_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>h</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/generics/man/generate.html'>generate</a></span>(<span class='no'>x</span>, <span class='kw'>new_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>h</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for mdl_ts</span>
-<span class='fu'><a href='https://rdrr.io/pkg/generics/man/generate.html'>generate</a></span>(<span class='no'>x</span>, <span class='kw'>new_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>h</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'><a href='https://rdrr.io/pkg/generics/man/generate.html'>generate</a></span>(<span class='no'>x</span>, <span class='kw'>new_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>h</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,27 +165,28 @@ residuals. If <code>new_data</code> contains the <code>.innov</code> column, tho
 treated as innovations for the simulated paths..</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>fable</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
 <span class='no'>UKLungDeaths</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/as-tsibble.html'>as_tsibble</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='no'>mdeaths</span>, <span class='no'>fdeaths</span>), <span class='kw'>pivot_longer</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 <span class='no'>UKLungDeaths</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>lm</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='no'>mdeaths</span> ~ <span class='fu'>fourier</span>(<span class='st'>"year"</span>, <span class='kw'>K</span> <span class='kw'>=</span> <span class='fl'>4</span>) + <span class='no'>fdeaths</span>)) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/generate.html'>generate</a></span>(<span class='no'>UKLungDeaths</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fl'>5</span>)</div><div class='output co'>#&gt; # A tsibble: 360 x 5 [1M]
-#&gt; # Key:       .model, .rep [5]
+  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/generate.html'>generate</a></span>(<span class='no'>UKLungDeaths</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fl'>5</span>)
+}</div><div class='output co'>#&gt; <span style='color: #555555;'># A tsibble: 360 x 5 [1M]</span><span>
+#&gt; </span><span style='color: #555555;'># Key:       .model, .rep [5]</span><span>
 #&gt;    new_data           .model  .rep    index  .sim
-#&gt;    &lt;list&gt;             &lt;chr&gt;  &lt;int&gt;    &lt;mth&gt; &lt;dbl&gt;
-#&gt;  1 &lt;tsibble [72 × 3]&gt; lm         1 1974 Jan 2286.
-#&gt;  2 &lt;tsibble [72 × 3]&gt; lm         1 1974 Feb 1779.
-#&gt;  3 &lt;tsibble [72 × 3]&gt; lm         1 1974 Mar 2114.
-#&gt;  4 &lt;tsibble [72 × 3]&gt; lm         1 1974 Apr 1761.
-#&gt;  5 &lt;tsibble [72 × 3]&gt; lm         1 1974 May 1411.
-#&gt;  6 &lt;tsibble [72 × 3]&gt; lm         1 1974 Jun 1130.
-#&gt;  7 &lt;tsibble [72 × 3]&gt; lm         1 1974 Jul 1230.
-#&gt;  8 &lt;tsibble [72 × 3]&gt; lm         1 1974 Aug 1072.
-#&gt;  9 &lt;tsibble [72 × 3]&gt; lm         1 1974 Sep 1040.
-#&gt; 10 &lt;tsibble [72 × 3]&gt; lm         1 1974 Oct 1543.
-#&gt; # … with 350 more rows</div><div class='input'>
-</div></pre>
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>             </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;mth&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm         1 1974 Jan </span><span style='text-decoration: underline;'>2</span><span>286.
+#&gt; </span><span style='color: #555555;'> 2</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm         1 1974 Feb </span><span style='text-decoration: underline;'>1</span><span>779.
+#&gt; </span><span style='color: #555555;'> 3</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm         1 1974 Mar </span><span style='text-decoration: underline;'>2</span><span>114.
+#&gt; </span><span style='color: #555555;'> 4</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm         1 1974 Apr </span><span style='text-decoration: underline;'>1</span><span>761.
+#&gt; </span><span style='color: #555555;'> 5</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm         1 1974 May </span><span style='text-decoration: underline;'>1</span><span>411.
+#&gt; </span><span style='color: #555555;'> 6</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm         1 1974 Jun </span><span style='text-decoration: underline;'>1</span><span>130.
+#&gt; </span><span style='color: #555555;'> 7</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm         1 1974 Jul </span><span style='text-decoration: underline;'>1</span><span>230.
+#&gt; </span><span style='color: #555555;'> 8</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm         1 1974 Aug </span><span style='text-decoration: underline;'>1</span><span>072.
+#&gt; </span><span style='color: #555555;'> 9</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm         1 1974 Sep </span><span style='text-decoration: underline;'>1</span><span>040.
+#&gt; </span><span style='color: #555555;'>10</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm         1 1974 Oct </span><span style='text-decoration: underline;'>1</span><span>543.
+#&gt; </span><span style='color: #555555;'># … with 350 more rows</span><span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -202,7 +206,7 @@ treated as innovations for the simulated paths..</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>

@@ -4,6 +4,9 @@
     <loc>https://fabletools.tidyverts.org/index.html</loc>
   </url>
   <url>
+    <loc>https://fabletools.tidyverts.org/reference/MAAPE.html</loc>
+  </url>
+  <url>
     <loc>https://fabletools.tidyverts.org/reference/accuracy.html</loc>
   </url>
   <url>
@@ -53,9 +56,6 @@
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/decomposition_model.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/definitions.html</loc>
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/distribution_accuracy_measures.html</loc>
@@ -154,13 +154,7 @@
     <loc>https://fabletools.tidyverts.org/reference/model_sum.html</loc>
   </url>
   <url>
-    <loc>https://fabletools.tidyverts.org/reference/new-dcmp-class.html</loc>
-  </url>
-  <url>
     <loc>https://fabletools.tidyverts.org/reference/new-model-class.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/new_decomposition_definition.html</loc>
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/new_hilo.html</loc>
@@ -211,9 +205,6 @@
     <loc>https://fabletools.tidyverts.org/reference/scale_level.html</loc>
   </url>
   <url>
-    <loc>https://fabletools.tidyverts.org/reference/scale_tsibble.html</loc>
-  </url>
-  <url>
     <loc>https://fabletools.tidyverts.org/reference/stream.html</loc>
   </url>
   <url>
@@ -221,6 +212,9 @@
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/traverse.html</loc>
+  </url>
+  <url>
+    <loc>https://fabletools.tidyverts.org/reference/unpack_hilo.html</loc>
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/validate_formula.html</loc>

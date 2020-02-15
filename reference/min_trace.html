@@ -70,7 +70,7 @@ response variable of the hierarchy must be aggregated using sums." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
       </span>
     </div>
 
@@ -90,7 +90,12 @@ response variable of the hierarchy must be aggregated using sums." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/tidyverts/fabletools">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -105,7 +110,7 @@ response variable of the hierarchy must be aggregated using sums." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Minimum trace forecast reconciliation</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/reconciliation.R'><code>R/reconciliation.R</code></a></small>
     <div class="hidden name"><code>min_trace.Rd</code></div>
     </div>
 
@@ -114,8 +119,11 @@ response variable of the hierarchy must be aggregated using sums." />
 response variable of the hierarchy must be aggregated using sums.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>min_trace</span>(<span class='no'>models</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"wls_var"</span>, <span class='st'>"ols"</span>, <span class='st'>"wls_struct"</span>, <span class='st'>"mint_cov"</span>,
-  <span class='st'>"mint_shrink"</span>), <span class='kw'>sparse</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>min_trace</span>(
+  <span class='no'>models</span>,
+  <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"wls_var"</span>, <span class='st'>"ols"</span>, <span class='st'>"wls_struct"</span>, <span class='st'>"mint_cov"</span>, <span class='st'>"mint_shrink"</span>),
+  <span class='kw'>sparse</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,7 +170,7 @@ package is installed.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>

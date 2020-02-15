@@ -74,7 +74,7 @@ vignette(&quot;transformations&quot;, package = &quot;fable&quot;)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
       </span>
     </div>
 
@@ -94,7 +94,12 @@ vignette(&quot;transformations&quot;, package = &quot;fable&quot;)." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/tidyverts/fabletools">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -109,7 +114,7 @@ vignette(&quot;transformations&quot;, package = &quot;fable&quot;)." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Produce forecasts</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/forecast.R'><code>R/forecast.R</code></a></small>
     <div class="hidden name"><code>forecast.Rd</code></div>
     </div>
 
@@ -125,8 +130,7 @@ transformations in the fable framework can be found in
     <pre class="usage"><span class='fu'>forecast</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for mdl_df</span>
-<span class='fu'>forecast</span>(<span class='no'>object</span>, <span class='kw'>new_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>h</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>bias_adjust</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>forecast</span>(<span class='no'>object</span>, <span class='kw'>new_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>h</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>bias_adjust</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -155,16 +159,30 @@ Refer to <code><a href='https://fable.tidyverts.org/articles/transformations.htm
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A fable containing the following columns:</p><ul>
+<li><p><code>.model</code>: The name of the model used to obtain the forecast. Taken from
+the column names of models in the provided mable.</p></li>
+<li><p>The point forecast, which by default is the mean. The name of this column
+will be the same as the dependent variable in the model(s).</p></li>
+<li><p><code>.distribution</code>. A column of objects of class <code>fcdist</code>, representing the
+statistical distribution of the forecast in the given time period.</p></li>
+<li><p>All columns in <code>new_data</code>, excluding those whose names conflict with the
+above.</p></li>
+</ul>
+
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The forecasts returned contain both point forecasts and their distribution.
 A specific forecast interval can be extracted from the distribution using the
 <code><a href='hilo.html'>hilo()</a></code> function, and multiple intervals can be obtained using <code><a href='report.html'>report()</a></code>.
 These intervals are stored in a single column using the <code>hilo</code> class, to
-extract the numerical upper and lower bounds you can use <code><a href='https://tidyr.tidyverse.org/reference/unnest.html'>tidyr::unnest()</a></code>.</p>
+extract the numerical upper and lower bounds you can use <code><a href='https://tidyr.tidyverse.org/reference/nest.html'>tidyr::unnest()</a></code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>fable</span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>fable</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibble</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibbledata</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
@@ -177,24 +195,11 @@ extract the numerical upper and lower bounds you can use <code><a href='https://
 
 <span class='co'># Compute 80% and 95% forecast intervals</span>
 <span class='no'>beer_fc</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='hilo.html'>hilo</a></span>(<span class='kw'>level</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>80</span>, <span class='fl'>95</span>))</div><div class='output co'>#&gt; # A tsibble: 12 x 5 [1Q]
-#&gt; # Key:       .model [1]
-#&gt;    .model Quarter  Beer                  `80%`                  `95%`
-#&gt;    &lt;chr&gt;    &lt;qtr&gt; &lt;dbl&gt;                 &lt;hilo&gt;                 &lt;hilo&gt;
-#&gt;  1 ets    2010 Q3  407. [388.3086, 425.8337]80 [378.9423, 436.3591]95
-#&gt;  2 ets    2010 Q4  483. [459.8714, 506.5468]80 [448.2540, 519.6750]95
-#&gt;  3 ets    2011 Q1  419. [398.6325, 439.3894]80 [388.4926, 450.8578]95
-#&gt;  4 ets    2011 Q2  384. [365.3574, 403.7254]80 [355.8271, 414.5385]95
-#&gt;  5 ets    2011 Q3  405. [382.4128, 427.7091]80 [371.2483, 440.5715]95
-#&gt;  6 ets    2011 Q4  481. [452.3059, 509.7606]80 [438.2139, 526.1534]95
-#&gt;  7 ets    2012 Q1  417. [391.5386, 443.0498]80 [378.9369, 457.7836]95
-#&gt;  8 ets    2012 Q2  383. [358.4021, 407.8355]80 [346.3522, 422.0245]95
-#&gt;  9 ets    2012 Q3  403. [374.7091, 432.7834]80 [360.6877, 449.6076]95
-#&gt; 10 ets    2012 Q4  479. [442.8408, 516.4800]80 [425.1726, 537.9426]95
-#&gt; 11 ets    2013 Q1  416. [383.0362, 449.4648]80 [367.1605, 468.8992]95
-#&gt; 12 ets    2013 Q2  382. [350.3968, 414.1880]80 [335.2233, 432.9358]95</div><div class='input'>
+  <span class='fu'><a href='hilo.html'>hilo</a></span>(<span class='kw'>level</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>80</span>, <span class='fl'>95</span>))
+
 <span class='no'>beer_fc</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>aus_production</span>)</div><div class='img'><img src='forecast-1.png' alt='' width='700' height='433' /></div><div class='input'>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>aus_production</span>)
+
 <span class='co'># Forecasting with a seasonal naive and linear model to the monthly </span>
 <span class='co'># "Food retailing" turnover for each Australian state/territory.</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
@@ -205,27 +210,31 @@ extract the numerical upper and lower bounds you can use <code><a href='https://
     <span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Turnover</span>) ~ <span class='fu'>trend</span>() + <span class='fu'>season</span>()),
   ) <span class='kw'>%&gt;%</span>
   <span class='fu'>forecast</span>(<span class='kw'>h</span> <span class='kw'>=</span> <span class='st'>"2 years 6 months"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>aus_retail</span>, <span class='no'>Month</span> <span class='kw'>&gt;=</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/period.html'>yearmonth</a></span>(<span class='st'>"2000 Jan"</span>)), <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>90</span>)</div><div class='img'><img src='forecast-2.png' alt='' width='700' height='433' /></div><div class='input'>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>aus_retail</span>, <span class='no'>Month</span> <span class='kw'>&gt;=</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/period.html'>yearmonth</a></span>(<span class='st'>"2000 Jan"</span>)), <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>90</span>)
+
 <span class='co'># Forecast GDP with a dynamic regression model on log(GDP) using population and</span>
 <span class='co'># an automatically chosen ARIMA error structure. Assume that population is fixed</span>
 <span class='co'># in the future.</span>
 <span class='no'>aus_economy</span> <span class='kw'>&lt;-</span> <span class='no'>global_economy</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>Country</span> <span class='kw'>==</span> <span class='st'>"Australia"</span>)
 <span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='no'>aus_economy</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>lm</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ARIMA.html'>ARIMA</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>GDP</span>) ~ <span class='no'>Population</span>))</div><div class='output co'>#&gt; <span class='warning'>Warning: 1 error encountered for lm</span>
-#&gt; <span class='warning'>[1] The `urca` package must be installed to use this functionality. It can be installed with install.packages("urca")</span></div><div class='input'>
+  <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>lm</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ARIMA.html'>ARIMA</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>GDP</span>) ~ <span class='no'>Population</span>))
+
 <span class='no'>future_aus</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/new-data.html'>new_data</a></span>(<span class='no'>aus_economy</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>10</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>Population</span> <span class='kw'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/nth.html'>last</a></span>(<span class='no'>aus_economy</span>$<span class='no'>Population</span>))
 
 <span class='no'>fit</span> <span class='kw'>%&gt;%</span>
   <span class='fu'>forecast</span>(<span class='kw'>new_data</span> <span class='kw'>=</span> <span class='no'>future_aus</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>aus_economy</span>)</div><div class='img'><img src='forecast-3.png' alt='' width='700' height='433' /></div><div class='input'>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>aus_economy</span>)
+}</div><div class='output co'>#&gt; <span class='warning'>Warning: 1 error encountered for lm</span>
+#&gt; <span class='warning'>[1] The `urca` package must be installed to use this functionality. It can be installed with install.packages("urca")</span></div><div class='img'><img src='forecast-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
       <li><a href="#details">Details</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
@@ -240,7 +249,7 @@ extract the numerical upper and lower bounds you can use <code><a href='https://
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>

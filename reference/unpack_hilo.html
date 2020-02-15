@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a forecast distribution object — new_fcdist • fabletools</title>
+<title>Unpack a hilo column — unpack_hilo • fabletools</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,9 @@
 
 
 
-<meta property="og:title" content="Create a forecast distribution object — new_fcdist" />
-<meta property="og:description" content="Create a forecast distribution object" />
+<meta property="og:title" content="Unpack a hilo column — unpack_hilo" />
+<meta property="og:description" content="Allows a hilo column to be unpacked into its component columns: &quot;lower&quot;,
+&quot;upper&quot;, and &quot;level&quot;." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -108,51 +109,65 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a forecast distribution object</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/quantile.R'><code>R/quantile.R</code></a></small>
-    <div class="hidden name"><code>fcdist.Rd</code></div>
+    <h1>Unpack a hilo column</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/hilo.R'><code>R/hilo.R</code></a></small>
+    <div class="hidden name"><code>unpack_hilo.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Create a forecast distribution object</p>
+    <p>Allows a hilo column to be unpacked into its component columns: "lower",
+"upper", and "level".</p>
     </div>
 
-    <pre class="usage"><span class='fu'>new_fcdist</span>(<span class='no'>...</span>, <span class='no'>.env</span>)
-
-<span class='fu'>new_fcdist_env</span>(<span class='no'>quantile</span>, <span class='kw'>transformation</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>identity</span>), <span class='kw'>display</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>unpack_hilo</span>(<span class='no'>data</span>, <span class='no'>cols</span>, <span class='kw'>names_sep</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>names_repair</span> <span class='kw'>=</span> <span class='st'>"check_unique"</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>Arguments for <code>f</code> function</p></td>
+      <th>data</th>
+      <td><p>A data frame.</p></td>
     </tr>
     <tr>
-      <th>.env</th>
-      <td><p>An environment produced using <code>new_fcdist_env</code></p></td>
+      <th>cols</th>
+      <td><p>Name of hilo columns to unpack.</p></td>
     </tr>
     <tr>
-      <th>quantile</th>
-      <td><p>A distribution function producing quantiles (such as <code>qnorm</code>)</p></td>
+      <th>names_sep</th>
+      <td><p>If <code>NULL</code>, the default, the names of new columns will
+come directly from the inner data frame.</p>
+<p>If a string, the names of the new columns will be formed by pasting
+together the outer column name with the inner names, separated by
+<code>names_sep</code>.</p></td>
     </tr>
     <tr>
-      <th>transformation</th>
-      <td><p>Transformation to be applied to resulting quantiles
-from <code>quantile</code></p></td>
-    </tr>
-    <tr>
-      <th>display</th>
-      <td><p>Function that is used to format the distribution display</p></td>
+      <th>names_repair</th>
+      <td><p>Used to check that output data frame has valid
+names. Must be one of the following options:</p><ul>
+<li><p>"minimal": no name repair or checks, beyond basic existence,</p></li>
+<li><p>"unique": make sure names are unique and not empty,</p></li>
+<li><p>"check_unique": (the default), no name repair, but check they are unique,</p></li>
+<li><p>"universal": make the names unique and syntactic</p></li>
+<li><p>a function: apply custom name repair.</p></li>
+<li><p><a href='https://tidyr.tidyverse.org/reference/tidyr_legacy.html'>tidyr_legacy</a>: use the name repair from tidyr 0.8.</p></li>
+<li><p>a formula: a purrr-style anonymous function (see <code><a href='https://rlang.r-lib.org/reference/as_function.html'>rlang::as_function()</a></code>)</p></li>
+</ul>
+
+<p>See <code><a href='https://rdrr.io/pkg/vctrs/man/vec_as_names.html'>vctrs::vec_as_names()</a></code> for more details on these terms and the
+strategies used to enforce them.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='https://tidyr.tidyverse.org/reference/pack.html'>tidyr::unpack()</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#see-also">See also</a></li>
     </ul>
 
   </div>

@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
       </span>
     </div>
 
@@ -89,7 +89,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/tidyverts/fabletools">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -104,7 +109,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Construct hilo intervals</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/hilo.R'><code>R/hilo.R</code></a></small>
     <div class="hidden name"><code>new_hilo.Rd</code></div>
     </div>
 
@@ -112,7 +117,7 @@
     <p>Construct hilo intervals</p>
     </div>
 
-    <pre class="usage"><span class='fu'>new_hilo</span>(<span class='kw'>lower</span> <span class='kw'>=</span> <span class='fl'>NA_real_</span>, <span class='kw'>upper</span> <span class='kw'>=</span> <span class='fl'>NA_real_</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>NA_real_</span>)</pre>
+    <pre class="usage"><span class='fu'>new_hilo</span>(<span class='no'>lower</span>, <span class='no'>upper</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -133,17 +138,17 @@ length 1 or as length of <code>lower</code>, expected between 0 and 100.</p></td
     <p>A "hilo" object</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>new_hilo</span>(<span class='kw'>lower</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span>), <span class='kw'>upper</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span>) + <span class='fl'>5</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>95L</span>)</div><div class='output co'>#&gt; [-2.1799567, 3.496618]95
-#&gt; [ 0.4208746, 2.949415]95
-#&gt; [-0.3575283, 4.246802]95
-#&gt; [-0.6468615, 4.865858]95
-#&gt; [-0.0501418, 6.005783]95
-#&gt; [ 0.4169428, 7.167187]95
-#&gt; [-0.6325875, 7.322557]95
-#&gt; [ 1.1501467, 3.979577]95
-#&gt; [-0.2354759, 5.048814]95
-#&gt; [-1.6431074, 4.228111]95</div><div class='input'>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>new_hilo</span>(<span class='kw'>lower</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span>), <span class='kw'>upper</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span>) + <span class='fl'>5</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>95L</span>)</div><div class='output co'>#&gt; [-2.1799567, 3.496618]<span style='text-decoration: underline;'>95</span><span>
+#&gt; [ 0.4208746, 2.949415]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; [-0.3575283, 4.246802]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; [-0.6468615, 4.865858]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; [-0.0501418, 6.005783]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; [ 0.4169428, 7.167187]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; [-0.6325875, 7.322557]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; [ 1.1501467, 3.979577]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; [-0.2354759, 5.048814]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; [-1.6431074, 4.228111]</span><span style='text-decoration: underline;'>95</span><span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -165,7 +170,7 @@ length 1 or as length of <code>lower</code>, expected between 0 and 100.</p></td
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>

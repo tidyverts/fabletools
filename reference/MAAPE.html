@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a forecast distribution object — new_fcdist • fabletools</title>
+<title>Mean Arctangent Absolute Percentage Error — MAAPE • fabletools</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Create a forecast distribution object — new_fcdist" />
-<meta property="og:description" content="Create a forecast distribution object" />
+<meta property="og:title" content="Mean Arctangent Absolute Percentage Error — MAAPE" />
+<meta property="og:description" content="Mean Arctangent Absolute Percentage Error" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -108,51 +108,52 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a forecast distribution object</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/quantile.R'><code>R/quantile.R</code></a></small>
-    <div class="hidden name"><code>fcdist.Rd</code></div>
+    <h1>Mean Arctangent Absolute Percentage Error</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/accuracy.R'><code>R/accuracy.R</code></a></small>
+    <div class="hidden name"><code>MAAPE.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Create a forecast distribution object</p>
+    <p>Mean Arctangent Absolute Percentage Error</p>
     </div>
 
-    <pre class="usage"><span class='fu'>new_fcdist</span>(<span class='no'>...</span>, <span class='no'>.env</span>)
-
-<span class='fu'>new_fcdist_env</span>(<span class='no'>quantile</span>, <span class='kw'>transformation</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>identity</span>), <span class='kw'>display</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>MAAPE</span>(<span class='no'>.resid</span>, <span class='no'>.actual</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>.resid</th>
+      <td><p>A vector of residuals from either the training (model accuracy)
+or test (forecast accuracy) data.</p></td>
+    </tr>
+    <tr>
+      <th>.actual</th>
+      <td><p>A vector of responses matching the fitted values
+(for forecast accuracy, <code>new_data</code> must be provided).</p></td>
+    </tr>
+    <tr>
+      <th>na.rm</th>
+      <td><p>Remove the missing values before calculating the accuracy measure</p></td>
+    </tr>
+    <tr>
       <th>...</th>
-      <td><p>Arguments for <code>f</code> function</p></td>
-    </tr>
-    <tr>
-      <th>.env</th>
-      <td><p>An environment produced using <code>new_fcdist_env</code></p></td>
-    </tr>
-    <tr>
-      <th>quantile</th>
-      <td><p>A distribution function producing quantiles (such as <code>qnorm</code>)</p></td>
-    </tr>
-    <tr>
-      <th>transformation</th>
-      <td><p>Transformation to be applied to resulting quantiles
-from <code>quantile</code></p></td>
-    </tr>
-    <tr>
-      <th>display</th>
-      <td><p>Function that is used to format the distribution display</p></td>
+      <td><p>Additional arguments for each measure.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Kim, Sungil and Heeyoung Kim (2016) "A new metric of absolute percentage error
+for intermittent demand forecasts". <em>International Journal of Forecasting</em>,
+<b>32</b>(3), 669-679.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#references">References</a></li>
     </ul>
 
   </div>

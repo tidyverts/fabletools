@@ -70,7 +70,7 @@ transformation. inv_box_cox() reverses the transformation." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
       </span>
     </div>
 
@@ -90,7 +90,12 @@ transformation. inv_box_cox() reverses the transformation." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/tidyverts/fabletools">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -105,7 +110,7 @@ transformation. inv_box_cox() reverses the transformation." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Box Cox Transformation</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/box_cox.R'><code>R/box_cox.R</code></a></small>
     <div class="hidden name"><code>box_cox.Rd</code></div>
     </div>
 
@@ -149,21 +154,21 @@ transformations. <em>JRSS B</em> <b>26</b> 211--246.</p>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
 <span class='no'>airmiles</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://tsibble.tidyverts.org/reference/as-tsibble.html'>as_tsibble</a></span>() <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>box_cox</span> <span class='kw'>=</span> <span class='fu'>box_cox</span>(<span class='no'>value</span>, <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='fl'>0.3</span>))</div><div class='output co'>#&gt; # A tsibble: 24 x 3 [1Y]
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>box_cox</span> <span class='kw'>=</span> <span class='fu'>box_cox</span>(<span class='no'>value</span>, <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='fl'>0.3</span>))</div><div class='output co'>#&gt; <span style='color: #555555;'># A tsibble: 24 x 3 [1Y]</span><span>
 #&gt;    index value box_cox
-#&gt;    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
-#&gt;  1  1937   412    17.0
-#&gt;  2  1938   480    17.9
-#&gt;  3  1939   683    20.3
-#&gt;  4  1940  1052    23.6
-#&gt;  5  1941  1385    25.9
-#&gt;  6  1942  1418    26.1
-#&gt;  7  1943  1634    27.3
-#&gt;  8  1944  2178    30.1
-#&gt;  9  1945  3362    34.8
-#&gt; 10  1946  5948    41.9
-#&gt; # … with 14 more rows</div><div class='input'>
-</div></pre>
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span>  </span><span style='text-decoration: underline;'>1</span><span>937   412    17.0
+#&gt; </span><span style='color: #555555;'> 2</span><span>  </span><span style='text-decoration: underline;'>1</span><span>938   480    17.9
+#&gt; </span><span style='color: #555555;'> 3</span><span>  </span><span style='text-decoration: underline;'>1</span><span>939   683    20.3
+#&gt; </span><span style='color: #555555;'> 4</span><span>  </span><span style='text-decoration: underline;'>1</span><span>940  </span><span style='text-decoration: underline;'>1</span><span>052    23.6
+#&gt; </span><span style='color: #555555;'> 5</span><span>  </span><span style='text-decoration: underline;'>1</span><span>941  </span><span style='text-decoration: underline;'>1</span><span>385    25.9
+#&gt; </span><span style='color: #555555;'> 6</span><span>  </span><span style='text-decoration: underline;'>1</span><span>942  </span><span style='text-decoration: underline;'>1</span><span>418    26.1
+#&gt; </span><span style='color: #555555;'> 7</span><span>  </span><span style='text-decoration: underline;'>1</span><span>943  </span><span style='text-decoration: underline;'>1</span><span>634    27.3
+#&gt; </span><span style='color: #555555;'> 8</span><span>  </span><span style='text-decoration: underline;'>1</span><span>944  </span><span style='text-decoration: underline;'>2</span><span>178    30.1
+#&gt; </span><span style='color: #555555;'> 9</span><span>  </span><span style='text-decoration: underline;'>1</span><span>945  </span><span style='text-decoration: underline;'>3</span><span>362    34.8
+#&gt; </span><span style='color: #555555;'>10</span><span>  </span><span style='text-decoration: underline;'>1</span><span>946  </span><span style='text-decoration: underline;'>5</span><span>948    41.9
+#&gt; </span><span style='color: #555555;'># … with 14 more rows</span><span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -187,7 +192,7 @@ transformations. <em>JRSS B</em> <b>26</b> 211--246.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>

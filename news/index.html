@@ -67,7 +67,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
       </span>
     </div>
 
@@ -87,7 +87,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/tidyverts/fabletools">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -102,31 +107,97 @@
   <div class="col-md-9 contents">
     <div class="page-header">
       <h1>Changelog <small></small></h1>
-      
+      <small>Source: <a href='https://github.com/tidyverts/fabletools/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
     <div id="fabletools-development-version" class="section level1">
 <h1 class="page-header">
 <a href="#fabletools-development-version" class="anchor"></a>fabletools (development version)<small> Unreleased </small>
 </h1>
-<div id="breaking-changes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#breaking-changes" class="anchor"></a>Breaking changes</h2>
-<ul>
-<li>Updated method names available for <code><a href="../reference/min_trace.html">min_trace()</a></code> reconciliation.</li>
-</ul>
-</div>
 <div id="improvements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#improvements" class="anchor"></a>Improvements</h2>
 <ul>
-<li>Improved error messaging for failing features.</li>
+<li>Documentation improvements</li>
+</ul>
+</div>
+<div id="bug-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
+<ul>
+<li>Fixed <code>show_gap</code> option not working when more than one forecast is plotted</li>
+<li>
+<code><a href="../reference/aggregate_key.html">aggregate_key()</a></code> no longer drops key variables, instead they are kept as <aggregated></aggregated>
+</li>
 </ul>
 </div>
 </div>
-    <div id="fabletools-0-1-0" class="section level1">
+    <div id="fabletools-012" class="section level1">
 <h1 class="page-header">
-<a href="#fabletools-0-1-0" class="anchor"></a>fabletools 0.1.0<small> 2019-08-08 </small>
+<a href="#fabletools-012" class="anchor"></a>fabletools 0.1.2<small> 2020-01-29 </small>
+</h1>
+<div id="improvements-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#improvements-1" class="anchor"></a>Improvements</h2>
+<ul>
+<li>Added MAAPE accuracy measure.</li>
+<li>Added support for exogenous regressors in decomposition models.</li>
+<li>Added support for generating data from combination models.</li>
+<li>Forecast plots via <code><a href="../reference/autoplot.fbl_ts.html">autoplot.fbl_ts()</a></code> and <code><a href="../reference/autoplot.fbl_ts.html">autolayer.fbl_ts()</a></code> now support the <code>show_gap</code> argument. This can be used to connect the historical observations to the forecasts (<a href='https://github.com/tidyverts/fabletools/issues/113'>#113</a>).</li>
+</ul>
+</div>
+<div id="breaking-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#breaking-changes" class="anchor"></a>Breaking changes</h2>
+<ul>
+<li>Decompositions are now treated as models. To access the decomposed values, you will now have to use <code><a href="https://rdrr.io/pkg/generics/man/components.html">components()</a></code>. For example, <code>tourism %&gt;% STL(Trips)</code> is now <code>tourism %&gt;% model(STL(Trips)) %&gt;% components()</code>. This change allows for more flexible decomposition specifications, and better interfaces for decomposition modelling.</li>
+</ul>
+</div>
+<div id="bug-fixes-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h2>
+<ul>
+<li>Fixed <code>select.mdl_df()</code> usage with negative select values (<a href='https://github.com/tidyverts/fabletools/issues/120'>#120</a>).</li>
+<li>Fixed <code><a href="../reference/features.html">features()</a></code> for a tsibble with key variables but only one series.</li>
+<li>Fixed interpolated values not being back transformed (tidyverts/fable<a href='https://github.com/tidyverts/fabletools/issues/202'>#202</a>).</li>
+<li>Fixed <code><a href="../reference/stream.html">stream()</a></code> causing issues with subsequent methods (<a href='https://github.com/tidyverts/fabletools/issues/144'>#144</a>).</li>
+</ul>
+</div>
+</div>
+    <div id="fabletools-011" class="section level1">
+<h1 class="page-header">
+<a href="#fabletools-011" class="anchor"></a>fabletools 0.1.1<small> 2019-09-16 </small>
+</h1>
+<div id="breaking-changes-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#breaking-changes-1" class="anchor"></a>Breaking changes</h2>
+<ul>
+<li>Updated method names available for <code><a href="../reference/min_trace.html">min_trace()</a></code> reconciliation (<a href='https://github.com/GeorgeAthana'>@GeorgeAthana</a>).</li>
+</ul>
+</div>
+<div id="improvements-2" class="section level2">
+<h2 class="hasAnchor">
+<a href="#improvements-2" class="anchor"></a>Improvements</h2>
+<ul>
+<li>Improved error messaging for failing features.</li>
+<li>Added Continuous Ranked Probability Score (<code><a href="../reference/distribution_accuracy_measures.html">CRPS()</a></code>) accuracy measure.</li>
+<li>Transformations of features are now computed for separately for each key, allowing transformations such as <code><a href="https://rdrr.io/r/base/scale.html">scale(value)</a></code> to be used.</li>
+<li>Added structural scaling method for MinT (<code><a href="../reference/min_trace.html">min_trace(method = "wls_struct")</a></code>) forecast reconciliation (<a href='https://github.com/GeorgeAthana'>@GeorgeAthana</a>).</li>
+<li>Performance improvements.</li>
+<li>Documentation improvements.</li>
+</ul>
+</div>
+<div id="bug-fixes-2" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h2>
+<ul>
+<li>Added failure condition for disjoint reconciliation graphs.</li>
+</ul>
+</div>
+</div>
+    <div id="fabletools-010" class="section level1">
+<h1 class="page-header">
+<a href="#fabletools-010" class="anchor"></a>fabletools 0.1.0<small> 2019-08-08 </small>
 </h1>
 <ul>
 <li>First release.</li>
@@ -147,7 +218,7 @@
 <h3 class="hasAnchor">
 <a href="#modelling" class="anchor"></a>Modelling</h3>
 <ul>
-<li>Support for model (<code><a href="../reference/new-model-class.html">new_model_class()</a></code>, <code><a href="../reference/new-model-class.html">new_model_definition()</a></code>) and decomposition definitions (<code><a href="../reference/new-dcmp-class.html">new_decomposition_class()</a></code>, <code><a href="../reference/new_decomposition_definition.html">new_decomposition_definition()</a></code>).</li>
+<li>Support for model (<code><a href="../reference/new-model-class.html">new_model_class()</a></code>, <code><a href="../reference/new-model-class.html">new_model_definition()</a></code>) and decomposition definitions (<code>new_decomposition_class()</code>, <code>new_decomposition_definition()</code>).</li>
 <li>Added parsing tools to compactly specify models using a formula interface. Transformations specified on left hand side, where the response variable is determined by object length. In case of a conflict in object length, such as <code>GDP/CPI</code>, the response will be the ratio of the pair. To transform a variable by some other data variable, the response can be specified using <code>resp()</code>, giving <code>resp(GDP)/CPI</code>. Multiple variables (and separate transformations for each), can be specified using <code><a href="https://dplyr.tidyverse.org/reference/vars.html">vars()</a></code>: <code><a href="https://dplyr.tidyverse.org/reference/vars.html">vars(log(GDP), CPI)</a></code>. The inputs to the model are specified on the right hand side, and are handled using model defined specials (<code><a href="../reference/new_specials.html">new_specials()</a></code>).</li>
 <li>Added methods to train a model definition to a dataset. <code><a href="../reference/model.html">model()</a></code> is the recommended interface, which can fit many model definitions to each time series in the input dataset returning a mable (<code>mdl_df</code>). The lower level interface for model estimation is accessible using <code><a href="../reference/estimate.html">estimate()</a></code> which will return a time series model (<code>mdl_ts</code>), however using this interface is discouraged.</li>
 </ul>
@@ -205,7 +276,9 @@
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
         <li><a href="#fabletools-development-version">development version</a></li>
-        <li><a href="#fabletools-0-1-0">0.1.0</a></li>
+        <li><a href="#fabletools-012">0.1.2</a></li>
+        <li><a href="#fabletools-011">0.1.1</a></li>
+        <li><a href="#fabletools-010">0.1.0</a></li>
       </ul>
     </div>
   </div>
@@ -219,7 +292,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>

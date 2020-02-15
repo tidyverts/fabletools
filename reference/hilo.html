@@ -70,7 +70,7 @@ level from a distribution or fable." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
       </span>
     </div>
 
@@ -90,7 +90,12 @@ level from a distribution or fable." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/tidyverts/fabletools">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -105,7 +110,7 @@ level from a distribution or fable." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Compute hilo intervals</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/fable.R'><code>R/fable.R</code></a>, <a href='https://github.com/tidyverts/fabletools/blob/master/R/hilo.R'><code>R/hilo.R</code></a>, <a href='https://github.com/tidyverts/fabletools/blob/master/R/quantile.R'><code>R/quantile.R</code></a></small>
     <div class="hidden name"><code>hilo.Rd</code></div>
     </div>
 
@@ -142,29 +147,31 @@ level from a distribution or fable.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'><a href='distributions.html'>dist_normal</a></span>(<span class='fl'>10</span>, <span class='fl'>3</span>) <span class='kw'>%&gt;%</span> <span class='fu'>hilo</span>(<span class='fl'>95</span>)</div><div class='output co'>#&gt; [4.120108, 15.87989]95</div><div class='input'>
+<span class='fu'><a href='distributions.html'>dist_normal</a></span>(<span class='fl'>10</span>, <span class='fl'>3</span>) <span class='kw'>%&gt;%</span> <span class='fu'>hilo</span>(<span class='fl'>95</span>)</div><div class='output co'>#&gt; [4.120108, 15.87989]<span style='text-decoration: underline;'>95</span><span></div><div class='input'>
+<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>fable</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibbledata</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
 <span class='no'>aus_production</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Beer</span>) ~ <span class='fu'>error</span>(<span class='st'>"M"</span>) + <span class='fu'>trend</span>(<span class='st'>"Ad"</span>) + <span class='fu'>season</span>(<span class='st'>"A"</span>))) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='forecast.html'>forecast</a></span>(<span class='kw'>h</span> <span class='kw'>=</span> <span class='st'>"3 years"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>interval</span> <span class='kw'>=</span> <span class='fu'>hilo</span>(<span class='no'>.distribution</span>, <span class='fl'>95</span>))</div><div class='output co'>#&gt; # A fable: 12 x 5 [1Q]
-#&gt; # Key:     .model [1]
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>interval</span> <span class='kw'>=</span> <span class='fu'>hilo</span>(<span class='no'>.distribution</span>, <span class='fl'>95</span>))
+}</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A fable: 12 x 5 [1Q]</span><span>
+#&gt; </span><span style='color: #555555;'># Key:     .model [1]</span><span>
 #&gt;    .model Quarter  Beer .distribution                   interval
-#&gt;    &lt;chr&gt;    &lt;qtr&gt; &lt;dbl&gt; &lt;dist&gt;                            &lt;hilo&gt;
-#&gt;  1 ets    2010 Q3  407. t(N(6.0, 0.0013)) [378.9423, 436.3591]95
-#&gt;  2 ets    2010 Q4  483. t(N(6.2, 0.0014)) [448.2540, 519.6750]95
-#&gt;  3 ets    2011 Q1  419. t(N(6.0, 0.0014)) [388.4926, 450.8578]95
-#&gt;  4 ets    2011 Q2  384. t(N(6.0, 0.0015)) [355.8271, 414.5385]95
-#&gt;  5 ets    2011 Q3  405. t(N(6.0, 0.0019)) [371.2483, 440.5715]95
-#&gt;  6 ets    2011 Q4  481. t(N(6.2, 0.0022)) [438.2139, 526.1534]95
-#&gt;  7 ets    2012 Q1  417. t(N(6.0, 0.0023)) [378.9369, 457.7836]95
-#&gt;  8 ets    2012 Q2  383. t(N(5.9, 0.0025)) [346.3522, 422.0245]95
-#&gt;  9 ets    2012 Q3  403. t(N(6.0, 0.0032)) [360.6877, 449.6076]95
-#&gt; 10 ets    2012 Q4  479. t(N(6.2, 0.0036)) [425.1726, 537.9426]95
-#&gt; 11 ets    2013 Q1  416. t(N(6.0, 0.0039)) [367.1605, 468.8992]95
-#&gt; 12 ets    2013 Q2  382. t(N(5.9, 0.0043)) [335.2233, 432.9358]95</div></pre>
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;qtr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dist&gt;</span><span>                            </span><span style='color: #555555;font-style: italic;'>&lt;hilo&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> ets    2010 Q3  407. t(N(6.0, 0.0013)) [378.9423, 436.3591]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; </span><span style='color: #555555;'> 2</span><span> ets    2010 Q4  483. t(N(6.2, 0.0014)) [448.2540, 519.6750]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; </span><span style='color: #555555;'> 3</span><span> ets    2011 Q1  419. t(N(6.0, 0.0014)) [388.4926, 450.8578]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; </span><span style='color: #555555;'> 4</span><span> ets    2011 Q2  384. t(N(6.0, 0.0015)) [355.8271, 414.5385]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; </span><span style='color: #555555;'> 5</span><span> ets    2011 Q3  405. t(N(6.0, 0.0019)) [371.2483, 440.5715]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; </span><span style='color: #555555;'> 6</span><span> ets    2011 Q4  481. t(N(6.2, 0.0022)) [438.2139, 526.1534]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; </span><span style='color: #555555;'> 7</span><span> ets    2012 Q1  417. t(N(6.0, 0.0023)) [378.9369, 457.7836]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; </span><span style='color: #555555;'> 8</span><span> ets    2012 Q2  383. t(N(5.9, 0.0025)) [346.3522, 422.0245]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; </span><span style='color: #555555;'> 9</span><span> ets    2012 Q3  403. t(N(6.0, 0.0032)) [360.6877, 449.6076]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; </span><span style='color: #555555;'>10</span><span> ets    2012 Q4  479. t(N(6.2, 0.0036)) [425.1726, 537.9426]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; </span><span style='color: #555555;'>11</span><span> ets    2013 Q1  416. t(N(6.0, 0.0039)) [367.1605, 468.8992]</span><span style='text-decoration: underline;'>95</span><span>
+#&gt; </span><span style='color: #555555;'>12</span><span> ets    2013 Q2  382. t(N(5.9, 0.0043)) [335.2233, 432.9358]</span><span style='text-decoration: underline;'>95</span><span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -183,7 +190,7 @@ level from a distribution or fable.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>

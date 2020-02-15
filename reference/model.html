@@ -75,7 +75,7 @@ in the mable identifies a single model." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
       </span>
     </div>
 
@@ -95,7 +95,12 @@ in the mable identifies a single model." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/tidyverts/fabletools">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -110,7 +115,7 @@ in the mable identifies a single model." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Estimate models</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/model.R'><code>R/model.R</code></a></small>
     <div class="hidden name"><code>model.Rd</code></div>
     </div>
 
@@ -157,36 +162,34 @@ in the mable identifies a single model.</p>
 according to that plan.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>fable</span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>&amp;&amp;</span> <span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"tsibbledata"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>fable</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibbledata</span>)
 
 <span class='co'># Training an ETS(M,Ad,A) model to Australian beer production</span>
 <span class='no'>aus_production</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>model</span>(<span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Beer</span>) ~ <span class='fu'>error</span>(<span class='st'>"M"</span>) + <span class='fu'>trend</span>(<span class='st'>"Ad"</span>) + <span class='fu'>season</span>(<span class='st'>"A"</span>)))</div><div class='output co'>#&gt; # A mable: 1 x 1
-#&gt;             ets
-#&gt;         &lt;model&gt;
-#&gt; 1 &lt;ETS(M,Ad,A)&gt;</div><div class='input'>
+  <span class='fu'>model</span>(<span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Beer</span>) ~ <span class='fu'>error</span>(<span class='st'>"M"</span>) + <span class='fu'>trend</span>(<span class='st'>"Ad"</span>) + <span class='fu'>season</span>(<span class='st'>"A"</span>)))
+
 <span class='co'># Training a seasonal naive and ETS(A,A,A) model to the monthly </span>
-<span class='co'># "Food retailing" turnover for each Australian state/territory.</span>
+<span class='co'># "Food retailing" turnover for selected Australian states.</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
 <span class='no'>aus_retail</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>Industry</span> <span class='kw'>==</span> <span class='st'>"Food retailing"</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(
+    <span class='no'>Industry</span> <span class='kw'>==</span> <span class='st'>"Food retailing"</span>,
+    <span class='no'>State</span> <span class='kw'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Victoria"</span>, <span class='st'>"New South Wales"</span>, <span class='st'>"Queensland"</span>)
+  ) <span class='kw'>%&gt;%</span>
   <span class='fu'>model</span>(
     <span class='kw'>snaive</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/RW.html'>SNAIVE</a></span>(<span class='no'>Turnover</span>),
     <span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Turnover</span>) ~ <span class='fu'>error</span>(<span class='st'>"A"</span>) + <span class='fu'>trend</span>(<span class='st'>"A"</span>) + <span class='fu'>season</span>(<span class='st'>"A"</span>)),
-  )</div><div class='output co'>#&gt; # A mable: 8 x 4
-#&gt; # Key:     State, Industry [8]
-#&gt;   State                        Industry         snaive          ets
-#&gt;   &lt;chr&gt;                        &lt;chr&gt;           &lt;model&gt;      &lt;model&gt;
-#&gt; 1 Australian Capital Territory Food retailing &lt;SNAIVE&gt; &lt;ETS(A,A,A)&gt;
-#&gt; 2 New South Wales              Food retailing &lt;SNAIVE&gt; &lt;ETS(A,A,A)&gt;
-#&gt; 3 Northern Territory           Food retailing &lt;SNAIVE&gt; &lt;ETS(A,A,A)&gt;
-#&gt; 4 Queensland                   Food retailing &lt;SNAIVE&gt; &lt;ETS(A,A,A)&gt;
-#&gt; 5 South Australia              Food retailing &lt;SNAIVE&gt; &lt;ETS(A,A,A)&gt;
-#&gt; 6 Tasmania                     Food retailing &lt;SNAIVE&gt; &lt;ETS(A,A,A)&gt;
-#&gt; 7 Victoria                     Food retailing &lt;SNAIVE&gt; &lt;ETS(A,A,A)&gt;
-#&gt; 8 Western Australia            Food retailing &lt;SNAIVE&gt; &lt;ETS(A,A,A)&gt;</div><div class='input'>
-</div></pre>
+  )
+}</div><div class='output co'>#&gt; <span style='color: #555555;'># A mable: 3 x 4</span><span>
+#&gt; </span><span style='color: #555555;'># Key:     State, Industry [3]</span><span>
+#&gt;   State           Industry       snaive   ets         
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;model&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;model&gt;</span><span>     
+#&gt; </span><span style='color: #555555;'>1</span><span> New South Wales Food retailing </span><span style='color: #555555;'>&lt;SNAIVE&gt;</span><span> </span><span style='color: #555555;'>&lt;ETS(A,A,A)&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>2</span><span> Queensland      Food retailing </span><span style='color: #555555;'>&lt;SNAIVE&gt;</span><span> </span><span style='color: #555555;'>&lt;ETS(A,A,A)&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>3</span><span> Victoria        Food retailing </span><span style='color: #555555;'>&lt;SNAIVE&gt;</span><span> </span><span style='color: #555555;'>&lt;ETS(A,A,A)&gt;</span><span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -206,7 +209,7 @@ according to that plan.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>

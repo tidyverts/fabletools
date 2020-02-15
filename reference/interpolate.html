@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
       </span>
     </div>
 
@@ -89,7 +89,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/tidyverts/fabletools">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -104,7 +109,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Interpolate missing values</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/interpolate.R'><code>R/interpolate.R</code></a></small>
     <div class="hidden name"><code>interpolate.Rd</code></div>
     </div>
 
@@ -137,44 +142,33 @@
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>fable</span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>fable</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibbledata</span>)
 
 <span class='co'># The fastest running times for the olympics are missing for years during </span>
 <span class='co'># world wars as the olympics were not held.</span>
-<span class='no'>olympic_running</span></div><div class='output co'>#&gt; # A tsibble: 312 x 4 [4Y]
-#&gt; # Key:       Length, Sex [14]
-#&gt;     Year Length Sex    Time
-#&gt;    &lt;dbl&gt; &lt;fct&gt;  &lt;chr&gt; &lt;dbl&gt;
-#&gt;  1  1896 100m   men    12  
-#&gt;  2  1900 100m   men    11  
-#&gt;  3  1904 100m   men    11  
-#&gt;  4  1908 100m   men    10.8
-#&gt;  5  1912 100m   men    10.8
-#&gt;  6  1916 100m   men    NA  
-#&gt;  7  1920 100m   men    10.8
-#&gt;  8  1924 100m   men    10.6
-#&gt;  9  1928 100m   men    10.8
-#&gt; 10  1932 100m   men    10.3
-#&gt; # … with 302 more rows</div><div class='input'>
+<span class='no'>olympic_running</span>
+
 <span class='no'>olympic_running</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='no'>Time</span> ~ <span class='fu'>trend</span>())) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/interpolate.html'>interpolate</a></span>(<span class='no'>olympic_running</span>)</div><div class='output co'>#&gt; # A tsibble: 312 x 4 [4Y]
-#&gt; # Key:       Length, Sex [14]
+  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/interpolate.html'>interpolate</a></span>(<span class='no'>olympic_running</span>)
+}</div><div class='output co'>#&gt; <span style='color: #555555;'># A tsibble: 312 x 4 [4Y]</span><span>
+#&gt; </span><span style='color: #555555;'># Key:       Length, Sex [14]</span><span>
 #&gt;    Length Sex    Year  Time
-#&gt;    &lt;fct&gt;  &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-#&gt;  1 100m   men    1896  12  
-#&gt;  2 100m   men    1900  11  
-#&gt;  3 100m   men    1904  11  
-#&gt;  4 100m   men    1908  10.8
-#&gt;  5 100m   men    1912  10.8
-#&gt;  6 100m   men    1916  10.8
-#&gt;  7 100m   men    1920  10.8
-#&gt;  8 100m   men    1924  10.6
-#&gt;  9 100m   men    1928  10.8
-#&gt; 10 100m   men    1932  10.3
-#&gt; # … with 302 more rows</div><div class='input'>
-</div></pre>
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> 100m   men    </span><span style='text-decoration: underline;'>1</span><span>896  12  
+#&gt; </span><span style='color: #555555;'> 2</span><span> 100m   men    </span><span style='text-decoration: underline;'>1</span><span>900  11  
+#&gt; </span><span style='color: #555555;'> 3</span><span> 100m   men    </span><span style='text-decoration: underline;'>1</span><span>904  11  
+#&gt; </span><span style='color: #555555;'> 4</span><span> 100m   men    </span><span style='text-decoration: underline;'>1</span><span>908  10.8
+#&gt; </span><span style='color: #555555;'> 5</span><span> 100m   men    </span><span style='text-decoration: underline;'>1</span><span>912  10.8
+#&gt; </span><span style='color: #555555;'> 6</span><span> 100m   men    </span><span style='text-decoration: underline;'>1</span><span>916  10.8
+#&gt; </span><span style='color: #555555;'> 7</span><span> 100m   men    </span><span style='text-decoration: underline;'>1</span><span>920  10.8
+#&gt; </span><span style='color: #555555;'> 8</span><span> 100m   men    </span><span style='text-decoration: underline;'>1</span><span>924  10.6
+#&gt; </span><span style='color: #555555;'> 9</span><span> 100m   men    </span><span style='text-decoration: underline;'>1</span><span>928  10.8
+#&gt; </span><span style='color: #555555;'>10</span><span> 100m   men    </span><span style='text-decoration: underline;'>1</span><span>932  10.3
+#&gt; </span><span style='color: #555555;'># … with 302 more rows</span><span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -193,7 +187,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>

@@ -71,7 +71,7 @@ registration should happen at load time using [.onLoad()]." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
       </span>
     </div>
 
@@ -91,7 +91,12 @@ registration should happen at load time using [.onLoad()]." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/tidyverts/fabletools">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -106,7 +111,7 @@ registration should happen at load time using [.onLoad()]." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Register a feature function</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/features.R'><code>R/features.R</code></a></small>
     <div class="hidden name"><code>register_feature.Rd</code></div>
     </div>
 
@@ -134,15 +139,14 @@ registration should happen at load time using <code>[.onLoad()]</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='co'># \dontrun{</span>
+<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='no'>tukey_five</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>x</span>){
   <span class='fu'><a href='https://rdrr.io/r/stats/setNames.html'>setNames</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/fivenum.html'>fivenum</a></span>(<span class='no'>x</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"min"</span>, <span class='st'>"hinge_lwr"</span>, <span class='st'>"med"</span>, <span class='st'>"hinge_upr"</span>, <span class='st'>"max"</span>))
 }
 
-<span class='fu'>register_feature</span>(<span class='no'>tukey_five</span>, <span class='kw'>tags</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"boxplot"</span>, <span class='st'>"simple"</span>))</div><div class='output co'>#&gt; <span class='error'>Error in as.list(table[[pkg]]): attempt to use zero-length variable name</span></div><div class='input'>
-# }
+<span class='fu'>register_feature</span>(<span class='no'>tukey_five</span>, <span class='kw'>tags</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"boxplot"</span>, <span class='st'>"simple"</span>))
 
-</div></pre>
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -161,7 +165,7 @@ registration should happen at load time using <code>[.onLoad()]</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>

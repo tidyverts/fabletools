@@ -70,7 +70,7 @@ each model in the mable." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
       </span>
     </div>
 
@@ -90,7 +90,12 @@ each model in the mable." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/tidyverts/fabletools">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -105,7 +110,7 @@ each model in the mable." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Extract model coefficients from a mable</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/broom.R'><code>R/broom.R</code></a></small>
     <div class="hidden name"><code>tidy.Rd</code></div>
     </div>
 
@@ -141,26 +146,28 @@ each model in the mable.</p>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>fable</span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>fable</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibbledata</span>)
 
 <span class='no'>olympic_running</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>lm</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Time</span>) ~ <span class='fu'>trend</span>())) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/tidy.html'>tidy</a></span>()</div><div class='output co'>#&gt; # A tibble: 28 x 8
+  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/tidy.html'>tidy</a></span>()
+}</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 28 x 8</span><span>
 #&gt;    Length Sex   .model term        estimate std.error statistic  p.value
-#&gt;    &lt;fct&gt;  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-#&gt;  1 100m   men   lm     (Intercept)  2.41     0.00813     297.   2.01e-47
-#&gt;  2 100m   men   lm     trend()     -0.00482  0.000429    -11.2  1.78e-11
-#&gt;  3 100m   women lm     (Intercept)  2.52     0.0143      176.   5.28e-32
-#&gt;  4 100m   women lm     trend()     -0.00501  0.000657     -7.62 3.41e- 7
-#&gt;  5 200m   men   lm     (Intercept)  3.11     0.00664     468.   8.18e-51
-#&gt;  6 200m   men   lm     trend()     -0.00479  0.000344    -14.0  2.66e-13
-#&gt;  7 200m   women lm     (Intercept)  3.24     0.0229      142.   3.21e-26
-#&gt;  8 200m   women lm     trend()     -0.00590  0.000992     -5.94 2.07e- 5
-#&gt;  9 400m   men   lm     (Intercept)  3.92     0.00885     443.   5.98e-52
-#&gt; 10 400m   men   lm     trend()     -0.00551  0.000467    -11.8  6.04e-12
-#&gt; # … with 18 more rows</div><div class='input'>
-</div></pre>
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> 100m   men   lm     (Intercept)  2.41     0.008</span><span style='text-decoration: underline;'>13</span><span>     297.   2.01</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-47</span><span>
+#&gt; </span><span style='color: #555555;'> 2</span><span> 100m   men   lm     trend()     -</span><span style='color: #BB0000;'>0.004</span><span style='color: #BB0000;text-decoration: underline;'>82</span><span>  0.000</span><span style='text-decoration: underline;'>429</span><span>    -</span><span style='color: #BB0000;'>11.2</span><span>  1.78</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-11</span><span>
+#&gt; </span><span style='color: #555555;'> 3</span><span> 100m   women lm     (Intercept)  2.52     0.014</span><span style='text-decoration: underline;'>3</span><span>      176.   5.28</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-32</span><span>
+#&gt; </span><span style='color: #555555;'> 4</span><span> 100m   women lm     trend()     -</span><span style='color: #BB0000;'>0.005</span><span style='color: #BB0000;text-decoration: underline;'>01</span><span>  0.000</span><span style='text-decoration: underline;'>657</span><span>     -</span><span style='color: #BB0000;'>7.62</span><span> 3.41</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>- 7</span><span>
+#&gt; </span><span style='color: #555555;'> 5</span><span> 200m   men   lm     (Intercept)  3.11     0.006</span><span style='text-decoration: underline;'>64</span><span>     468.   8.18</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-51</span><span>
+#&gt; </span><span style='color: #555555;'> 6</span><span> 200m   men   lm     trend()     -</span><span style='color: #BB0000;'>0.004</span><span style='color: #BB0000;text-decoration: underline;'>79</span><span>  0.000</span><span style='text-decoration: underline;'>344</span><span>    -</span><span style='color: #BB0000;'>14.0</span><span>  2.66</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-13</span><span>
+#&gt; </span><span style='color: #555555;'> 7</span><span> 200m   women lm     (Intercept)  3.24     0.022</span><span style='text-decoration: underline;'>9</span><span>      142.   3.21</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-26</span><span>
+#&gt; </span><span style='color: #555555;'> 8</span><span> 200m   women lm     trend()     -</span><span style='color: #BB0000;'>0.005</span><span style='color: #BB0000;text-decoration: underline;'>90</span><span>  0.000</span><span style='text-decoration: underline;'>992</span><span>     -</span><span style='color: #BB0000;'>5.94</span><span> 2.07</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>- 5</span><span>
+#&gt; </span><span style='color: #555555;'> 9</span><span> 400m   men   lm     (Intercept)  3.92     0.008</span><span style='text-decoration: underline;'>85</span><span>     443.   5.98</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-52</span><span>
+#&gt; </span><span style='color: #555555;'>10</span><span> 400m   men   lm     trend()     -</span><span style='color: #BB0000;'>0.005</span><span style='color: #BB0000;text-decoration: underline;'>51</span><span>  0.000</span><span style='text-decoration: underline;'>467</span><span>    -</span><span style='color: #BB0000;'>11.8</span><span>  6.04</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-12</span><span>
+#&gt; </span><span style='color: #555555;'># … with 18 more rows</span><span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -179,7 +186,7 @@ each model in the mable.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>

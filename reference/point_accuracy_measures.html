@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
       </span>
     </div>
 
@@ -89,7 +89,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/tidyverts/fabletools">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -104,7 +109,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Point estimate accuracy measures</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/accuracy.R'><code>R/accuracy.R</code></a></small>
     <div class="hidden name"><code>point_accuracy_measures.Rd</code></div>
     </div>
 
@@ -124,8 +129,16 @@
 
 <span class='fu'>MAPE</span>(<span class='no'>.resid</span>, <span class='no'>.actual</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
 
-<span class='fu'>MASE</span>(<span class='no'>.resid</span>, <span class='no'>.train</span>, <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>.period</span>,
-  <span class='kw'>d</span> <span class='kw'>=</span> <span class='no'>.period</span> <span class='kw'>==</span> <span class='fl'>1</span>, <span class='kw'>D</span> <span class='kw'>=</span> <span class='no'>.period</span> <span class='kw'>&gt;</span> <span class='fl'>1</span>, <span class='no'>...</span>)
+<span class='fu'>MASE</span>(
+  <span class='no'>.resid</span>,
+  <span class='no'>.train</span>,
+  <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>.period</span>,
+  <span class='kw'>d</span> <span class='kw'>=</span> <span class='no'>.period</span> <span class='kw'>==</span> <span class='fl'>1</span>,
+  <span class='kw'>D</span> <span class='kw'>=</span> <span class='no'>.period</span> <span class='kw'>&gt;</span> <span class='fl'>1</span>,
+  <span class='no'>...</span>
+)
 
 <span class='fu'>ACF1</span>(<span class='no'>.resid</span>, <span class='kw'>na.action</span> <span class='kw'>=</span> <span class='kw pkg'>stats</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/r/stats/na.fail.html'>na.pass</a></span>, <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
 
@@ -202,7 +215,7 @@ from a model, or forecasted values from the forecast.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>
