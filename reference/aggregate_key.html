@@ -140,14 +140,13 @@ some hierarchy.</p>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Name-value pairs of summary functions. The name will be the
-name of the variable in the result. The value should be an expression
-that returns a single value like <code><a href='https://rdrr.io/r/base/Extremes.html'>min(x)</a></code>, <code>n()</code>, or <code><a href='https://rdrr.io/r/base/sum.html'>sum(is.na(y))</a></code>.</p>
-<p>The arguments in <code>...</code> are automatically <a href='https://rlang.r-lib.org/reference/nse-defuse.html'>quoted</a> and
-<a href='https://rlang.r-lib.org/reference/eval_tidy.html'>evaluated</a> in the context of the data
-frame. They support <a href='https://rlang.r-lib.org/reference/nse-force.html'>unquoting</a> and
-splicing. See <code>vignette("programming")</code> for an introduction to
-these concepts.</p></td>
+      <td><p>&lt;<code>data-masking</code>&gt; Name-value pairs of summary
+functions. The name will be the name of the variable in the result.</p>
+<p>The value can be:</p><ul>
+<li><p>A vector of length 1, e.g. <code><a href='https://rdrr.io/r/base/Extremes.html'>min(x)</a></code>, <code>n()</code>, or <code><a href='https://rdrr.io/r/base/sum.html'>sum(is.na(y))</a></code>.</p></li>
+<li><p>A vector of length <code>n</code>, e.g. <code><a href='https://rdrr.io/r/stats/quantile.html'>quantile()</a></code>.</p></li>
+<li><p>A data frame, to add multiple columns from a single expression.</p></li>
+</ul></td>
     </tr>
     </table>
 
@@ -163,7 +162,7 @@ similar way to how <code>[dplyr::summarise()]</code> is used.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibble</span>)
 <span class='no'>tourism</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>aggregate_key</span>(<span class='no'>Purpose</span> * (<span class='no'>State</span> / <span class='no'>Region</span>), <span class='kw'>Trips</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='no'>Trips</span>))</div><div class='output co'>#&gt; <span class='error'>Error: No common type for `..1$Purpose` &lt;agg_vec&gt; and `..2$Purpose` &lt;character&gt;.</span></div><div class='input'>
+  <span class='fu'>aggregate_key</span>(<span class='no'>Purpose</span> * (<span class='no'>State</span> / <span class='no'>Region</span>), <span class='kw'>Trips</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='no'>Trips</span>))</div><div class='output co'>#&gt; <span class='error'>Error: Column `Purpose` can't be used as a grouping variable because it's a agg_vec/vctrs_rcrd/vctrs_vctr</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
