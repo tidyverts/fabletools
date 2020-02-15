@@ -210,7 +210,7 @@ extract the numerical upper and lower bounds you can use <code><a href='https://
     <span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Turnover</span>) ~ <span class='fu'>trend</span>() + <span class='fu'>season</span>()),
   ) <span class='kw'>%&gt;%</span>
   <span class='fu'>forecast</span>(<span class='kw'>h</span> <span class='kw'>=</span> <span class='st'>"2 years 6 months"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>aus_retail</span>, <span class='no'>Month</span> <span class='kw'>&gt;=</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/period.html'>yearmonth</a></span>(<span class='st'>"2000 Jan"</span>)), <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>90</span>)
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>aus_retail</span>, <span class='no'>Month</span> <span class='kw'>&gt;=</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/year-month.html'>yearmonth</a></span>(<span class='st'>"2000 Jan"</span>)), <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>90</span>)
 
 <span class='co'># Forecast GDP with a dynamic regression model on log(GDP) using population and</span>
 <span class='co'># an automatically chosen ARIMA error structure. Assume that population is fixed</span>
@@ -226,8 +226,7 @@ extract the numerical upper and lower bounds you can use <code><a href='https://
 <span class='no'>fit</span> <span class='kw'>%&gt;%</span>
   <span class='fu'>forecast</span>(<span class='kw'>new_data</span> <span class='kw'>=</span> <span class='no'>future_aus</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>aus_economy</span>)
-}</div><div class='output co'>#&gt; <span class='warning'>Warning: 1 error encountered for lm</span>
-#&gt; <span class='warning'>[1] The `urca` package must be installed to use this functionality. It can be installed with install.packages("urca")</span></div><div class='img'><img src='forecast-1.png' alt='' width='700' height='433' /></div><div class='input'>
+}</div><div class='output co'>#&gt; <span class='error'>Error in length(i) &gt; 1 &amp;&amp; regular: invalid 'y' type in 'x &amp;&amp; y'</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
