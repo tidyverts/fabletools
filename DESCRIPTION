@@ -22,7 +22,7 @@ Authors@R:
 Depends:
     R (>= 3.1.3)
 Imports:
-    tsibble (>= 0.8.0),
+    tsibble (>= 0.8.9.9000),
     tibble (>= 1.4.1),
     ggplot2 (>= 3.0.0),
     tidyselect,
@@ -52,6 +52,8 @@ Suggests:
     tsibbledata,
     lubridate,
     SparseM
+Remotes:
+    tidyverts/tsibble
 ByteCompile: true
 License: GPL-3
 URL: http://fabletools.tidyverts.org/, https://github.com/tidyverts/fabletools
