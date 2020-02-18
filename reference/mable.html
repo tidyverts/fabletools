@@ -125,7 +125,7 @@ must contain at least one column of time series models (<code>mdl_ts</code>), wh
 list column itself (<code>lst_mdl</code>) describes how these models are related.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mable</span>(<span class='no'>...</span>, <span class='kw'>key</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>models</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>mable</span>(<span class='no'>...</span>, <span class='kw'>key</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>models</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -142,8 +142,12 @@ unquote-splice via <code>!!!</code>. Use <code>:=</code> to create columns that 
       <td><p>Structural variable(s) that identify each model.</p></td>
     </tr>
     <tr>
-      <th>models</th>
+      <th>model</th>
       <td><p>Identifiers for the columns containing model(s).</p></td>
+    </tr>
+    <tr>
+      <th>models</th>
+      <td><p>Deprecated in favour of the model argument.</p></td>
     </tr>
     </table>
 

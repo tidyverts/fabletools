@@ -154,40 +154,7 @@ with or without re-estimation of the parameters.</p>
 <span class='no'>fit</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/generics/man/refit.html'>refit</a></span>(<span class='fu'><a href='https://tsibble.tidyverts.org/reference/as-tsibble.html'>as_tsibble</a></span>(<span class='no'>fdeaths</span>)) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='report.html'>report</a></span>(<span class='kw'>reinitialise</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-}</div><div class='output co'>#&gt; Series: value 
-#&gt; Model: ETS(M,A,A) 
-#&gt;   Smoothing parameters:
-#&gt;     alpha = 0.0002065548 
-#&gt;     beta  = 0.0001865257 
-#&gt;     gamma = 0.000118306 
-#&gt; 
-#&gt;   Initial states:
-#&gt;         l         b       s1        s2        s3        s4        s5        s6
-#&gt;  1671.676 -4.334248 373.1746 -121.3157 -246.1697 -484.8581 -476.2192 -370.1939
-#&gt;         s7       s8       s9      s10      s11      s12
-#&gt;  -303.5806 -207.384 122.0022 483.3319 620.3601 610.8525
-#&gt; 
-#&gt;   sigma^2:  0.009
-#&gt; 
-#&gt;      AIC     AICc      BIC 
-#&gt; 1033.474 1044.807 1072.177 
-#&gt; Series: value 
-#&gt; Model: ETS(M,A,A) 
-#&gt;   Smoothing parameters:
-#&gt;     alpha = 0.0002065548 
-#&gt;     beta  = 0.0001865257 
-#&gt;     gamma = 0.000118306 
-#&gt; 
-#&gt;   Initial states:
-#&gt;         l          b       s1      s2        s3       s4        s5        s6
-#&gt;  586.8764 -0.7008449 129.4235 -60.401 -108.8126 -185.465 -189.2346 -149.2135
-#&gt;         s7        s8       s9      s10      s11      s12
-#&gt;  -134.8698 -70.64105 45.28081 204.0216 279.4489 240.4628
-#&gt; 
-#&gt;   sigma^2:  0.0118
-#&gt; 
-#&gt;      AIC     AICc      BIC 
-#&gt; 903.5169 910.8854 935.3903 </div><div class='input'>
+}</div><div class='output co'>#&gt; <span class='warning'>Warning: The models argument in `mable()` is deprecated. Please use `model()` instead.</span></div><div class='output co'>#&gt; <span class='error'>Error in .subset2(x, i): attempt to select less than one element in get1index</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
