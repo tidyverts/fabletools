@@ -24,7 +24,7 @@
 #' @rdname components
 #' @export
 components.mdl_df <- function(object, ...){
-  object <- gather(object, ".model", ".fit", !!!syms(object%@%"models"))
+  object <- gather(object, ".model", ".fit", !!!syms(object%@%"model"))
   kv <- key_vars(object)
   object <- transmute(as_tibble(object),
                       !!!syms(kv), !!sym(".model"),

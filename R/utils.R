@@ -215,3 +215,12 @@ bind_row_attrb <- function(x){
 is.formula <- function(x) {
   inherits(x, "formula")
 }
+
+# tsibble:::assert_key_data
+assert_key_data <- function (x) {
+  nc <- NCOL(x)
+  if (is_false(is.data.frame(x) && nc > 0 && is.list(x[[nc]]) && 
+               names(x)[[nc]] == ".rows")) {
+    abort("The `key` attribute must be a data frame with its last column called `.rows`.")
+  }
+}

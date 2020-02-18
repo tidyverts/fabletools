@@ -3,7 +3,7 @@ context("test-mable.R")
 test_that("Mable classes", {
   skip_if_not_installed("fable")
   expect_s3_class(mbl, "mdl_df")
-  expect_s3_class(mbl[[attr(mbl,"models")[[1]]]], "lst_mdl")
+  expect_s3_class(mbl[[attr(mbl,"model")[[1]]]], "lst_mdl")
 })
 
 test_that("Mable print output", {
@@ -19,7 +19,7 @@ test_that("Mable fitted values", {
   expect_equal(fits[["index"]], us_deaths_tr[["index"]])
   expect_equal(
     fits[[".fitted"]],
-    fitted(mbl[[attr(mbl,"models")[[1]]]][[1]])[[".fitted"]]
+    fitted(mbl[[attr(mbl,"model")[[1]]]][[1]])[[".fitted"]]
   )
   
   fits <- fitted(mbl_multi)
@@ -30,8 +30,8 @@ test_that("Mable fitted values", {
   expect_equal(fits[["index"]], lung_deaths_long_tr[["index"]])
   expect_equal(fits[[".fitted"]],
                as.numeric(c(
-                 fitted(mbl_multi[[attr(mbl,"models")[[1]]]][[1]])[[".fitted"]],
-                 fitted(mbl_multi[[attr(mbl,"models")[[1]]]][[2]])[[".fitted"]]
+                 fitted(mbl_multi[[attr(mbl,"model")[[1]]]][[1]])[[".fitted"]],
+                 fitted(mbl_multi[[attr(mbl,"model")[[1]]]][[2]])[[".fitted"]]
                ))
   )
 })
@@ -42,7 +42,7 @@ test_that("Mable residuals", {
   expect_true(is_tsibble(resids))
   expect_true(all(colnames(resids) %in% c(".model", "index", ".resid")))
   expect_equal(resids[["index"]], us_deaths_tr[["index"]])
-  expect_equal(resids[[".resid"]], as.numeric(residuals(mbl[[attr(mbl,"models")[[1]]]][[1]])[[".resid"]]))
+  expect_equal(resids[[".resid"]], as.numeric(residuals(mbl[[attr(mbl,"model")[[1]]]][[1]])[[".resid"]]))
   
   resids <- residuals(mbl_multi)
   expect_true(is_tsibble(resids))
@@ -52,8 +52,8 @@ test_that("Mable residuals", {
   expect_equal(resids[["index"]], lung_deaths_long_tr[["index"]])
   expect_equal(resids[[".resid"]], 
                as.numeric(c(
-                 residuals(mbl_multi[[attr(mbl,"models")[[1]]]][[1]])[[".resid"]],
-                 residuals(mbl_multi[[attr(mbl,"models")[[1]]]][[2]])[[".resid"]]
+                 residuals(mbl_multi[[attr(mbl,"model")[[1]]]][[1]])[[".resid"]],
+                 residuals(mbl_multi[[attr(mbl,"model")[[1]]]][[2]])[[".resid"]]
                ))
   )
 })

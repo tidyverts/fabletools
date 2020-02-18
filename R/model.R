@@ -70,7 +70,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   num_mdl <- length(models)
   num_est <- num_mdl * num_key
   
-  keys <- key(.data)
+  kv <- key_vars(.data)
   .data <- nest_keys(.data, "lst_data")
   
   if(.safely){
@@ -139,10 +139,10 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   
   .data %>% 
     transmute(
-      !!!keys,
+      !!!syms(kv),
       !!!fits
     ) %>% 
-    as_mable(keys, names(fits))
+    as_mable(key = kv, models = names(fits))
 }
 
 #' Extract the left hand side of a model

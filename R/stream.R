@@ -17,7 +17,7 @@ stream <- function(object, ...){
 #' @rdname stream
 #' @export
 stream.mdl_df <- function(object, new_data, ...){
-  mdls <- object%@%"models"
+  mdls <- object%@%"model"
   new_data <- bind_new_data(object, new_data)
   object %>% 
     dplyr::mutate_at(vars(!!!mdls),

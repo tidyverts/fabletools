@@ -25,7 +25,7 @@
 refit.mdl_df <- function(object, new_data, ...){
   object %>%
     bind_new_data(new_data) %>% 
-    gather(".model", ".fit", !!!syms(object%@%"models")) %>% 
+    gather(".model", ".fit", !!!syms(object%@%"model")) %>% 
     as_tibble %>% 
     transmute(
       !!!key(object),
@@ -33,7 +33,7 @@ refit.mdl_df <- function(object, new_data, ...){
       .fit = map2(!!sym(".fit"), !!sym("new_data"), refit, ...)
     ) %>%
     spread(".model", ".fit") %>% 
-    as_mable(key = key(object), models = object%@%"models")
+    as_mable(key = key_vars(object), models = object%@%"model")
 }
 
 #' @rdname refit

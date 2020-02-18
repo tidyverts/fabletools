@@ -90,7 +90,7 @@ forecast <- function(object, ...){
 #' @export
 forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
   kv <- c(key_vars(object), ".model")
-  mdls <- object%@%"models"
+  mdls <- object%@%"model"
   if(!is.null(h) && !is.null(new_data)){
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
     h <- NULL
