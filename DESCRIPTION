@@ -28,12 +28,13 @@ Imports:
     tidyselect,
     rlang (>= 0.2.0),
     stats,
-    dplyr (>= 0.8.0),
+    dplyr (>= 0.8.99.9000),
     tidyr (>= 0.8.3),
     generics,
     R6,
     utils,
-    vctrs
+    vctrs,
+    distributional
 Suggests:
     colorspace,
     covr,
@@ -49,11 +50,14 @@ Suggests:
     scales,
     spelling,
     testthat,
-    tsibbledata,
+    tsibbledata (>= 0.1.0.9000),
     lubridate,
     SparseM
 Remotes:
-    tidyverts/tsibble
+    tidyverts/tsibble,
+    tidyverts/tsibbledata,
+    tidyverse/dplyr,
+    mitchelloharawild/distributional
 ByteCompile: true
 License: GPL-3
 URL: http://fabletools.tidyverts.org/, https://github.com/tidyverts/fabletools
