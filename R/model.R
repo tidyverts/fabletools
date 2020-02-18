@@ -9,7 +9,8 @@
 #' in the mable identifies a single model.
 #' 
 #' @param .data A data structure suitable for the models (such as a `tsibble`)
-#' @param ... Definitions for the models to be used
+#' @param ... Definitions for the models to be used. All models must share the
+#' same response variable.
 #'
 #' @rdname model
 #' @export
