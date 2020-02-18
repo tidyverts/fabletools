@@ -48,9 +48,11 @@ augment.mdl_ts <- function(x, ...){
                    by = c(".response", idx)
                  )
              } else {
-               set_names(response(x), c(idx, as_string(resp[[1]]))) %>% 
-                 left_join(fitted(x, ...), by = idx) %>% 
-                 left_join(residuals(x, ...), by = idx)
+               mutate(
+                 set_names(response(x), c(idx, as_string(resp[[1]]))),
+                 .fitted = fitted(x[["fit"]], ...),
+                 .resid = residuals(x[["fit"]], ...)
+               )
              }
              
            })
