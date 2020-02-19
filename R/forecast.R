@@ -24,8 +24,10 @@ forecast <- function(object, ...){
 #' @param new_data A `tsibble` containing future information used to forecast.
 #' @param h The forecast horison (can be used instead of `new_data` for regular
 #' time series with no exogenous regressors).
-#' @param bias_adjust Use adjusted back-transformed mean for transformations. 
-#' Refer to `vignette("transformations", package = "fable")` for more details.
+#' @param point_forecast Which point forecast measure should be returned in the 
+#' resulting fable (possible values include: "mean", "median").
+#' @param bias_adjust Deprecated. Please use `point_forecast` to specify the 
+#' desired point forecast method.
 #' @param ... Additional arguments for forecast model methods.
 #' 
 #' @return
@@ -88,7 +90,7 @@ forecast <- function(object, ...){
 #' 
 #' @rdname forecast
 #' @export
-forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
+forecast.mdl_df <- function(object, new_data = NULL, h = NULL, point_forecast = "mean", ...){
   kv <- c(key_vars(object), ".model")
   mdls <- object%@%"model"
   if(!is.null(h) && !is.null(new_data)){
@@ -102,7 +104,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
   # Evaluate forecasts
   object <- dplyr::mutate_at(as_tibble(object), vars(!!!mdls),
                              forecast, object[["new_data"]],
-                             h = h, bias_adjust = bias_adjust, ...,
+                             h = h, point_forecast = point_forecast, ...,
                              key_data = key_data(object))
   
   object <- gather(object, ".model", ".fc", !!!mdls)
@@ -124,10 +126,14 @@ forecast.lst_mdl <- function(object, new_data = NULL, key_data, ...){
 }
 
 #' @export
-forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, point_forecast = "mean", ...){
+forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NULL, point_forecast = "mean", ...){
   if(!is.null(h) && !is.null(new_data)){
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
     h <- NULL
+  }
+  if(!is.null(bias_adjust)){
+    warn("The `bias_adjust` argument for forecast() has been deprecated. Please specify the desired point forecasts using `point_forecast`.\nBias adjusted forecasts are are forecast means (`point_forecast = 'mean'`), non-adjusted forecasts are medians (`point_forecast = 'median'`)")
+    point_forecast <- if(bias_adjust) "mean" else "median"
   }
   if(is.null(new_data)){
     new_data <- make_future_data(object$data, h)

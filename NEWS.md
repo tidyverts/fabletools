@@ -4,6 +4,11 @@
 
 * Documentation improvements
 
+## Breaking changes
+
+* The `bias_adjust` option for forecast() is replaced by `point_forecast`, allowing you to specify which point forecast measures to display (fable/#226).
+  This has been done to reduce confusion around the argument's usage, disambiguate the returned point forecast's meaning, and also allow users to specify which (if any) point forecasts to provide.
+
 ## Bug fixes
 
 * Fixed `show_gap` option not working when more than one forecast is plotted

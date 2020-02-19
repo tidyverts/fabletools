@@ -7,7 +7,7 @@
 \usage{
 forecast(object, ...)
 
-\method{forecast}{mdl_df}(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...)
+\method{forecast}{mdl_df}(object, new_data = NULL, h = NULL, point_forecast = "mean", ...)
 }
 \arguments{
 \item{object}{The time series model used to produce the forecasts}
@@ -19,8 +19,11 @@ forecast(object, ...)
 \item{h}{The forecast horison (can be used instead of \code{new_data} for regular
 time series with no exogenous regressors).}
 
-\item{bias_adjust}{Use adjusted back-transformed mean for transformations.
-Refer to \code{vignette("transformations", package = "fable")} for more details.}
+\item{point_forecast}{Which point forecast measure should be returned in the
+resulting fable (possible values include: "mean", "median").}
+
+\item{bias_adjust}{Deprecated. Please use \code{point_forecast} to specify the
+desired point forecast method.}
 }
 \value{
 A fable containing the following columns:
