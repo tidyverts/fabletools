@@ -33,7 +33,7 @@ refit.mdl_df <- function(object, new_data, ...){
       .fit = map2(!!sym(".fit"), !!sym("new_data"), refit, ...)
     ) %>%
     spread(".model", ".fit") %>% 
-    as_mable(key = key_vars(object), models = object%@%"model")
+    as_mable(key = key_vars(object), model = object%@%"model")
 }
 
 #' @rdname refit

@@ -142,7 +142,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
       !!!syms(kv),
       !!!fits
     ) %>% 
-    as_mable(key = kv, models = names(fits))
+    as_mable(key = kv, model = names(fits))
 }
 
 #' Extract the left hand side of a model
