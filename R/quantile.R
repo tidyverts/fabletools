@@ -236,53 +236,6 @@ length.fcdist <- function(x){
   NextMethod()
 }
 
-#' @rdname hilo
-#' 
-#' @param level The confidence levels for the plotted prediction intervals.
-#' @param ... Additional arguments for the distribution's quantile function.
-#' 
-#' @examples 
-#' 
-#' dist_normal(10, 3) %>% hilo(95)
-#' 
-#' if (requireNamespace("fable", quietly = TRUE)) {
-#' library(fable)
-#' library(tsibbledata)
-#' library(dplyr)
-#' aus_production %>%
-#'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) %>% 
-#'   forecast(h = "3 years") %>% 
-#'   mutate(interval = hilo(.distribution, 95))
-#' }
-#' @export
-hilo.fcdist <- function(x, level = 95, ...){
-  if(length(level)!=1){
-    abort("Only one value of 'level' is supported.")
-  }
-  if (level < 0 || level > 100) {
-    abort("'level' can't be negative or greater than 100.")
-  }
-  .env_ids <- map_chr(x, function(x) env_label(x[[".env"]]))
-  split(x, .env_ids) %>% 
-    set_names(NULL) %>% 
-    map(hilo_fcdist, level = level, ...) %>% 
-    unsplit(.env_ids)
-}
-
-hilo_fcdist <- function(level, x, ...){
-  env <- x[[1]][[length(x[[1]])]]
-  args <- transpose(x)[-length(x[[1]])]
-  list(lower = 50-level/2, upper = 50+level/2) %>%
-    map(function(level){
-      intr <- do.call(env$f, c(list(level/100), as.list(args), dots_list(...)))
-      if(!is.list(intr)){
-        intr <- list(intr)
-      }
-      map2(env$t, intr, calc)
-    }) %>%
-    append(list(level = level)) %>%
-    invoke("new_hilo", .)
-}
 
 #' @export
 quantile.fcdist <- function(x, probs = seq(0, 1, 0.25), ...){

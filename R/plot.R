@@ -176,9 +176,9 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 #' 
 #' @param object A fable.
 #' @param data A tsibble with the same key structure as the fable.
+#' @param level The confidence level(s) for the plotted intervals.
 #' @param show_gap Setting this to `FALSE` will connect the historical observations with the forecasts.
 #' @param ... Further arguments passed used to specify fixed aesthetics for the forecasts such as `colour = "red"` or `size = 3`.
-#' @inheritParams hilo
 #' 
 #' @examples 
 #' library(tsibbledata)

@@ -154,7 +154,7 @@ tbl_sum.fbl_ts <- function(x){
   out
 }
 
-#' @rdname hilo
+#' @importFrom distributional hilo
 #' @export
 hilo.fbl_ts <- function(x, level = c(80, 95), ...){
   x %>%
