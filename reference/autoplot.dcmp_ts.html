@@ -154,8 +154,11 @@ in a decomposition or model.</p>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='fu'><a href='https://feasts.tidyverts.org/reference/STL.html'>STL</a></span>(<span class='no'>Beer</span>)) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/generics/man/components.html'>components</a></span>() <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>()
-}</div><div class='output co'>#&gt; <span class='error'>Error in length(i) &gt; 1 &amp;&amp; regular: invalid 'y' type in 'x &amp;&amp; y'</span></div><div class='input'>
-</div></pre>
+}</div><div class='output co'>#&gt; <span class='warning'>Warning: `units_since()` is deprecated as of tsibble 0.9.0.</span>
+#&gt; <span class='warning'>Please use `as.double()` instead.</span>
+#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once per session.</span><span></span>
+#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='output co'>#&gt; <span class='error'>Error in if (any(f0 &lt;- format == "")) {    times &lt;- unlist(unclass(x)[1L:3L])[f0]    secs &lt;- x$sec[f0]    secs &lt;- secs[!is.na(secs)]    np &lt;- getOption("digits.secs")    np &lt;- if (is.null(np))         0L    else min(6L, np)    if (np &gt;= 1L)         for (i in seq_len(np) - 1L) if (all(abs(secs - round(secs,             i)) &lt; 1e-06)) {            np &lt;- i            break        }    format[f0] &lt;- if (all(times[!is.na(times)] == 0))         "%Y-%m-%d"    else if (np == 0L)         "%Y-%m-%d %H:%M:%S"    else paste0("%Y-%m-%d %H:%M:%OS", np)}: missing value where TRUE/FALSE needed</span></div><div class='img'><img src='autoplot.dcmp_ts-1.png' alt='' width='700' height='433' /></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

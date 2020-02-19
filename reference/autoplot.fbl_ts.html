@@ -142,7 +142,7 @@ useful to focus on the more recent observations.</p>
     </tr>
     <tr>
       <th>level</th>
-      <td><p>The confidence levels for the plotted prediction intervals.</p></td>
+      <td><p>The confidence level(s) for the plotted intervals.</p></td>
     </tr>
     <tr>
       <th>show_gap</th>
@@ -166,14 +166,17 @@ useful to focus on the more recent observations.</p>
 
 <span class='no'>fc</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>aus_production</span>)
-}</div><div class='output co'>#&gt; <span class='error'>Error in length(i) &gt; 1 &amp;&amp; regular: invalid 'y' type in 'x &amp;&amp; y'</span></div><div class='input'>
+}</div><div class='output co'>#&gt; <span class='warning'>Warning: 1 error encountered for ets</span>
+#&gt; <span class='warning'>[1] .data contains implicit gaps in time. You should check your data and convert implicit gaps into explicit missing values using `tsibble::fill_gaps()` if required.</span></div><div class='output co'>#&gt; <span class='error'>Error: `mutate()` argument `ets` errored.</span>
+#&gt; <span class='error'><span style='color: #0000BB;'>ℹ</span><span> `ets` is `(function (object, ...) ...`.</span>
+#&gt; <span class='error'></span><span style='color: #BB0000;'>✖</span><span> non-numeric argument to mathematical function</span></div><div class='input'>
 
 <span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
 <span class='no'>aus_production</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>Beer</span>) +
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autolayer.html'>autolayer</a></span>(<span class='no'>fc</span>)
-}</div><div class='output co'>#&gt; <span class='error'>Error: Detecting a corrupt tsibble object, and please reconstruct with `as_tsibble()`.</span></div><div class='input'>
-</div></pre>
+}</div><div class='output co'>#&gt; <span class='error'>Error in autolayer(fc): object 'fc' not found</span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

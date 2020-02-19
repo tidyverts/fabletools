@@ -196,8 +196,11 @@ used to train the model.</p>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Incompatible methods ("&lt;.Date", "&lt;.vctrs_vctr") for "&lt;"</span></div><div class='output co'>#&gt; <span class='error'>Error: Detecting a corrupt tsibble object, and please reconstruct with `as_tsibble()`.</span></div><div class='input'>
-</div></pre>
+#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Incompatible methods ("&lt;.Date", "&lt;.vctrs_vctr") for "&lt;"</span></div><div class='output co'>#&gt; <span class='warning'>Warning: 1 error encountered for ets</span>
+#&gt; <span class='warning'>[1] .data contains implicit gaps in time. You should check your data and convert implicit gaps into explicit missing values using `tsibble::fill_gaps()` if required.</span></div><div class='output co'>#&gt; <span class='error'>Error: `mutate()` argument `ets` errored.</span>
+#&gt; <span class='error'><span style='color: #0000BB;'>ℹ</span><span> `ets` is `(function (object, ...) ...`.</span>
+#&gt; <span class='error'></span><span style='color: #BB0000;'>✖</span><span> non-numeric argument to mathematical function</span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

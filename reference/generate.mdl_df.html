@@ -172,27 +172,10 @@ treated as innovations for the simulated paths..</p>
 <span class='no'>UKLungDeaths</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>lm</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='no'>mdeaths</span> ~ <span class='fu'>fourier</span>(<span class='st'>"year"</span>, <span class='kw'>K</span> <span class='kw'>=</span> <span class='fl'>4</span>) + <span class='no'>fdeaths</span>)) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/generics/man/generate.html'>generate</a></span>(<span class='no'>UKLungDeaths</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fl'>5</span>)
-}</div><div class='output co'>#&gt; <span class='warning'>Warning: `units_since()` is deprecated as of tsibble 0.9.0.</span>
-#&gt; <span class='warning'>Please use `as.double()` instead.</span>
-#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once per session.</span><span></span>
-#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='output co'>#&gt; <span class='warning'>Warning: `time_unit()` is deprecated as of tsibble 0.9.0.</span>
+}</div><div class='output co'>#&gt; <span class='warning'>Warning: `time_unit()` is deprecated as of tsibble 0.9.0.</span>
 #&gt; <span class='warning'>Please use `default_time_units()` instead.</span>
-#&gt; <span class='warning'></span><span style='color: #555555;'>This warning is displayed once per session.</span><span></span>
-#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='output co'>#&gt; <span class='warning'>Warning: The models argument in `mable()` is deprecated. Please use `model()` instead.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorizing 'yearmonth' elements may not preserve their attributes</span></div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tsibble: 360 x 5 [1M]</span><span>
-#&gt; </span><span style='color: #555555;'># Key:       .model, .rep [5]</span><span>
-#&gt;    new_data           .model    index  .rep  .sim
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>             </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;mth&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm     1974 Jan     1 </span><span style='text-decoration: underline;'>2</span><span>286.
-#&gt; </span><span style='color: #555555;'> 2</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm     1974 Feb     1 </span><span style='text-decoration: underline;'>1</span><span>779.
-#&gt; </span><span style='color: #555555;'> 3</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm     1974 Mar     1 </span><span style='text-decoration: underline;'>2</span><span>114.
-#&gt; </span><span style='color: #555555;'> 4</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm     1974 Apr     1 </span><span style='text-decoration: underline;'>1</span><span>761.
-#&gt; </span><span style='color: #555555;'> 5</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm     1974 May     1 </span><span style='text-decoration: underline;'>1</span><span>411.
-#&gt; </span><span style='color: #555555;'> 6</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm     1974 Jun     1 </span><span style='text-decoration: underline;'>1</span><span>130.
-#&gt; </span><span style='color: #555555;'> 7</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm     1974 Jul     1 </span><span style='text-decoration: underline;'>1</span><span>230.
-#&gt; </span><span style='color: #555555;'> 8</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm     1974 Aug     1 </span><span style='text-decoration: underline;'>1</span><span>072.
-#&gt; </span><span style='color: #555555;'> 9</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm     1974 Sep     1 </span><span style='text-decoration: underline;'>1</span><span>040.
-#&gt; </span><span style='color: #555555;'>10</span><span> </span><span style='color: #555555;'>&lt;tsibble [72 × 3]&gt;</span><span> lm     1974 Oct     1 </span><span style='text-decoration: underline;'>1</span><span>543.
-#&gt; </span><span style='color: #555555;'># … with 350 more rows</span><span></div></span></pre>
+#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once per session.</span><span></span>
+#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='output co'>#&gt; <span class='error'>Error: `vars` must be a character vector</span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

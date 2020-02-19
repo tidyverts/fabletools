@@ -148,8 +148,10 @@ in accordance with its key structure.</p>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>lm</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='no'>value</span> ~ <span class='fu'>trend</span>() + <span class='fu'>season</span>())) <span class='kw'>%&gt;%</span>
   <span class='fu'>reconcile</span>(<span class='kw'>lm</span> <span class='kw'>=</span> <span class='fu'><a href='min_trace.html'>min_trace</a></span>(<span class='no'>lm</span>)) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='forecast.html'>forecast</a></span>()
-}</div><div class='output co'>#&gt; <span class='error'>Error: Column `key` can't be used as a grouping variable because it's a agg_vec/vctrs_rcrd/vctrs_vctr</span></div><div class='input'>
-</div></pre>
+}</div><div class='output co'>#&gt; <span class='error'>Error: `mutate()` argument `lm` must be a vector.</span>
+#&gt; <span class='error'><span style='color: #0000BB;'>ℹ</span><span> `lm` is `min_trace(lm)`.</span>
+#&gt; <span class='error'></span><span style='color: #BB0000;'>✖</span><span> `lm` must be a vector, not a `lst_mint_mdl/lst_mdl` object.</span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

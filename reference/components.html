@@ -153,8 +153,11 @@ and see the way in which components are combined to give forecasts.</p>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Beer</span>) ~ <span class='fu'>error</span>(<span class='st'>"M"</span>) + <span class='fu'>trend</span>(<span class='st'>"Ad"</span>) + <span class='fu'>season</span>(<span class='st'>"A"</span>))) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/generics/man/components.html'>components</a></span>() <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>()
-}</div><div class='output co'>#&gt; <span class='error'>Error in length(i) &gt; 1 &amp;&amp; regular: invalid 'y' type in 'x &amp;&amp; y'</span></div><div class='input'>
-</div></pre>
+}</div><div class='output co'>#&gt; <span class='warning'>Warning: 1 error encountered for ets</span>
+#&gt; <span class='warning'>[1] .data contains implicit gaps in time. You should check your data and convert implicit gaps into explicit missing values using `tsibble::fill_gaps()` if required.</span></div><div class='output co'>#&gt; <span class='error'>Error: `mutate()` argument `cmp` errored.</span>
+#&gt; <span class='error'><span style='color: #0000BB;'>ℹ</span><span> `cmp` is `map(.fit, components)`.</span>
+#&gt; <span class='error'></span><span style='color: #BB0000;'>✖</span><span> no applicable method for 'components' applied to an object of class "null_mdl"</span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

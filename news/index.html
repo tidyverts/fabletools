@@ -121,6 +121,13 @@
 <li>Documentation improvements</li>
 </ul>
 </div>
+<div id="breaking-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#breaking-changes" class="anchor"></a>Breaking changes</h2>
+<ul>
+<li>The <code>bias_adjust</code> option for forecast() is replaced by <code>point_forecast</code>, allowing you to specify which point forecast measures to display (fable/<a href='https://github.com/tidyverts/fabletools/issues/226'>#226</a>). This has been done to reduce confusion around the argument’s usage, disambiguate the returned point forecast’s meaning, and also allow users to specify which (if any) point forecasts to provide.</li>
+</ul>
+</div>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
@@ -146,9 +153,9 @@
 <li>Forecast plots via <code><a href="../reference/autoplot.fbl_ts.html">autoplot.fbl_ts()</a></code> and <code><a href="../reference/autoplot.fbl_ts.html">autolayer.fbl_ts()</a></code> now support the <code>show_gap</code> argument. This can be used to connect the historical observations to the forecasts (<a href='https://github.com/tidyverts/fabletools/issues/113'>#113</a>).</li>
 </ul>
 </div>
-<div id="breaking-changes" class="section level2">
+<div id="breaking-changes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes" class="anchor"></a>Breaking changes</h2>
+<a href="#breaking-changes-1" class="anchor"></a>Breaking changes</h2>
 <ul>
 <li>Decompositions are now treated as models. To access the decomposed values, you will now have to use <code><a href="https://rdrr.io/pkg/generics/man/components.html">components()</a></code>. For example, <code>tourism %&gt;% STL(Trips)</code> is now <code>tourism %&gt;% model(STL(Trips)) %&gt;% components()</code>. This change allows for more flexible decomposition specifications, and better interfaces for decomposition modelling.</li>
 </ul>
@@ -168,9 +175,9 @@
 <h1 class="page-header">
 <a href="#fabletools-011" class="anchor"></a>fabletools 0.1.1<small> 2019-09-16 </small>
 </h1>
-<div id="breaking-changes-1" class="section level2">
+<div id="breaking-changes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes-1" class="anchor"></a>Breaking changes</h2>
+<a href="#breaking-changes-2" class="anchor"></a>Breaking changes</h2>
 <ul>
 <li>Updated method names available for <code><a href="../reference/min_trace.html">min_trace()</a></code> reconciliation (<a href='https://github.com/GeorgeAthana'>@GeorgeAthana</a>).</li>
 </ul>
@@ -228,7 +235,7 @@
 <a href="#forecasting" class="anchor"></a>Forecasting</h3>
 <ul>
 <li>Added <code><a href="../reference/forecast.html">forecast()</a></code>, which allows you to produce future predictions of a time series from fitted models. The methods provided in fabletools handle the application of new data (such as the future index or exogenous regressors) to model specials, giving a simple and consistent interface to forecasting any model. The forecast methods will automatically backtransform and bias adjust any transformations specified in the model formula. This function returns a fable (<code>fbl_ts</code>) object.</li>
-<li>Added a forecast distribution class (<code>fcdist</code>) which is used to describe the distribution of forecasts. Common forecast distributions have been added to the package, including the normal distribution (<code><a href="../reference/distributions.html">dist_normal()</a></code>), multivariate normal (<code><a href="../reference/distributions.html">dist_mv_normal()</a></code>) and simulated/sampled distributions (<code><a href="../reference/distributions.html">dist_sim()</a></code>). In addition to this, <code><a href="../reference/distributions.html">dist_unknown()</a></code> is available for methods that don’t support distributional forecasts. A new distribution can be added using the <code><a href="../reference/fcdist.html">new_fcdist()</a></code> function. The forecast distribution class handles transformations on the distribution, and is used to create forecast intervals of the <code>hilo</code> class using the <code><a href="../reference/hilo.html">hilo()</a></code> function. Mathematical operations on the normal distribution are supported.</li>
+<li>Added a forecast distribution class (<code>fcdist</code>) which is used to describe the distribution of forecasts. Common forecast distributions have been added to the package, including the normal distribution (<code><a href="../reference/distributions.html">dist_normal()</a></code>), multivariate normal (<code><a href="../reference/distributions.html">dist_mv_normal()</a></code>) and simulated/sampled distributions (<code><a href="../reference/distributions.html">dist_sim()</a></code>). In addition to this, <code><a href="../reference/distributions.html">dist_unknown()</a></code> is available for methods that don’t support distributional forecasts. A new distribution can be added using the <code><a href="../reference/fcdist.html">new_fcdist()</a></code> function. The forecast distribution class handles transformations on the distribution, and is used to create forecast intervals of the <code>hilo</code> class using the <code>hilo()</code> function. Mathematical operations on the normal distribution are supported.</li>
 <li>Added tools for working with transformations in models, including automatic back-transformation, transformation classes (<code><a href="../reference/new_transformation.html">new_transformation()</a></code>), and bias adjustment (<code><a href="../reference/bias_adjust.html">bias_adjust()</a></code>) methods.</li>
 <li>Added <code><a href="../reference/aggregate_key.html">aggregate_key()</a></code>, which is used to compute all levels of aggregation in a specified key structure. It supports nested structures using <code>parent / key</code> and crossed structures using <code>keyA * keyB</code>.</li>
 <li>Added support for forecast reconciliation using <code><a href="../reference/reconcile.html">reconcile()</a></code>. This function modifies the way in which forecasts from a model column are combined to give coherent forecasts. In this version the MinT (<code><a href="../reference/min_trace.html">min_trace()</a></code>) reconciliation technique is available. This is commonly used in combination with <code><a href="../reference/aggregate_key.html">aggregate_key()</a></code>.</li>
