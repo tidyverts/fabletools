@@ -124,7 +124,7 @@ forecast.lst_mdl <- function(object, new_data = NULL, key_data, ...){
 }
 
 #' @export
-forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
+forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, point_forecast = "mean", ...){
   if(!is.null(h) && !is.null(new_data)){
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
     h <- NULL
@@ -154,7 +154,7 @@ Does your model require extra variables to produce forecasts?", e$message))
   # Compute forecasts
   fc <- forecast(object$fit, new_data, specials = specials, ...)
   
-  # Modify forecasts with transformations / bias_adjust
+  # Back-transform forecast distributions
   bt <- map(object$transformation, function(x){
     bt <- invert_transformation(x)
     env <- new_environment(new_data, get_env(bt))
@@ -170,22 +170,30 @@ These required variables can be provided by specifying `new_data`.",
     set_env(bt, env)
   })
   
-  fc[["dist"]] <- update_fcdist(fc[["dist"]], transformation = bt)
-  if(isTRUE(bias_adjust)){
-    # Bias adjust transformation with sd
-    bt <- map2(bt, fc[["sd"]], fabletools::bias_adjust)
-  }
-  fc[["point"]] <- map2(fc[["point"]], bt, function(fc, bt) bt(fc))
-  names(fc[["point"]]) <- map_chr(object$response, expr_text)
+  if(length(bt) > 1) abort("Multivariate forecasts are not yet supported")
   
+  fc <- bt[[1]](fc)
+  
+  # Create output object
   idx <- index_var(new_data)
   mv <- measured_vars(new_data)
-  resp <- names(fc[["point"]])
-  dist_col <- if(length(resp) > 1) ".distribution" else resp
-  pred_col <- if(length(resp) > 1) paste0(".mean_", resp) else ".mean"
+  resp_vars <- map_chr(object$response, expr_text)
+  
+  dist_col <- if(length(resp_vars) > 1) ".distribution" else resp_vars
+  pred_col <- NULL
+  
+  new_data[[dist_col]] <- fc
+  if ("mean" %in% point_forecast) {
+    nm_mean <- if(length(resp_vars) > 1) paste0(".mean_", resp_vars) else ".mean"
+    pred_col <- c(pred_col, nm_mean)
+    new_data[nm_mean] <- mean(fc)
+  }
+  if ("median" %in% point_forecast) {
+    nm_median <- if(length(resp_vars) > 1) paste0(".median_", resp_vars) else ".median"
+    pred_col <- c(pred_col, nm_median)
+    new_data[nm_median] <- median(fc)
+  }
   cn <- c(dist_col, pred_col)
-  new_data[[dist_col]] <- fc[["dist"]]
-  new_data[pred_col] <- fc[["point"]]
   
   fbl <- build_tsibble_meta(
     as_tibble(new_data)[c(idx, cn, mv)],
