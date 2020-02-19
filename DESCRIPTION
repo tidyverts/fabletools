@@ -57,6 +57,7 @@ Remotes:
     tidyverts/tsibble,
     tidyverts/tsibbledata,
     tidyverse/dplyr,
+    tidyverse/tibble,
     mitchelloharawild/distributional
 ByteCompile: true
 License: GPL-3
