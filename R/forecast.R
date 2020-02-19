@@ -180,9 +180,12 @@ These required variables can be provided by specifying `new_data`.",
   
   idx <- index_var(new_data)
   mv <- measured_vars(new_data)
-  cn <- c(names(fc[["point"]]), ".distribution")
-  new_data[names(fc[["point"]])] <- fc[["point"]]
-  new_data[[".distribution"]] <- fc[["dist"]]
+  resp <- names(fc[["point"]])
+  dist_col <- if(length(resp) > 1) ".distribution" else resp
+  pred_col <- if(length(resp) > 1) paste0(".mean_", resp) else ".mean"
+  cn <- c(dist_col, pred_col)
+  new_data[[dist_col]] <- fc[["dist"]]
+  new_data[pred_col] <- fc[["point"]]
   
   fbl <- build_tsibble_meta(
     as_tibble(new_data)[c(idx, cn, mv)],
@@ -193,7 +196,7 @@ These required variables can be provided by specifying `new_data`.",
   
   as_fable(fbl,
            resp = object$response,
-           dist = !!sym(".distribution")
+           dist = !!sym(dist_col)
   )
 }
 
