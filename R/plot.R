@@ -135,15 +135,9 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
   }
   
   if(!is.null(level)){
-    object <- object %>% 
-      mutate(
-        !!!set_names(
-          map(level, function(.x) expr(hilo(!!dist, !!.x))), 
-          level
-        )
-      )
-    
-    object <- gather(object, ".rm", ".hilo", !!!syms(as.character(level)))
+    object[as.character(level)] <- map(level, hilo, x = object[[expr_text(dist)]])
+    object[map_chr(resp, expr_text)] <- mean(object[[expr_text(dist)]])
+    object <- tidyr::pivot_longer(as_tibble(object), as.character(level), names_to = ".rm", values_to = ".hilo")
     
     if(length(resp) > 1){
       object <- unnest_tbl(object, c(".response", "value", ".hilo"))
@@ -151,19 +145,19 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
       kv <- c(kv, ".response")
     }
     else{
-      object <- unnest_tbl(object, ".hilo")
+      object[c(".lower", ".upper", ".level")] <- vec_data(object[[".hilo"]])
     }
     kv <- c(kv, ".level")
     
     # Drop temporary col
-    object[".rm"] <- NULL
+    object[c(".rm", ".hilo")] <- NULL
   }
   else if (length(resp) > 1) {
     object <- unnest_tbl(object, c(".response", "value"))
     kv <- c(kv, ".response")
   }
   
-  as_tsibble(as_tibble(object)[setdiff(colnames(object), expr_text(dist))],
+  as_tsibble(object,
              key = kv, index = !!idx, validate = FALSE) 
 }
 
