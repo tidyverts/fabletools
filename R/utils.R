@@ -1,11 +1,7 @@
 # Small function to combine named lists
 merge_named_list <- function(...){
-  all_names <- dots_list(...) %>% map(names) %>% invoke(c, .) %>% unique
-  all_names %>%
-    map(function(name){
-      dots_list(...) %>% map(function(vals) vals[[name]]) %>% invoke(c, .)
-    }) %>%
-    set_names(all_names)
+  flat <- flatten(list(...))
+  map(split(flat, names(flat)), function(x) flatten(unname(x)))
 }
 
 add_class <- function(x, new_class){

@@ -9,11 +9,7 @@ parse_specials <- function(call = NULL, specials = NULL){
                             .f = function(.x, ...) {
                               merge_named_list(.x[[1]], .x[[2]])},
                             .g = function(.x){ 
-                              .x %>%
-                                get_expr %>% # Extract call
-                                as.list %>% # Split call components
-                                .[-1] %>% # Drop function operator (as it is known to be "+")
-                                map(expr) # Rebuild quosure for recursive map
+                              map(as.list(get_expr(.x))[-1], expr)
                             },
                             .h = function(x){ # Base types
                               x <- get_expr(x)
@@ -21,7 +17,7 @@ parse_specials <- function(call = NULL, specials = NULL){
                                 list(xreg = list(x))
                               }
                               else{# Current call is a special function
-                                list(list(x)) %>% set_names(call_name(x))
+                                set_names(list(list(x)), call_name(x))
                               }
                             },
                             base = function(.x){
