@@ -17,7 +17,7 @@ report.mdl_df <- function(object, ...){
     return(glance(object))
   }
   else{
-    report(object[[(object%@%"models")[[1]]]][[1]])
+    report(object[[(object%@%"model")[[1]]]][[1]])
   }
   invisible(object)
 }
