@@ -3,7 +3,7 @@
 ## Improvements
 
 * Better support for tidyverse packages using vctrs.
-* Performance improvements for reconciliation.
+* Performance improvements for reconciliation and parsing.
 * `xreg()` can now be called directly as a special.
 
 ## Bug fixes
