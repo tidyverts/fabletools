@@ -4,6 +4,9 @@ template:
   params:
     bootswatch: cosmo
 
+development:
+  mode: auto
+  
 authors:
   Rob Hyndman:
     href: http://robjhyndman.com
