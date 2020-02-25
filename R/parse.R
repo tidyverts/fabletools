@@ -18,10 +18,10 @@ parse_specials <- function(call = NULL, specials = NULL){
                             .h = function(x){ # Base types
                               x <- get_expr(x)
                               if(!is_call(x) || !(call_name(x) %in% nm)){
-                                list(xreg = list(x))
+                                list(xreg = list(call2("xreg", x)))
                               }
                               else{# Current call is a special function
-                                list(list(x)) %>% set_names(call_name(x))
+                                set_names(list(list(x)), call_name(x))
                               }
                             },
                             base = function(.x){
@@ -31,11 +31,6 @@ parse_specials <- function(call = NULL, specials = NULL){
     )
   } else {
     parsed <- list()
-  }
-  
-  # Wrap xreg inputs into xreg()
-  if(!is.null(parsed$xreg)){
-    parsed$xreg <- list(call2("xreg", !!!parsed$xreg))
   }
   
   # Add required_specials
@@ -98,7 +93,7 @@ parse_model <- function(model){
   list2(
     model = model,
     !!!parse_model_lhs(model),
-    !!!parse_model_rhs(model)
+    specials = parse_model_rhs(model)
   )
 }
 
@@ -113,11 +108,9 @@ parse_model_rhs <- function(model){
   # }
   rhs <- model_rhs(model)
   specials <- parse_specials(rhs, specials = model$specials)
-  list(
-    specials = map(specials, function(.x){
+  map(specials, function(.x){
       map(.x, eval_tidy, data = model$data, env = model$specials)
-    })
-  )
+  })
 }
 
 #' Parse the RHS of the model formula for transformations
