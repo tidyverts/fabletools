@@ -260,7 +260,7 @@ build_smat_rows <- function(key_data){
     dplyr::arrange(!!row_col) %>% 
     select(!!expr(-!!row_col))
   
-  agg_struc <- group_data(group_by_all(as_tibble(map(smat, is_aggregated))))
+  agg_struc <- group_data(dplyr::group_by_all(as_tibble(map(smat, is_aggregated))))
   
   # key_unique <- map(smat, function(x){
   #   x <- unique(x)
