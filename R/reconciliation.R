@@ -81,7 +81,7 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
     transpose_dbl()
   
   # Coonstruct mpute S martrix - ??GA: have moved this here as I need it for Structural scaling
-  S <- build_smat(key_data)
+  S <- build_smat_rows(key_data)
 
   # Compute weights (sample covariance)
   res <- map(object, function(x, ...) residuals(x, ...)[[2]], type = "response")
@@ -183,7 +183,7 @@ forecast.lst_btmup_mdl <- function(object, key_data, ...){
   method <- object%@%"method"
   
   # Keep only bottom layer
-  S <- build_smat(key_data)
+  S <- build_smat_rows(key_data)
   object <- object[rowSums(S) == 1]
   
   # Get forecasts
