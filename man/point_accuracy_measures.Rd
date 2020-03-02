@@ -9,6 +9,7 @@
 \alias{MPE}
 \alias{MAPE}
 \alias{MASE}
+\alias{RMSSE}
 \alias{ACF1}
 \alias{point_accuracy_measures}
 \title{Point estimate accuracy measures}
@@ -27,6 +28,17 @@ MPE(.resid, .actual, na.rm = TRUE, ...)
 MAPE(.resid, .actual, na.rm = TRUE, ...)
 
 MASE(
+  .resid,
+  .train,
+  demean = FALSE,
+  na.rm = TRUE,
+  .period,
+  d = .period == 1,
+  D = .period > 1,
+  ...
+)
+
+RMSSE(
   .resid,
   .train,
   demean = FALSE,
