@@ -344,7 +344,7 @@ residuals.model_smean <- function(object, ...){
 residuals(fit)
 ```
 
-```{r}
+```{r, eval=FALSE}
 #' @importFrom fabletools components
 #' @export
 components.model_smean <- function(object, ...){
@@ -356,7 +356,7 @@ components.model_smean <- function(object, ...){
   )
   
   # Describe how the components combine into other columns
-  aliases <- tibble::lst(!!object$y_name := expr(season + remainder))
+  aliases <- tibble::lst(!!object$y_name := quote(season + remainder))
   
   # Define the behaviour of seasonal components
   # This is used for automatic modelling of seasonal components in `decomposition_model()`
