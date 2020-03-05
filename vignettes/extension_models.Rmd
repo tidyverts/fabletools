@@ -62,17 +62,19 @@ Model functions typically consist of two function calls. A model class (defining
 #' @export
 SMEAN <- function(formula, ...) {
   # Create a model class which combines the training method, specials, and data checks
-  smean_model <- new_model_class("smean",
+  model_smean <- new_model_class("smean",
     # The training method (more on this later)
     train = train_smean,
     # The formula specials (the next section)
     specials = specials_smean,
     # Any checks of the unprocessed data, like gaps, ordered, regular, etc.
-    check = function(.data) { if (!is_regular(.data)) stop("Data must be regular") }
+    check = function(.data) { 
+      if (!tsibble::is_regular(.data)) stop("Data must be regular") 
+    }
   )
   
   # Return a model definition which stores the user's model specification
-  new_model_definition(smean_model, {{formula}}, ...)
+  new_model_definition(model_smean, {{formula}}, ...)
 }
 ```
 
@@ -119,9 +121,9 @@ The function should return an S3 object that contains everything you need for yo
 ```{r}
 train_smean <- function(.data, specials, ...){
   # Extract a vector of response data
-  mv <- measured_vars(.data)
+  mv <- tsibble::measured_vars(.data)
   if(length(mv) > 1) stop("SMEAN() is a univariate model.")
-  y <- .data[[measured_vars(.data)]]
+  y <- .data[[mv]]
   
   # Pull out inputs from the specials
   if(length(specials$season) > 1) stop("The `season()` special of `SMEAN()` should only be used once.")
@@ -138,22 +140,26 @@ train_smean <- function(.data, specials, ...){
   e <- y - fit
   
   # Create S3 model object
+  # It should be small, but contain everything needed for methods below
   structure(
     list(
       coef = season_avg,
+      n = length(y),
       fitted = fit,
-      residuals = e
+      residuals = e,
+      sigma2 <- var(e^2, na.rm = TRUE)
     ),
-    class = "smean_model"
+    class = "model_smean"
   )
 }
 ```
 
-Great, that's the bare minimum model. Let's try it out.
+Great, that's the bare minimum for a model complete with interface and training method. Let's try it out.
 
 ```{r first-mable}
-tsibbledata::aus_production %>%
+fit <- tsibbledata::aus_production %>%
   model(SMEAN(Beer))
+fit
 ```
 
 It doesn't look like much, but it has used the above specials and training method to compute the seasonal average and store it in the object. However we can't see any details about the model yet. To make the model useful, we'll need to define some methods.
@@ -175,7 +181,7 @@ tibble::tribble(
   "`glance()`", "tibble of statistics", "Extract summary statistics from the model",
   "`augment()`", "tibble of data", "Augment a dataset with information from the model",
   "`components()`", "dable of components", "Extract decomposed elements from the model",
-  "`fitted()", "numeric", "Extract fitted values from the model",
+  "`fitted()`", "numeric", "Extract fitted values from the model",
   "`residuals()`", "numeric", "Extract residuals from the model"
 ) %>% 
   knitr::kable()
@@ -185,8 +191,18 @@ tibble::tribble(
 ```{r}
 #' @importFrom fabletools model_sum
 #' @export
-model_sum.smean_model <- function(x){
+model_sum.model_smean <- function(x){
   sprintf("SMEAN[%i]", length(x$coef))
 }
 ```
 
+```{r}
+#' @importFrom fabletools tidy
+#' @export
+tidy.model_smean <- function(x){
+  tibble::tibble(
+    term = paste0("season_", seq_along(x$coef)), 
+    estimate = x$coef
+  )
+}
+```
