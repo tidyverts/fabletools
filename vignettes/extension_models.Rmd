@@ -147,7 +147,7 @@ train_smean <- function(.data, specials, ...){
       n = length(y),
       fitted = fit,
       residuals = e,
-      sigma2 <- var(e^2, na.rm = TRUE)
+      sigma2 = var(e, na.rm = TRUE)
     ),
     class = "model_smean"
   )
@@ -194,6 +194,29 @@ tibble::tribble(
 model_sum.model_smean <- function(x){
   sprintf("SMEAN[%i]", length(x$coef))
 }
+
+fit
+```
+
+```{r}
+#' @importFrom fabletools report
+#' @export
+report.model_smean <- function(x){
+  m <- length(x$coef)
+  
+  cat("\n")
+  cat(paste("Seasonal period:", m))
+  cat("\n\n")
+  cat("Seasonal averages:\n")
+  
+  print.default(
+    setNames(x$coef, paste0("s", seq_len(m))),
+    print.gap = 2
+  )
+  cat(paste("\nsigma^2:", round(x$sigma2, 4), "\n"))
+}
+
+report(fit)
 ```
 
 ```{r}
@@ -205,4 +228,85 @@ tidy.model_smean <- function(x){
     estimate = x$coef
   )
 }
+
+tidy(fit)
+```
+
+```{r}
+#' @importFrom fabletools forecast
+#' @export
+forecast.model_smean <- function(object, new_data, ...){
+  # Extract required parameters
+  h <- NROW(new_data)
+  n <- object$n
+  m <- length(object$coef)
+  coef <- object$coef
+  
+  # Compute forecast variance
+  season_id <- seq(0, n - 1) %% m
+  season_e <- split(object$residuals, season_id)
+  season_sd <- vapply(season_e, FUN = sd, FUN.VALUE = numeric(1L), 
+                       USE.NAMES = FALSE, na.rm = TRUE)
+  
+  # Create forecast distributions
+  fc_id <- (seq(0, h-1) + n %% m) %% m + 1
+  mu <- coef[fc_id]
+  sigma <- season_sd[fc_id]
+  distributional::dist_normal(mu, sigma)
+}
+
+forecast(fit)
+```
+
+```{r}
+#' @importFrom fabletools stream
+#' @export
+stream.model_smean <- function(object, new_data, specials, ...){
+  # Extract a vector of response data
+  mv <- tsibble::measured_vars(new_data)
+  y <- new_data[[mv]]
+  
+  # Compute the new seasonal averages
+  m <- length(object$coef)
+  season_id <- (seq(0, length(y) - 1) + object$n %% m) %% m
+  season_y <- split(y, season_id)
+  season_avg <- vapply(season_y, FUN = mean, FUN.VALUE = numeric(1L), 
+                       USE.NAMES = FALSE)
+  weight_new <- vapply(season_y, FUN = length, FUN.VALUE = integer(1L),
+                       USE.NAMES = FALSE)
+  
+  # Update coefficients to include new estimates
+  weight_orig <- rep(object$n %/% m, m) + c(rep(1, object$n %% m), rep(0, m - object$n %% m))
+  new_coef <- (object$coef * weight_orig + season_avg * weight_new) / (weight_orig + weight_new)
+  coef_change <- new_coef - object$coef
+  
+  # Update model
+  new_fits <- new_coef[season_id+1]
+  new_e <- y - new_fits
+  object$coef <- new_coef
+  object$fitted <- c(object$fitted + rep_len(coef_change, object$n), new_fits)
+  object$residuals <- c(object$residuals - rep_len(coef_change, object$n), new_e)
+  object$n <- object$n + length(y)
+  object$sigma2 <- var(object$residuals, na.rm = TRUE)
+  
+  # Return updated model object
+  object
+}
+
+us_acc_deaths <- as_tsibble(USAccDeaths)
+fit_stream <- us_acc_deaths %>% 
+  dplyr::slice(1:60) %>% 
+  model(SMEAN(value))
+report(fit_stream)
+
+# Update the model with new data
+us_acc_deaths_new <- us_acc_deaths %>% dplyr::slice(61:72)
+fit_stream <- fit_stream %>% 
+  stream(us_acc_deaths_new)
+report(fit_stream)
+
+# Check that it matches a model of the full data
+us_acc_deaths %>% 
+  model(SMEAN(value)) %>% 
+  report()
 ```
