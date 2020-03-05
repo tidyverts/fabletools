@@ -2,6 +2,7 @@
 
 ## Improvements
 
+* Improved support for streaming data to models with transformed response variables
 * Documentation improvements
 
 ## Breaking changes
