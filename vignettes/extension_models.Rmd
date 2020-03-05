@@ -145,6 +145,7 @@ train_smean <- function(.data, specials, ...){
     list(
       coef = season_avg,
       n = length(y),
+      y_name = mv,
       fitted = fit,
       residuals = e,
       sigma2 = var(e, na.rm = TRUE)
@@ -233,6 +234,18 @@ tidy(fit)
 ```
 
 ```{r}
+#' @importFrom fabletools glance
+#' @export
+glance.model_smean <- function(x){
+  tibble::tibble(
+    sigma2 = x$sigma2
+  )
+}
+
+glance(fit)
+```
+
+```{r}
 #' @importFrom fabletools forecast
 #' @export
 forecast.model_smean <- function(object, new_data, ...){
@@ -309,4 +322,54 @@ report(fit_stream)
 us_acc_deaths %>% 
   model(SMEAN(value)) %>% 
   report()
+```
+
+```{r}
+#' @importFrom fabletools fitted
+#' @export
+fitted.model_smean <- function(object, ...){
+  object$fitted
+}
+
+fitted(fit)
+```
+
+```{r}
+#' @importFrom fabletools residuals
+#' @export
+residuals.model_smean <- function(object, ...){
+  object$residuals
+}
+
+residuals(fit)
+```
+
+```{r}
+#' @importFrom fabletools components
+#' @export
+components.model_smean <- function(object, ...){
+  # Create a tsibble of the components
+  dcmp <- tibble::tibble(
+    !!object$y_name := fitted(object) + residuals(object),
+    season = fitted(object),
+    remainder = residuals(object)
+  )
+  
+  # Describe how the components combine into other columns
+  aliases <- tibble::lst(!!object$y_name := expr(season + remainder))
+  
+  # Define the behaviour of seasonal components
+  # This is used for automatic modelling of seasonal components in `decomposition_model()`
+  # It may also be used for plotting in the future.
+  seasonalities <- list(season = list(period = length(object$coef)))
+  
+  # Return a dable
+  as_dable(
+    dcmp,
+    resp = !!sym(object$y_name), method = model_sum(object),
+    seasons = seasonalities, aliases = aliases
+  )
+}
+
+components(fit) # Need to store index somewhere. This workflow should improve.
 ```
