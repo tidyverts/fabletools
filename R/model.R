@@ -134,7 +134,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
     })
   }
   
-  fits <- map(fits, add_class, "lst_mdl")
+  fits <- map(fits, structure, class = c("lst_mdl", "list"))
   
   .data %>% 
     transmute(

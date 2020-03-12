@@ -11,7 +11,7 @@ format.lst_mdl <- function(x, ...){
 
 #' @export
 c.lst_mdl <- function(x, ...){
-  add_class(NextMethod(), "lst_mdl")
+  add_class(NextMethod(), c("lst_mdl", "list"))
 }
 
 #' @export
