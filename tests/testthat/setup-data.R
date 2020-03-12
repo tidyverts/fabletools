@@ -7,7 +7,6 @@ lung_deaths_long_tr <- dplyr::filter(lung_deaths_long, index < tsibble::yearmont
 lung_deaths_wide <- as_tsibble(cbind(mdeaths, fdeaths), pivot_longer = FALSE)
 lung_deaths_wide_tr <- dplyr::filter(lung_deaths_wide, index < tsibble::yearmonth("1979 Jan"))
 
-
 if (requireNamespace("fable", quietly = TRUE)) {
 mbl <- us_deaths_tr %>%
   model(ets = fable::ETS(value))
