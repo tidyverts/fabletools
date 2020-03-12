@@ -127,7 +127,7 @@ unnest_tbl <- function(.data, tbl_col, .sep = NULL){
       vctrs::vec_rbind(!!!lst_col)
     }
     else{
-      list2(!!x := unlist(lst_col))
+      unlist(lst_col)
     }
   })
   
@@ -138,9 +138,11 @@ unnest_tbl <- function(.data, tbl_col, .sep = NULL){
     )
   }
   
+  is_df <- map_lgl(nested_cols, is.data.frame)
   vctrs::vec_cbind(
     .data[row_indices, setdiff(names(.data), tbl_col), drop = FALSE], # Parent cols
-    !!!nested_cols # Nested cols
+    !!!set_names(nested_cols[!is_df], tbl_col[!is_df]), # Nested cols
+    !!!nested_cols[is_df] # Nested df
   )
 }
 
