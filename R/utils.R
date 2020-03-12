@@ -123,7 +123,8 @@ unnest_tbl <- function(.data, tbl_col, .sep = NULL){
   nested_cols <- map(tbl_col, function(x){
     lst_col <- .data[[x]]
     if(is.data.frame(lst_col[[1]])){
-      dplyr::bind_rows(!!!set_names(lst_col, rep(x, length(lst_col))))
+      lst_col <- map(lst_col, as_tibble)
+      vctrs::vec_rbind(!!!lst_col)
     }
     else{
       list2(!!x := unlist(lst_col))
@@ -137,7 +138,7 @@ unnest_tbl <- function(.data, tbl_col, .sep = NULL){
     )
   }
   
-  dplyr::bind_cols(
+  vctrs::vec_cbind(
     .data[row_indices, setdiff(names(.data), tbl_col), drop = FALSE], # Parent cols
     !!!nested_cols # Nested cols
   )
@@ -204,7 +205,7 @@ bind_row_attrb <- function(x){
   attrb <- transpose(map(x, function(dt) map(dt, attributes)))
   simple_attrb <- map_lgl(attrb, function(x) length(unique(x)) == 1)
   
-  x <- dplyr::bind_rows(!!!x)
+  x <- vctrs::vec_rbind(!!!x)
   
   for (col in which(simple_attrb)){
     attributes(x[[col]]) <- attrb[[col]][[1]]

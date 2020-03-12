@@ -115,8 +115,8 @@ aggregate_index.tbl_ts <- function(.data, .times = NULL, ...){
   
   # Temporal aggregations
   .data <- as_tibble(.data)
-  agg_dt <- invoke(dplyr::bind_rows,
-    map(seq_along(.times), function(tm){
+  agg_dt <- vctrs::vec_rbind(
+    !!!map(seq_along(.times), function(tm){
       group_data(
         group_by(.data,
                  !!!set_names(names(.times), names(.times))[seq_len(tm-1) + 1],

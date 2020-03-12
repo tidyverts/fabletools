@@ -32,7 +32,7 @@ features_impl <- function(.tbl, .var, features, ...){
         out
       }))
       err <- compact(res[["error"]])
-      tbl <- invoke(dplyr::bind_rows, res[["result"]])
+      tbl <- vctrs::vec_rbind(!!!res[["result"]])
       
       names(tbl)[names(tbl) == ".?"] <- ""
       if(is.character(nm) && nzchar(nm)){
