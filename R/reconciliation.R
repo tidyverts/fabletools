@@ -81,7 +81,7 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
     transpose_dbl()
   
   # Coonstruct mpute S martrix - ??GA: have moved this here as I need it for Structural scaling
-  S <- build_smat(key_data)
+  S <- build_smat_rows(key_data)
 
   # Compute weights (sample covariance)
   res <- map(object, function(x, ...) residuals(x, ...)[[2]], type = "response")
@@ -183,7 +183,7 @@ forecast.lst_btmup_mdl <- function(object, key_data, ...){
   method <- object%@%"method"
   
   # Keep only bottom layer
-  S <- build_smat(key_data)
+  S <- build_smat_rows(key_data)
   object <- object[rowSums(S) == 1]
   
   # Get forecasts
@@ -243,10 +243,58 @@ build_smat <- function(key_data){
   })
   
   join_smat <- function(x, y){
-    map(split(x, col(x)), `*`, y) %>% 
-      map2(colnames(x), function(S, cn) `colnames<-`(S, paste(cn, colnames(S)))) %>% 
-      invoke(cbind, .)
+    smat <- map(split(x, col(x)), `*`, y)
+    smat <- map2(smat, colnames(x), function(S, cn) `colnames<-`(S, paste(cn, colnames(S))))
+    invoke(cbind, smat)
   }
-  
+
   reduce(smat, join_smat)[,lvls,drop = FALSE]
+}
+
+
+build_smat_rows <- function(key_data){
+  row_col <- sym(colnames(key_data)[length(key_data)])
+  
+  smat <- key_data %>%
+    unnest(!!row_col) %>% 
+    dplyr::arrange(!!row_col) %>% 
+    select(!!expr(-!!row_col))
+  
+  agg_struc <- group_data(dplyr::group_by_all(as_tibble(map(smat, is_aggregated))))
+  
+  # key_unique <- map(smat, function(x){
+  #   x <- unique(x)
+  #   x[!is_aggregated(x)]
+  # })
+  
+  agg_struc$.smat <- map(agg_struc$.rows, function(n) diag(1, nrow = length(n), ncol = length(n)))
+  agg_struc <- map(seq_len(nrow(agg_struc)), function(i) agg_struc[i,])
+  
+  out <- reduce(agg_struc, function(x, y){
+    # For now, assume x is aggregated into y somehow
+    n_key <- ncol(x)-2
+    nm_key <- names(x)[seq_len(n_key)]
+    agg_vars <- map2_lgl(x[seq_len(n_key)], y[seq_len(n_key)], `<`)
+    
+    if(!any(agg_vars)) browser() # Something isn't right
+    
+    # Match rows between summation matrices
+    not_agg <- names(Filter(`!`, y[seq_len(n_key)]))
+    cols <- group_data(group_by(smat[x$.rows[[1]][seq_len(ncol(x$.smat[[1]]))],], !!!syms(not_agg)))$.rows
+    cols_pos <- unlist(cols)
+    cols <- rep(seq_along(cols), map_dbl(cols, length))
+    cols[cols_pos] <- cols
+    
+    x$.rows[[1]] <- c(x$.rows[[1]], y$.rows[[1]])
+    x$.smat <- list(rbind(
+      x$.smat[[1]],
+      y$.smat[[1]][, cols, drop = FALSE]
+    ))
+    x
+  })
+  
+  smat <- out$.smat[[1]]
+  smat[out$.rows[[1]],] <- smat
+  
+  return(smat)
 }
