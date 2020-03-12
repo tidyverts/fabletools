@@ -12,3 +12,4 @@ Makefile
 ^appveyor\.yml$
 ^cran-comments\.md$
 ^revdep$
+^\.github/workflows/R-CMD-check\.yaml$

@@ -54,10 +54,10 @@ Suggests:
     SparseM
 ByteCompile: true
 License: GPL-3
-URL: http://fabletools.tidyverts.org/
+URL: http://fabletools.tidyverts.org/, https://github.com/tidyverts/fabletools
 BugReports: https://github.com/tidyverts/fabletools/issues
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.0.2.9000
 Roxygen: list(markdown = TRUE, roclets=c('rd', 'collate', 'namespace'))
 Language: en-GB

@@ -12,6 +12,7 @@ Provides tools, helpers and data structures for developing models and time serie
 Useful links:
 \itemize{
   \item \url{http://fabletools.tidyverts.org/}
+  \item \url{https://github.com/tidyverts/fabletools}
   \item Report bugs at \url{https://github.com/tidyverts/fabletools/issues}
 }
 

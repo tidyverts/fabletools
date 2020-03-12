@@ -45,6 +45,9 @@ make_future_data <- function(.data, h = NULL){
   tunit <- time_unit(itvl)
   
   idx_max <- max(.data[[idx]])
+  if(is.factor(idx_max)){
+    abort("Cannot automatically create `new_data` from a factor/ordered time index. Please provide `new_data` directly.")
+  }
   
   .data <- list2(!!idx := seq(idx_max, by = tunit, length.out = n+1)[-1])
   build_tsibble_meta(
