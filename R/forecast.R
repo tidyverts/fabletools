@@ -129,7 +129,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
   # Compute specials with new_data
   object$model$stage <- "forecast"
   object$model$add_data(new_data)
-  specials <- tryCatch(parse_model_rhs(object$model)$specials,
+  specials <- tryCatch(parse_model_rhs(object$model),
                        error = function(e){
                          abort(sprintf(
 "%s

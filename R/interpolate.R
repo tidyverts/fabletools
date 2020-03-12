@@ -44,7 +44,7 @@ interpolate.mdl_ts <- function(object, new_data, ...){
   # Compute specials with new_data
   object$model$stage <- "interpolate"
   object$model$add_data(new_data)
-  specials <- tryCatch(parse_model_rhs(object$model)$specials,
+  specials <- tryCatch(parse_model_rhs(object$model),
                        error = function(e){
                          abort(sprintf(
                            "%s
