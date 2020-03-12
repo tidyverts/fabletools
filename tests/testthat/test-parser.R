@@ -11,7 +11,8 @@ test_that("Model parsing variety", {
   
   # Parse xreg
   parse_xreg <- model(us_deaths, specials(value ~ value + log(value)))
-  expect_identical(parse_xreg[[1]][[1]]$fit$xreg[[1]], "xreg(value, log(value))")
+  expect_identical(parse_xreg[[1]][[1]]$fit$xreg, 
+                   list("xreg(value)", "xreg(log(value))"))
   
   # Parse special
   parse_log5 <- model(us_deaths, specials(value ~ log5(value)))
