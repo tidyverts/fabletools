@@ -7,10 +7,14 @@
 mable(..., key = NULL, models = NULL)
 }
 \arguments{
-\item{...}{A set of name-value pairs. Arguments are evaluated sequentially,
-so you can refer to previously created elements. These arguments are
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}>
+A set of name-value pairs. These arguments are
 processed with \code{\link[rlang:quos]{rlang::quos()}} and support unquote via \code{\link{!!}} and
-unquote-splice via \code{\link{!!!}}. Use \code{:=} to create columns that start with a dot.}
+unquote-splice via \code{\link{!!!}}. Use \verb{:=} to create columns that start with a dot.
+
+Arguments are evaluated sequentially, however the \link{.data} pronoun is not
+available to prevent masking usage in a higher level function, like
+\code{\link[dplyr:mutate]{dplyr::mutate()}}.}
 
 \item{key}{Structural variable(s) that identify each model.}
 

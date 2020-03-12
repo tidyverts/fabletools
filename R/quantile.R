@@ -45,7 +45,7 @@ update_fcdist <- function(x, quantile = NULL, transformation = NULL, format_fn =
     }
     map(dist, function(x){x[[length(x)]] <- env; x})
   })
-  structure(unsplit(x, .env_ids), class = "fcdist")
+  structure(unsplit(x, .env_ids), class = c("fcdist", "list"))
 }
 
 #' @importFrom stats qnorm
@@ -115,7 +115,7 @@ Ops.fcdist <- function(e1, e2){
       transpose(x)
     })
     
-    return(structure(unsplit(e1, grps), class = "fcdist"))
+    return(structure(unsplit(e1, grps), class = c("fcdist", "list")))
   }
 
   if(inherits(e1, "fcdist")){
@@ -147,7 +147,7 @@ Ops.fcdist <- function(e1, e2){
     }
     transpose(x)
   })
-  structure(unsplit(dist, .env_ids), class = "fcdist")
+  structure(unsplit(dist, .env_ids), class = c("fcdist", "list"))
 }
 
 type_sum.fcdist <- function(x){
@@ -171,6 +171,27 @@ print.fcdist <- function(x, ...) {
   print(format(x, ...), quote = FALSE)
   invisible(x)
 }
+
+# Brief hack for vctrs support. To be replaced by distributional.
+#' @importFrom vctrs vec_ptype2
+#' @export
+vec_ptype2.fcdist <- function(x, y, ...) UseMethod("vec_ptype2.fcdist", y)
+#' @export
+vec_ptype2.fcdist.default <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+  vctrs::vec_default_ptype2(x, y, x_arg = x_arg, y_arg = y_arg)
+}
+#' @export
+vec_ptype2.fcdist.fcdist <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+  x
+}
+
+#' @importFrom vctrs vec_cast
+#' @export
+vec_cast.fcdist <- function(x, to, ...) UseMethod("vec_cast.fcdist")
+#' @export
+vec_cast.fcdist.default <- function(x, to, ...) vctrs::vec_default_cast(x, to)
+#' @export
+vec_cast.fcdist.fcdist <- function(x, to, ...) x
 
 format_dist <- function(fn_nm){
   function(x, ...){
@@ -213,22 +234,22 @@ format.fcdist <- function(x, ...){
 
 #' @export
 `[.fcdist` <- function(x, ...){
-  structure(NextMethod(), class = "fcdist")
+  structure(NextMethod(), class = c("fcdist", "list"))
 }
 
 #' @export
 c.fcdist <- function(...){
-  structure(NextMethod(), class = "fcdist")
+  structure(NextMethod(), class = c("fcdist", "list"))
 }
 
 #' @export
 rep.fcdist <- function(x, ...){
-  structure(NextMethod(), class = "fcdist")
+  structure(NextMethod(), class = c("fcdist", "list"))
 }
 
 #' @export
 unique.fcdist <- function(x, ...){
-  structure(NextMethod(), class = "fcdist")
+  structure(NextMethod(), class = c("fcdist", "list"))
 }
 
 #' @export

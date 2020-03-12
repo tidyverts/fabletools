@@ -268,7 +268,7 @@ forecast.model_combination <- function(object, new_data, specials, ...){
   if(is_dist_normal(.dist)){
     .dist <- add_class(
       map2(.dist, fc_cov, function(x, cov) {x$sd <- sqrt(x$sd^2 + 2*cov); x}),
-      "fcdist")
+      c("fcdist", "list"))
   }
   
   .fc <- eval_tidy(expr, map(object, function(x) 
