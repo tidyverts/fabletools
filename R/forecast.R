@@ -175,7 +175,7 @@ These required variables can be provided by specifying `new_data`.",
   new_data[[".distribution"]] <- fc[["dist"]]
   
   fbl <- build_tsibble_meta(
-    as_tibble(new_data)[c(idx, cn, mv)],
+    as_tibble(new_data)[unique(c(idx, cn, mv))],
     key_data(new_data),
     index = idx, index2 = idx, ordered = is_ordered(new_data),
     interval = interval(new_data)
