@@ -22,7 +22,11 @@ test_that("fable dplyr verbs", {
   
   expect_equal(
     colnames(hilo(fbl_complex, level = c(50, 80, 95))),
-    c("index", "key", ".model", "value", "50%", "80%", "95%")
+    if(packageVersion("tsibble") >= "0.8.9.9000"){
+      c("index", "key", ".model", "value", "50%", "80%", "95%")
+    } else {
+      c("key", ".model", "index", "value", "50%", "80%", "95%")
+    }
   )
   
   expect_equivalent(
