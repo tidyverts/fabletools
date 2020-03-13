@@ -1,4 +1,3 @@
-AppVeyor
 asn
 atanh
 backtransform
@@ -28,6 +27,8 @@ quosure
 stat
 Sungil
 tibble
+tidyverse
 tidyverts
 tsibble
+vctrs
 Wickramasuriya
