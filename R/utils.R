@@ -1,7 +1,12 @@
+names_no_null <- function(x){
+  names(x) %||% rep_along(x, "")
+}
+
 # Small function to combine named lists
 merge_named_list <- function(...){
   flat <- flatten(list(...))
-  map(split(flat, names(flat)), function(x) flatten(unname(x)))
+  nm <- names_no_null(flat)
+  map(split(flat, nm), function(x) flatten(unname(x)))
 }
 
 add_class <- function(x, new_class){

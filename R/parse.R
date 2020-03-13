@@ -14,7 +14,7 @@ parse_specials <- function(call = NULL, specials = NULL){
                             .h = function(x){ # Base types
                               x <- get_expr(x)
                               if(!is_call(x) || !(call_name(x) %in% nm)){
-                                list(xreg = list(call2("xreg", x)))
+                                list(list(x))
                               }
                               else{# Current call is a special function
                                 set_names(list(list(x)), call_name(x))
@@ -27,6 +27,12 @@ parse_specials <- function(call = NULL, specials = NULL){
     )
   } else {
     parsed <- list()
+  }
+  
+  bare_xreg <- names_no_null(parsed) == ""
+  if(any(bare_xreg)){
+    parsed$xreg[[length(parsed$xreg) + 1]] <- expr(xreg(!!!parsed[[which(bare_xreg)]]))
+    parsed[[which(bare_xreg)]] <- NULL
   }
   
   # Add required_specials
