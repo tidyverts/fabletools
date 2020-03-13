@@ -1,5 +1,15 @@
 # fabletools (development version)
 
+## Improvements
+
+* Better support for tidyverse packages using vctrs.
+* Performance improvements for reconciliation.
+* `xreg()` can now be called directly as a special.
+
+## Bug fixes
+
+* Fixed `accuracy.fbl_ts()` error when certain names were used in the fable.
+
 # fabletools 0.1.2
 
 ## Improvements
