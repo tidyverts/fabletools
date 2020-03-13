@@ -10,11 +10,11 @@ test_that("Model parsing variety", {
                "Exogenous regressors are not supported")
   
   # Parse xreg
-  parse_xreg <- model(us_deaths, specials(value ~ value + log(value)))
-  expect_identical(parse_xreg[[1]][[1]]$fit$xreg[[1]], "xreg(value, log(value))")
-  
   parse_xreg <- model(us_deaths, specials(value ~ xreg(value, 3) + log(value)))
   expect_identical(parse_xreg[[1]][[1]]$fit$xreg[[1]], "xreg(value, 3)")
+  
+  parse_xreg <- model(us_deaths, specials(value ~ value + log(value)))
+  expect_identical(parse_xreg[[1]][[1]]$fit$xreg[[1]], "xreg(value, log(value))")
   
   # Parse special
   parse_log5 <- model(us_deaths, specials(value ~ log5(value)))
