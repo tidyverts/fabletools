@@ -365,7 +365,7 @@ accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..
     filter(dplyr::row_number() == which.min(!!index(object))) %>% 
     group_by(!!!grp) %>% 
     filter(dplyr::row_number() == which.max(!!index(object))) %>% 
-    transmute(.train = pmap(list2(idx:=!!index(object), !!!mutual_keys), extract_train))
+    transmute(.train = pmap(list2(idx = !!index(object), !!!mutual_keys), extract_train))
   aug <- left_join(aug, .train, by = map_chr(grp, as_string))
 
   # Add user inputs
