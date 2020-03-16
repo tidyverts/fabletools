@@ -165,7 +165,7 @@ These required variables can be provided by specifying `new_data`.",
     # Bias adjust transformation with sd
     bt <- map2(bt, fc[["sd"]], fabletools::bias_adjust)
   }
-  fc[["point"]] <- map2(fc[["point"]], bt, function(fc, bt) bt(fc))
+  fc[["point"]] <- map2(fc[["point"]], bt, function(fc, bt) as.numeric(bt(fc)))
   names(fc[["point"]]) <- map_chr(object$response, expr_text)
   
   idx <- index_var(new_data)
