@@ -31,7 +31,7 @@ parse_specials <- function(call = NULL, specials = NULL){
   
   bare_xreg <- names_no_null(parsed) == ""
   if(any(bare_xreg)){
-    parsed$xreg[[length(parsed$xreg) + 1]] <- expr(xreg(!!!parsed[[which(bare_xreg)]]))
+    parsed$xreg[[length(parsed$xreg) + 1]] <- expr((!!sym("xreg"))(!!!parsed[[which(bare_xreg)]]))
     parsed[[which(bare_xreg)]] <- NULL
   }
   
