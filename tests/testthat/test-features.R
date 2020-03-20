@@ -22,7 +22,7 @@ test_that("features()", {
   
   features(lung_deaths_wide, mdeaths, features = list(a = mean, b = min, max)) %>% 
     colnames() %>% 
-    expect_equal(c("a", "b", "V1"))
+    expect_equal(c("a", "b", "...3"))
 })
 
 test_that("Scoped variants of features()", {
