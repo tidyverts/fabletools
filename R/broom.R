@@ -50,8 +50,8 @@ augment.mdl_ts <- function(x, ...){
              } else {
                mutate(
                  set_names(response(x), c(idx, as_string(resp[[1]]))),
-                 .fitted = fitted(x[["fit"]], ...),
-                 .resid = residuals(x[["fit"]], ...)
+                 .fitted = fitted(x, ...)[[".fitted"]],
+                 .resid = residuals(x, ...)[[".resid"]]
                )
              }
              
