@@ -105,7 +105,8 @@ gather.mdl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE
   tbl <- gather(as_tibble(data), key = !!key, value = !!value, 
                 ..., na.rm = na.rm, convert = convert, factor_key = factor_key)
   mdls <- names(which(map_lgl(tbl, inherits, "lst_mdl")))
-  as_mable(tbl, key = c(key_vars(data), key), model = mdls)
+  kv <- c(key_vars(data), key)
+  as_mable(tbl, key = kv, model = mdls)
 }
 
 # Adapted from tsibble:::select_tsibble
