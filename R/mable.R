@@ -156,6 +156,12 @@ mutate.mdl_df <- function (.data, ...){
 }
 
 #' @export
+group_data.mdl_df <- function(.data){
+  .data <- as_tibble(.data)
+  NextMethod()
+}
+
+#' @export
 filter.mdl_df <- function (.data, ...){
   key <- key_vars(.data)
   mdls <- .data%@%"model"
