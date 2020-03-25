@@ -115,7 +115,7 @@ autolayer.tbl_ts <- function(object, .vars = NULL, ...){
     aes_spec["group"] <- list(expr(interaction(!!!syms(key_vars(object)), sep = "/")))
   }
   
-  geom_line(eval_tidy(expr(aes(!!!aes_spec))), data = object, ...)
+  geom_line(eval_tidy(expr(aes(!!!aes_spec))), data = object, ..., inherit.aes = FALSE)
 }
 
 #' @importFrom ggplot2 fortify
@@ -338,7 +338,7 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
     mapping$group <- expr(interaction(!!!map(grp, function(x) expr(format(!!x))), sep = "/"))
   }
   
-  geom_forecast(mapping = mapping, stat = "identity", data = fc_data, ...)
+  geom_forecast(mapping = mapping, stat = "identity", data = fc_data, ..., inherit.aes = FALSE)
 }
 
 #' Decomposition plots
