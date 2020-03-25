@@ -53,6 +53,24 @@ MASE <- function(.resid, .train, demean = FALSE, na.rm = TRUE, .period, d = .per
 
 #' @rdname point_accuracy_measures
 #' @export
+RMSSE <- function(.resid, .train, demean = FALSE, na.rm = TRUE, .period, d = .period == 1, D = .period > 1, ...){
+  if (D > 0) { # seasonal differencing
+    .train <- diff(.train, lag = .period, differences = D)
+  }
+  if (d > 0) {
+    .train <- diff(.train, differences = d)
+  }
+  if(demean){
+    scale <- sqrt(mean((.train - mean(.train, na.rm = na.rm))^2, na.rm = na.rm))
+  }
+  else{
+    scale <- sqrt(mean(.train^2, na.rm = na.rm))
+  }
+  mase <- sqrt(mean((.resid / scale)^2, na.rm = na.rm))
+}
+
+#' @rdname point_accuracy_measures
+#' @export
 ACF1 <- function(.resid, na.action = stats::na.pass, demean = TRUE, ...){
   stats::acf(.resid, plot = FALSE, lag.max = 2, na.action = na.action, 
              demean = demean)$acf[2, 1, 1]
@@ -223,7 +241,7 @@ accuracy <- function(object, ...){
 #' @export
 accuracy.mdl_df <- function(object, measures = point_accuracy_measures, ...){
   as_tibble(object) %>% 
-    gather(".model", "fit", !!!syms(object%@%"models")) %>% 
+    gather(".model", "fit", !!!syms(object%@%"model")) %>% 
     mutate(fit = map(!!sym("fit"), accuracy, measures = measures, ...)) %>% 
     unnest_tbl("fit")
 }

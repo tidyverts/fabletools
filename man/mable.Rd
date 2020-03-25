@@ -4,7 +4,7 @@
 \alias{mable}
 \title{Create a new mable}
 \usage{
-mable(..., key = NULL, models = NULL)
+mable(..., key = NULL, model = NULL, models = NULL)
 }
 \arguments{
 \item{...}{A set of name-value pairs. Arguments are evaluated sequentially,
@@ -14,7 +14,9 @@ unquote-splice via \code{\link{!!!}}. Use \code{:=} to create columns that start
 
 \item{key}{Structural variable(s) that identify each model.}
 
-\item{models}{Identifiers for the columns containing model(s).}
+\item{model}{Identifiers for the columns containing model(s).}
+
+\item{models}{Deprecated in favour of the model argument.}
 }
 \description{
 A mable (model table) data class (\code{mdl_df}) is a tibble-like data structure

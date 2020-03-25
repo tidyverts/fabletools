@@ -29,7 +29,7 @@
 #' @export
 generate.mdl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   kv <- c(key_vars(x), ".model")
-  mdls <- x%@%"models"
+  mdls <- x%@%"model"
   if(!is.null(new_data)){
     x <- bind_new_data(x, new_data)
   }

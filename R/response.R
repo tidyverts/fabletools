@@ -13,7 +13,7 @@ response <- function(object, ...){
 
 #' @export
 response.mdl_df <- function(object, ...){
-  out <- gather(object, ".model", ".fit", !!!syms(object%@%"models"))
+  out <- gather(object, ".model", ".fit", !!!syms(object%@%"model"))
   kv <- key_vars(out)
   out <- transmute(as_tibble(out),
                    !!!syms(kv),
@@ -25,12 +25,16 @@ response.mdl_df <- function(object, ...){
 
 #' @export
 response.mdl_ts <- function(object, ...){
-  bt <- map(object$transformation, invert_transformation)
+  # Extract response
+  mv <- measured_vars(object$data)
+  resp <- as.list(object$data)[mv]
   
-  resp <- as.list(object$data)[measured_vars(object$data)]
+  # Back transform response
+  bt <- map(object$transformation, invert_transformation)
   resp <- map2(bt, resp, function(bt, fit) bt(fit))
   
-  nm <- if(length(resp) == 1) ".response" else map_chr(object$response, expr_text)
-  
-  transmute(object$data, !!!set_names(resp, nm))
+  # Create object
+  out <- object$data[index_var(object$data)]
+  out[if(length(resp) == 1) ".response" else mv] <- resp
+  out
 }

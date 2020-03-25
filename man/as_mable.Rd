@@ -2,12 +2,12 @@
 % Please edit documentation in R/mable.R
 \name{as_mable}
 \alias{as_mable}
-\alias{as_mable.tbl_df}
+\alias{as_mable.data.frame}
 \title{Coerce a dataset to a mable}
 \usage{
 as_mable(x, ...)
 
-\method{as_mable}{tbl_df}(x, key = NULL, models = NULL, ...)
+\method{as_mable}{data.frame}(x, key = NULL, model = NULL, models = NULL, ...)
 }
 \arguments{
 \item{x}{A dataset containing a list model column.}
@@ -16,7 +16,9 @@ as_mable(x, ...)
 
 \item{key}{Structural variable(s) that identify each model.}
 
-\item{models}{Identifiers for the columns containing model(s).}
+\item{model}{Identifiers for the columns containing model(s).}
+
+\item{models}{Deprecated in favour of the model argument.}
 }
 \description{
 Coerce a dataset to a mable

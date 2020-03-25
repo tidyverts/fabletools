@@ -20,7 +20,7 @@
 #' @rdname augment
 #' @export
 augment.mdl_df <- function(x, ...){
-  x <- gather(x, ".model", ".fit", !!!syms(x%@%"models"))
+  x <- gather(x, ".model", ".fit", !!!syms(x%@%"model"))
   kv <- key_vars(x)
   x <- transmute(as_tibble(x), !!!syms(kv), !!sym(".model"),
                  aug = map(!!sym(".fit"), augment, ...))
@@ -48,9 +48,11 @@ augment.mdl_ts <- function(x, ...){
                    by = c(".response", idx)
                  )
              } else {
-               set_names(response(x), c(idx, as_string(resp[[1]]))) %>% 
-                 left_join(fitted(x, ...), by = idx) %>% 
-                 left_join(residuals(x, ...), by = idx)
+               mutate(
+                 set_names(response(x), c(idx, as_string(resp[[1]]))),
+                 .fitted = fitted(x[["fit"]], ...),
+                 .resid = residuals(x[["fit"]], ...)
+               )
              }
              
            })
@@ -78,7 +80,7 @@ augment.mdl_ts <- function(x, ...){
 #' @rdname glance
 #' @export
 glance.mdl_df <- function(x, ...){
-  x <- gather(x, ".model", ".fit", !!!syms(x%@%"models"))
+  x <- gather(x, ".model", ".fit", !!!syms(x%@%"model"))
   keys <- key(x)
   x <- transmute(as_tibble(x),
                  !!!keys, !!sym(".model"), glanced = map(!!sym(".fit"), glance))
@@ -112,7 +114,7 @@ glance.mdl_ts <- function(x, ...){
 #' @rdname tidy
 #' @export
 tidy.mdl_df <- function(x, ...){
-  x <- gather(x, ".model", ".fit", !!!syms(x%@%"models"))
+  x <- gather(x, ".model", ".fit", !!!syms(x%@%"model"))
   keys <- key(x)
   x <- transmute(as_tibble(x),
                  !!!keys, !!sym(".model"), tidied = map(!!sym(".fit"), tidy))

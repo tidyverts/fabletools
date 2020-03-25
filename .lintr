@@ -1,0 +1,13 @@
+linters: with_defaults(
+    trailing_whitespace_linter = NULL,
+    line_length_linter = NULL,
+    paren_brace_linter = NULL,
+    commas_linter = NULL,
+    object_name_linter = NULL,
+    cyclocomp_linter = NULL,
+    camel_case_linter = NULL,
+    spaces_left_parentheses_linter = NULL,
+    object_usage_linter = NULL,
+    infix_spaces_linter = NULL,
+    open_curly_linter = NULL
+  )
