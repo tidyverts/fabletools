@@ -1,5 +1,7 @@
 context("test-distributions")
 
+skip("moved to distributional")
+
 test_that("Normal distribution", {
   d <- dist_normal(3, 5)
   expect_output(
