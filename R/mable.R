@@ -49,7 +49,7 @@ as_mable <- function(x, ...){
 #' @export
 as_mable.data.frame <- function(x, key = NULL, model = NULL, models = NULL, ...){
   if(!is_null(models)){
-    warn("The models argument in `mable()` is deprecated. Please use `model()` instead.")
+    warn("The `models` argument in `mable()` is deprecated. Please use `model` instead.")
     model <- models
   }
   build_mable(x, key = !!enquo(key), model = !!enquo(model))
@@ -132,7 +132,7 @@ select.mdl_df <- function (.data, ...){
 `$<-.mdl_df` <- function (x, name, value) {
   tbl <- NextMethod()
   mdls <- names(which(map_lgl(tbl, inherits, "lst_mdl")))
-  as_mable(tbl, key = key_vars(x), models = mdls)
+  as_mable(tbl, key = key_vars(x), model = mdls)
 }
 
 #' @export
