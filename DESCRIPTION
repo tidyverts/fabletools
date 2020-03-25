@@ -34,7 +34,9 @@ Imports:
     R6,
     utils,
     vctrs,
-    distributional
+    distributional,
+    slider,
+    warp
 Suggests:
     colorspace,
     covr,
