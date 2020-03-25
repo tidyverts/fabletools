@@ -159,6 +159,30 @@ Does your model require extra variables to produce forecasts?", e$message))
 
   # Compute forecasts
   fc <- forecast(object$fit, new_data, specials = specials, ...)
+  if(!inherits(fc, "distribution")){
+    if(!inherits(fc$dist, "fcdist")){
+      abort("Package version incompatibility, please update your modelling package.")
+    }
+    fc <- map(
+      split(fc$dist, map_chr(fc$dist, function(x) env_label(x$.env))),
+      function(x){
+        dist_env <- x[[1]]$.env
+        if(identical(dist_env, env_dist_normal)){
+          distributional::dist_normal(map_dbl(x, `[[`, "mean"), map_dbl(x, `[[`, "sd"))
+        } else if(identical(dist_env, env_dist_sim)){
+          distributional::dist_sample(map(x, `[[`, 1))
+        } else if(identical(dist_env, env_dist_unknown)){
+          rep(NA, length(x))
+        } else if(identical(dist_env, env_dist_mv_normal)){
+          abort("mvn dist not implemented yet")
+        } else {
+          abort("Unknown forecast distribution type to convert.")
+        }
+      }
+    )
+    fc <- vctrs::vec_c(!!!unname(fc))
+  }
+  
   
   # Back-transform forecast distributions
   bt <- map(object$transformation, function(x){
