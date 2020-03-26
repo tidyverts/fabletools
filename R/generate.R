@@ -61,12 +61,15 @@ generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
   }
   
   if(is.null(new_data[[".rep"]])){
-    new_data <- map(seq_len(times), function(rep){
-      new_data[[".rep"]] <- rep
-      update_tsibble(new_data, key = c(".rep", key_vars(new_data)),
-                     validate = FALSE)
-    }) %>% 
-      invoke("rbind", .)
+    kv <- c(".rep", key_vars(new_data))
+    idx <- index_var(new_data)
+    intvl <- tsibble::interval(new_data)
+    new_data <- vctrs::vec_rbind(
+      !!!set_names(rep(list(as_tibble(new_data)), times), seq_len(times)),
+      .names_to = ".rep"
+    )
+    
+    new_data <- build_tsibble(new_data, index = idx, key = kv, interval = intvl)
   }
   
   # Compute specials with new_data
