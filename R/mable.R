@@ -76,7 +76,7 @@ build_mable <- function (x, key = NULL, key_data = NULL, model) {
   }
   
   tibble::new_tibble(x, key = key_data, model = model,
-                     nrow = NROW(x), subclass = "mdl_df")
+                     nrow = NROW(x), class = "mdl_df", subclass = "mdl_df")
 }
 
 #' @export
