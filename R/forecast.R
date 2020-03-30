@@ -170,7 +170,7 @@ Does your model require extra variables to produce forecasts?", e$message))
         if(identical(dist_env, env_dist_normal)){
           distributional::dist_normal(map_dbl(x, `[[`, "mean"), map_dbl(x, `[[`, "sd"))
         } else if(identical(dist_env, env_dist_sim)){
-          distributional::dist_sample(map(x, `[[`, 1))
+          distributional::dist_sample(flatten(map(x, `[[`, 1)))
         } else if(identical(dist_env, env_dist_unknown)){
           rep(NA, length(x))
         } else if(identical(dist_env, env_dist_mv_normal)){
