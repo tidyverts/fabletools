@@ -243,6 +243,7 @@ test_that("autoplot.fbl_ts()", {
     list(x = "index", y = "value")
   )
   
+  skip("mv not supported")
   p <- autoplot(fbl_mv, lung_deaths_wide, level = 80)
   expect_silent(print(p))
   
@@ -300,6 +301,7 @@ test_that("autolayer.fbl_ts()", {
     list(x = "index [1M]", y = "value")
   )
   
+  skip("mv not supported")
   p <- autoplot(lung_deaths_wide, vars(mdeaths, fdeaths)) + autolayer(fbl_mv, level = 80)
   expect_silent(print(p))
   
