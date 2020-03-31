@@ -16,7 +16,7 @@ test_that("fable dplyr verbs", {
   
   fbl_complex %>%
     filter(key == "mdeaths") %>%
-    select(index, .model, value, .distribution) %>% 
+    select(index, .model, value, .mean) %>% 
     n_keys() %>% 
     expect_equal(2)
   

@@ -17,7 +17,7 @@ new_model_class(
   .inherit = model_definition
 )
 
-new_model_definition(.class, ..., .env = caller_env(n = 2))
+new_model_definition(.class, formula, ..., .env = caller_env(n = 2))
 }
 \arguments{
 \item{model}{The name of the model}
@@ -48,7 +48,9 @@ must add an \code{origin} element to the object (say with \code{origin = NULL}).
 
 \item{.inherit}{A model class to inherit from.}
 
-\item{.class}{A model class (typically created with \code{\link[=new_model_class]{new_model_class()}})}
+\item{.class}{A model class (typically created with \code{\link[=new_model_class]{new_model_class()}}).}
+
+\item{formula}{The user's model formula.}
 }
 \description{
 Suitable for extension packages to create new models for fable.

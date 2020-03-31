@@ -1,3 +1,21 @@
+# fabletools (development version)
+
+## Improvements
+
+* Improved support for streaming data to models with transformed response variables
+* `hilo.fbl_ts()` now keeps existing columns of a fable.
+* Documentation improvements
+
+## Breaking changes
+
+* The `bias_adjust` option for forecast() is replaced by `point_forecast`, allowing you to specify which point forecast measures to display (fable/#226).
+  This has been done to reduce confusion around the argument's usage, disambiguate the returned point forecast's meaning, and also allow users to specify which (if any) point forecasts to provide.
+
+## Bug fixes
+
+* Fixed `show_gap` option not working when more than one forecast is plotted
+* `aggregate_key()` no longer drops key variables, instead they are kept as <aggregated>
+
 # fabletools 0.1.3
 
 ## Improvements

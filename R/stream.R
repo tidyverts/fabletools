@@ -17,7 +17,7 @@ stream <- function(object, ...){
 #' @rdname stream
 #' @export
 stream.mdl_df <- function(object, new_data, ...){
-  mdls <- object%@%"models"
+  mdls <- object%@%"model"
   new_data <- bind_new_data(object, new_data)
   object %>% 
     dplyr::mutate_at(vars(!!!mdls),
@@ -36,7 +36,15 @@ stream.mdl_ts <- function(object, new_data, ...){
   specials <- parse_model_rhs(object$model)
   object$model$remove_data()
   
+  resp <- map2(object$response, object$transformation, 
+       function(y, t){
+         eval_tidy(expr(t(!!y)), new_data)
+       }
+  )
+  new_data <- new_data[index_var(new_data)]
+  new_data[measured_vars(object$data)] <- resp
+  
   object$fit <- stream(object[["fit"]], new_data, specials = specials, ...)
-  object$data <- rbind(object$data, select(new_data, !!!syms(colnames(object$data))))
+  object$data <- dplyr::bind_rows(object$data, select(new_data, !!!syms(colnames(object$data))))
   object
 }

@@ -24,10 +24,22 @@ forecast <- function(object, ...){
 #' @param new_data A `tsibble` containing future information used to forecast.
 #' @param h The forecast horison (can be used instead of `new_data` for regular
 #' time series with no exogenous regressors).
-#' @param bias_adjust Use adjusted back-transformed mean for transformations. 
-#' Refer to `vignette("transformations", package = "fable")` for more details.
+#' @param point_forecast Which point forecast measure should be returned in the 
+#' resulting fable (possible values include: "mean", "median").
+#' @param bias_adjust Deprecated. Please use `point_forecast` to specify the 
+#' desired point forecast method.
 #' @param ... Additional arguments for forecast model methods.
 #' 
+#' @return
+#' A fable containing the following columns:
+#' - `.model`: The name of the model used to obtain the forecast. Taken from
+#'   the column names of models in the provided mable.
+#' - The point forecast, which by default is the mean. The name of this column
+#'   will be the same as the dependent variable in the model(s).
+#' - `.distribution`. A column of objects of class `fcdist`, representing the
+#'   statistical distribution of the forecast in the given time period.
+#' - All columns in `new_data`, excluding those whose names conflict with the
+#'   above.
 #' @examples 
 #' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(fable)
@@ -78,9 +90,9 @@ forecast <- function(object, ...){
 #' 
 #' @rdname forecast
 #' @export
-forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
+forecast.mdl_df <- function(object, new_data = NULL, h = NULL, point_forecast = "mean", ...){
   kv <- c(key_vars(object), ".model")
-  mdls <- object%@%"models"
+  mdls <- object%@%"model"
   if(!is.null(h) && !is.null(new_data)){
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
     h <- NULL
@@ -92,7 +104,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, bias_adjust = TRU
   # Evaluate forecasts
   object <- dplyr::mutate_at(as_tibble(object), vars(!!!mdls),
                              forecast, object[["new_data"]],
-                             h = h, bias_adjust = bias_adjust, ...,
+                             h = h, point_forecast = point_forecast, ...,
                              key_data = key_data(object))
   
   object <- gather(object, ".model", ".fc", !!!mdls)
@@ -114,10 +126,14 @@ forecast.lst_mdl <- function(object, new_data = NULL, key_data, ...){
 }
 
 #' @export
-forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = TRUE, ...){
+forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NULL, point_forecast = "mean", ...){
   if(!is.null(h) && !is.null(new_data)){
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
     h <- NULL
+  }
+  if(!is.null(bias_adjust)){
+    warn("The `bias_adjust` argument for forecast() has been deprecated. Please specify the desired point forecasts using `point_forecast`.\nBias adjusted forecasts are forecast means (`point_forecast = 'mean'`), non-adjusted forecasts are medians (`point_forecast = 'median'`)")
+    point_forecast <- if(bias_adjust) "mean" else "median"
   }
   if(is.null(new_data)){
     new_data <- make_future_data(object$data, h)
@@ -144,7 +160,7 @@ Does your model require extra variables to produce forecasts?", e$message))
   # Compute forecasts
   fc <- forecast(object$fit, new_data, specials = specials, ...)
   
-  # Modify forecasts with transformations / bias_adjust
+  # Back-transform forecast distributions
   bt <- map(object$transformation, function(x){
     bt <- invert_transformation(x)
     env <- new_environment(new_data, get_env(bt))
@@ -160,19 +176,30 @@ These required variables can be provided by specifying `new_data`.",
     set_env(bt, env)
   })
   
-  fc[["dist"]] <- update_fcdist(fc[["dist"]], transformation = bt)
-  if(isTRUE(bias_adjust)){
-    # Bias adjust transformation with sd
-    bt <- map2(bt, fc[["sd"]], fabletools::bias_adjust)
-  }
-  fc[["point"]] <- map2(fc[["point"]], bt, function(fc, bt) as.numeric(bt(fc)))
-  names(fc[["point"]]) <- map_chr(object$response, expr_text)
+  if(length(bt) > 1) abort("Multivariate forecasts are not yet supported")
   
+  fc <- bt[[1]](fc)
+  
+  # Create output object
   idx <- index_var(new_data)
   mv <- measured_vars(new_data)
-  cn <- c(names(fc[["point"]]), ".distribution")
-  new_data[names(fc[["point"]])] <- fc[["point"]]
-  new_data[[".distribution"]] <- fc[["dist"]]
+  resp_vars <- map_chr(object$response, expr_text)
+  
+  dist_col <- if(length(resp_vars) > 1) ".distribution" else resp_vars
+  pred_col <- NULL
+  
+  new_data[[dist_col]] <- fc
+  if ("mean" %in% point_forecast) {
+    nm_mean <- if(length(resp_vars) > 1) paste0(".mean_", resp_vars) else ".mean"
+    pred_col <- c(pred_col, nm_mean)
+    new_data[nm_mean] <- mean(fc)
+  }
+  if ("median" %in% point_forecast) {
+    nm_median <- if(length(resp_vars) > 1) paste0(".median_", resp_vars) else ".median"
+    pred_col <- c(pred_col, nm_median)
+    new_data[nm_median] <- median(fc)
+  }
+  cn <- c(dist_col, pred_col)
   
   fbl <- build_tsibble_meta(
     as_tibble(new_data)[unique(c(idx, cn, mv))],
@@ -183,7 +210,7 @@ These required variables can be provided by specifying `new_data`.",
   
   as_fable(fbl,
            resp = object$response,
-           dist = !!sym(".distribution")
+           dist = !!sym(dist_col)
   )
 }
 
@@ -201,11 +228,20 @@ These required variables can be provided by specifying `new_data`.",
 #' @export
 construct_fc <- function(point, sd, dist){
   stopifnot(inherits(dist, "fcdist"))
-  if(is.numeric(point)){
-    point <- list(point)
-    sd <- list(sd)
+  
+  dist_env <- dist[[1]]$.env
+  if(identical(dist_env, env_dist_normal)){
+    distributional::dist_normal(map_dbl(dist, `[[`, "mean"), map_dbl(dist, `[[`, "sd"))
+  } else if(identical(dist_env, env_dist_sim)){
+    distributional::dist_sample(flatten(map(dist, `[[`, 1)))
+  } else if(identical(dist_env, env_dist_unknown)){
+    rep(NA, length(dist))
+  } else if(identical(dist_env, env_dist_mv_normal)){
+    abort("mvn dist not implemented yet")
+  } else {
+    abort("Unknown forecast distribution type to convert.")
   }
-  list(point = point, sd = sd, dist = dist)
+  
 }
 
 #' @export

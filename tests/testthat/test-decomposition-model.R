@@ -19,7 +19,7 @@ test_that("Decomposition modelling", {
   fbl_dcmp <- forecast(mdl_dcmp)
   
   expect_equal(
-    fbl_dcmp$value,
+    mean(fbl_dcmp$value),
     rep(dcmp$season_year[61:72], 2) + dcmp$season_adjust[72]
   )
 })

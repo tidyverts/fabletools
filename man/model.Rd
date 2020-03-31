@@ -12,7 +12,8 @@ model(.data, ...)
 \arguments{
 \item{.data}{A data structure suitable for the models (such as a \code{tsibble})}
 
-\item{...}{Definitions for the models to be used}
+\item{...}{Definitions for the models to be used. All models must share the
+same response variable.}
 
 \item{.safely}{If a model encounters an error, rather than aborting the process a \link[=null_model]{NULL model} will be returned instead. This allows for an error to occur when computing many models, without losing the results of the successful models.}
 }

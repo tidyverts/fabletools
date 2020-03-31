@@ -1,0 +1,375 @@
+---
+title: "Extending fabletools: Models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{extension_models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(fabletools)
+```
+
+Writing a time series model using fabletools provides your model with many additional features without extra effort. Features that aren't model specific are handled by fabletools, allowing you to spend more time writing methods for your model. Some functionality handled by fabletools includes:
+
+* Seamless integration with data manipulation and visualisation tools from the tidyverse.
+* Consistent formula interface with other tidy time series models.
+* Transformations with automatic back-transformation of response variables.
+* Batch modelling of many time series and models with parallel support.
+* Accuracy evaluation tools (in-sample, out-of-sample, and cross validation).
+* Visualisation functions for decompositions, models, and forecasts.
+* Support for ensemble and combination modelling (such as decomposition forecasting).
+* Hierarchical, grouped, and temporal reconciliation of forecasts.
+
+The fabletools package promotes consistent interfaces and output structures that allow various time series models to work well together. This vignette will guide you through creating a fabletools model, and provide a glimpse into the steps used to convert user data to modelling inputs, and modelling outputs to user data.
+
+As an example, we'll create a fabletools model that uses seasonal averages: `SMEAN()`. It can be thought of as a seasonal version of `fable::MEAN()`, which instead of averaging the entire series, it averages values from each season.
+
+## The model interface
+
+Much like cross-sectional models (such as `lm()`), tidy time-series models use a formula based interface. Of course not all arguments need to be specified from within the formula (much like `na.action` in `lm()`). The model formula is a familiar and user friendly interface for specifying key model concepts (like `pdq()` in `ARIMA()`), and data-varying inputs (such as holidays and exogenous regressors). Model specific formula functions (like `pdq()`) are known as specials (much like `specials` from `stats::terms.formula()`).
+
+Before writing code, it is a good idea to think about what interface best suits your model. This is often model specific, however you may find it useful to look at existing interfaces to see how yours could be written consistently. A good example of this is with seasonality: fourier terms are specified with the `fourier(period, K)` special, and seasonal dummy variables use `season(period)`.
+
+A potential interface for the `SMEAN()` model could be:
+
+```r
+SMEAN(y ~ season(period))
+```
+
+## Minimum implementation of a model
+
+At minimum, a model consists of a model function (something that returns a model definition), a set of specials, and a training function.
+
+### The model function
+
+Model functions typically consist of two function calls. A model class (defining the training method, the specials, and data checks) with `new_model_class()`, and `new_model_definition` to return the model definition:
+
+```{r}
+#' Seasonal mean models
+#' 
+#' Add the rest of your documentation here.
+#' Typically this includes a "Specials" section
+#' 
+#' @export
+SMEAN <- function(formula, ...) {
+  # Create a model class which combines the training method, specials, and data checks
+  model_smean <- new_model_class("smean",
+    # The training method (more on this later)
+    train = train_smean,
+    # The formula specials (the next section)
+    specials = specials_smean,
+    # Any checks of the unprocessed data, like gaps, ordered, regular, etc.
+    check = function(.data) { 
+      if (!tsibble::is_regular(.data)) stop("Data must be regular") 
+    }
+  )
+  
+  # Return a model definition which stores the user's model specification
+  new_model_definition(model_smean, {{formula}}, ...)
+}
+```
+
+Anything passed to `...` of `new_model_definition()` will be passed onward to the model training function. Note that the formula needs to be embraced with `{{formula}}` in order to allow for non-formula inputs like `SMEAN(y)`.
+
+### The specials
+
+The specials for a model are created using `new_specials()`. The functions specified here will be used to compute specials each time the model is provided with new data (model training, forecasting, refitting, etc.). The results of these functions will be passed to the subsequent method via the `specials` argument (more on this later).
+
+To enable automatic model specification (with `SMEAN(y)`), the `.required_specials` argument will ensure that the special is called at least once. By setting `season()` as a required special, `SMEAN(y)` will be parsed as `SMEAN(y ~ season())`. As no arguments will be provided for omitted required specials, make sure they have good defaults. The `fabletools::get_frequencies()` function is a useful helper for handling seasonal periods, as automatically chooses appropriate seasonalities when `period = NULL`, and is able to handle inputs like `period = "week"`.
+
+Anything not handled by defined specials will be treated as exogenous regressors and passed to the `xreg()` special. That is to say `SMEAN(y ~ season("year") + x)` will be parsed as `SMEAN(y ~ season("year") + xreg(x))`. The `xreg()` special should be defined by all models, even if your model doesn't support it.
+
+```{r}
+specials_smean <- new_specials(
+  season = function(period = NULL) {
+    # Your input handling code here.
+    get_frequencies(period, self$data, .auto = "smallest")
+  },
+  xreg = function(...) {
+    # This model doesn't support exogenous regressors, time to error.
+    stop("Exogenous regressors aren't supported by `SMEAN()`")
+  },
+  # This model requires `season()`
+  # Adding this allows `SMEAN(y)` to automatically include the `season()` special
+  .required_specials = "season"
+)
+```
+
+The specials are the only thing needed for the formula to work, as the fabletools handles the transformations and response variables specified in the formula's left side.
+
+### The training function
+
+This function is used to apply the model definition created by the model function (`SMEAN()`) to users data when they use `model(data, SMEAN())`.
+
+The `.data` argument is a single series tsibble (no keys), representing the parsed left side of the formula. The index of `.data` is the time of the measurement, and the measured variables are the transformed response variable(s).
+
+The `specials` argument is a list of results from parsing the specials used in the right side of the formula. The result from the `season()` special in `SMEAN(y ~ season("year"))` would be accessible from `specials$season[[1]]`. As specials can be used more than once, the nth usage of special `xyz()` can be accessed with `specials$xyz[[n]]`.
+
+As mentioned earlier, `...` will contain additional parameters passed `...` of `new_model_definition()`.
+
+The function should return an S3 object that contains everything you need for your future methods (such as forecasting, getting fitted values, refitting, etc.).
+
+```{r}
+train_smean <- function(.data, specials, ...){
+  # Extract a vector of response data
+  mv <- tsibble::measured_vars(.data)
+  if(length(mv) > 1) stop("SMEAN() is a univariate model.")
+  y <- .data[[mv]]
+  
+  # Pull out inputs from the specials
+  if(length(specials$season) > 1) stop("The `season()` special of `SMEAN()` should only be used once.")
+  m <- specials$season[[1]]
+  
+  # Compute the seasonal averages
+  season_id <- seq(0, length(y) - 1) %% m
+  season_y <- split(y, season_id)
+  season_avg <- vapply(season_y, FUN = mean, FUN.VALUE = numeric(1L), 
+                       USE.NAMES = FALSE)
+  
+  # Compute fitted values and residuals
+  fit <- season_avg[season_id+1]
+  e <- y - fit
+  
+  # Create S3 model object
+  # It should be small, but contain everything needed for methods below
+  structure(
+    list(
+      coef = season_avg,
+      n = length(y),
+      y_name = mv,
+      fitted = fit,
+      residuals = e,
+      sigma2 = var(e, na.rm = TRUE)
+    ),
+    class = "model_smean"
+  )
+}
+```
+
+Great, that's the bare minimum for a model complete with interface and training method. Let's try it out.
+
+```{r first-mable}
+fit <- tsibbledata::aus_production %>%
+  model(SMEAN(Beer))
+fit
+```
+
+It doesn't look like much, but it has used the above specials and training method to compute the seasonal average and store it in the object. However we can't see any details about the model yet. To make the model useful, we'll need to define some methods.
+
+## Methods for models
+
+```{r, echo = FALSE}
+tibble::tribble(
+  ~ Method, ~ Value, ~ Description,
+  "`model_sum()`", "`character(1L)`", "A short summary of the model to display in the mable",
+  "`report()`", "console output", "A detailed summary of the model, similar to `summary()`",
+  "`equation()`", "character(1L)", "The mathematical equation for the fitted model",
+  "`forecast()`", "distribution", "Produce forecasts from the model",
+  "`stream()`", "updated model", "Extend the fit of the model with additional data",
+  "`generate()`", "tsibble", "Generate potential reponse values at certain times from the model",
+  "`interpolate()`", "tsibble", "Interpolate missing values using the model",
+  "`refit()`", "refitted model", "Apply the model to a new dataset",
+  "`tidy()`", "tibble of coefficients", "Extract coefficients from the model",
+  "`glance()`", "tibble of statistics", "Extract summary statistics from the model",
+  "`augment()`", "tibble of data", "Augment a dataset with information from the model",
+  "`components()`", "dable of components", "Extract decomposed elements from the model",
+  "`fitted()`", "numeric", "Extract fitted values from the model",
+  "`residuals()`", "numeric", "Extract residuals from the model"
+) %>% 
+  knitr::kable()
+```
+
+
+```{r}
+#' @importFrom fabletools model_sum
+#' @export
+model_sum.model_smean <- function(x){
+  sprintf("SMEAN[%i]", length(x$coef))
+}
+
+fit
+```
+
+```{r}
+#' @importFrom fabletools report
+#' @export
+report.model_smean <- function(x){
+  m <- length(x$coef)
+  
+  cat("\n")
+  cat(paste("Seasonal period:", m))
+  cat("\n\n")
+  cat("Seasonal averages:\n")
+  
+  print.default(
+    setNames(x$coef, paste0("s", seq_len(m))),
+    print.gap = 2
+  )
+  cat(paste("\nsigma^2:", round(x$sigma2, 4), "\n"))
+}
+
+report(fit)
+```
+
+```{r}
+#' @importFrom fabletools tidy
+#' @export
+tidy.model_smean <- function(x){
+  tibble::tibble(
+    term = paste0("season_", seq_along(x$coef)), 
+    estimate = x$coef
+  )
+}
+
+tidy(fit)
+```
+
+```{r}
+#' @importFrom fabletools glance
+#' @export
+glance.model_smean <- function(x){
+  tibble::tibble(
+    sigma2 = x$sigma2
+  )
+}
+
+glance(fit)
+```
+
+```{r}
+#' @importFrom fabletools forecast
+#' @export
+forecast.model_smean <- function(object, new_data, ...){
+  # Extract required parameters
+  h <- NROW(new_data)
+  n <- object$n
+  m <- length(object$coef)
+  coef <- object$coef
+  
+  # Compute forecast variance
+  season_id <- seq(0, n - 1) %% m
+  season_e <- split(object$residuals, season_id)
+  season_sd <- vapply(season_e, FUN = sd, FUN.VALUE = numeric(1L), 
+                       USE.NAMES = FALSE, na.rm = TRUE)
+  
+  # Create forecast distributions
+  fc_id <- (seq(0, h-1) + n %% m) %% m + 1
+  mu <- coef[fc_id]
+  sigma <- season_sd[fc_id]
+  distributional::dist_normal(mu, sigma)
+}
+
+forecast(fit)
+```
+
+```{r}
+#' @importFrom fabletools stream
+#' @export
+stream.model_smean <- function(object, new_data, specials, ...){
+  # Extract a vector of response data
+  mv <- tsibble::measured_vars(new_data)
+  y <- new_data[[mv]]
+  
+  # Compute the new seasonal averages
+  m <- length(object$coef)
+  season_id <- (seq(0, length(y) - 1) + object$n %% m) %% m
+  season_y <- split(y, season_id)
+  season_avg <- vapply(season_y, FUN = mean, FUN.VALUE = numeric(1L), 
+                       USE.NAMES = FALSE)
+  weight_new <- vapply(season_y, FUN = length, FUN.VALUE = integer(1L),
+                       USE.NAMES = FALSE)
+  
+  # Update coefficients to include new estimates
+  weight_orig <- rep(object$n %/% m, m) + c(rep(1, object$n %% m), rep(0, m - object$n %% m))
+  new_coef <- (object$coef * weight_orig + season_avg * weight_new) / (weight_orig + weight_new)
+  coef_change <- new_coef - object$coef
+  
+  # Update model
+  new_fits <- new_coef[season_id+1]
+  new_e <- y - new_fits
+  object$coef <- new_coef
+  object$fitted <- c(object$fitted + rep_len(coef_change, object$n), new_fits)
+  object$residuals <- c(object$residuals - rep_len(coef_change, object$n), new_e)
+  object$n <- object$n + length(y)
+  object$sigma2 <- var(object$residuals, na.rm = TRUE)
+  
+  # Return updated model object
+  object
+}
+
+us_acc_deaths <- as_tsibble(USAccDeaths)
+fit_stream <- us_acc_deaths %>% 
+  dplyr::slice(1:60) %>% 
+  model(SMEAN(value))
+report(fit_stream)
+
+# Update the model with new data
+us_acc_deaths_new <- us_acc_deaths %>% dplyr::slice(61:72)
+fit_stream <- fit_stream %>% 
+  stream(us_acc_deaths_new)
+report(fit_stream)
+
+# Check that it matches a model of the full data
+us_acc_deaths %>% 
+  model(SMEAN(value)) %>% 
+  report()
+```
+
+```{r}
+#' @importFrom fabletools fitted
+#' @export
+fitted.model_smean <- function(object, ...){
+  object$fitted
+}
+
+fitted(fit)
+```
+
+```{r}
+#' @importFrom fabletools residuals
+#' @export
+residuals.model_smean <- function(object, ...){
+  object$residuals
+}
+
+residuals(fit)
+```
+
+```{r, eval=FALSE}
+#' @importFrom fabletools components
+#' @export
+components.model_smean <- function(object, ...){
+  # Create a tsibble of the components
+  dcmp <- tibble::tibble(
+    !!object$y_name := fitted(object) + residuals(object),
+    season = fitted(object),
+    remainder = residuals(object)
+  )
+  
+  # Describe how the components combine into other columns
+  aliases <- tibble::lst(!!object$y_name := quote(season + remainder))
+  
+  # Define the behaviour of seasonal components
+  # This is used for automatic modelling of seasonal components in `decomposition_model()`
+  # It may also be used for plotting in the future.
+  seasonalities <- list(season = list(period = length(object$coef)))
+  
+  # Return a dable
+  as_dable(
+    dcmp,
+    resp = !!sym(object$y_name), method = model_sum(object),
+    seasons = seasonalities, aliases = aliases
+  )
+}
+
+components(fit) # Need to store index somewhere. This workflow should improve.
+```

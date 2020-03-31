@@ -10,7 +10,7 @@
 #' @importFrom stats fitted
 #' @export
 fitted.mdl_df <- function(object, ...){
-  out <- gather(object, ".model", ".fit", !!!syms(object%@%"models"))
+  out <- gather(object, ".model", ".fit", !!!syms(object%@%"model"))
   kv <- key_vars(out)
   out <- transmute(as_tibble(out),
     !!!syms(kv),

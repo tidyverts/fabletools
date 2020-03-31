@@ -14,3 +14,7 @@ This submission resolves issues with a soon to be released version of tibble.
 ## revdep checks
 
 All revdeps have been checked.
+
+## Resubmission
+
+Fix issue with revdep checks for fable.

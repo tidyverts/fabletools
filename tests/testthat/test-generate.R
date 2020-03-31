@@ -18,6 +18,7 @@ test_that("generate", {
   expect_equal(unique(gen_complex$key), c("fdeaths", "mdeaths"))
   expect_equal(unique(gen_complex$.model), c("ets", "lm"))
   
+  skip("mv not supported")
   expect_error(
     mbl_mv %>% generate(),
     "Generating paths from multivariate models is not yet supported"

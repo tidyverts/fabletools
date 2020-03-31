@@ -26,7 +26,6 @@ reconcile <- function(.data, ...){
 #' @rdname reconcile
 #' @export
 reconcile.mdl_df <- function(.data, ...){
-  warn("Reconciliation in fable is highly experimental. The interface will likely be refined in the near future.")
   mutate(.data, ...)
 }
 

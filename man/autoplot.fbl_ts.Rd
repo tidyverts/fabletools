@@ -14,7 +14,7 @@
 
 \item{data}{A tsibble with the same key structure as the fable.}
 
-\item{level}{The confidence levels for the plotted prediction intervals.}
+\item{level}{The confidence level(s) for the plotted intervals.}
 
 \item{show_gap}{Setting this to \code{FALSE} will connect the historical observations with the forecasts.}
 

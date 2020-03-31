@@ -145,9 +145,7 @@ validate_fable <- function(fbl){
     abort(sprintf("Could not find distribution variable `%s` in the fable. A fable must contain a distribution, if you want to remove it convert to a tsibble with `as_tsibble()`.",
                   chr_dist))
   }
-  if (!inherits(fbl[[chr_dist]], "fcdist")){
-    abort('Distribution variable must be of class "fcdist"')
-  }
+  vec_is(fbl[[chr_dist]], distributional::new_dist())
 }
 
 tbl_sum.fbl_ts <- function(x){
@@ -156,12 +154,11 @@ tbl_sum.fbl_ts <- function(x){
   out
 }
 
-#' @rdname hilo
+#' @importFrom distributional hilo
 #' @export
 hilo.fbl_ts <- function(x, level = c(80, 95), ...){
-  x %>%
-    transmute(
-      !!!(x%@%"response"),
+  as_tsibble(x) %>%
+    mutate(
       !!!set_names(map(level,function(.x) expr(hilo(!!(x%@%"dist"), !!.x))),
                    paste0(level, "%"))
     )
@@ -221,7 +218,16 @@ rbind.fbl_ts <- function(...){
 
 #' @export
 `[.fbl_ts` <- function (x, i, j, drop = FALSE){
-  as_fable(NextMethod(), x%@%"response", !!(x%@%"dist"))
+  out <- NextMethod()
+  # Drop fable if tsibble is dropped
+  
+  cn <- colnames(out)
+  not_fable <- !(expr_name(x%@%"dist") %in% cn) || !is_tsibble(out)
+  
+  if(not_fable)
+    return(out)
+  else
+    as_fable(out, x%@%"response", !!(x%@%"dist"))
 }
 
 type_sum.fbl_ts <- function(x){

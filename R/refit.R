@@ -23,17 +23,17 @@
 #' @rdname refit
 #' @export
 refit.mdl_df <- function(object, new_data, ...){
-  object %>%
-    bind_new_data(new_data) %>% 
-    gather(".model", ".fit", !!!syms(object%@%"models")) %>% 
-    as_tibble %>% 
-    transmute(
-      !!!key(object),
-      !!sym(".model"),
-      .fit = map2(!!sym(".fit"), !!sym("new_data"), refit, ...)
-    ) %>%
-    spread(".model", ".fit") %>% 
-    as_mable(key = key(object), models = object%@%"models")
+  mdls <- syms(object%@%"model")
+  new_data <- bind_new_data(object, new_data)
+  
+  object %>% 
+    dplyr::mutate_at(vars(!!!mdls),
+                     refit, new_data[["new_data"]], ...)
+}
+
+#' @export
+refit.lst_mdl <- function(object, new_data, ...){
+  `class<-`(map2(object, new_data, refit, ...), class(object))
 }
 
 #' @rdname refit
