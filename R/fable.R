@@ -157,9 +157,8 @@ tbl_sum.fbl_ts <- function(x){
 #' @importFrom distributional hilo
 #' @export
 hilo.fbl_ts <- function(x, level = c(80, 95), ...){
-  x %>%
-    transmute(
-      !!!(x%@%"response"),
+  as_tsibble(x) %>%
+    mutate(
       !!!set_names(map(level,function(.x) expr(hilo(!!(x%@%"dist"), !!.x))),
                    paste0(level, "%"))
     )

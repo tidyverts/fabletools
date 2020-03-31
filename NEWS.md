@@ -3,6 +3,7 @@
 ## Improvements
 
 * Improved support for streaming data to models with transformed response variables
+* `hilo.fbl_ts()` now keeps existing columns of a fable.
 * Documentation improvements
 
 ## Breaking changes
