@@ -28,7 +28,7 @@ Imports:
     tidyselect,
     rlang (>= 0.2.0),
     stats,
-    dplyr (>= 0.8.99.9000),
+    dplyr (>= 0.8.99.9002),
     tidyr (>= 1.0.0),
     generics,
     R6,
