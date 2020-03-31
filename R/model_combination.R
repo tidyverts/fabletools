@@ -248,15 +248,7 @@ forecast.model_combination <- function(object, new_data, specials, ...){
   
   if(all(mdls)){
     fc_sd <- object %>% 
-      map(`[[`, expr_text(attr(object[[1]],"dist"))) %>% 
-      map(function(x){
-        if(is_dist_normal(x)){
-          map_dbl(x, `[[`, "sd")
-        }
-        else{
-          rep(0, length(x))
-        }
-      }) %>% 
+      map(function(x) sqrt(distributional::variance(x[[expr_text(attr(x,"dist"))]]))) %>% 
       transpose_dbl()
     fc_cov <- suppressWarnings(stats::cov2cor(fc_cov))
     fc_cov[!is.finite(fc_cov)] <- 0 # In case of perfect forecasts
@@ -266,20 +258,11 @@ forecast.model_combination <- function(object, new_data, specials, ...){
   get_attr_col <- function(x, col) if(is_fable(x)) x[[expr_text(attr(x, col))]] else x 
   # var(x) + var(y) + 2*cov(x,y)
   .dist <- eval_tidy(expr, map(object, get_attr_col, "dist"))
-  if(is_dist_normal(.dist)){
-    .dist <- add_class(
-      map2(.dist, fc_cov, function(x, cov) {x$sd <- sqrt(x$sd^2 + 2*cov); x}),
-      c("fcdist", "list"))
+  if(inherits(.dist[[1]], "dist_normal")){ # Improve check to ensure all distributions are normal
+    .dist <- distributional::dist_normal(mean(.dist), sqrt(distributional::variance(.dist) + 2*fc_cov))
   }
   
-  .fc <- eval_tidy(expr, map(object, function(x) 
-    if(is_fable(x)) x[[expr_text(attr(x, "response")[[1]])]] else x))
-  
-  construct_fc(
-    point = .fc,
-    sd = rep(0, NROW(object[[which(mdls)[[1]]]])),
-    dist = .dist
-  )
+  .dist
 }
 
 #' @export
