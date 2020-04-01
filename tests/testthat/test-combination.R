@@ -41,13 +41,13 @@ test_that("Combination modelling", {
   fbl_cmbn <- forecast(select(mbl_cmbn, 3))
   fbl_wt_cmbn <- forecast(select(mbl_cmbn, 4))
   expect_equal(
-    fbl_cmbn$value,
-    (fbl_snaive$value + fbl_rw$value)/2
+    mean(fbl_cmbn$value),
+    mean((fbl_snaive$value + fbl_rw$value)/2)
   )
   expect_failure(
     expect_equal(
-      fbl_wt_cmbn$value,
-      fbl_cmbn$value
+      mean(fbl_wt_cmbn$value),
+      mean(fbl_cmbn$value)
     )
   )
 })
