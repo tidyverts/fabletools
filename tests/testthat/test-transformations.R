@@ -6,8 +6,8 @@ test_transformation <- function(..., dt = simple_data){
   trans <- mdl$transformation[[1]]
   resp <- mdl$response[[1]]
   expect_equal(
-    dt[[expr_text(resp)]],
-    fabletools:::invert_transformation(trans)(trans(dt[[expr_text(resp)]]))
+    dt[[expr_name(resp)]],
+    fabletools:::invert_transformation(trans)(trans(dt[[expr_name(resp)]]))
   )
 }
 

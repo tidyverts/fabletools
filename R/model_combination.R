@@ -128,7 +128,7 @@ new_model_combination <- function(x, combination){
   new_model(
     structure(x, combination = combination, class = c("model_combination")),
     model = x[[which(mdls)[1]]][["model"]],
-    data = transmute(x[[which(mdls)[1]]][["data"]], !!expr_text(comb_response[[1]]) := resp),
+    data = transmute(x[[which(mdls)[1]]][["data"]], !!expr_name(comb_response[[1]]) := resp),
     response = comb_response,
     transformation = list(new_transformation(identity, identity))
   )
@@ -249,14 +249,14 @@ forecast.model_combination <- function(object, new_data, specials, ...){
   
   if(all(mdls)){
     fc_sd <- object %>% 
-      map(function(x) sqrt(distributional::variance(x[[expr_text(attr(x,"dist"))]]))) %>% 
+      map(function(x) sqrt(distributional::variance(x[[expr_name(attr(x,"dist"))]]))) %>% 
       transpose_dbl()
     fc_cov <- suppressWarnings(stats::cov2cor(fc_cov))
     fc_cov[!is.finite(fc_cov)] <- 0 # In case of perfect forecasts
     fc_cov <- map_dbl(fc_sd, function(sigma) (diag(sigma)%*%fc_cov%*%t(diag(sigma)))[1,2])
   }
   
-  get_attr_col <- function(x, col) if(is_fable(x)) x[[expr_text(attr(x, col))]] else x 
+  get_attr_col <- function(x, col) if(is_fable(x)) x[[expr_name(attr(x, col))]] else x 
   # var(x) + var(y) + 2*cov(x,y)
   .dist <- eval_tidy(expr, map(object, get_attr_col, "dist"))
   if(inherits(.dist[[1]], "dist_normal")){ # Improve check to ensure all distributions are normal

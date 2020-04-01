@@ -129,14 +129,14 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
   if(length(resp) > 1){
     object <- object %>%
       mutate(
-        .response = rep(list(factor(map_chr(resp, expr_text))), NROW(object)),
+        .response = rep(list(factor(map_chr(resp, expr_name))), NROW(object)),
         value = transpose_dbl(list2(!!!resp))
       )
   }
   
   if(!is.null(level)){
     object[as.character(level)] <- map(level, hilo, x = object[[expr_text(dist)]])
-    object[map_chr(resp, expr_text)] <- mean(object[[expr_text(dist)]])
+    object[map_chr(resp, expr_name)] <- mean(object[[expr_name(dist)]])
     object <- tidyr::pivot_longer(as_tibble(object), as.character(level), names_to = ".rm", values_to = ".hilo")
     
     if(length(resp) > 1){
@@ -372,7 +372,7 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE, ...){
   if(!is.null(dcmp_str)){
     dcmp_str <- expr_text(dcmp_str)
   }
-  object <- object %>% 
+  object <- as_tsibble(object) %>% 
     transmute(!!.vars, !!!syms(all.vars(dcmp))) %>% 
     gather(".var", ".val", !!!syms(measured_vars(.)), factor_key = TRUE)
   
@@ -393,7 +393,7 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE, ...){
   
   # Rangebars
   if (scale_bars) {
-    xranges <- range(object[[expr_text(idx)]])
+    xranges <- range(object[[expr_name(idx)]])
     barwidth <- pmax(1, round((1 / 64) * diff(units_since(xranges))))
     
     # Avoid issues with visible bindings
@@ -418,7 +418,7 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE, ...){
   }
   
   if(!is_empty(keys)){
-    p <- p + guides(colour = guide_legend(paste0(map_chr(keys, expr_text), collapse = "/")))
+    p <- p + guides(colour = guide_legend(paste0(map_chr(keys, expr_name), collapse = "/")))
   }
   
   p

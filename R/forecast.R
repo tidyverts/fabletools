@@ -114,7 +114,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, point_forecast = 
   out <- suppressWarnings(
     unnest_tsbl(as_tibble(object)[c(kv, ".fc")], ".fc", parent_key = kv)
   )
-  out[[expr_text(fbl_attr$dist)]] <- invoke(c, map(object$.fc, function(x) x[[expr_text(x%@%"dist")]]))
+  out[[expr_name(fbl_attr$dist)]] <- invoke(c, map(object$.fc, function(x) x[[expr_name(x%@%"dist")]]))
   as_fable(out, resp = fbl_attr$response, dist = !!fbl_attr$dist)
 }
 
@@ -183,7 +183,7 @@ These required variables can be provided by specifying `new_data`.",
   # Create output object
   idx <- index_var(new_data)
   mv <- measured_vars(new_data)
-  resp_vars <- map_chr(object$response, expr_text)
+  resp_vars <- map_chr(object$response, expr_name)
   
   dist_col <- if(length(resp_vars) > 1) ".distribution" else resp_vars
   pred_col <- NULL

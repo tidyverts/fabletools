@@ -135,7 +135,7 @@ as_tsibble.grouped_fbl <- function(x, ...){
 
 validate_fable <- function(fbl){
   stopifnot(inherits(fbl, "fbl_ts"))
-  chr_resp <- map_chr(attr(fbl, "response"), expr_text)
+  chr_resp <- map_chr(attr(fbl, "response"), expr_name)
   chr_dist <- as_string(attr(fbl, "dist"))
   if (!all(chr_resp %in% names(fbl))){
     bad_resp <- paste0(setdiff(chr_resp, names(fbl)), collapse = ", ")

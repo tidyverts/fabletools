@@ -11,7 +11,7 @@ guess_response <- function(.data){
   out <- sym(all_vars[[1]])
   inform(sprintf(
     "Model not specified, defaulting to automatic modelling of the `%s` variable. Override this using the model formula.",
-    expr_text(out)
+    expr_name(out)
   ))
   out
 }

@@ -27,7 +27,7 @@ estimate.tbl_ts <- function(.data, .model, ...){
   .dt_attr <- attributes(.data)
   resp <- map(parsed$expressions, eval_tidy, data = .data, env = .model$specials)
   .data <- unclass(.data)[index_var(.data)]
-  .data[map_chr(parsed$expressions, expr_text)] <- resp
+  .data[map_chr(parsed$expressions, expr_name)] <- resp
   attributes(.data) <- c(attributes(.data), .dt_attr[setdiff(names(.dt_attr), names(attributes(.data)))])
   
   fit <- eval_tidy(

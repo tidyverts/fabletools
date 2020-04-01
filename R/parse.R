@@ -228,7 +228,7 @@ parse_model_lhs <- function(model){
     inv <- invert_transformation(trans)
     environment(inv) <- new_environment(dt, get_env(inv))
     
-    valid <- all.equal(dt[[expr_text(resp)]], inv(trans(dt[[expr_text(resp)]])))
+    valid <- all.equal(dt[[expr_name(resp)]], inv(trans(dt[[expr_name(resp)]])))
     if(!isTRUE(valid)){
       abort(
 "Could not identify a valid back-transformation for this transformation.

@@ -28,7 +28,7 @@ fitted.mdl_ts <- function(object, ...){
   fits <- as.matrix(fitted(object$fit, ...))
   fits <- map2(bt, split(fits, col(fits)), function(bt, fit) bt(fit))
   
-  nm <- if(length(fits) == 1) ".fitted" else map_chr(object$response, expr_text)
+  nm <- if(length(fits) == 1) ".fitted" else map_chr(object$response, expr_name)
   
   transmute(object$data, !!!set_names(fits, nm))
 }

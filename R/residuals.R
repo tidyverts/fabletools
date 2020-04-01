@@ -42,7 +42,7 @@ Defaulting to `type="response"`', type, model_sum(object)))
   .resid <- as.matrix(.resid)
   
   .resid <- split(.resid, col(.resid))
-  nm <- if(length(.resid) == 1) ".resid" else map_chr(object$response, expr_text)
+  nm <- if(length(.resid) == 1) ".resid" else map_chr(object$response, expr_name)
   
   transmute(object$data, !!!set_names(.resid, nm))
 }

@@ -68,11 +68,11 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
     abort("Reconciliation of temporal hierarchies is not yet supported.")
   }
   fc_point <- fc %>% 
-    map(`[[`, expr_text(attr(fc[[1]],"response")[[1]])) %>% 
+    map(`[[`, expr_name(attr(fc[[1]],"response")[[1]])) %>% 
     invoke(cbind, .) %>% 
     as.matrix()
   fc_var <- fc %>% 
-    map(`[[`, expr_text(attr(fc[[1]],"dist"))) %>% 
+    map(`[[`, expr_name(attr(fc[[1]],"dist"))) %>% 
     map(function(x){
       if(!is_dist_normal(x)) abort("Reconciliation of non-normal forecasts is not yet supported.")
       map_dbl(x, `[[`, "sd")^2
@@ -166,8 +166,8 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   
   # Update fables
   pmap(list(fc, fc_point, fc_dist), function(fc, point, dist){
-    fc[[expr_text(attr(fc,"response")[[1]])]] <- point
-    fc[[expr_text(attr(fc,"dist"))]] <- dist
+    fc[[expr_name(attr(fc,"response")[[1]])]] <- point
+    fc[[expr_name(attr(fc,"dist"))]] <- dist
     fc
   })
 }
@@ -191,11 +191,11 @@ forecast.lst_btmup_mdl <- function(object, key_data, ...){
     abort("Reconciliation of temporal hierarchies is not yet supported.")
   }
   fc_point <- fc %>% 
-    map(`[[`, expr_text(attr(fc[[1]],"response")[[1]])) %>% 
+    map(`[[`, expr_name(attr(fc[[1]],"response")[[1]])) %>% 
     invoke(cbind, .) %>% 
     as.matrix()
   fc_var <- fc %>% 
-    map(`[[`, expr_text(attr(fc[[1]],"dist"))) %>% 
+    map(`[[`, expr_name(attr(fc[[1]],"dist"))) %>% 
     map(function(x){
       if(!is_dist_normal(x)) abort("Reconciliation of non-normal forecasts is not yet supported.")
       map_dbl(x, `[[`, "sd")^2
@@ -210,8 +210,8 @@ forecast.lst_btmup_mdl <- function(object, key_data, ...){
   
   # Update fables
   pmap(list(rep_along(fc_point, fc[1]), fc_point, fc_dist), function(fc, point, dist){
-    fc[[expr_text(attr(fc,"response")[[1]])]] <- point
-    fc[[expr_text(attr(fc,"dist"))]] <- dist
+    fc[[expr_name(attr(fc,"response")[[1]])]] <- point
+    fc[[expr_name(attr(fc,"dist"))]] <- dist
     fc
   })
 }
