@@ -182,29 +182,30 @@ Ops.mdl_ts <- function(e1, e2){
     .Generic <- "*"
     e2 <- 1/e2
   }
-  e_len <- c(length(e1), length(e2))
-  if(max(e_len) %% min(e_len) != 0){
-    warn("longer object length is not a multiple of shorter object length")
-  }
   
-  if(e_len[[1]] != e_len[[2]]){
-    if(which.min(e_len) == 1){
-      is_mdl <- is_model(e1)
-      cls <- class(e1)
-      e1 <- rep_len(e1, e_len[[2]])
-      if(is_mdl){
-        e1 <- structure(e1, class = cls)
-      }
-    }
-    else{
-      is_mdl <- is_model(e2)
-      cls <- class(e2)
-      e2 <- rep_len(e2, e_len[[1]])
-      if(is_mdl){
-        e2 <- structure(e2, class = cls)
-      }
-    }
-  }
+  # e_len <- c(length(e1), length(e2))
+  # if(max(e_len) %% min(e_len) != 0){
+  #   warn("longer object length is not a multiple of shorter object length")
+  # }
+  # 
+  # if(e_len[[1]] != e_len[[2]]){
+  #   if(which.min(e_len) == 1){
+  #     is_mdl <- is_model(e1)
+  #     cls <- class(e1)
+  #     e1 <- rep_len(e1, e_len[[2]])
+  #     if(is_mdl){
+  #       e1 <- structure(e1, class = cls)
+  #     }
+  #   }
+  #   else{
+  #     is_mdl <- is_model(e2)
+  #     cls <- class(e2)
+  #     e2 <- rep_len(e2, e_len[[1]])
+  #     if(is_mdl){
+  #       e2 <- structure(e2, class = cls)
+  #     }
+  #   }
+  # }
   
   if(is_model(e1) && is_model(e2)){
     if(.Generic == "*"){
