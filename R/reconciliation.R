@@ -67,19 +67,11 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   if(length(unique(map(fc, interval))) > 1){
     abort("Reconciliation of temporal hierarchies is not yet supported.")
   }
-  fc_point <- fc %>% 
-    map(`[[`, expr_name(attr(fc[[1]],"response")[[1]])) %>% 
-    invoke(cbind, .) %>% 
-    as.matrix()
-  fc_var <- fc %>% 
-    map(`[[`, expr_name(attr(fc[[1]],"dist"))) %>% 
-    map(function(x){
-      if(!is_dist_normal(x)) abort("Reconciliation of non-normal forecasts is not yet supported.")
-      map_dbl(x, `[[`, "sd")^2
-    }) %>% 
-    transpose_dbl()
+  fc_dist <- map(fc, function(x) x[[x%@%"dist"]])
+  fc_mean <- as.matrix(invoke(cbind, map(fc_dist, mean)))
+  fc_var <- transpose_dbl(map(fc_dist, distributional::variance))
   
-  # Coonstruct mpute S martrix - ??GA: have moved this here as I need it for Structural scaling
+  # Construct S matrix - ??GA: have moved this here as I need it for Structural scaling
   S <- build_smat_rows(key_data)
 
   # Compute weights (sample covariance)
@@ -140,7 +132,7 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
           expr(!is_aggregated(!!sym(x)))
         })
       )
-    row_btm <- as.integer(row_btm[[length(row_btm)]])
+    row_btm <- vctrs::vec_c(!!!row_btm[[length(row_btm)]])
     row_agg <- seq_len(NROW(key_data))[-row_btm]
     
     i_pos <- which(as.logical(S[row_btm,]))
@@ -159,14 +151,13 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   }
   
   # Apply to forecasts
-  fc_point <- as.matrix(S%*%P%*%t(fc_point))
-  fc_point <- split(fc_point, row(fc_point))
+  fc_mean <- as.matrix(S%*%P%*%t(fc_mean))
+  fc_mean <- split(fc_mean, row(fc_mean))
   fc_var <- map(W_h, function(W) diag(S%*%P%*%W%*%t(P)%*%t(S)))
-  fc_dist <- map2(fc_point, transpose_dbl(map(fc_var, sqrt)), dist_normal)
+  fc_dist <- map2(fc_mean, transpose_dbl(map(fc_var, sqrt)), distributional::dist_normal)
   
   # Update fables
-  pmap(list(fc, fc_point, fc_dist), function(fc, point, dist){
-    fc[[expr_name(attr(fc,"response")[[1]])]] <- point
+  map2(fc, fc_dist, function(fc, dist){
     fc[[expr_name(attr(fc,"dist"))]] <- dist
     fc
   })

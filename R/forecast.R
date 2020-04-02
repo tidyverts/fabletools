@@ -107,14 +107,13 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, point_forecast = 
                              h = h, point_forecast = point_forecast, ...,
                              key_data = key_data(object))
   
-  object <- gather(object, ".model", ".fc", !!!mdls)
+  object <- tidyr::pivot_longer(object, mdls, names_to = ".model", values_to = ".fc") 
   
   # Combine and re-construct fable
   fbl_attr <- attributes(object$.fc[[1]])
   out <- suppressWarnings(
     unnest_tsbl(as_tibble(object)[c(kv, ".fc")], ".fc", parent_key = kv)
   )
-  out[[expr_name(fbl_attr$dist)]] <- invoke(c, map(object$.fc, function(x) x[[expr_name(x%@%"dist")]]))
   as_fable(out, resp = fbl_attr$response, dist = !!fbl_attr$dist)
 }
 
