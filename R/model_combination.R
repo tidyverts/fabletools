@@ -6,7 +6,7 @@ train_combination <- function(.data, specials, ..., cmbn_fn, cmbn_args){
   mdls[mdl_def] <- mdls[mdl_def] %>% 
     map(function(x) estimate(self$data, x))
   
-  do.call(cmbn_fn, c(mdls, cmbn_args))
+  do.call(cmbn_fn, c(mdls, cmbn_args))[["fit"]]
 }
 
 #' Combination modelling
