@@ -211,8 +211,7 @@ rbind.fbl_ts <- function(...){
   if(length(dist <- unique(dist)) > 1){
     abort("Cannot combine fables with different distribution names.")
   }
-  out <- suppressWarnings(invoke("rbind", map(fbls, as_tsibble)))
-  class(out[[as_string(dist[[1]])]]) <- c("fcdist", "list")
+  out <- suppressWarnings(invoke(dplyr::bind_rows, map(fbls, as_tsibble)))
   as_fable(out, response[[1]], !!dist[[1]])
 }
 
