@@ -55,7 +55,7 @@ aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){
   
   kv <- unique(unlist(key_comb, recursive = FALSE))
   agg_dt <- vctrs::vec_rbind(!!!map(unname(key_comb), function(x){
-    gd <- group_data(group_by(.data, !!!syms(c(idx, x))))
+    gd <- group_data(group_by(.data, !!sym(idx), !!!set_names(map(x, function(.) expr(agg_vec(!!sym(.)))), x)))
     agg_keys <- setdiff(kv, x)
     agg_cols <- rep(list(agg_vec(NA_character_, aggregated = TRUE)), length(agg_keys))
     gd[agg_keys] <- agg_cols
