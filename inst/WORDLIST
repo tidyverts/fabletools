@@ -6,7 +6,10 @@ boxcox
 CRPS
 dable
 doi
+etc
+forecast's
 formals
+fourier
 geoms
 ggplot
 ggproto
@@ -14,6 +17,7 @@ Heeyoung
 hilo
 hms
 horison
+infitite
 JRSS
 lifecycle
 MAAPE
@@ -23,10 +27,13 @@ MatrixM
 MinT
 obj
 org
+purrr
 quosure
+seasonalities
 stat
 Sungil
 tibble
+tidyr
 tidyverse
 tidyverts
 tsibble
