@@ -229,7 +229,7 @@ test_that("autoplot.fbl_ts()", {
   
   expect_equal(
     ggplot2::layer_data(p)$y,
-    mean(fbl_complex$value[c(1:12, 25:36, 13:24, 37:48)])
+    mean(fbl_complex$value[c(1:24, 25:48)])
   )
   expect_equivalent(
     as.numeric(table(ggplot2::layer_data(p)$colour)),
@@ -287,7 +287,7 @@ test_that("autolayer.fbl_ts()", {
   
   expect_equal(
     ggplot2::layer_data(p,2)$y,
-    mean(fbl_complex$value[c(1:12, 25:36, 13:24, 37:48)])
+    mean(fbl_complex$value[c(1:24, 25:48)])
   )
   expect_equivalent(
     as.numeric(table(ggplot2::layer_data(p,2)$colour)),
