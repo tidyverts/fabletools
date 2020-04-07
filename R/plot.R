@@ -125,21 +125,23 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
   dist <- object%@%"dist"
   idx <- index(object)
   kv <- key_vars(object)
-  
-  if(length(resp) > 1){
-    object <- object %>%
-      mutate(
-        .response = rep(list(factor(map_chr(resp, expr_name))), NROW(object)),
-        value = transpose_dbl(list2(!!!resp))
-      )
-  }
-  
+  # if(length(resp) > 1){
+  #   object <- object %>%
+  #     mutate(
+  #       .response = rep(list(factor(map_chr(resp, expr_name))), NROW(object)),
+  #       value = transpose_dbl(list2(!!!resp))
+  #     )
+  # }
+  # 
   if(!is.null(level)){
     object[as.character(level)] <- map(level, hilo, x = object[[expr_text(dist)]])
-    object[map_chr(resp, expr_name)] <- mean(object[[expr_name(dist)]])
+    object[[expr_name(dist)]] <- mean(object[[expr_name(dist)]])
     object <- tidyr::pivot_longer(as_tibble(object), as.character(level), names_to = ".rm", values_to = ".hilo")
     
     if(length(resp) > 1){
+      stop("Plotting multivariate forecasts is not currently supported.")
+      tidyr::unpack(object, c(expr_name(dist), ".hilo"), names_sep = "?")
+      
       object <- unnest_tbl(object, c(".response", "value", ".hilo"))
       resp <- syms("value")
       kv <- c(kv, ".response")
