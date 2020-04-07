@@ -175,9 +175,13 @@ These required variables can be provided by specifying `new_data`.",
     set_env(bt, env)
   })
   
-  if(length(bt) > 1) abort("Multivariate forecasts are not yet supported")
-  
-  fc <- bt[[1]](fc)
+  if(length(bt) > 1) {
+    if(any(vapply(bt, function(x) !is_symbol(body(x)), logical(1L)))){
+      abort("Transformations of multivariate forecasts are not yet supported")
+    }
+  } else {
+    fc <- bt[[1]](fc)
+  }
   
   # Create output object
   idx <- index_var(new_data)
@@ -236,7 +240,7 @@ construct_fc <- function(point, sd, dist){
   } else if(identical(dist_env, env_dist_unknown)){
     rep(NA, length(dist))
   } else if(identical(dist_env, env_dist_mv_normal)){
-    abort("mvn dist not implemented yet")
+    distributional::dist_multivariate_normal(map(dist, `[[`, "mean"), map(dist, `[[`, "sd"))
   } else {
     abort("Unknown forecast distribution type to convert.")
   }
