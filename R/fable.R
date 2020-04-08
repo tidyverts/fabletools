@@ -41,7 +41,7 @@ as_fable <- function(x, ...){
 #' @rdname as-fable
 #' @export
 as_fable.tbl_ts <- function(x, response, distribution, ...){
-  response <- expr_name(get_expr(enquo(response)))
+  response <- eval_tidy(enquo(response))
   distribution <- names(x)[tidyselect::eval_select(enquo(distribution), x)]
   
   fbl <- new_tsibble(x, class = "fbl_ts",
@@ -55,7 +55,7 @@ as_fable.tbl_ts <- function(x, response, distribution, ...){
 #' @export
 as_fable.grouped_ts <- function(x, response, distribution, ...){
   # If the response (from user input) needs converting
-  response <- expr_name(get_expr(enquo(response)))
+  response <- eval_tidy(enquo(response))
   distribution <- names(x)[tidyselect::eval_select(enquo(distribution), x)]
   
   fbl <- structure(x, class = c("grouped_fbl", "grouped_ts", "grouped_df", 
@@ -80,7 +80,7 @@ as_fable.fbl_ts <- function(x, response, distribution, ...){
     response <- response_vars(x)
   }
   else{
-    response <- expr_name(get_expr(enquo(response)))
+    response <- eval_tidy(enquo(response))
   }
   if(missing(distribution)){
     distribution <- distribution_var(x)
