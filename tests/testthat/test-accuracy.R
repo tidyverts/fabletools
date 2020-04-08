@@ -64,7 +64,7 @@ test_that("Out-of-sample accuracy", {
     as_tibble(fbl) %>% 
       mutate(
         actual = semi_join(us_deaths, fbl, by = "index")$value,
-        .resid = actual - value
+        .resid = actual - mean(value)
       ) %>% 
       group_by(.model) %>% 
       summarise(.type = "Test", ME = mean(.resid), RMSE = sqrt(mean(.resid^2)),
@@ -92,6 +92,7 @@ test_that("Out-of-sample accuracy", {
   expect_equal(acc_complex[1:2, -(1:2)], acc_multi[,-(1:2)])
   expect_true(!any(map_lgl(acc_complex, compose(any, is.na))))
   
+  skip("mv not supported")
   acc_mv <- accuracy(fbl_mv, lung_deaths_wide)
   expect_equal(
     acc_mv$.response,
