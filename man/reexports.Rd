@@ -16,6 +16,7 @@
 \alias{tidy}
 \alias{generate}
 \alias{refit}
+\alias{hilo}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -23,6 +24,8 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
+  \item{distributional}{\code{\link[distributional]{hilo}}}
+
   \item{dplyr}{\code{\link[dplyr]{\%>\%}}, \code{\link[dplyr]{vars}}}
 
   \item{generics}{\code{\link[generics]{augment}}, \code{\link[generics]{components}}, \code{\link[generics]{equation}}, \code{\link[generics]{generate}}, \code{\link[generics]{glance}}, \code{\link[generics]{interpolate}}, \code{\link[generics]{refit}}, \code{\link[generics]{tidy}}}
