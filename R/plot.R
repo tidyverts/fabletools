@@ -193,7 +193,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = TRUE, ...){
   fc_resp <- response_var(object)
   fc_key <- setdiff(key_vars(object), ".model")
-  common_models <- duplicated(key_data(object)[[".model"]] %||% rep(TRUE, NROW(key_data)))
+  common_models <- duplicated(key_data(object)[[".model"]] %||% rep(TRUE, NROW(key_data(object))))
   
   aes_y <- if(length(fc_resp) > 1){
     sym("value")
@@ -265,7 +265,7 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
   key_data <- key_data(object)
   resp_var <- response_var(object)
   idx <- index(object)
-  common_models <- duplicated(key_data[[".model"]] %||% rep(TRUE, NROW(key_data)))
+  common_models <- duplicated(key_data[[".model"]] %||% rep(TRUE, NROW(key_data(object))))
   
   if(isFALSE(level)){
     warn("Plot argument `level` should be a numeric vector of levels to display. Setting `level = NULL` will remove the intervals from the plot.")
