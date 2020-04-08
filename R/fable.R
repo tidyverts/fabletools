@@ -41,8 +41,8 @@ as_fable <- function(x, ...){
 #' @rdname as-fable
 #' @export
 as_fable.tbl_ts <- function(x, response, distribution, ...){
-  response <- names(tidyselect::eval_select(enquo(response), x))
-  distribution <- names(tidyselect::eval_select(enquo(distribution), x))
+  response <- expr_name(get_expr(enquo(response)))
+  distribution <- names(x)[tidyselect::eval_select(enquo(distribution), x)]
   
   fbl <- new_tsibble(x, class = "fbl_ts",
                      response = response, dist = distribution,
@@ -55,8 +55,8 @@ as_fable.tbl_ts <- function(x, response, distribution, ...){
 #' @export
 as_fable.grouped_ts <- function(x, response, distribution, ...){
   # If the response (from user input) needs converting
-  response <- names(tidyselect::eval_select(enquo(response), x))
-  distribution <- names(tidyselect::eval_select(enquo(distribution), x))
+  response <- expr_name(get_expr(enquo(response)))
+  distribution <- names(x)[tidyselect::eval_select(enquo(distribution), x)]
   
   fbl <- structure(x, class = c("grouped_fbl", "grouped_ts", "grouped_df", 
                                 "fbl_ts", "tbl_ts", "tbl_df", "tbl", "data.frame"),
@@ -70,7 +70,7 @@ as_fable.grouped_ts <- function(x, response, distribution, ...){
 #' @export
 as_fable.tbl_df <- function(x, response, distribution, ...){
   as_fable(as_tsibble(x, ...), response = !!enquo(response),
-           distribution = !!enexpr(distribution))
+           distribution = !!enquo(distribution))
 }
 
 #' @rdname as-fable
@@ -80,13 +80,13 @@ as_fable.fbl_ts <- function(x, response, distribution, ...){
     response <- response_var(x)
   }
   else{
-    response <- names(tidyselect::eval_select(enquo(response), x))
+    response <- expr_name(get_expr(enquo(response)))
   }
   if(missing(distribution)){
     distribution <- distribution_var(x)
   }
   else{
-    distribution <- names(tidyselect::eval_select(enquo(distribution), x))
+    distribution <- names(x)[tidyselect::eval_select(enquo(distribution), x)]
   }
   as_fable(update_tsibble(x, ...), response = response,
            distribution = distribution)
