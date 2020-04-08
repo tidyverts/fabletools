@@ -116,10 +116,10 @@ MAAPE <- function(.resid, .actual, na.rm = TRUE, ...){
 #' @export
 winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
   interval <- hilo(.dist, level)
-  if(NROW(interval[[1]]) > 1) abort("Winkler scores are not supported for multivariate distributions.")
+  if(!inherits(interval, "hilo")) abort("Winkler scores are not supported for multivariate distributions.")
   alpha <- 1-level/100
-  lt <- interval$.lower
-  ut <- interval$.upper
+  lt <- vctrs::vec_proxy(interval)$lower
+  ut <- vctrs::vec_proxy(interval)$upper
   score <- ifelse(
     .actual < lt, 
       (ut - lt) + (2/alpha)*(lt-.actual),
@@ -145,10 +145,10 @@ interval_accuracy_measures <- list(winkler = winkler_score)
 #' @export
 percentile_score <- function(.dist, .actual, na.rm = TRUE, ...){
   probs <- seq(0.01, 0.99, 0.01)
-  percentiles <- quantile(.dist, probs)
-  if(length(percentiles[[1]]) > 1) abort("Percentile scores are not supported for multivariate distributions.")
+  percentiles <- map(probs, quantile, x = .dist)
+  if(!is.numeric(percentiles[[1]])) abort("Percentile scores are not supported for multivariate distributions.")
   map2_dbl(percentiles, probs, function(percentile, prob){
-    L <- ifelse(.actual < percentile[[1]], (1-prob), prob)*abs(percentile[[1]]-.actual)
+    L <- ifelse(.actual < percentile, (1-prob), prob)*abs(percentile-.actual)
     mean(L, na.rm = na.rm)
   }) %>% 
     mean(na.rm = na.rm)
@@ -158,18 +158,18 @@ percentile_score <- function(.dist, .actual, na.rm = TRUE, ...){
 #' @export
 CRPS <- function(.dist, .actual, n_quantiles = 1000, na.rm = TRUE, ...){
   if(is_dist_normal(.dist)){
-    mean <- map_dbl(.dist, `[[`, "mean")
-    sd <- map_dbl(.dist, `[[`, "sd")
+    mean <- mean(.dist)
+    sd <- sqrt(distributional::variance(.dist))
     z <- (.actual-mean)/sd
     z <- sd*(z*(2*stats::pnorm(z)-1)+2*stats::dnorm(z)-1/sqrt(pi))
     mean(z, na.rm = na.rm)
   }
   else{
     probs <- seq(0, 1, length.out = n_quantiles + 2)[seq_len(n_quantiles) + 1]
-    percentiles <- quantile(.dist, probs)
-    if(length(percentiles[[1]]) > 1) abort("Percentile scores are not supported for multivariate distributions.")
+    percentiles <- map(probs, quantile, x = .dist)
+    if(!is.numeric(percentiles[[1]])) abort("Percentile scores are not supported for multivariate distributions.")
     z <- map2_dbl(percentiles, probs, function(percentile, prob){
-      L <- ifelse(.actual < percentile[[1]], (1-prob), prob)*abs(percentile[[1]]-.actual)
+      L <- ifelse(.actual < percentile, (1-prob), prob)*abs(percentile-.actual)
       mean(L, na.rm = na.rm)
     })
     2 * mean(z, na.rm = na.rm)
