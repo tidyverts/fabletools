@@ -134,7 +134,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
   # }
   # 
   if(!is.null(level)){
-    object[as.character(level)] <- map(level, hilo, x = object[[expr_text(dist)]])
+    object[as.character(level)] <- map(level, hilo, x = object[[expr_name(dist)]])
     object[[expr_name(dist)]] <- mean(object[[expr_name(dist)]])
     object <- tidyr::pivot_longer(as_tibble(object), as.character(level), names_to = ".rm", values_to = ".hilo")
     
