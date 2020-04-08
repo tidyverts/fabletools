@@ -41,22 +41,11 @@ as_fable <- function(x, ...){
 #' @rdname as-fable
 #' @export
 as_fable.tbl_ts <- function(x, response, distribution, ...){
-  quo_response <- enquo(response)
-  response <- possibly(eval_tidy, NULL)(quo_response)
-  
-  # If the response (from user input) needs converting
-  if(!is.list(response)){
-    if(quo_is_call(quo_response) && call_name(quo_response) == "c"){
-      response[[1]] <- rlang::exprs
-      response <- eval_tidy(quo_response)
-    }
-    else{
-      response <- list(get_expr(quo_response))
-    }
-  }
+  response <- names(tidyselect::eval_select(enquo(response), x))
+  distribution <- names(tidyselect::eval_select(enquo(distribution), x))
   
   fbl <- new_tsibble(x, class = "fbl_ts",
-                     response = response, dist = enexpr(distribution),
+                     response = response, dist = distribution,
                      model_cn = ".model")
   validate_fable(fbl)
   fbl
@@ -65,23 +54,13 @@ as_fable.tbl_ts <- function(x, response, distribution, ...){
 #' @rdname as-fable
 #' @export
 as_fable.grouped_ts <- function(x, response, distribution, ...){
-  quo_response <- enquo(response)
-  response <- possibly(eval_tidy, NULL)(quo_response)
-  
   # If the response (from user input) needs converting
-  if(!is.list(response)){
-    if(quo_is_call(quo_response) && call_name(quo_response) == "c"){
-      quo_response[[1]] <- rlang::exprs
-      response <- eval_tidy(quo_response)
-    }
-    else{
-      response <- list(get_expr(quo_response))
-    }
-  }
+  response <- names(tidyselect::eval_select(enquo(response), x))
+  distribution <- names(tidyselect::eval_select(enquo(distribution), x))
   
   fbl <- structure(x, class = c("grouped_fbl", "grouped_ts", "grouped_df", 
                                 "fbl_ts", "tbl_ts", "tbl_df", "tbl", "data.frame"),
-                   response = response, dist = enexpr(distribution),
+                   response = response, dist = distribution,
                    model_cn = ".model")
   validate_fable(fbl)
   fbl
@@ -98,24 +77,19 @@ as_fable.tbl_df <- function(x, response, distribution, ...){
 #' @export
 as_fable.fbl_ts <- function(x, response, distribution, ...){
   if(missing(response)){
-    response <- x%@%"response"
+    response <- response_var(x)
   }
   else{
-    quo_response <- enquo(response)
-    # If the response (from user input) needs converting
-    if(quo_is_call(quo_response) && call_name(quo_response) == "c"){
-      response[[1]] <- rlang::exprs
-      response <- eval_tidy(quo_response)
-    }
-    else{
-      response <- list(get_expr(quo_response))
-    }
+    response <- names(tidyselect::eval_select(enquo(response), x))
   }
   if(missing(distribution)){
-    distribution <- x%@%"dist"
+    distribution <- distribution_var(x)
+  }
+  else{
+    distribution <- names(tidyselect::eval_select(enquo(distribution), x))
   }
   as_fable(update_tsibble(x, ...), response = response,
-           distribution = !!enexpr(distribution))
+           distribution = distribution)
 }
 
 #' @rdname as-fable
@@ -135,8 +109,8 @@ as_tsibble.grouped_fbl <- function(x, ...){
 
 validate_fable <- function(fbl){
   stopifnot(inherits(fbl, "fbl_ts"))
-  chr_resp <- map_chr(attr(fbl, "response"), expr_name)
-  chr_dist <- as_string(attr(fbl, "dist"))
+  chr_resp <- response_var(fbl)
+  chr_dist <- distribution_var(fbl)
   if (!(chr_dist %in% names(fbl))){
     abort(sprintf("Could not find distribution variable `%s` in the fable. A fable must contain a distribution, if you want to remove it convert to a tsibble with `as_tsibble()`.",
                   chr_dist))
@@ -155,28 +129,28 @@ tbl_sum.fbl_ts <- function(x){
 hilo.fbl_ts <- function(x, level = c(80, 95), ...){
   as_tsibble(x) %>%
     mutate(
-      !!!set_names(map(level,function(.x) expr(hilo(!!(x%@%"dist"), !!.x))),
+      !!!set_names(map(level,function(.x) expr(hilo(!!sym(distribution_var(x)), !!.x))),
                    paste0(level, "%"))
     )
 }
 
 #' @export
 select.fbl_ts <- function (.data, ...){
-  as_fable(NextMethod(), .data%@%"response", !!(.data%@%"dist"))
+  as_fable(NextMethod(), response_var(.data), distribution_var(.data))
 }
 
 #' @export
 select.grouped_fbl <- select.fbl_ts
 
 filter.fbl_ts <- function (.data, ...){
-  as_fable(NextMethod(), .data%@%"response", !!(.data%@%"dist"))
+  as_fable(NextMethod(), response_var(.data), distribution_var(.data))
 }
 
 filter.grouped_fbl <- filter.fbl_ts
 
 #' @export
 group_by.fbl_ts <- function(.data, ...) {
-  as_fable(NextMethod(), .data%@%"response", !!(.data%@%"dist"))
+  as_fable(NextMethod(), response_var(.data), distribution_var(.data))
 }
 
 #' @export
@@ -190,7 +164,7 @@ ungroup.grouped_fbl <- group_by.fbl_ts
 
 #' @export
 mutate.fbl_ts <- function(.data, ...) {
-  as_fable(NextMethod(), .data%@%"response", !!(.data%@%"dist"))
+  as_fable(NextMethod(), response_var(.data), distribution_var(.data))
 }
 
 #' @export
@@ -199,8 +173,8 @@ mutate.grouped_fbl <- mutate.fbl_ts
 #' @export
 rbind.fbl_ts <- function(...){
   fbls <- dots_list(...)
-  response <- map(fbls, attr, "response")
-  dist <- map(fbls, attr, "dist")
+  response <- map(fbls, response_var)
+  dist <- map(fbls, distribution_var)
   if(length(response <- unique(response)) > 1){
     abort("Cannot combine fables with different response variables.")
   }
@@ -208,7 +182,7 @@ rbind.fbl_ts <- function(...){
     abort("Cannot combine fables with different distribution names.")
   }
   out <- suppressWarnings(invoke(dplyr::bind_rows, map(fbls, as_tsibble)))
-  as_fable(out, response[[1]], !!dist[[1]])
+  as_fable(out, response[[1]], dist[[1]])
 }
 
 #' @export
@@ -217,12 +191,22 @@ rbind.fbl_ts <- function(...){
   # Drop fable if tsibble is dropped
   
   cn <- colnames(out)
-  not_fable <- !(expr_name(x%@%"dist") %in% cn) || !is_tsibble(out)
+  not_fable <- !(distribution_var(x) %in% cn) || !is_tsibble(out)
   
   if(not_fable)
     return(out)
   else
-    as_fable(out, x%@%"response", !!(x%@%"dist"))
+    as_fable(out, response_var(x), distribution_var(x))
+}
+
+response_var <- function(x){
+  stopifnot(is_fable(x))
+  x%@%"response"
+}
+
+distribution_var <- function(x){
+  stopifnot(is_fable(x))
+  x%@%"dist"
 }
 
 type_sum.fbl_ts <- function(x){

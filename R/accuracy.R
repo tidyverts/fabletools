@@ -317,8 +317,8 @@ accuracy.mdl_ts <- function(object, measures = point_accuracy_measures, ...){
 #' @export
 accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..., 
                             by = NULL){
-  resp <- object%@%"response"
-  dist <- object%@%"dist"
+  resp <- syms(response_var(object))
+  dist <- sym(distribution_var(object))
   
   if(is.null(by)){
     by <- intersect(c(".model", ".response", key_vars(data)), colnames(object))

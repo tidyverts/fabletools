@@ -121,29 +121,29 @@ autolayer.tbl_ts <- function(object, .vars = NULL, ...){
 #' @importFrom ggplot2 fortify
 #' @export
 fortify.fbl_ts <- function(object, level = c(80, 95)){
-  resp <- object%@%"response"
-  dist <- object%@%"dist"
+  resp <- response_var(object)
+  dist <- distribution_var(object)
   idx <- index(object)
   kv <- key_vars(object)
   # if(length(resp) > 1){
   #   object <- object %>%
   #     mutate(
-  #       .response = rep(list(factor(map_chr(resp, expr_name))), NROW(object)),
-  #       value = transpose_dbl(list2(!!!resp))
+  #       .response = rep(list(factor(resp)), NROW(object)),
+  #       value = transpose_dbl(list2(!!!syms(resp)))
   #     )
   # }
   # 
   if(!is.null(level)){
-    object[as.character(level)] <- map(level, hilo, x = object[[expr_name(dist)]])
-    object[map_chr(resp, expr_name)] <- mean(object[[expr_name(dist)]])
+    object[as.character(level)] <- map(level, hilo, x = object[[dist]])
+    object[resp] <- mean(object[[dist]])
     object <- tidyr::pivot_longer(as_tibble(object), as.character(level), names_to = ".rm", values_to = ".hilo")
     
     if(length(resp) > 1){
       stop("Plotting multivariate forecasts is not currently supported.")
-      tidyr::unpack(object, c(expr_name(dist), ".hilo"), names_sep = "?")
+      tidyr::unpack(object, c(dist, ".hilo"), names_sep = "?")
       
       object <- unnest_tbl(object, c(".response", "value", ".hilo"))
-      resp <- syms("value")
+      resp <- "value"
       kv <- c(kv, ".response")
     }
     else{
@@ -191,7 +191,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 #' @importFrom ggplot2 facet_wrap
 #' @export
 autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = TRUE, ...){
-  fc_resp <- object%@%"response"
+  fc_resp <- response_var(object)
   fc_key <- setdiff(key_vars(object), ".model")
   common_models <- duplicated(key_data(object)[[".model"]] %||% rep(TRUE, NROW(key_data)))
   
@@ -199,7 +199,7 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = T
     sym("value")
   }
   else{
-    fc_resp[[1]]
+    sym(fc_resp)
   }
 
   if (!is.null(data)){
@@ -212,7 +212,7 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = T
     }
     
     if(length(fc_resp) > 1){
-      data <- gather(data, ".response", "value", !!!fc_resp, factor_key = TRUE)
+      data <- gather(data, ".response", "value", !!!syms(fc_resp), factor_key = TRUE)
     }
     
     data <- data %>% 
@@ -263,7 +263,7 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
                              show_gap = TRUE, ...){
   fc_key <- setdiff(key_vars(object), ".model")
   key_data <- key_data(object)
-  resp_var <- map_chr(object%@%"response", expr_name)
+  resp_var <- response_var(object)
   idx <- index(object)
   common_models <- duplicated(key_data[[".model"]] %||% rep(TRUE, NROW(key_data)))
   
@@ -288,15 +288,15 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
     if (length(resp_var) > 1) abort("`show_gap = FALSE` is not yet supported for multivariate forecasts.")
     gap[[as_string(object%@%"dist")]] <- dist_normal(gap[[resp_var]], 0)
     gap <- as_fable(gap, index = !!idx, key = key_vars(object),
-                    response = object%@%"response",
-                    distribution = !!(object%@%"dist"))
+                    response = resp_var,
+                    distribution = distribution_var(object))
     object <- rbind(gap, object)
   }
   
   fc_data <- fortify(object, level = level) %>% 
     dplyr::mutate_if(~inherits(., "agg_key"), compose(trimws, format))
   
-  if(length(object%@%"response") > 1){
+  if(length(resp_var) > 1){
     resp <- sym("value")
     grp <- syms(".response")
   }
@@ -369,7 +369,7 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE, ...){
   if(quo_is_null(.vars)){
     .vars <- object%@%"response"
   }
-  dcmp_str <- dcmp <- (object%@%"aliases")[[as_string(get_expr(.vars))]]
+  dcmp_str <- dcmp <- (object%@%"aliases")[[expr_name(get_expr(.vars))]]
   if(!is.null(dcmp_str)){
     dcmp_str <- expr_text(dcmp_str)
   }

@@ -114,7 +114,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL, point_forecast = 
   out <- suppressWarnings(
     unnest_tsbl(as_tibble(object)[c(kv, ".fc")], ".fc", parent_key = kv)
   )
-  as_fable(out, resp = fbl_attr$response, dist = !!fbl_attr$dist)
+  as_fable(out, resp = fbl_attr$response, dist = fbl_attr$dist)
 }
 
 #' @export
@@ -212,7 +212,7 @@ These required variables can be provided by specifying `new_data`.",
   )
   
   as_fable(fbl,
-           resp = object$response,
+           resp = map_chr(object$response, expr_name),
            dist = !!sym(dist_col)
   )
 }
