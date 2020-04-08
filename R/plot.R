@@ -135,7 +135,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
   # 
   if(!is.null(level)){
     object[as.character(level)] <- map(level, hilo, x = object[[expr_name(dist)]])
-    object[[expr_name(dist)]] <- mean(object[[expr_name(dist)]])
+    object[map_chr(resp, expr_name)] <- mean(object[[expr_name(dist)]])
     object <- tidyr::pivot_longer(as_tibble(object), as.character(level), names_to = ".rm", values_to = ".hilo")
     
     if(length(resp) > 1){
@@ -159,8 +159,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
     kv <- c(kv, ".response")
   }
   
-  as_tsibble(object,
-             key = kv, index = !!idx, validate = FALSE) 
+  as_tsibble(object, key = kv, index = !!idx, validate = FALSE) 
 }
 
 #' Plot a set of forecasts
@@ -264,7 +263,7 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
                              show_gap = TRUE, ...){
   fc_key <- setdiff(key_vars(object), ".model")
   key_data <- key_data(object)
-  resp_var <- map_chr(object%@%"response", as_string)
+  resp_var <- map_chr(object%@%"response", expr_name)
   idx <- index(object)
   common_models <- duplicated(key_data[[".model"]] %||% rep(TRUE, NROW(key_data)))
   
@@ -328,7 +327,7 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
     )
     
     mapping$colour <- if(length(col)==1) col[[1]] else expr(interaction(!!!col, sep = "/"))
-    grp <- c(grp, syms(".model"))
+    # grp <- c(grp, syms(".model"))
   }
   if(length(grp) > 0){
     mapping$group <- expr(interaction(!!!map(grp, function(x) expr(format(!!x))), sep = "/"))
