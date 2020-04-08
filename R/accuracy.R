@@ -325,13 +325,13 @@ accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..
   }
   
   if(length(resp) > 1){
+    abort("Accuracy evaluation is not currently supported for multivariate forecasts.")
     object <- as_tsibble(object) %>% 
       # select(!!expr(-!!attr(object, "dist"))) %>% 
       gather(".response", "value", !!!resp, factor_key = TRUE)
     data <- gather(data, ".response", "value", !!!resp, factor_key = TRUE)
     resp <- sym("value")
     by <- union(by, ".response")
-    # abort("Accuracy evaluation is not yet supported for multivariate forecasts.")
   }
   else{
     resp <- resp[[1]]
@@ -357,7 +357,8 @@ accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..
   }
   
   # Compute .fc, .dist, .actual and .resid
-  aug <- transmute(object, .fc = !!resp, .dist = !!dist, !!!syms(by))
+  object <- as_tsibble(object)
+  aug <- transmute(object, .fc = mean(!!dist), .dist = !!dist, !!!syms(by))
   aug <- left_join(aug,
       transmute(data, !!index(data), .actual = !!resp),
       by = intersect(colnames(data), by),
@@ -379,7 +380,7 @@ accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..
   mutual_keys <- intersect(key(data), key(object))
   mutual_keys <- set_names(mutual_keys, map_chr(mutual_keys, as_string))
   .train <- as_tibble(object) %>% 
-    group_by(!!!key(object), !!!grp) %>% 
+    group_by(!!!union(key(object), grp)) %>% 
     filter(dplyr::row_number() == which.min(!!index(object))) %>% 
     group_by(!!!grp) %>% 
     filter(dplyr::row_number() == which.max(!!index(object))) %>% 
