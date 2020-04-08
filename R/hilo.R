@@ -9,7 +9,7 @@
 #' @seealso [`tidyr::unpack()`]
 #' 
 #' @export
-unpack_hilo <- function(data, cols, names_sep = NULL, names_repair = "check_unique"){
+unpack_hilo <- function(data, cols, names_sep = "_", names_repair = "check_unique"){
   orig <- data
   cols <- tidyselect::eval_select(enexpr(cols), data)
   if(any(bad_col <- !map_lgl(data[cols], inherits, "hilo"))){
@@ -19,6 +19,6 @@ unpack_hilo <- function(data, cols, names_sep = NULL, names_repair = "check_uniq
     ))
   }
   data[cols] <- map(data[cols], function(x) vctrs::vec_proxy(x)[c("lower", "upper")])
-  data <- tidyr::unpack(data, cols, names_sep = "_", names_repair = names_repair)
+  data <- tidyr::unpack(data, cols, names_sep = names_sep, names_repair = names_repair)
   vctrs::vec_restore(data, orig)
 }

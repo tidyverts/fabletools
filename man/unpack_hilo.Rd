@@ -4,7 +4,7 @@
 \alias{unpack_hilo}
 \title{Unpack a hilo column}
 \usage{
-unpack_hilo(data, cols, names_sep = NULL, names_repair = "check_unique")
+unpack_hilo(data, cols, names_sep = "_", names_repair = "check_unique")
 }
 \arguments{
 \item{data}{A data frame.}
