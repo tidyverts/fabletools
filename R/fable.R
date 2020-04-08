@@ -77,7 +77,7 @@ as_fable.tbl_df <- function(x, response, distribution, ...){
 #' @export
 as_fable.fbl_ts <- function(x, response, distribution, ...){
   if(missing(response)){
-    response <- response_var(x)
+    response <- response_vars(x)
   }
   else{
     response <- expr_name(get_expr(enquo(response)))
@@ -109,7 +109,7 @@ as_tsibble.grouped_fbl <- function(x, ...){
 
 validate_fable <- function(fbl){
   stopifnot(inherits(fbl, "fbl_ts"))
-  chr_resp <- response_var(fbl)
+  chr_resp <- response_vars(fbl)
   chr_dist <- distribution_var(fbl)
   if (!(chr_dist %in% names(fbl))){
     abort(sprintf("Could not find distribution variable `%s` in the fable. A fable must contain a distribution, if you want to remove it convert to a tsibble with `as_tsibble()`.",
@@ -136,21 +136,21 @@ hilo.fbl_ts <- function(x, level = c(80, 95), ...){
 
 #' @export
 select.fbl_ts <- function (.data, ...){
-  as_fable(NextMethod(), response_var(.data), distribution_var(.data))
+  as_fable(NextMethod(), response_vars(.data), distribution_var(.data))
 }
 
 #' @export
 select.grouped_fbl <- select.fbl_ts
 
 filter.fbl_ts <- function (.data, ...){
-  as_fable(NextMethod(), response_var(.data), distribution_var(.data))
+  as_fable(NextMethod(), response_vars(.data), distribution_var(.data))
 }
 
 filter.grouped_fbl <- filter.fbl_ts
 
 #' @export
 group_by.fbl_ts <- function(.data, ...) {
-  as_fable(NextMethod(), response_var(.data), distribution_var(.data))
+  as_fable(NextMethod(), response_vars(.data), distribution_var(.data))
 }
 
 #' @export
@@ -164,7 +164,7 @@ ungroup.grouped_fbl <- group_by.fbl_ts
 
 #' @export
 mutate.fbl_ts <- function(.data, ...) {
-  as_fable(NextMethod(), response_var(.data), distribution_var(.data))
+  as_fable(NextMethod(), response_vars(.data), distribution_var(.data))
 }
 
 #' @export
@@ -173,7 +173,7 @@ mutate.grouped_fbl <- mutate.fbl_ts
 #' @export
 rbind.fbl_ts <- function(...){
   fbls <- dots_list(...)
-  response <- map(fbls, response_var)
+  response <- map(fbls, response_vars)
   dist <- map(fbls, distribution_var)
   if(length(response <- unique(response)) > 1){
     abort("Cannot combine fables with different response variables.")
@@ -196,17 +196,7 @@ rbind.fbl_ts <- function(...){
   if(not_fable)
     return(out)
   else
-    as_fable(out, response_var(x), distribution_var(x))
-}
-
-response_var <- function(x){
-  stopifnot(is_fable(x))
-  x%@%"response"
-}
-
-distribution_var <- function(x){
-  stopifnot(is_fable(x))
-  x%@%"dist"
+    as_fable(out, response_vars(x), distribution_var(x))
 }
 
 type_sum.fbl_ts <- function(x){

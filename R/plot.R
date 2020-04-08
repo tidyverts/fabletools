@@ -121,7 +121,7 @@ autolayer.tbl_ts <- function(object, .vars = NULL, ...){
 #' @importFrom ggplot2 fortify
 #' @export
 fortify.fbl_ts <- function(object, level = c(80, 95)){
-  resp <- response_var(object)
+  resp <- response_vars(object)
   dist <- distribution_var(object)
   idx <- index(object)
   kv <- key_vars(object)
@@ -191,7 +191,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 #' @importFrom ggplot2 facet_wrap
 #' @export
 autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = TRUE, ...){
-  fc_resp <- response_var(object)
+  fc_resp <- response_vars(object)
   fc_key <- setdiff(key_vars(object), ".model")
   common_models <- duplicated(key_data(object)[[".model"]] %||% rep(TRUE, NROW(key_data(object))))
   
@@ -263,7 +263,7 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
                              show_gap = TRUE, ...){
   fc_key <- setdiff(key_vars(object), ".model")
   key_data <- key_data(object)
-  resp_var <- response_var(object)
+  resp_var <- response_vars(object)
   idx <- index(object)
   common_models <- duplicated(key_data[[".model"]] %||% rep(TRUE, NROW(key_data(object))))
   

@@ -317,7 +317,7 @@ accuracy.mdl_ts <- function(object, measures = point_accuracy_measures, ...){
 #' @export
 accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..., 
                             by = NULL){
-  resp <- syms(response_var(object))
+  resp <- syms(response_vars(object))
   dist <- sym(distribution_var(object))
   
   if(is.null(by)){
