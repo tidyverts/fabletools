@@ -359,9 +359,9 @@ accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..
   # Compute .fc, .dist, .actual and .resid
   object <- as_tsibble(object)
   aug <- transmute(object, .fc = mean(!!dist), .dist = !!dist, !!!syms(by))
-  aug <- left_join(aug,
-      transmute(data, !!index(data), .actual = !!resp),
-      by = intersect(colnames(data), by),
+  aug_dt <- transmute(data, !!index(data), .actual = !!resp)
+  aug <- left_join(aug, aug_dt,
+      by = intersect(colnames(aug_dt), by),
       suffix = c("", ".y")
     )
   aug <- summarise(group_by(as_tibble(aug), !!!grp),
