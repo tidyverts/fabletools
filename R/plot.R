@@ -316,9 +316,6 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
     mapping$ymax <- sym(".upper")
   }
   
-  if(!is_empty(fc_key)){
-    grp <- c(grp, syms(fc_key))
-  }
   if(NROW(key_data) > 1){
     useful_keys <- fc_key[map_lgl(key_data[fc_key], function(x) sum(!duplicated(x)) > 1)]
     col <- c(
@@ -327,8 +324,9 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
     )
     
     mapping$colour <- if(length(col)==1) col[[1]] else expr(interaction(!!!col, sep = "/"))
-    # grp <- c(grp, syms(".model"))
   }
+  
+  grp <- c(grp, syms(key_vars(object)))
   if(length(grp) > 0){
     mapping$group <- expr(interaction(!!!map(grp, function(x) expr(format(!!x))), sep = "/"))
   }
