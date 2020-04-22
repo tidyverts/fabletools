@@ -238,7 +238,7 @@ construct_fc <- function(point, sd, dist){
   } else if(identical(dist_env, env_dist_sim)){
     distributional::dist_sample(flatten(map(dist, `[[`, 1)))
   } else if(identical(dist_env, env_dist_unknown)){
-    rep(NA, length(dist))
+    distributional::dist_degenerate(point)
   } else if(identical(dist_env, env_dist_mv_normal)){
     distributional::dist_multivariate_normal(map(dist, `[[`, "mean"), map(dist, `[[`, "sd"))
   } else {
