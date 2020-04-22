@@ -175,12 +175,16 @@ These required variables can be provided by specifying `new_data`.",
     set_env(bt, env)
   })
   
+  is_transformed <- vapply(bt, function(x) !is_symbol(body(x)), logical(1L))
   if(length(bt) > 1) {
-    if(any(vapply(bt, function(x) !is_symbol(body(x)), logical(1L)))){
+    if(any(is_transformed)){
       abort("Transformations of multivariate forecasts are not yet supported")
     }
   } else {
-    fc <- bt[[1]](fc)
+    if(is_transformed){
+      bt <- bt[[1]]
+      fc <- distributional::dist_transformed(fc, bt, bt%@%"inverse")
+    }
   }
   
   # Create output object
@@ -244,7 +248,6 @@ construct_fc <- function(point, sd, dist){
   } else {
     abort("Unknown forecast distribution type to convert.")
   }
-  
 }
 
 #' @export
