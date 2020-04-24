@@ -55,7 +55,7 @@ model <- function(.data, ...){
 #' 
 #' @export
 model.tbl_ts <- function(.data, ..., .safely = TRUE){
-  nm <- map(enexprs(...), expr_name)
+  nm <- map(enexprs(...), expr_text)
   models <- dots_list(...)
   
   if(length(models) == 0){
