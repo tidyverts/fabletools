@@ -7,7 +7,13 @@
 \usage{
 forecast(object, ...)
 
-\method{forecast}{mdl_df}(object, new_data = NULL, h = NULL, point_forecast = "mean", ...)
+\method{forecast}{mdl_df}(
+  object,
+  new_data = NULL,
+  h = NULL,
+  point_forecast = list(.mean = mean),
+  ...
+)
 }
 \arguments{
 \item{object}{The time series model used to produce the forecasts}

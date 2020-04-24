@@ -55,6 +55,13 @@ as_tsibble.dcmp_ts <- function(x, ...){
 }
 
 #' @export
+select.dcmp_ts <- function (.data, ...){
+  as_dable(select(as_tsibble(.data), ...),
+           response = !!(.data%@%"response"), method = .data%@%"method",
+           seasons = .data%@%"seasons", aliases = .data%@%"aliases")
+}
+
+#' @export
 `[.dcmp_ts` <- function (x, i, j, drop = FALSE){
   as_dable(NextMethod(), response = !!(x%@%"response"), method = x%@%"method",
            seasons = x%@%"seasons", aliases = x%@%"aliases")
