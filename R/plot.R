@@ -262,10 +262,11 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = T
 #' @export
 autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95), 
                              colour = "blue", color = colour, fill = color,
-                             show_gap = TRUE, ...){
+                             point_forecast = lst(mean), show_gap = TRUE, ...){
   fc_key <- setdiff(key_vars(object), ".model")
   key_data <- key_data(object)
   resp_var <- response_vars(object)
+  dist_var <- distribution_var(object)
   idx <- index(object)
   common_models <- duplicated(key_data[[".model"]] %||% rep(TRUE, NROW(key_data(object))))
   
@@ -333,7 +334,16 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
     out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = interval_data, fill = fill, ..., inherit.aes = FALSE)
   }
   
-  mapping$y <- expr(mean(!!sym(distribution_var(object))))
+  object <- as_tibble(object)
+  object[names(point_forecast)] <- map(point_forecast, calc, object[[dist_var]])
+  object <- tidyr::pivot_longer(object[-match(dist_var, names(object))], names(point_forecast), names_to = "Point forecast", values_to = dist_var)
+  
+  mapping$y <- sym(dist_var)
+  if(length(point_forecast) > 1){
+    mapping$linetype <- sym("Point forecast")
+    grp <- c(grp, mapping$linetype)
+    mapping$group <- expr(interaction(!!!map(grp, function(x) expr(format(!!x))), sep = "/"))
+  }
   out[[length(out) + 1]] <- geom_line(mapping = mapping, data = as_tibble(object), color = color, ..., inherit.aes = FALSE)
   out
 }
