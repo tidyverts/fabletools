@@ -95,6 +95,7 @@ aggregate_index <- function(.data, .times, ...){
 aggregate_index.tbl_ts <- function(.data, .times = NULL, ...){
   warn("Temporal aggregation is highly experimental. The interface will be refined in the near future.")
   
+  browser()
   require_package("lubridate")
   idx <- index(.data)
   kv <- key_vars(.data)

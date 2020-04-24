@@ -7,7 +7,16 @@
 \usage{
 \method{autoplot}{fbl_ts}(object, data = NULL, level = c(80, 95), show_gap = TRUE, ...)
 
-\method{autolayer}{fbl_ts}(object, data = NULL, level = c(80, 95), show_gap = TRUE, ...)
+\method{autolayer}{fbl_ts}(
+  object,
+  data = NULL,
+  level = c(80, 95),
+  colour = "blue",
+  color = colour,
+  fill = color,
+  show_gap = TRUE,
+  ...
+)
 }
 \arguments{
 \item{object}{A fable.}

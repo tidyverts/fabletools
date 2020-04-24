@@ -223,17 +223,17 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = T
   fc_layer <- autolayer(object, data = data, level = level, 
                         show_gap = show_gap, ...)
   if(sum(!common_models) > 1){
-    fc_layer$mapping$colour <- set_expr(fc_layer$mapping$colour, sym(".model"))
+    fc_layer[[1]]$mapping$colour <- set_expr(fc_layer$mapping$colour, sym(".model"))
   }
   else{
-    fc_layer$mapping$colour <- NULL
+    fc_layer[[1]]$mapping$colour <- NULL
   }
   
-  p <- ggplot(data, aes(x = !!index(object), y = !!aes_y)) + 
+  p <- ggplot(data, aes(x = !!index(object))) + 
     fc_layer
     
   if(!is.null(data)){
-    p <- p + geom_line()
+    p <- p + geom_line(aes(y = !!aes_y))
   }
   
   if(length(fc_resp) > 1){
@@ -258,8 +258,10 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = T
 #'   autolayer(fc)
 #' }
 #' 
+#' @importFrom distributional scale_level_continuous guide_level
 #' @export
 autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95), 
+                             colour = "blue", color = colour, fill = color,
                              show_gap = TRUE, ...){
   fc_key <- setdiff(key_vars(object), ".model")
   key_data <- key_data(object)
@@ -293,9 +295,6 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
     object <- rbind(gap, object)
   }
   
-  fc_data <- fortify(object, level = level) %>% 
-    dplyr::mutate_if(~inherits(., "agg_key"), compose(trimws, format))
-  
   if(length(resp_var) > 1){
     resp <- sym("value")
     grp <- syms(".response")
@@ -307,15 +306,7 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
   
   mapping <- aes(
     x = !!idx,
-    y = !!resp
   )
-  
-  if(!is.null(level)){
-    mapping$level <- sym(".level")
-    mapping$ymin <- sym(".lower")
-    mapping$ymax <- sym(".upper")
-  }
-  
   if(NROW(key_data) > 1){
     useful_keys <- fc_key[map_lgl(key_data[fc_key], function(x) sum(!duplicated(x)) > 1)]
     col <- c(
@@ -331,7 +322,20 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
     mapping$group <- expr(interaction(!!!map(grp, function(x) expr(format(!!x))), sep = "/"))
   }
   
-  geom_forecast(mapping = mapping, stat = "identity", data = fc_data, ..., inherit.aes = FALSE)
+  out <- list()
+  object <- object %>% 
+    dplyr::mutate_if(~inherits(., "agg_key"), compose(trimws, format))
+  if(!is.null(level)){
+    interval_data <- hilo(object, level = level) %>% 
+      tidyr::pivot_longer(paste0(level, "%"), names_to = "..unused", values_to = "hilo")
+    intvl_mapping <- mapping
+    intvl_mapping$hilo <- sym("hilo")
+    out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = interval_data, fill = fill, ..., inherit.aes = FALSE)
+  }
+  
+  mapping$y <- expr(mean(!!sym(distribution_var(object))))
+  out[[length(out) + 1]] <- geom_line(mapping = mapping, data = as_tibble(object), color = color, ..., inherit.aes = FALSE)
+  out
 }
 
 #' Decomposition plots
