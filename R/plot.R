@@ -203,6 +203,7 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = T
   }
 
   if (!is.null(data)){
+    data <- as_tsibble(data)
     if(!identical(fc_key, key_vars(data))){
       abort("Provided data contains a different key structure to the forecasts.")
     }
