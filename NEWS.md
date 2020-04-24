@@ -8,8 +8,14 @@
 
 ## Breaking changes
 
-* The `bias_adjust` option for forecast() is replaced by `point_forecast`, allowing you to specify which point forecast measures to display (fable/#226).
-  This has been done to reduce confusion around the argument's usage, disambiguate the returned point forecast's meaning, and also allow users to specify which (if any) point forecasts to provide.
+* The `bias_adjust` option for forecast() is replaced by `point_forecast`,
+  allowing you to specify which point forecast measures to display (fable/#226).
+  This has been done to reduce confusion around the argument's usage, 
+  disambiguate the returned point forecast's meaning, and also allow users 
+  to specify which (if any) point forecasts to provide.
+* The data coercion functions `as_mable`, `as_dable`, and `as_fable` have been
+  changed to accept character vectors for specifying common attributes (such as
+  response variables, and distributions).
 
 ## Bug fixes
 
