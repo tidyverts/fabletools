@@ -14,6 +14,7 @@
   colour = "blue",
   color = colour,
   fill = color,
+  point_forecast = lst(mean),
   show_gap = TRUE,
   ...
 )

@@ -228,3 +228,11 @@ assert_key_data <- function (x) {
     abort("The `key` attribute must be a data frame with its last column called `.rows`.")
   }
 }
+
+flatten_with_names <- function (x, sep = "_") {
+  if(!is.list(x[[1]])) return(x)
+  x <- map2(x, names(x), function(x, nm){
+    if(!is.null(names(x))) set_names(x, paste(nm, names(x), sep = sep)) else x
+  })
+  flatten(unname(map(x, flatten_with_names, sep = sep)))
+}

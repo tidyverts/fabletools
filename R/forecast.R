@@ -90,7 +90,8 @@ forecast <- function(object, ...){
 #' 
 #' @rdname forecast
 #' @export
-forecast.mdl_df <- function(object, new_data = NULL, h = NULL, point_forecast = "mean", ...){
+forecast.mdl_df <- function(object, new_data = NULL, h = NULL, 
+                            point_forecast = list(.mean = mean), ...){
   kv <- c(key_vars(object), ".model")
   mdls <- object%@%"model"
   if(!is.null(h) && !is.null(new_data)){
@@ -125,14 +126,15 @@ forecast.lst_mdl <- function(object, new_data = NULL, key_data, ...){
 }
 
 #' @export
-forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NULL, point_forecast = "mean", ...){
+forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NULL,
+                            point_forecast = list(.mean = mean), ...){
   if(!is.null(h) && !is.null(new_data)){
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
     h <- NULL
   }
   if(!is.null(bias_adjust)){
     warn("The `bias_adjust` argument for forecast() has been deprecated. Please specify the desired point forecasts using `point_forecast`.\nBias adjusted forecasts are forecast means (`point_forecast = 'mean'`), non-adjusted forecasts are medians (`point_forecast = 'median'`)")
-    point_forecast <- if(bias_adjust) "mean" else "median"
+    point_forecast <- if(bias_adjust) list(.mean = mean) else list(.median = median)
   }
   if(is.null(new_data)){
     new_data <- make_future_data(object$data, h)
@@ -196,17 +198,12 @@ These required variables can be provided by specifying `new_data`.",
   pred_col <- NULL
   
   new_data[[dist_col]] <- fc
-  if ("mean" %in% point_forecast) {
-    nm_mean <- if(length(resp_vars) > 1) paste0(".mean_", resp_vars) else ".mean"
-    pred_col <- c(pred_col, nm_mean)
-    new_data[nm_mean] <- mean(fc)
-  }
-  if ("median" %in% point_forecast) {
-    nm_median <- if(length(resp_vars) > 1) paste0(".median_", resp_vars) else ".median"
-    pred_col <- c(pred_col, nm_median)
-    new_data[nm_median] <- median(fc)
-  }
-  cn <- c(dist_col, pred_col)
+  
+  if(length(resp_vars) > 1) calc <- function(f, ....) set_names(f(...), resp_vars)
+  point_fc <- flatten_with_names(map(point_forecast, calc, fc))
+  new_data[names(point_fc)] <- point_fc
+  
+  cn <- c(dist_col, names(point_fc))
   
   fbl <- build_tsibble_meta(
     as_tibble(new_data)[unique(c(idx, cn, mv))],
