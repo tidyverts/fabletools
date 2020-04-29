@@ -71,6 +71,21 @@ ACF1 <- function(.resid, na.action = stats::na.pass, demean = TRUE, ...){
   stats::acf(.resid, plot = FALSE, lag.max = 2, na.action = na.action, 
              demean = demean)$acf[2, 1, 1]
 }
+
+#' Mean Arctangent Absolute Percentage Error
+#' 
+#' @inheritParams point_accuracy_measures
+#' 
+#' @references 
+#' Kim, Sungil and Heeyoung Kim (2016) "A new metric of absolute percentage error
+#' for intermittent demand forecasts". \emph{International Journal of Forecasting},
+#' \bold{32}(3), 669-679.
+#' 
+#' @export
+MAAPE <- function(.resid, .actual, na.rm = TRUE, ...){
+  mean(atan(abs(.resid / .actual * 100)), na.rm = na.rm)
+}
+
 #' Point estimate accuracy measures
 #' 
 #' @param .resid A vector of residuals from either the training (model accuracy)
@@ -94,20 +109,6 @@ ACF1 <- function(.resid, na.action = stats::na.pass, demean = TRUE, ...){
 point_accuracy_measures <- list(ME = ME, RMSE = RMSE, MAE = MAE,
                        MPE = MPE, MAPE = MAPE, MASE = MASE, ACF1 = ACF1)
 
-#' Mean Arctangent Absolute Percentage Error
-#' 
-#' @inheritParams point_accuracy_measures
-#' 
-#' @references 
-#' Kim, Sungil and Heeyoung Kim (2016) "A new metric of absolute percentage error
-#' for intermittent demand forecasts". \emph{International Journal of Forecasting},
-#' \bold{32}(3), 669-679.
-#' 
-#' @export
-MAAPE <- function(.resid, .actual, na.rm = TRUE, ...){
-  mean(atan(abs(.resid / .actual * 100)), na.rm = na.rm)
-}
-
 #' @rdname interval_accuracy_measures
 #' @export
 winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
@@ -126,6 +127,35 @@ winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
     ut-lt)
   )
   mean(score, na.rm = na.rm)
+}
+
+#' @rdname interval_accuracy_measures
+#' @export
+pinball_loss <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
+  q <- quantile(.dist, level/100)
+  loss <- ifelse(.actual>=q, level/100 * (.actual-q), (1-level/100) * (q-.actual))
+  mean(loss, na.rm = na.rm)
+}
+
+#' @rdname interval_accuracy_measures
+#' @export
+scaled_pinball_loss <- function(.dist, .actual, .train, level = 95, na.rm = TRUE,
+                                demean = FALSE, .period, d = .period == 1, 
+                                D = .period > 1, ...){
+  if (D > 0) { # seasonal differencing
+    .train <- diff(.train, lag = .period, differences = D)
+  }
+  if (d > 0) {
+    .train <- diff(.train, differences = d)
+  }
+  if(demean){
+    .train <- .train - mean(.train, na.rm = na.rm)
+  }
+  scale <- mean(abs(.train), na.rm = na.rm)
+  
+  q <- quantile(.dist, level/100)
+  loss <- ifelse(.actual>=q, level/100 * (.actual-q), (1-level/100) * (q-.actual))
+  mean(loss/scale, na.rm = na.rm)
 }
 
 #' Interval estimate accuracy measures

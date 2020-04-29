@@ -3,11 +3,28 @@
 \docType{data}
 \name{winkler_score}
 \alias{winkler_score}
+\alias{pinball_loss}
+\alias{scaled_pinball_loss}
 \alias{interval_accuracy_measures}
 \title{Interval estimate accuracy measures}
 \format{An object of class \code{list} of length 1.}
 \usage{
 winkler_score(.dist, .actual, level = 95, na.rm = TRUE, ...)
+
+pinball_loss(.dist, .actual, level = 95, na.rm = TRUE, ...)
+
+scaled_pinball_loss(
+  .dist,
+  .actual,
+  .train,
+  level = 95,
+  na.rm = TRUE,
+  demean = FALSE,
+  .period,
+  d = .period == 1,
+  D = .period > 1,
+  ...
+)
 
 interval_accuracy_measures
 }
@@ -22,6 +39,18 @@ interval_accuracy_measures
 \item{na.rm}{Remove the missing values before calculating the accuracy measure}
 
 \item{...}{Additional arguments for each measure.}
+
+\item{.train}{A vector of responses used to train the model
+(for forecast accuracy, the \code{orig_data} must be provided).}
+
+\item{demean}{Should the response be demeaned (MASE)}
+
+\item{.period}{The seasonal period of the data (defaulting to 'smallest' seasonal period).
+from a model, or forecasted values from the forecast.}
+
+\item{d}{Should the response model include a first difference?}
+
+\item{D}{Should the response model include a seasonal difference?}
 }
 \description{
 Interval estimate accuracy measures
