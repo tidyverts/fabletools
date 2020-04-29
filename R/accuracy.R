@@ -43,12 +43,10 @@ MASE <- function(.resid, .train, demean = FALSE, na.rm = TRUE, .period, d = .per
     .train <- diff(.train, differences = d)
   }
   if(demean){
-    scale <- mean(abs(.train - mean(.train, na.rm = na.rm)), na.rm = na.rm)
+    .train <- .train - mean(.train, na.rm = na.rm)
   }
-  else{
-    scale <- mean(abs(.train), na.rm = na.rm)
-  }
-  mase <- mean(abs(.resid / scale), na.rm = na.rm)
+  scale <- mean(abs(.train), na.rm = na.rm)
+  mean(abs(.resid / scale), na.rm = na.rm)
 }
 
 #' @rdname point_accuracy_measures
@@ -61,12 +59,10 @@ RMSSE <- function(.resid, .train, demean = FALSE, na.rm = TRUE, .period, d = .pe
     .train <- diff(.train, differences = d)
   }
   if(demean){
-    scale <- sqrt(mean((.train - mean(.train, na.rm = na.rm))^2, na.rm = na.rm))
+    .train <- .train - mean(.train, na.rm = na.rm)
   }
-  else{
-    scale <- sqrt(mean(.train^2, na.rm = na.rm))
-  }
-  mase <- sqrt(mean((.resid / scale)^2, na.rm = na.rm))
+  scale <- mean(.train^2, na.rm = na.rm)
+  sqrt(mean(.resid^2 / scale, na.rm = na.rm))
 }
 
 #' @rdname point_accuracy_measures
