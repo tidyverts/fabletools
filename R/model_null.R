@@ -70,7 +70,7 @@ glance.null_mdl <- function(x, ...){
 
 #' @export
 tidy.null_mdl <- function(x, ...){
-  tibble(term = numeric(), estimate = numeric())
+  tibble(term = character(), estimate = numeric())
 }
 
 #' @export
