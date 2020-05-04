@@ -4,7 +4,7 @@
 \alias{mable}
 \title{Create a new mable}
 \usage{
-mable(..., key = NULL, model = NULL, models = NULL)
+mable(..., key = NULL, model = NULL)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}>
@@ -21,8 +21,6 @@ is not available.}
 \item{key}{Structural variable(s) that identify each model.}
 
 \item{model}{Identifiers for the columns containing model(s).}
-
-\item{models}{Deprecated in favour of the model argument.}
 }
 \description{
 A mable (model table) data class (\code{mdl_df}) is a tibble-like data structure

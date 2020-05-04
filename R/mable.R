@@ -10,14 +10,9 @@
 #' 
 #' @param key Structural variable(s) that identify each model.
 #' @param model Identifiers for the columns containing model(s).
-#' @param models Deprecated in favour of the model argument.
 #'
 #' @export
-mable <- function(..., key = NULL, model = NULL, models = NULL){
-  if(!is_null(models)){
-    warn("The models argument in `mable()` is deprecated. Please use `model()` instead.")
-    model <- models
-  }
+mable <- function(..., key = NULL, model = NULL){
   as_mable(tibble(...), key = !!enquo(key), model = !!enquo(model))
 }
 
@@ -47,11 +42,7 @@ as_mable <- function(x, ...){
 #' @inheritParams mable
 #' 
 #' @export
-as_mable.data.frame <- function(x, key = NULL, model = NULL, models = NULL, ...){
-  if(!is_null(models)){
-    warn("The `models` argument in `mable()` is deprecated. Please use `model` instead.")
-    model <- models
-  }
+as_mable.data.frame <- function(x, key = NULL, model = NULL, ...){
   build_mable(x, key = !!enquo(key), model = !!enquo(model))
 }
 
