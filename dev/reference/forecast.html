@@ -74,7 +74,7 @@ vignette(&quot;transformations&quot;, package = &quot;fable&quot;)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.2.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.3.9000</span>
       </span>
     </div>
 
@@ -142,7 +142,13 @@ transformations in the fable framework can be found in
     <pre class="usage"><span class='fu'>forecast</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for mdl_df</span>
-<span class='fu'>forecast</span>(<span class='no'>object</span>, <span class='kw'>new_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>h</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>point_forecast</span> <span class='kw'>=</span> <span class='st'>"mean"</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>forecast</span>(
+  <span class='no'>object</span>,
+  <span class='kw'>new_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>h</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>point_forecast</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>.mean</span> <span class='kw'>=</span> <span class='no'>mean</span>),
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -193,7 +199,7 @@ above.</p></li>
 
     <p>The forecasts returned contain both point forecasts and their distribution.
 A specific forecast interval can be extracted from the distribution using the
-<code>hilo()</code> function, and multiple intervals can be obtained using <code><a href='report.html'>report()</a></code>.
+<code><a href='https://rdrr.io/pkg/distributional/man/hilo.html'>hilo()</a></code> function, and multiple intervals can be obtained using <code><a href='report.html'>report()</a></code>.
 These intervals are stored in a single column using the <code>hilo</code> class, to
 extract the numerical upper and lower bounds you can use <code><a href='https://tidyr.tidyverse.org/reference/nest.html'>tidyr::unnest()</a></code>.</p>
 
@@ -212,7 +218,7 @@ extract the numerical upper and lower bounds you can use <code><a href='https://
 
 <span class='co'># Compute 80% and 95% forecast intervals</span>
 <span class='no'>beer_fc</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>hilo</span>(<span class='kw'>level</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>80</span>, <span class='fl'>95</span>))
+  <span class='fu'><a href='https://rdrr.io/pkg/distributional/man/hilo.html'>hilo</a></span>(<span class='kw'>level</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>80</span>, <span class='fl'>95</span>))
 
 <span class='no'>beer_fc</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>aus_production</span>)
@@ -243,11 +249,9 @@ extract the numerical upper and lower bounds you can use <code><a href='https://
 <span class='no'>fit</span> <span class='kw'>%&gt;%</span>
   <span class='fu'>forecast</span>(<span class='kw'>new_data</span> <span class='kw'>=</span> <span class='no'>future_aus</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>aus_economy</span>)
-}</div><div class='output co'>#&gt; <span class='warning'>Warning: 1 error encountered for ets</span>
-#&gt; <span class='warning'>[1] .data contains implicit gaps in time. You should check your data and convert implicit gaps into explicit missing values using `tsibble::fill_gaps()` if required.</span></div><div class='output co'>#&gt; <span class='error'>Error: `mutate()` argument `ets` errored.</span>
-#&gt; <span class='error'><span style='color: #0000BB;'>ℹ</span><span> `ets` is `(function (object, ...) ...`.</span>
-#&gt; <span class='error'></span><span style='color: #BB0000;'>✖</span><span> non-numeric argument to mathematical function</span></div><div class='input'>
-</div></span></pre>
+}</div><div class='output co'>#&gt; <span class='warning'>Warning: 1 error encountered for lm</span>
+#&gt; <span class='warning'>[1] The `urca` package must be installed to use this functionality. It can be installed with install.packages("urca")</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 10 row(s) containing missing values (geom_path).</span></div><div class='img'><img src='forecast-1.png' alt='' width='700' height='433' /></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

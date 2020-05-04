@@ -72,7 +72,7 @@ will be represented with a row of output." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.2.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.3.9000</span>
       </span>
     </div>
 
@@ -163,13 +163,7 @@ will be represented with a row of output.</p>
 <span class='no'>olympic_running</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>lm</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Time</span>) ~ <span class='fu'>trend</span>())) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/generics/man/glance.html'>glance</a></span>()
-}</div><div class='output co'>#&gt; <span class='message'>New names:</span>
-#&gt; <span class='message'>* glanced -&gt; glanced...1</span>
-#&gt; <span class='message'>* glanced -&gt; glanced...2</span>
-#&gt; <span class='message'>* glanced -&gt; glanced...3</span>
-#&gt; <span class='message'>* glanced -&gt; glanced...4</span>
-#&gt; <span class='message'>* glanced -&gt; glanced...5</span>
-#&gt; <span class='message'>* ...</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 14 x 17</span><span>
+}</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 14 x 17</span><span>
 #&gt;    Length Sex   .model r_squared adj_r_squared  sigma2 statistic  p_value    df
 #&gt;     </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span>    100 men   lm      </span><span style='color: #BB0000;'>NA</span><span>             </span><span style='color: #BB0000;'>NA</span><span>      4.31</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-4</span><span>   </span><span style='color: #BB0000;'>NA</span><span>      </span><span style='color: #BB0000;'>NA</span><span>   </span><span style='color: #555555;'> </span><span>       2
@@ -186,8 +180,8 @@ will be represented with a row of output.</p>
 #&gt; </span><span style='color: #555555;'>12</span><span>   </span><span style='text-decoration: underline;'>5</span><span>000 women lm       0.009</span><span style='text-decoration: underline;'>02</span><span>       -</span><span style='color: #BB0000;'>0.239</span><span>  1.02</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-3</span><span>    0.036</span><span style='text-decoration: underline;'>4</span><span>  8.58</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-1</span><span>     2
 #&gt; </span><span style='color: #555555;'>13</span><span>  </span><span style='text-decoration: underline;'>10</span><span>000 men   lm      </span><span style='color: #BB0000;'>NA</span><span>             </span><span style='color: #BB0000;'>NA</span><span>      2.63</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-4</span><span>   </span><span style='color: #BB0000;'>NA</span><span>      </span><span style='color: #BB0000;'>NA</span><span>   </span><span style='color: #555555;'> </span><span>       2
 #&gt; </span><span style='color: #555555;'>14</span><span>  </span><span style='text-decoration: underline;'>10</span><span>000 women lm       0.803          0.770  1.02</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-4</span><span>   24.4     2.60</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-3</span><span>     2
-#&gt; </span><span style='color: #555555;'># … with 8 more variables: log_lik </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, AIC </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, AICc </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, BIC </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,
-#&gt; #   CV </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, deviance </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, df.residual </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, rank </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span></div></span></pre>
+#&gt; </span><span style='color: #555555;'># … with 8 more variables: log_lik </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, AIC </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, AICc </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, BIC </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   CV </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, deviance </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, df.residual </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, rank </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

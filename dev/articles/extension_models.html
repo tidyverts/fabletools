@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.2.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.3.9000</span>
       </span>
     </div>
 
@@ -503,18 +503,18 @@
 <span id="cb13-7"><a href="#cb13-7"></a><span class="kw"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span>(fit)</span>
 <span id="cb13-8"><a href="#cb13-8"></a><span class="co">#&gt; # A tsibble: 218 x 3 [1Q]</span></span>
 <span id="cb13-9"><a href="#cb13-9"></a><span class="co">#&gt; # Key:       .model [1]</span></span>
-<span id="cb13-10"><a href="#cb13-10"></a><span class="co">#&gt;    .model      Quarter    .fitted</span></span>
-<span id="cb13-11"><a href="#cb13-11"></a><span class="co">#&gt;    &lt;chr&gt;       &lt;qtr&gt;        &lt;dbl&gt;</span></span>
-<span id="cb13-12"><a href="#cb13-12"></a><span class="co">#&gt;  1 SMEAN(Beer) 1956-01-01    417.</span></span>
-<span id="cb13-13"><a href="#cb13-13"></a><span class="co">#&gt;  2 SMEAN(Beer) 1956-04-01    373.</span></span>
-<span id="cb13-14"><a href="#cb13-14"></a><span class="co">#&gt;  3 SMEAN(Beer) 1956-07-01    387.</span></span>
-<span id="cb13-15"><a href="#cb13-15"></a><span class="co">#&gt;  4 SMEAN(Beer) 1956-10-01    485.</span></span>
-<span id="cb13-16"><a href="#cb13-16"></a><span class="co">#&gt;  5 SMEAN(Beer) 1957-01-01    417.</span></span>
-<span id="cb13-17"><a href="#cb13-17"></a><span class="co">#&gt;  6 SMEAN(Beer) 1957-04-01    373.</span></span>
-<span id="cb13-18"><a href="#cb13-18"></a><span class="co">#&gt;  7 SMEAN(Beer) 1957-07-01    387.</span></span>
-<span id="cb13-19"><a href="#cb13-19"></a><span class="co">#&gt;  8 SMEAN(Beer) 1957-10-01    485.</span></span>
-<span id="cb13-20"><a href="#cb13-20"></a><span class="co">#&gt;  9 SMEAN(Beer) 1958-01-01    417.</span></span>
-<span id="cb13-21"><a href="#cb13-21"></a><span class="co">#&gt; 10 SMEAN(Beer) 1958-04-01    373.</span></span>
+<span id="cb13-10"><a href="#cb13-10"></a><span class="co">#&gt;    .model      Quarter .fitted</span></span>
+<span id="cb13-11"><a href="#cb13-11"></a><span class="co">#&gt;    &lt;chr&gt;         &lt;qtr&gt;   &lt;dbl&gt;</span></span>
+<span id="cb13-12"><a href="#cb13-12"></a><span class="co">#&gt;  1 SMEAN(Beer) 1956 Q1    417.</span></span>
+<span id="cb13-13"><a href="#cb13-13"></a><span class="co">#&gt;  2 SMEAN(Beer) 1956 Q2    373.</span></span>
+<span id="cb13-14"><a href="#cb13-14"></a><span class="co">#&gt;  3 SMEAN(Beer) 1956 Q3    387.</span></span>
+<span id="cb13-15"><a href="#cb13-15"></a><span class="co">#&gt;  4 SMEAN(Beer) 1956 Q4    485.</span></span>
+<span id="cb13-16"><a href="#cb13-16"></a><span class="co">#&gt;  5 SMEAN(Beer) 1957 Q1    417.</span></span>
+<span id="cb13-17"><a href="#cb13-17"></a><span class="co">#&gt;  6 SMEAN(Beer) 1957 Q2    373.</span></span>
+<span id="cb13-18"><a href="#cb13-18"></a><span class="co">#&gt;  7 SMEAN(Beer) 1957 Q3    387.</span></span>
+<span id="cb13-19"><a href="#cb13-19"></a><span class="co">#&gt;  8 SMEAN(Beer) 1957 Q4    485.</span></span>
+<span id="cb13-20"><a href="#cb13-20"></a><span class="co">#&gt;  9 SMEAN(Beer) 1958 Q1    417.</span></span>
+<span id="cb13-21"><a href="#cb13-21"></a><span class="co">#&gt; 10 SMEAN(Beer) 1958 Q2    373.</span></span>
 <span id="cb13-22"><a href="#cb13-22"></a><span class="co">#&gt; # … with 208 more rows</span></span></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co">#' @importFrom fabletools residuals</span></span>
 <span id="cb14-2"><a href="#cb14-2"></a><span class="co">#' @export</span></span>
@@ -525,18 +525,18 @@
 <span id="cb14-7"><a href="#cb14-7"></a><span class="kw"><a href="https://rdrr.io/r/stats/residuals.html">residuals</a></span>(fit)</span>
 <span id="cb14-8"><a href="#cb14-8"></a><span class="co">#&gt; # A tsibble: 218 x 3 [1Q]</span></span>
 <span id="cb14-9"><a href="#cb14-9"></a><span class="co">#&gt; # Key:       .model [1]</span></span>
-<span id="cb14-10"><a href="#cb14-10"></a><span class="co">#&gt;    .model      Quarter    .resid</span></span>
-<span id="cb14-11"><a href="#cb14-11"></a><span class="co">#&gt;    &lt;chr&gt;       &lt;qtr&gt;       &lt;dbl&gt;</span></span>
-<span id="cb14-12"><a href="#cb14-12"></a><span class="co">#&gt;  1 SMEAN(Beer) 1956-01-01  -133.</span></span>
-<span id="cb14-13"><a href="#cb14-13"></a><span class="co">#&gt;  2 SMEAN(Beer) 1956-04-01  -160.</span></span>
-<span id="cb14-14"><a href="#cb14-14"></a><span class="co">#&gt;  3 SMEAN(Beer) 1956-07-01  -160.</span></span>
-<span id="cb14-15"><a href="#cb14-15"></a><span class="co">#&gt;  4 SMEAN(Beer) 1956-10-01  -177.</span></span>
-<span id="cb14-16"><a href="#cb14-16"></a><span class="co">#&gt;  5 SMEAN(Beer) 1957-01-01  -155.</span></span>
-<span id="cb14-17"><a href="#cb14-17"></a><span class="co">#&gt;  6 SMEAN(Beer) 1957-04-01  -145.</span></span>
-<span id="cb14-18"><a href="#cb14-18"></a><span class="co">#&gt;  7 SMEAN(Beer) 1957-07-01  -151.</span></span>
-<span id="cb14-19"><a href="#cb14-19"></a><span class="co">#&gt;  8 SMEAN(Beer) 1957-10-01  -165.</span></span>
-<span id="cb14-20"><a href="#cb14-20"></a><span class="co">#&gt;  9 SMEAN(Beer) 1958-01-01  -145.</span></span>
-<span id="cb14-21"><a href="#cb14-21"></a><span class="co">#&gt; 10 SMEAN(Beer) 1958-04-01  -140.</span></span>
+<span id="cb14-10"><a href="#cb14-10"></a><span class="co">#&gt;    .model      Quarter .resid</span></span>
+<span id="cb14-11"><a href="#cb14-11"></a><span class="co">#&gt;    &lt;chr&gt;         &lt;qtr&gt;  &lt;dbl&gt;</span></span>
+<span id="cb14-12"><a href="#cb14-12"></a><span class="co">#&gt;  1 SMEAN(Beer) 1956 Q1  -133.</span></span>
+<span id="cb14-13"><a href="#cb14-13"></a><span class="co">#&gt;  2 SMEAN(Beer) 1956 Q2  -160.</span></span>
+<span id="cb14-14"><a href="#cb14-14"></a><span class="co">#&gt;  3 SMEAN(Beer) 1956 Q3  -160.</span></span>
+<span id="cb14-15"><a href="#cb14-15"></a><span class="co">#&gt;  4 SMEAN(Beer) 1956 Q4  -177.</span></span>
+<span id="cb14-16"><a href="#cb14-16"></a><span class="co">#&gt;  5 SMEAN(Beer) 1957 Q1  -155.</span></span>
+<span id="cb14-17"><a href="#cb14-17"></a><span class="co">#&gt;  6 SMEAN(Beer) 1957 Q2  -145.</span></span>
+<span id="cb14-18"><a href="#cb14-18"></a><span class="co">#&gt;  7 SMEAN(Beer) 1957 Q3  -151.</span></span>
+<span id="cb14-19"><a href="#cb14-19"></a><span class="co">#&gt;  8 SMEAN(Beer) 1957 Q4  -165.</span></span>
+<span id="cb14-20"><a href="#cb14-20"></a><span class="co">#&gt;  9 SMEAN(Beer) 1958 Q1  -145.</span></span>
+<span id="cb14-21"><a href="#cb14-21"></a><span class="co">#&gt; 10 SMEAN(Beer) 1958 Q2  -140.</span></span>
 <span id="cb14-22"><a href="#cb14-22"></a><span class="co">#&gt; # … with 208 more rows</span></span></code></pre></div>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co">#' @importFrom fabletools components</span></span>
 <span id="cb15-2"><a href="#cb15-2"></a><span class="co">#' @export</span></span>
