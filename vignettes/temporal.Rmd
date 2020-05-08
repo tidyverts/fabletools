@@ -1,0 +1,138 @@
+---
+title: "Temporal aggregation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{temporal}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(fabletools)
+```
+
+```{r}
+library(ggplot2)
+library(lubridate)
+library(tidyr)
+granular <- tibble::tibble(
+  interval = ordered(c("hour", "day", "week", "fortnight", "month"), levels = c("hour", "day", "week", "fortnight", "month")),
+  times = list(
+    seq(ymd_hms("1970-01-01 00:00:00"), ymd_hms("1970-03-01 00:00:00"), by = "1 hour"),
+    seq(ymd_hms("1970-01-01 00:00:00"), ymd_hms("1970-03-01 00:00:00"), by = "1 day"),
+    seq(ymd_hms("1970-01-01 00:00:00"), ymd_hms("1970-03-01 00:00:00"), by = "1 week"),
+    seq(ymd_hms("1970-01-01 00:00:00"), ymd_hms("1970-03-01 00:00:00"), by = "2 weeks"),
+    seq(ymd_hms("1970-01-01 00:00:00"), ymd_hms("1970-03-01 00:00:00"), by = "1 month")
+  )
+) %>% 
+  unnest(times)
+
+granular %>% 
+  ggplot(aes(x = times, y = interval)) + 
+  geom_point()
+```
+
+Offset each aggregation period to end at the last observation.
+Incomplete aggregations should not be created.
+To potentially reconcile aggregations which don't nest exactly, also include lower levels of disaggregation.
+Ideally aggregation 
+
+## Approach in THieF
+
+Aggregate to the annual level, and assume that everything nests nicely within a given year.
+As such, the group matrix specifies which parts of a year lower level series combine to give aggregations.
+
+For example, 52 weeks are assumed to aggregate exactly into 1 year.
+Some inconsistencies in aggregation:
+* monthly data is aggregated into years
+* weekly data is aggregated into years
+* daily data is only aggregated into week (when period is 7, if period is 365 data is not aggregated)
+* hourly data is aggregated up to years.
+* half-hourly data is aggregated up to years.
+
+`thief::tsaggregates()`
+
+M1 M2 M3 M4 M5 ... M12
+1  1  1  1  1            # year -> year()
+1  1  2  2  2            # halfyear
+
+
+
+## Approach in fabletools
+
+`aggregate_key(data, spec, ...)`
+`aggregate_index(data, spec = list(fns), ...)`
+
+Acknowledge that the process of binning time for aggregation is complex and maintain generality where possible.
+Allow users to provide arbitrary functions which identify time bins for aggregation (such as `lubridate::floor_date()`)
+When bin functions are applied to the index, it identifies observations from the most disaggregated data required for the aggregation.
+Aggregation is performed via the same interface as `aggregate_key()`, however incomplete aggregations need to be removed (this will be difficult!)
+
+Aggregation bins don't necessarily need to line up nicely (as shown above) - to reconcile, identify the largest nested bins and work down (also difficult!)
+
+For example, to aggregate the monthly series:
+
+```{r}
+granular %>%
+  ggplot(aes(x = times, y = interval)) +
+  geom_point() +
+  geom_line(aes(x = x, y = y, group = grp),
+            data = tibble(y = ordered(c("fortnight", "fortnight", "day", "day", "week", "week", "fortnight", "fortnight", "day", "day"), levels = c("hour", "day", "week", "fortnight", "month")),
+                          x = ymd_hms("1970-01-01 00:00:00") + c(0, 28, 28, 35, 35, 42, 42, 56, 56, 59)*24*60*60,
+                          grp = rep(1:5, each = 2)),
+            colour = "red", size = 3)
+```
+
+Presumably in the reconciliation step it would also work if everything was constrained to the bottom series, so this may not be necessary.
+
+The complication is how the aggregation may vary from year to year (leap years, different alignment of weeks, etc.)
+The group matrix used in thief cannot capture this as it wraps over years - can functions be used instead to describe the binning process?
+
+
+S matrix - rows are number of series after aggregation, cols are bts
+
+TODO: Construct S matrix / constraints for a simple case using thief and fabletools approaches
+
+
+S matrix should be wide (not mod most aggregated frequency), if not vary S with h.
+Also variably extend the length of forecast horizons to neatly nest aggregations for reconciliation.
+
+```{r data-agg}
+library(fpp3)
+# Prototype for aggregating monthly data which aligns time bins to end of the series.
+aggregate_index_crude_monthly <- function(.data, .period, ...){
+  idx <- expr(as.numeric(!!index(.data)))
+  agg <- lapply(.period, function(p){
+    .data %>% 
+      index_by(!!paste0(".", index_var(.data)):=yearmonth((!!idx)%/%p*p+(!!idx)[length(!!idx)]%%p)) %>% 
+      summarise(.agg_period = p, ...) %>% 
+      update_tsibble(key = c(".agg_period", key_vars(.data)))
+  })
+  bind_rows(!!!agg)
+}
+
+uad <- as_tsibble(USAccDeaths)
+
+uad_agg <- uad %>% aggregate_index_crude_monthly(
+  c(1,2,3,4,5,6,12), value = sum(value)
+) 
+
+uad_agg %>% 
+  autoplot()
+```
+
+```{r model-agg}
+fit <- uad_agg %>% 
+  model(ETS(value))
+
+fit %>% forecast(h = "2 years") %>% 
+  autoplot(uad_agg)
+```
+
