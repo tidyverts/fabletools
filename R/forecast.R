@@ -199,8 +199,9 @@ These required variables can be provided by specifying `new_data`.",
   
   new_data[[dist_col]] <- fc
   
-  if(length(resp_vars) > 1) calc <- function(f, ....) set_names(f(...), resp_vars)
-  point_fc <- flatten_with_names(map(point_forecast, calc, fc))
+  point_fc <- map(point_forecast, calc, fc)
+  if(length(resp_vars) > 1) point_fc <- map(point_fc, set_names, resp_vars)
+  point_fc <- flatten_with_names(point_fc)
   new_data[names(point_fc)] <- point_fc
   
   cn <- c(dist_col, names(point_fc))
