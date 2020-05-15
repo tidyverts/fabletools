@@ -263,7 +263,7 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = T
 #' @export
 autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95), 
                              colour = "blue", color = colour, fill = color,
-                             point_forecast = lst(mean), show_gap = TRUE, ...){
+                             point_forecast = list(mean = mean), show_gap = TRUE, ...){
   fc_key <- setdiff(key_vars(object), ".model")
   key_data <- key_data(object)
   resp_var <- response_vars(object)
