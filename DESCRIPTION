@@ -26,14 +26,14 @@ Imports:
     tibble (>= 1.4.1),
     ggplot2 (>= 3.0.0),
     tidyselect,
-    rlang (>= 0.2.0),
+    rlang (>= 0.4.5),
     stats,
-    dplyr (>= 0.8.99.9002),
+    dplyr (>= 0.8.99),
     tidyr (>= 1.0.0),
     generics,
     R6,
     utils,
-    vctrs,
+    vctrs (>= 0.2.2),
     distributional
 Suggests:
     covr,
@@ -56,8 +56,6 @@ Remotes:
     tidyverts/tsibble,
     tidyverts/tsibbledata,
     tidyverse/dplyr,
-    tidyverse/tibble,
-    r-lib/vctrs,
     mitchelloharawild/distributional
 ByteCompile: true
 License: GPL-3
