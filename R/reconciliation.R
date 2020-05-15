@@ -75,8 +75,13 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   S <- build_smat_rows(key_data)
 
   # Compute weights (sample covariance)
-  res <- map(object, function(x, ...) residuals(x, ...)[[2]], type = "response")
-  res <- matrix(invoke(c, res), ncol = length(object))
+  res <- map(object, function(x, ...) residuals(x, ...), type = "response")
+  if(length(unique(map_dbl(res, nrow))) > 1){
+    # Join residuals by index #199
+    res <- unname(as.matrix(reduce(res, full_join, by = "date")[,-1]))
+  } else {
+    res <- matrix(invoke(c, res), ncol = length(object))
+  }
   
   n <- nrow(res)
   covm <- crossprod(stats::na.omit(res)) / n
