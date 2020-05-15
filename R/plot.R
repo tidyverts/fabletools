@@ -330,6 +330,11 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
   if(!is.null(level)){
     interval_data <- hilo(object, level = level) %>% 
       tidyr::pivot_longer(paste0(level, "%"), names_to = "..unused", values_to = "hilo")
+    if(length(resp_var) > 1){
+      interval_data <- interval_data %>% 
+        tidyr::unpack("hilo") %>% 
+        tidyr::pivot_longer(names(interval_data$hilo), names_to = ".response", values_to = "hilo")
+    }
     intvl_mapping <- mapping
     intvl_mapping$hilo <- sym("hilo")
     out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = interval_data, fill = fill, ..., inherit.aes = FALSE)
@@ -338,6 +343,11 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
   object <- as_tibble(object)
   object[names(point_forecast)] <- map(point_forecast, calc, object[[dist_var]])
   object <- tidyr::pivot_longer(object[-match(dist_var, names(object))], names(point_forecast), names_to = "Point forecast", values_to = dist_var)
+  if(length(resp_var) > 1){
+    object <- object %>% 
+      tidyr::unpack(dist_var) %>% 
+      tidyr::pivot_longer(names(object[[dist_var]]), names_to = ".response", values_to = dist_var)
+  }
   
   mapping$y <- sym(dist_var)
   if(length(point_forecast) > 1){
