@@ -80,7 +80,7 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
     # Join residuals by index #199
     res <- unname(as.matrix(reduce(res, full_join, by = "date")[,-1]))
   } else {
-    res <- matrix(invoke(c, res), ncol = length(object))
+    res <- matrix(invoke(c, map(res, `[[`, 2)), ncol = length(object))
   }
   
   n <- nrow(res)
