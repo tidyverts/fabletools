@@ -266,7 +266,7 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
 }
 
 build_fbl_layer <- function(object, data = NULL, level = c(80, 95), 
-                            colour = "blue", color = colour, fill = color,
+                            colour = NULL, color = NULL, fill = NULL,
                             point_forecast = list(mean = mean), show_gap = TRUE, 
                             ..., facet_vars){
   mdl_key <- object%@%"model_cn"
@@ -276,6 +276,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   dist_var <- distribution_var(object)
   idx <- index(object)
   common_models <- duplicated(key_data[[mdl_key]] %||% rep(TRUE, NROW(key_data(object))))
+  colour <- colour %||% color %||% fill %||% "blue"
   
   if(isFALSE(level)){
     warn("Plot argument `level` should be a numeric vector of levels to display. Setting `level = NULL` will remove the intervals from the plot.")
@@ -350,7 +351,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
       intvl_mapping$fill <- col
       out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = interval_data, ..., inherit.aes = FALSE)
     } else {
-      out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = interval_data, fill = fill, ..., inherit.aes = FALSE)
+      out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = interval_data, fill = colour, ..., inherit.aes = FALSE)
     }
   }
   
@@ -373,7 +374,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     mapping$colour <- col
     out[[length(out) + 1]] <- geom_line(mapping = mapping, data = as_tibble(object), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
   } else {
-    out[[length(out) + 1]] <- geom_line(mapping = mapping, data = as_tibble(object), color = color, ..., inherit.aes = FALSE)
+    out[[length(out) + 1]] <- geom_line(mapping = mapping, data = as_tibble(object), color = colour, ..., inherit.aes = FALSE)
   }
   out
 }
