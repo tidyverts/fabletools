@@ -324,6 +324,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   )
   col <- setdiff(col, facet_vars)
   if(!is_empty(col)){
+    col_nm <- paste0(col, collapse = "/")
     col <- if(length(col)==1) sym(col) else expr(interaction(!!!syms(col), sep = "/"))
   } else {
     col <- NULL
@@ -350,6 +351,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     if(!is.null(col)){
       intvl_mapping$fill <- col
       out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = interval_data, ..., inherit.aes = FALSE)
+      out[[2]] <- ggplot2::labs(fill = col_nm)
     } else {
       out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = interval_data, fill = colour, ..., inherit.aes = FALSE)
     }
@@ -373,6 +375,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   if(!is.null(col)){
     mapping$colour <- col
     out[[length(out) + 1]] <- geom_line(mapping = mapping, data = as_tibble(object), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
+    out[[length(out) + 1]] <- ggplot2::labs(colour = col_nm)
   } else {
     out[[length(out) + 1]] <- geom_line(mapping = mapping, data = as_tibble(object), color = colour, ..., inherit.aes = FALSE)
   }
