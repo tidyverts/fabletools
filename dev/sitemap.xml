@@ -130,6 +130,9 @@
     <loc>https://fabletools.tidyverts.org/reference/mable.html</loc>
   </url>
   <url>
+    <loc>https://fabletools.tidyverts.org/reference/mable_vars.html</loc>
+  </url>
+  <url>
     <loc>https://fabletools.tidyverts.org/reference/min_trace.html</loc>
   </url>
   <url>
@@ -143,9 +146,6 @@
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/model_sum.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/model_vars.html</loc>
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/new-model-class.html</loc>
