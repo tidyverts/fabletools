@@ -11,9 +11,6 @@
   object,
   data = NULL,
   level = c(80, 95),
-  colour = "blue",
-  color = colour,
-  fill = color,
   point_forecast = list(mean = mean),
   show_gap = TRUE,
   ...
@@ -26,7 +23,7 @@
 
 \item{level}{The confidence level(s) for the plotted intervals.}
 
-\item{show_gap}{Setting this to \code{FALSE} will connect the historical observations with the forecasts.}
+\item{show_gap}{Setting this to \code{FALSE} will connect the most recent value in \code{data} with the forecasts.}
 
 \item{...}{Further arguments passed used to specify fixed aesthetics for the forecasts such as \code{colour = "red"} or \code{size = 3}.}
 }
