@@ -133,7 +133,12 @@
 <li>Improved support for streaming data to models with transformed response variables</li>
 <li>
 <code>hilo.fbl_ts()</code> now keeps existing columns of a fable.</li>
-<li>Documentation improvements</li>
+<li>
+<code><a href="../reference/autoplot.fbl_ts.html">autoplot.fbl_ts()</a></code> and <code><a href="../reference/autoplot.fbl_ts.html">autolayer.fbl_ts()</a></code> now accept the <code>point_forecast</code> argument, which is a named list of functions that describe the method used to obtain the point forecasts. If multiple are specified, each method will be identified using the <code>linetype</code>.</li>
+<li>Improved dplyr support. You can now use <code>bind_rows()</code> and <code>*_join()</code> operations on mables, dables, and fables.</li>
+<li>Added accuracy measures: <code><a href="../reference/point_accuracy_measures.html">RMSSE()</a></code>, <code><a href="../reference/interval_accuracy_measures.html">pinball_loss()</a></code>, <code><a href="../reference/interval_accuracy_measures.html">scaled_pinball_loss()</a></code>.</li>
+<li>Distributions are now provided by the distributional package, which is more space efficient and allows calculation of distributional statistics including the <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>, <code><a href="https://rdrr.io/r/stats/median.html">median()</a></code>, <code><a href="https://rdrr.io/r/stats/quantile.html">quantile()</a></code>, <code>cdf()</code>, and <code><a href="https://rdrr.io/r/stats/density.html">density()</a></code>.</li>
+<li>Documentation improvements.</li>
 </ul>
 </div>
 <div id="breaking-changes" class="section level2">
@@ -141,17 +146,23 @@
 <a href="#breaking-changes" class="anchor"></a>Breaking changes</h2>
 <ul>
 <li>The <code>bias_adjust</code> option for forecast() is replaced by <code>point_forecast</code>, allowing you to specify which point forecast measures to display (fable/<a href='https://github.com/tidyverts/fabletools/issues/226'>#226</a>). This has been done to reduce confusion around the argument’s usage, disambiguate the returned point forecast’s meaning, and also allow users to specify which (if any) point forecasts to provide.</li>
+<li>The fable returned by <code><a href="../reference/forecast.html">forecast()</a></code> now stores the distribution in the column named the response variable (previously, this was the point forecast). Point forecasts are now stored in the <code>.mean</code> column, which can be customised using the <code>point_forecast</code> argument.</li>
 <li>The data coercion functions <code>as_mable</code>, <code>as_dable</code>, and <code>as_fable</code> have been changed to accept character vectors for specifying common attributes (such as response variables, and distributions).</li>
+<li>Added accessor functions for column names (or metadata) of interest. This includes models in a mable (<code><a href="../reference/mable_vars.html">mable_vars()</a></code>), response variables (<code><a href="../reference/response_vars.html">response_vars()</a></code>) and distribution variables (<code><a href="../reference/distribution_var.html">distribution_var()</a></code>).</li>
+<li>The <code>models</code> argument for <code>mable</code> and <code>as_mable</code> has been replaced with <code>model</code> for consistency with the lack of plural in <code>key</code>.</li>
+<li>Intervals from multivariate distributions are now returned as data frames of <code>hilo</code> intervals. The columns are the response variables. Similar structures are returned when computing other distributional statistics like the <code>mean</code>.</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
 <ul>
-<li>Fixed <code>show_gap</code> option not working when more than one forecast is plotted</li>
+<li>Fixed <code>show_gap</code> option not working when more than one forecast is plotted.</li>
+<li>Fixed <code><a href="https://ggplot2.tidyverse.org/reference/autolayer.html">autolayer()</a></code> plotting issues due to inherited aesthetics.</li>
 <li>
-<code><a href="../reference/aggregate_key.html">aggregate_key()</a></code> no longer drops key variables, instead they are kept as <aggregated></aggregated>
+<code><a href="../reference/aggregate_key.html">aggregate_key()</a></code> no longer drops keys, instead they are kept as <aggregated>.</aggregated>
 </li>
+<li>Forecast reconciliation now works with historical data that is not temporally aligned.</li>
 </ul>
 </div>
 </div>
