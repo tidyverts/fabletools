@@ -12,12 +12,6 @@ model_definition <- R6::R6Class(NULL,
     initialize = function(formula, ..., .env){
       self$formula <- enquo(formula)
       
-      if(possibly(compose(is.data.frame, eval_tidy), FALSE)(self$formula)){
-        abort(
-"A model specification is trained to a dataset using the `model()` function.
-Refer to the documentation in ?model for more details.")
-      }
-      
       # self$env <- .env
       # Create specials environment with user's scoping
       specials_env <- new_environment(parent = .env)
