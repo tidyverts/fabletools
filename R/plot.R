@@ -268,7 +268,7 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
 build_fbl_layer <- function(object, data = NULL, level = c(80, 95), 
                             colour = NULL, color = NULL, fill = NULL,
                             point_forecast = list(mean = mean), show_gap = TRUE, 
-                            ..., facet_vars){
+                            ..., facet_vars = NULL){
   mdl_key <- object%@%"model_cn"
   fc_key <- setdiff(key_vars(object), mdl_key)
   key_data <- key_data(object)
