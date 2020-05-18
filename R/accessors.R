@@ -39,15 +39,15 @@ distribution_var.fbl_ts <- function(x){
 
 #' Return model column variables
 #' 
-#' `model_vars()` returns a character vector of the model variables in the
+#' `mable_vars()` returns a character vector of the model variables in the
 #' object.
 #' 
 #' @param x A dataset containing models (such as a mable).
 #' @export
-model_vars <- function(x){
-  UseMethod("model_vars")
+mable_vars <- function(x){
+  UseMethod("mable_vars")
 }
 #' @export
-model_vars.mdl_df <- function(x){
+mable_vars.mdl_df <- function(x){
   x%@%"model"
 }
