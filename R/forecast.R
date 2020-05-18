@@ -160,6 +160,7 @@ Does your model require extra variables to produce forecasts?", e$message))
 
   # Compute forecasts
   fc <- forecast(object$fit, new_data, specials = specials, ...)
+  dimnames(fc) <- vapply(object$response, expr_name, character(1L), USE.NAMES = FALSE)
   
   # Back-transform forecast distributions
   bt <- map(object$transformation, function(x){
