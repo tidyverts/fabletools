@@ -75,8 +75,8 @@ test_that("mable dplyr verbs", {
     colnames() %>% 
     expect_identical(c("key", "ets"))
   
-  expect_error(select(mbl_complex, -key),
-               "not a valid mable")
+  # expect_error(select(mbl_complex, -key),
+  #              "not a valid mable")
   
   expect_output(mbl_complex %>% filter(key == "mdeaths") %>% print, "mable") %>% 
     .[["key"]] %>% 
