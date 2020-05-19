@@ -24,8 +24,10 @@ forecast <- function(object, ...){
 #' @param new_data A `tsibble` containing future information used to forecast.
 #' @param h The forecast horison (can be used instead of `new_data` for regular
 #' time series with no exogenous regressors).
-#' @param point_forecast Which point forecast measure should be returned in the 
-#' resulting fable (possible values include: "mean", "median").
+#' @param point_forecast The point forecast measure(s) which should be returned 
+#' in the resulting fable. Specified as a named list of functions which accept
+#' a distribution and return a vector. To compute forecast medians, you can use
+#' `list(.median = median)`.
 #' @param bias_adjust Deprecated. Please use `point_forecast` to specify the 
 #' desired point forecast method.
 #' @param ... Additional arguments for forecast model methods.
@@ -125,6 +127,7 @@ forecast.lst_mdl <- function(object, new_data = NULL, key_data, ...){
        forecast, ...)
 }
 
+#' @rdname forecast
 #' @export
 forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NULL,
                             point_forecast = list(.mean = mean), ...){
@@ -134,7 +137,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
   }
   if(!is.null(bias_adjust)){
     warn("The `bias_adjust` argument for forecast() has been deprecated. Please specify the desired point forecasts using `point_forecast`.\nBias adjusted forecasts are forecast means (`point_forecast = 'mean'`), non-adjusted forecasts are medians (`point_forecast = 'median'`)")
-    point_forecast <- if(bias_adjust) list(.mean = mean) else list(.median = median)
+    point_forecast <- if(bias_adjust) list(.mean = mean) else list(.median = stats::median)
   }
   if(is.null(new_data)){
     new_data <- make_future_data(object$data, h)

@@ -174,6 +174,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
 #' @param level The confidence level(s) for the plotted intervals.
 #' @param show_gap Setting this to `FALSE` will connect the most recent value in `data` with the forecasts.
 #' @param ... Further arguments passed used to specify fixed aesthetics for the forecasts such as `colour = "red"` or `size = 3`.
+#' @param point_forecast The point forecast measure to be displayed in the plot.
 #' 
 #' @examples 
 #' library(tsibbledata)

@@ -3,6 +3,7 @@
 \name{forecast}
 \alias{forecast}
 \alias{forecast.mdl_df}
+\alias{forecast.mdl_ts}
 \title{Produce forecasts}
 \usage{
 forecast(object, ...)
@@ -11,6 +12,15 @@ forecast(object, ...)
   object,
   new_data = NULL,
   h = NULL,
+  point_forecast = list(.mean = mean),
+  ...
+)
+
+\method{forecast}{mdl_ts}(
+  object,
+  new_data = NULL,
+  h = NULL,
+  bias_adjust = NULL,
   point_forecast = list(.mean = mean),
   ...
 )
@@ -25,8 +35,10 @@ forecast(object, ...)
 \item{h}{The forecast horison (can be used instead of \code{new_data} for regular
 time series with no exogenous regressors).}
 
-\item{point_forecast}{Which point forecast measure should be returned in the
-resulting fable (possible values include: "mean", "median").}
+\item{point_forecast}{The point forecast measure(s) which should be returned
+in the resulting fable. Specified as a named list of functions which accept
+a distribution and return a vector. To compute forecast medians, you can use
+\code{list(.median = median)}.}
 
 \item{bias_adjust}{Deprecated. Please use \code{point_forecast} to specify the
 desired point forecast method.}

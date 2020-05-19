@@ -54,7 +54,7 @@ build_mable <- function (x, key = NULL, key_data = NULL, model) {
   
   if (!is_null(key_data)){
     assert_key_data(key_data)
-    key <- head(names(key_data), -1L)
+    key <- utils::head(names(key_data), -1L)
   }
   else {
     key <- names(tidyselect::eval_select(enquo(key), data = x))

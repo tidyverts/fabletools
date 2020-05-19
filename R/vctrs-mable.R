@@ -68,7 +68,7 @@ vec_cast.mdl_df.tbl_df <- function(x, to, ...) {
   tbl <- tib_cast(x, to, ...)
   build_mable(tbl,
               key = !!key_vars(to), 
-              key_data = if (is_identical) key_data(x) else NULL,
+              key_data = NULL,
               model = mable_vars(to))
 }
 

@@ -171,26 +171,44 @@ pillar_shaft.agg_vec <- function(x, ...) {
   pillar::new_pillar_shaft_simple(out, align = "left", min_width = 10)
 }
 
+#' Internal vctrs methods
+#'
+#' These methods are the extensions that allow aggregation vectors to work with
+#' vctrs.
+#'
+#' @keywords internal
+#' @name aggregation-vctrs
+NULL
+
+#' @rdname aggregation-vctrs
 #' @export
 vec_ptype2.agg_vec <- function(x, y, ...) UseMethod("vec_ptype2.agg_vec", y)
+#' @rdname aggregation-vctrs
 #' @export
 vec_ptype2.agg_vec.agg_vec <- function(x, y, ...) agg_vec()
+#' @rdname aggregation-vctrs
 #' @export
 vec_ptype2.agg_vec.default <- function(x, y, ...) agg_vec()
+#' @rdname aggregation-vctrs
 #' @export
 vec_ptype2.character.agg_vec <- function(x, y, ...) agg_vec()
 
+#' @rdname aggregation-vctrs
 #' @export
 vec_ptype_abbr.agg_vec <- function(x, ...) {
   vctrs::vec_ptype_abbr(vec_data(x)[["x"]], ...)
 }
 
+#' @rdname aggregation-vctrs
 #' @export
 vec_cast.agg_vec <- function(x, to, ...) UseMethod("vec_cast.agg_vec")
+#' @rdname aggregation-vctrs
 #' @export
 vec_cast.agg_vec.agg_vec <- function(x, to, ...) x
+#' @rdname aggregation-vctrs
 #' @export
 vec_cast.agg_vec.default <- function(x, to, ...) agg_vec(x)
+#' @rdname aggregation-vctrs
 #' @export
 vec_cast.character.agg_vec <- function(x, to, ...) trimws(format(x))
 
