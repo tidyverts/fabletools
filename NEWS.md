@@ -14,6 +14,10 @@
 * Distributions are now provided by the distributional package, which is more
   space efficient and allows calculation of distributional statistics including
   the `mean()`, `median()`, `quantile()`, `cdf()`, and `density()`.
+* Progress reporting is now handled by the progressr package. This allows you to
+  decide if, when, and how progress is reported. To show progress, wrap your 
+  code in the `progressr::with_progress()` function. Progress will no longer be
+  displayed automatically during lengthy calculations.
 * Documentation improvements.
 
 ## Breaking changes
