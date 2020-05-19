@@ -67,7 +67,7 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   if(length(unique(map(fc, interval))) > 1){
     abort("Reconciliation of temporal hierarchies is not yet supported.")
   }
-  fc_dist <- map(fc, function(x) x[[x%@%"dist"]])
+  fc_dist <- map(fc, function(x) x[[distribution_var(x)]])
   fc_mean <- as.matrix(invoke(cbind, map(fc_dist, mean)))
   fc_var <- transpose_dbl(map(fc_dist, distributional::variance))
   

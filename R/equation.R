@@ -1,9 +1,9 @@
 #' @export
 equation.mdl_df <- function(object, ...){
-  if(NROW(object) > 1 || length(object%@%"model") > 1){
+  if(NROW(object) > 1 || length(mable_vars(object)) > 1){
     abort("Model equations are only supported for individual models. To see the equation for a specific model, use `select()` and `filter()` to identify a single model.")
   }
-  equation(object[[(object%@%"model")[[1]]]][[1]])
+  equation(object[[(mable_vars(object))[[1]]]][[1]])
 }
 
 #' @export

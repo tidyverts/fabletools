@@ -3,7 +3,7 @@ globalVariables("self")
 train_decomposition <- function(.data, specials, ..., dcmp){
   # Extract raw original data
   dcmp <- components(model(self$data, dcmp))
-  dcmp_method <- (dcmp%@%"aliases")[[as_string(dcmp%@%"response")]]
+  dcmp_method <- (dcmp%@%"aliases")[[response_vars(dcmp)]]
   structure <- dcmp%@%"seasons"
   aliases <- dcmp%@%"aliases"
   method <- dcmp%@%"method"

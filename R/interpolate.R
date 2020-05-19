@@ -23,7 +23,7 @@
 #' @rdname interpolate
 #' @export
 interpolate.mdl_df <- function(object, new_data, ...){
-  if(length(object%@%"model") > 1){
+  if(length(mable_vars(object)) > 1){
 abort("Interpolation can only be done using one model. 
 Please use select() to choose the model to interpolate with.")
   }
@@ -33,7 +33,7 @@ Please use select() to choose the model to interpolate with.")
     as_tibble %>% 
     transmute(
       !!!syms(kv),
-      interpolated = map2(!!sym(object%@%"model"), new_data, interpolate, ...)
+      interpolated = map2(!!sym(mable_vars(object)), new_data, interpolate, ...)
     ) %>% 
     unnest_tsbl("interpolated", parent_key = kv)
 }

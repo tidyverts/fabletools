@@ -298,7 +298,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
       gap <- left_join(gap, last_obs, by = key_vars(last_obs))
     }
     if (length(resp_var) > 1) abort("`show_gap = FALSE` is not yet supported for multivariate forecasts.")
-    gap[[as_string(object%@%"dist")]] <- gap[[resp_var]]
+    gap[[distribution_var(object)]] <- gap[[resp_var]]
     gap <- as_fable(gap, index = !!idx, key = key_vars(object),
                     response = resp_var,
                     distribution = distribution_var(object))
@@ -414,7 +414,7 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE, ...){
   
   .vars <- enquo(.vars)
   if(quo_is_null(.vars)){
-    .vars <- object%@%"response"
+    .vars <- response_vars(object)
   }
   dcmp_str <- dcmp <- (object%@%"aliases")[[expr_name(get_expr(.vars))]]
   if(!is.null(dcmp_str)){

@@ -68,7 +68,7 @@ select.dcmp_ts <- function (.data, ...){
 }
 
 tbl_sum.dcmp_ts <- function(x){
-  response <- as_string(x%@%"response")
+  response <- response_vars(x)
   method <- expr_text((x%@%"aliases")[[response]])
   out <- NextMethod()
   names(out)[1] <- "A dable"
@@ -88,7 +88,7 @@ rbind.dcmp_ts <- function(...){
 }
 
 combine_dcmp_attr <- function(lst_dcmp){
-  resp <- map(lst_dcmp, function(x) x%@%"response")
+  resp <- map(lst_dcmp, response_vars)
   method <- map(lst_dcmp, function(x) x%@%"method")
   strc <- map(lst_dcmp, function(x) x%@%"seasons")
   aliases <- map(lst_dcmp, function(x) x%@%"aliases")

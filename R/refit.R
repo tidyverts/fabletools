@@ -23,7 +23,7 @@
 #' @rdname refit
 #' @export
 refit.mdl_df <- function(object, new_data, ...){
-  mdls <- syms(object%@%"model")
+  mdls <- syms(mable_vars(object))
   new_data <- bind_new_data(object, new_data)
   
   object %>% 

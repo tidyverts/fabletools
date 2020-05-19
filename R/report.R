@@ -12,12 +12,12 @@ report <- function(object, ...){
 
 #' @export
 report.mdl_df <- function(object, ...){
-  if(NROW(object) > 1 || length(object%@%"model") > 1){
+  if(NROW(object) > 1 || length(mable_vars(object)) > 1){
     warning("Model reporting is only supported for individual models, so a glance will be shown. To see the report for a specific model, use `select()` and `filter()` to identify a single model.")
     return(glance(object))
   }
   else{
-    report(object[[(object%@%"model")[[1]]]][[1]])
+    report(object[[mable_vars(object)[[1]]]][[1]])
   }
   invisible(object)
 }
