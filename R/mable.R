@@ -16,7 +16,6 @@ mable <- function(..., key = NULL, model = NULL){
   as_mable(tibble(...), key = !!enquo(key), model = !!enquo(model))
 }
 
-
 #' Is the object a mable
 #' 
 #' @param x An object.
@@ -149,6 +148,15 @@ transmute.mdl_df <- function (.data, ...){
   mdl_pos <- match(mable_vars(x), nm)
   res <- NextMethod()
   build_mable_meta(res, key_data = kd, model = value[mdl_pos])
+}
+
+#' @export
+`[.mdl_df` <- function (x, i, j, drop = FALSE){
+  out <- NextMethod()
+  cn <- colnames(out)
+  kv <- intersect(key_vars(x), cn)
+  mv <- intersect(mable_vars(x), cn)
+  build_mable(as_tibble(out), key = !!kv, model = !!mv)
 }
 
 #' @export
