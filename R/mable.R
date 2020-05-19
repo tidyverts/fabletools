@@ -141,37 +141,9 @@ transmute.mdl_df <- function (.data, ...){
 }
 
 #' @export
-rename.mdl_df <- function (.data, ...){
-  kv <- key_data(.data)
-  .data <- NextMethod()
-  mdls <- names(which(map_lgl(.data, inherits, "lst_mdl")))
-  build_mable(.data, key_data = kv, model = mdls)
-}
-
-#' @export
-mutate.mdl_df <- function (.data, ...){
-  kv <- key_data(.data)
-  .data <- NextMethod()
-  
-  mdls <- names(which(map_lgl(.data, inherits, "lst_mdl")))
-  if(is_empty(mdls)){
-    abort("A mable must contain at least one model. To remove all models, first convert to a tibble with `as_tibble()`.")
-  }
-  build_mable(.data, key_data = kv, model = mdls)
-}
-
-#' @export
 group_data.mdl_df <- function(.data){
   .data <- as_tibble(.data)
   NextMethod()
-}
-
-#' @export
-filter.mdl_df <- function (.data, ...){
-  key <- key_vars(.data)
-  mdls <- .data%@%"model"
-  .data <- NextMethod()
-  as_mable(.data, key = key, model = mdls)
 }
 
 #' @export
