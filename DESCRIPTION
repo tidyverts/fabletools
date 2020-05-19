@@ -34,7 +34,8 @@ Imports:
     R6,
     utils,
     vctrs (>= 0.2.2),
-    distributional
+    distributional,
+    progressr
 Suggests:
     covr,
     crayon,

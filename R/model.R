@@ -69,6 +69,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   num_key <- n_keys(.data)
   num_mdl <- length(models)
   num_est <- num_mdl * num_key
+  p <- progressr::progressor(num_est)
   
   kv <- key_vars(.data)
   .data <- nest_keys(.data, "lst_data")
@@ -85,13 +86,19 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
     }
   }
   
+  estimate_progress <- function(dt, mdl){
+    out <- estimate(dt, mdl)
+    p()
+    out
+  }
+  
   if(is_attached("package:future")){
     require_package("future.apply")
     eval_models <- function(models, lst_data){
       out <- future.apply::future_mapply(
         rep(lst_data, length(models)),
         rep(models, each = length(lst_data)),
-        FUN = estimate,
+        FUN = estimate_progress,
         SIMPLIFY = FALSE,
         future.globals = FALSE
       )
@@ -99,16 +106,9 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
     }
   }
   else{
-    pb <- if(num_est > 1) dplyr::progress_estimated(num_est, min_time = 5) else NULL
     eval_models <- function(models, lst_data){
       map(models, function(model){
-        map(lst_data, function(dt, mdl){
-          out <- estimate(dt, mdl)
-          if(!is.null(pb)){
-            pb$tick()$print()
-          }
-          out
-        }, model)
+        map(lst_data, estimate_progress, model)
       })
     }
   }
