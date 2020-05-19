@@ -38,6 +38,7 @@
 * Intervals from multivariate distributions are now returned as data frames of 
   `hilo` intervals. The columns are the response variables. Similar structures 
   are returned when computing other distributional statistics like the `mean`.
+* `rbind()` methods are deprecated in favour of `bind_rows()`
 
 ## Bug fixes
 

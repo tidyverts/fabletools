@@ -172,6 +172,7 @@ mutate.grouped_fbl <- mutate.fbl_ts
 
 #' @export
 rbind.fbl_ts <- function(...){
+  .Deprecated("bind_rows()")
   fbls <- dots_list(...)
   response <- map(fbls, response_vars)
   dist <- map(fbls, distribution_var)
