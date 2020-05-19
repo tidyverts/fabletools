@@ -27,6 +27,6 @@ test_that("fable dplyr verbs", {
   
   expect_equivalent(
     as.list(fbl_multi),
-    as.list(rbind(fbl_multi[1:12,], fbl_multi[13:24,]))
+    as.list(bind_rows(fbl_multi[1:12,], fbl_multi[13:24,]))
   )
 })

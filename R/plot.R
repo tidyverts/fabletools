@@ -301,7 +301,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     gap <- as_fable(gap, index = !!idx, key = key_vars(object),
                     response = resp_var,
                     distribution = distribution_var(object))
-    object <- rbind(gap, object)
+    object <- bind_rows(gap, object)
   }
   
   if(length(resp_var) > 1){
