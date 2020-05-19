@@ -108,7 +108,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
                              h = h, point_forecast = point_forecast, ...,
                              key_data = key_data(object))
   
-  object <- tidyr::pivot_longer(object, mdls, names_to = ".model", values_to = ".fc") 
+  object <- tidyr::pivot_longer(object, !!mdls, names_to = ".model", values_to = ".fc") 
   
   # Combine and re-construct fable
   fbl_attr <- attributes(object$.fc[[1]])

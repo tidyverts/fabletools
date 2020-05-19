@@ -47,7 +47,7 @@ as_mable.data.frame <- function(x, key = NULL, model = NULL, ...){
 }
 
 build_mable <- function (x, key = NULL, key_data = NULL, model) {
-  model <- tidyselect::vars_select(names(x), !!enquo(model))
+  model <- names(tidyselect::eval_select(enquo(model), data = x))
   
   if(length(unique(map(x[model], function(mdl) mdl[[1]]$response))) > 1){
     abort("A mable can only contain models with the same response variable(s).")
@@ -58,7 +58,7 @@ build_mable <- function (x, key = NULL, key_data = NULL, model) {
     key <- head(names(key_data), -1L)
   }
   else {
-    key <- tidyselect::vars_select(names(x), !!enquo(key))
+    key <- names(tidyselect::eval_select(enquo(key), data = x))
     key_data <- group_data(group_by(x, !!!syms(key)))
   }
   
@@ -114,10 +114,11 @@ select.mdl_df <- function (.data, ...){
   if(is_empty(mdls)){
     abort("A mable must contain at least one model. To remove all models, first convert to a tibble with `as_tibble()`.")
   }
-  build_mable(sel_data,
-              key = if(key_nochange) NULL else key_vars,
-              key_data = if(key_nochange) key_data(.data) else NULL,
-              model = mdls)
+  if(key_nochange) {
+    build_mable(sel_data, key_data = key_data(.data), model = mdls)
+  } else {
+    build_mable(sel_data, key = !!key_vars, model = mdls)
+  }
 }
 
 #' @export
