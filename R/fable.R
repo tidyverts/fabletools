@@ -140,19 +140,46 @@ hilo.fbl_ts <- function(x, level = c(80, 95), ...){
     )
 }
 
+restore_fable <- function(data, template){
+  data <- as_tibble(data)
+  data_cols <- names(data)
+  
+  key_vars <- setdiff(key_vars(template), data_cols)
+  key_data <- select(key_data(template), key_vars)
+  if (vec_size(key_data) == 1) {
+    template <- remove_key(template, setdiff(key_vars(template), key_vars))
+  }
+  
+  # Variables to keep
+  tsbl_vars <- setdiff(c(index_var(template), key_vars(template)), data_cols)
+  fbl_vars <- setdiff(distribution_var(template), data_cols)
+  res <- bind_cols(template[tsbl_vars], data, template[fbl_vars])
+  
+  tsbl <- build_tsibble(res, !!key_vars(template), 
+                        index = !!index(template), index2 = !!index2(template),
+                        ordered = is_ordered(template), interval = interval(template),
+                        validate = FALSE)
+  
+  build_fable(tsbl, response = response_vars(template), distribution = !!distribution_var(template))
+}
+
 #' @export
 select.fbl_ts <- function (.data, ...){
-  as_fable(NextMethod(), response_vars(.data), distribution_var(.data))
+  res <- select(as_tibble(.data), ...)
+  restore_fable(res, .data)
 }
 
 #' @export
 select.grouped_fbl <- select.fbl_ts
 
-filter.fbl_ts <- function (.data, ...){
-  as_fable(NextMethod(), response_vars(.data), distribution_var(.data))
+#' @export
+transmute.fbl_ts <- function (.data, ...) {
+  res <- transmute(as_tsibble(.data), ...)
+  restore_fable(res, .data)
 }
 
-filter.grouped_fbl <- filter.fbl_ts
+#' @export
+transmute.grouped_fbl <- transmute.fbl_ts
 
 #' @export
 group_by.fbl_ts <- function(.data, ...) {
@@ -167,14 +194,6 @@ ungroup.fbl_ts <- group_by.fbl_ts
 
 #' @export
 ungroup.grouped_fbl <- group_by.fbl_ts
-
-#' @export
-mutate.fbl_ts <- function(.data, ...) {
-  as_fable(NextMethod(), response_vars(.data), distribution_var(.data))
-}
-
-#' @export
-mutate.grouped_fbl <- mutate.fbl_ts
 
 #' @export
 rbind.fbl_ts <- function(...){
