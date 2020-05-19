@@ -151,6 +151,9 @@
 <li>Added accessor functions for column names (or metadata) of interest. This includes models in a mable (<code><a href="../reference/mable_vars.html">mable_vars()</a></code>), response variables (<code><a href="../reference/response_vars.html">response_vars()</a></code>) and distribution variables (<code><a href="../reference/distribution_var.html">distribution_var()</a></code>).</li>
 <li>The <code>models</code> argument for <code>mable</code> and <code>as_mable</code> has been replaced with <code>model</code> for consistency with the lack of plural in <code>key</code>.</li>
 <li>Intervals from multivariate distributions are now returned as data frames of <code>hilo</code> intervals. The columns are the response variables. Similar structures are returned when computing other distributional statistics like the <code>mean</code>.</li>
+<li>
+<code><a href="https://rdrr.io/r/base/cbind.html">rbind()</a></code> methods are deprecated in favour of <code>bind_rows()</code>
+</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
