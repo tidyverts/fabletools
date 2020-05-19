@@ -47,18 +47,7 @@ as_fable.tbl_ts <- function(x, response, distribution, ...){
 
 #' @rdname as-fable
 #' @export
-as_fable.grouped_ts <- function(x, response, distribution, ...){
-  # If the response (from user input) needs converting
-  response <- eval_tidy(enquo(response))
-  distribution <- names(x)[tidyselect::eval_select(enquo(distribution), x)]
-  
-  fbl <- structure(x, class = c("grouped_fbl", "grouped_ts", "grouped_df", 
-                                "fbl_ts", "tbl_ts", "tbl_df", "tbl", "data.frame"),
-                   response = response, dist = distribution,
-                   model_cn = ".model")
-  validate_fable(fbl)
-  fbl
-}
+as_fable.grouped_ts <- as_fable.tbl_ts
 
 #' @rdname as-fable
 #' @export
@@ -96,9 +85,16 @@ build_fable <- function (x, response, distribution) {
   response <- eval_tidy(enquo(response))
   distribution <- names(x)[tidyselect::eval_select(enquo(distribution), x)]
   
-  fbl <- tsibble::new_tsibble(
-    x, response = response, dist = distribution, model_cn = ".model",
-    class = "fbl_ts")
+  if(is_grouped_ts(x)){
+    fbl <- structure(x, class = c("grouped_fbl", "grouped_ts", "grouped_df", 
+                                  "fbl_ts", "tbl_ts", "tbl_df", "tbl", "data.frame"),
+                     response = response, dist = distribution,
+                     model_cn = ".model")
+  } else {
+    fbl <- tsibble::new_tsibble(
+      x, response = response, dist = distribution, model_cn = ".model",
+      class = "fbl_ts")
+  }
   validate_fable(fbl)
   fbl
 }
