@@ -128,8 +128,9 @@ select.mdl_df <- function (.data, ...){
 }
 #' @export
 transmute.mdl_df <- function (.data, ...){
-  res <- transmute(as_tibble(.data), ...)
-  restore_mable(res, .data)
+  nm <- names(enquos(..., .named = TRUE))
+  res <- mutate(.data, ...)
+  select(res, !!nm)
 }
 
 #' @export

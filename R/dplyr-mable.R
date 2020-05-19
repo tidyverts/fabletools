@@ -7,12 +7,15 @@ dplyr_row_slice.mdl_df <- function(data, i, ..., preserve = FALSE) {
 #' @export
 dplyr_col_modify.mdl_df <- function(data, cols) {
   res <- dplyr_col_modify(as_tibble(data), cols)
+  is_mdl <- map_lgl(cols, inherits, "lst_mdl")
   val_key <- any(key_vars(data) %in% cols)
   if (val_key) {
     key_vars <- setdiff(names(res), measured_vars(data))
     data <- remove_key(data, key_vars)
   }
-  build_mable(res, key = !!key_vars(data), model = !!mable_vars(data))
+  build_mable(res, 
+              key = !!key_vars(data), 
+              model = !!union(mable_vars(data), names(which(is_mdl))))
 }
 
 #' @export
