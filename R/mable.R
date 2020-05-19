@@ -141,6 +141,17 @@ transmute.mdl_df <- function (.data, ...){
 }
 
 #' @export
+`names<-.mdl_df` <- function(x, value) {
+  nm <- colnames(x)
+  key_pos <- match(key_vars(x), nm)
+  kd <- key_data(x)
+  colnames(kd) <- c(value[key_pos], ".rows")
+  mdl_pos <- match(mable_vars(x), nm)
+  res <- NextMethod()
+  build_mable_meta(res, key_data = kd, model = value[mdl_pos])
+}
+
+#' @export
 group_data.mdl_df <- function(.data){
   .data <- as_tibble(.data)
   NextMethod()
