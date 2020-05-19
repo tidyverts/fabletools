@@ -13,8 +13,7 @@
 #'
 #' @export
 fable <- function(..., response, distribution){
-  tsbl <- tsibble(...)
-  as_fable(tsbl, !!enquo(response), !!enquo(distribution))
+  build_fable(tsibble(...), !!enquo(response), !!enquo(distribution))
 }
 
 #' Is the object a fable
@@ -41,14 +40,9 @@ as_fable <- function(x, ...){
 #' @rdname as-fable
 #' @export
 as_fable.tbl_ts <- function(x, response, distribution, ...){
-  response <- eval_tidy(enquo(response))
-  distribution <- names(x)[tidyselect::eval_select(enquo(distribution), x)]
-  
-  fbl <- new_tsibble(x, class = "fbl_ts",
-                     response = response, dist = distribution,
-                     model_cn = ".model")
-  validate_fable(fbl)
-  fbl
+  build_fable(x, 
+              response = !!enquo(response),
+              distribution = !!enquo(distribution))
 }
 
 #' @rdname as-fable
@@ -69,8 +63,9 @@ as_fable.grouped_ts <- function(x, response, distribution, ...){
 #' @rdname as-fable
 #' @export
 as_fable.tbl_df <- function(x, response, distribution, ...){
-  as_fable(as_tsibble(x, ...), response = !!enquo(response),
-           distribution = !!enquo(distribution))
+  build_fable(as_tsibble(x, ...), 
+              response = !!enquo(response),
+              distribution = !!enquo(distribution))
 }
 
 #' @rdname as-fable
@@ -88,13 +83,25 @@ as_fable.fbl_ts <- function(x, response, distribution, ...){
   else{
     distribution <- names(x)[tidyselect::eval_select(enquo(distribution), x)]
   }
-  as_fable(update_tsibble(x, ...), response = response,
-           distribution = distribution)
+  build_fable(update_tsibble(x, ...),
+              response = response, distribution = distribution)
 }
 
 #' @rdname as-fable
 #' @export
 as_fable.grouped_df <- as_fable.tbl_df
+
+build_fable <- function (x, response, distribution) {
+  # If the response (from user input) needs converting
+  response <- eval_tidy(enquo(response))
+  distribution <- names(x)[tidyselect::eval_select(enquo(distribution), x)]
+  
+  fbl <- tsibble::new_tsibble(
+    x, response = response, dist = distribution, model_cn = ".model",
+    class = "fbl_ts")
+  validate_fable(fbl)
+  fbl
+}
 
 #' @export
 as_tsibble.fbl_ts <- function(x, ...){
@@ -109,7 +116,6 @@ as_tsibble.grouped_fbl <- function(x, ...){
 
 validate_fable <- function(fbl){
   stopifnot(inherits(fbl, "fbl_ts"))
-  chr_resp <- response_vars(fbl)
   chr_dist <- distribution_var(fbl)
   if (!(chr_dist %in% names(fbl))){
     abort(sprintf("Could not find distribution variable `%s` in the fable. A fable must contain a distribution, if you want to remove it convert to a tsibble with `as_tsibble()`.",
