@@ -53,7 +53,7 @@ autoplot.tbl_ts <- function(object, .vars = NULL, ...){
   aes_spec <- list(x = index(object), y = y)
   
   if(nk > 1){
-    object <- dplyr::mutate_if(object, ~inherits(., "agg_key"), compose(trimws, format))
+    object <- dplyr::mutate_if(object, ~inherits(., "agg_vec"), compose(trimws, format))
     aes_spec["colour"] <- list(expr(interaction(!!!syms(kv), sep = "/")))
   }
   
@@ -218,7 +218,7 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = T
     }
     
     data <- data %>% 
-      dplyr::mutate_if(~inherits(., "agg_key"), compose(trimws, format))
+      dplyr::mutate_if(~inherits(., "agg_vec"), compose(trimws, format))
   }
 
   # Compute facets, if any
@@ -337,7 +337,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   
   out <- list()
   object <- object %>% 
-    dplyr::mutate_if(~inherits(., "agg_key"), compose(trimws, format))
+    dplyr::mutate_if(~inherits(., "agg_vec"), compose(trimws, format))
   if(!is.null(level)){
     interval_data <- hilo(object, level = level) %>% 
       tidyr::pivot_longer(paste0(level, "%"), names_to = "..unused", values_to = "hilo")

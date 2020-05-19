@@ -139,7 +139,7 @@ aggregate_index.tbl_ts <- function(.data, .times = NULL, ...){
   
   # Return tsibble
   as_tsibble(.data, key = kv, index = !!idx) %>% 
-    mutate(!!!set_names(map(kv, function(x) expr(agg_key(!!sym(x)))), kv))
+    mutate(!!!set_names(map(kv, function(x) expr(agg_vec(!!sym(x)))), kv))
 }
 
 agg_vec <- function(x = character(), aggregated = logical(vec_size(x))){
