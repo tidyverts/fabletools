@@ -189,7 +189,7 @@ transmute.grouped_fbl <- transmute.fbl_ts
 
 #' @export
 group_by.fbl_ts <- function(.data, ...) {
-  as_fable(NextMethod(), response_vars(.data), distribution_var(.data))
+  build_fable(NextMethod(), response_vars(.data), distribution_var(.data))
 }
 
 #' @export
@@ -214,7 +214,7 @@ rbind.fbl_ts <- function(...){
     abort("Cannot combine fables with different distribution names.")
   }
   out <- suppressWarnings(invoke(dplyr::bind_rows, map(fbls, as_tsibble)))
-  as_fable(out, response[[1]], dist[[1]])
+  build_fable(out, response[[1]], dist[[1]])
 }
 
 #' @export
@@ -228,7 +228,7 @@ rbind.fbl_ts <- function(...){
   if(not_fable)
     return(out)
   else
-    as_fable(out, response_vars(x), distribution_var(x))
+    build_fable(out, response_vars(x), distribution_var(x))
 }
 
 type_sum.fbl_ts <- function(x){

@@ -54,7 +54,7 @@ fable_ptype2 <- function(x, y, ...) {
     out, key_data = tibble(!!!x[key_x], !!".rows" := list_of(.ptype = integer())),
     index = idx_x, index2 = idx_x, ordered = TRUE,
     interval = new_interval())
-  as_fable(tsbl, response = resp_x, distribution = dist_x)
+  build_fable(tsbl, response = resp_x, distribution = dist_x)
 }
 
 #' @rdname fable-vctrs
@@ -73,7 +73,7 @@ vec_cast.fbl_ts.fbl_ts <- function(x, to, ...) {
     index = index_var(to), index2 = index2_var(to),
     ordered = is_ordered(to),
     validate = FALSE, .drop = key_drop_default(to))
-  as_fable(tsbl, response = response_vars(to), distribution = distribution_var(to))
+  build_fable(tsbl, response = response_vars(to), distribution = distribution_var(to))
 }
 
 #' @export
@@ -82,7 +82,7 @@ vec_cast.fbl_ts.tbl_df <- function(x, to, ...) {
   tsbl <- build_tsibble(
     tbl, key = key_vars(to), index = index_var(to), index2 = index2_var(to),
     ordered = TRUE, validate = TRUE, .drop = key_drop_default(to))
-  as_fable(tsbl, response = response_vars(to), distribution = distribution_var(to))
+  build_fable(tsbl, response = response_vars(to), distribution = distribution_var(to))
 }
 
 #' @export
