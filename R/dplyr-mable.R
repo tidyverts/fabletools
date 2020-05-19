@@ -7,7 +7,6 @@ dplyr_row_slice.mdl_df <- function(data, i, ..., preserve = FALSE) {
 #' @export
 dplyr_col_modify.mdl_df <- function(data, cols) {
   res <- dplyr_col_modify(as_tibble(data), cols)
-  
   val_key <- any(key_vars(data) %in% cols)
   if (val_key) {
     key_vars <- setdiff(names(res), measured_vars(data))
@@ -19,5 +18,7 @@ dplyr_col_modify.mdl_df <- function(data, cols) {
 #' @export
 dplyr_reconstruct.mdl_df <- function(data, template) {
   res <- NextMethod()
-  build_mable(data, key_data = key_data(template), model = !!mable_vars(template))
+  build_mable(data,
+              key = !!key_vars(template), 
+              model = !!intersect(mable_vars(template), colnames(res)))
 }
