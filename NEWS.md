@@ -8,8 +8,9 @@
   argument, which is a named list of functions that describe the method used to
   obtain the point forecasts. If multiple are specified, each method will be
   identified using the `linetype`.
-* Improved dplyr support. You can now use `bind_rows()` and `*_join()` operations
-  on mables, dables, and fables.
+* Improved dplyr support. You can now use `bind_*()` and `*_join()` operations
+  on mables, dables, and fables. More verbs are supported by these extension
+  data classes, and so behaviour should work closer to what is expected.
 * Added accuracy measures: `RMSSE()`, `pinball_loss()`, `scaled_pinball_loss()`.
 * Distributions are now provided by the distributional package, which is more
   space efficient and allows calculation of distributional statistics including
