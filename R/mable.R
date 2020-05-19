@@ -106,7 +106,7 @@ restore_mable <- function(data, template){
   model_vars <- intersect(mable_vars(template), data_cols)
   # Variables to keep
   mbl_vars <- setdiff(key_vars(template), data_cols)
-  res <- dplyr::bind_cols(template[mbl_vars], data)
+  res <- bind_cols(template[mbl_vars], data)
   
   build_mable(res, key = !!key_vars(template), model = !!model_vars)
 }

@@ -45,6 +45,6 @@ stream.mdl_ts <- function(object, new_data, ...){
   new_data[measured_vars(object$data)] <- resp
   
   object$fit <- stream(object[["fit"]], new_data, specials = specials, ...)
-  object$data <- dplyr::bind_rows(object$data, select(new_data, !!!syms(colnames(object$data))))
+  object$data <- bind_rows(object$data, select(new_data, !!!syms(colnames(object$data))))
   object
 }

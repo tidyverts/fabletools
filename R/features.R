@@ -41,7 +41,7 @@ features_impl <- function(.tbl, .var, features, ...){
       list(error = err, result = tbl)
     })
     res <- transpose(res)
-    res[["result"]] <- invoke(dplyr::bind_cols, res[["result"]])
+    res[["result"]] <- invoke(bind_cols, res[["result"]])
     res
   })
   out <- transpose(out)
@@ -71,7 +71,7 @@ features_impl <- function(.tbl, .var, features, ...){
     })
   }
   
-  dplyr::bind_cols(
+  bind_cols(
     key_dt[-NCOL(key_dt)],
     !!!out
   )
