@@ -16,10 +16,6 @@
   register_s3_method("tibble", "tbl_sum", "mdl_df")
   register_s3_method("tibble", "tbl_sum", "fbl_ts")
   
-  register_s3_method("dplyr", "filter", "fbl_ts")
-  register_s3_method("dplyr", "filter", "grouped_fbl")
-  register_s3_method("dplyr", "filter", "mdl_df")
-  
   register_s3_method("ggplot2", "scale_type", "agg_vec")
   
   op <- options()
