@@ -159,7 +159,7 @@ fortify.fbl_ts <- function(object, level = c(80, 95)){
     kv <- c(kv, ".response")
   }
   
-  as_tsibble(object, key = kv, index = !!idx, validate = FALSE) 
+  as_tsibble(object, key = !!kv, index = !!idx, validate = FALSE) 
 }
 
 #' Plot a set of forecasts
@@ -362,7 +362,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   object <- tidyr::pivot_longer(object[-match(dist_var, names(object))], names(point_forecast), names_to = "Point forecast", values_to = dist_var)
   if(length(resp_var) > 1){
     object <- object %>% 
-      tidyr::unpack(dist_var) %>% 
+      tidyr::unpack(!!dist_var) %>% 
       tidyr::pivot_longer(names(object[[dist_var]]), names_to = ".response", values_to = dist_var)
   }
   
