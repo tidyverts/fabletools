@@ -110,6 +110,16 @@ as_tsibble.grouped_fbl <- function(x, ...){
             response = NULL, dist = NULL, model_cn = NULL)
 }
 
+#' @export
+as_tibble.fbl_ts <- function(x, ...) {
+  new_tibble(vec_data(x), nrow = nrow(x))
+}
+
+#' @export
+as_tibble.grouped_fbl <- function(x, ...) {
+  dplyr::new_grouped_df(as_tibble(vec_data(x)), groups = group_data(x))
+}
+
 validate_fable <- function(fbl){
   stopifnot(inherits(fbl, "fbl_ts"))
   chr_dist <- distribution_var(fbl)
