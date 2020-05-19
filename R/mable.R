@@ -152,11 +152,17 @@ transmute.mdl_df <- function (.data, ...){
 
 #' @export
 `[.mdl_df` <- function (x, i, j, drop = FALSE){
-  out <- NextMethod()
+  out <- as_tibble(NextMethod())
   cn <- colnames(out)
   kv <- intersect(key_vars(x), cn)
   mv <- intersect(mable_vars(x), cn)
-  build_mable(as_tibble(out), key = !!kv, model = !!mv)
+  
+  # If keys have been dropped, return a tibble
+  if(n_keys(x) != length(kv)){
+    return(out)
+  }
+  
+  build_mable(out, key = !!kv, model = !!mv)
 }
 
 #' @export
