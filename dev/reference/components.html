@@ -165,10 +165,8 @@ and see the way in which components are combined to give forecasts.</p>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Beer</span>) ~ <span class='fu'>error</span>(<span class='st'>"M"</span>) + <span class='fu'>trend</span>(<span class='st'>"Ad"</span>) + <span class='fu'>season</span>(<span class='st'>"A"</span>))) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/generics/man/components.html'>components</a></span>() <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>()
-}</div><div class='output co'>#&gt; <span class='error'>Error: Problem with `mutate()` input `cmp`.</span>
-#&gt; <span class='error'><span style='color: #BB0000;'>✖</span><span> `levels.yearquarter()` not supported.</span>
-#&gt; <span class='error'></span><span style='color: #0000BB;'>ℹ</span><span> Input `cmp` is `map(.fit, components)`.</span></div><div class='input'>
-</div></span></pre>
+}</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 4 row(s) containing missing values (geom_path).</span></div><div class='img'><img src='components-1.png' alt='' width='700' height='433' /></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

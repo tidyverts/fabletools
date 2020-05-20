@@ -148,6 +148,16 @@ transformations in the fable framework can be found in
   <span class='kw'>h</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>point_forecast</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>.mean</span> <span class='kw'>=</span> <span class='no'>mean</span>),
   <span class='no'>...</span>
+)
+
+<span class='co'># S3 method for mdl_ts</span>
+<span class='fu'>forecast</span>(
+  <span class='no'>object</span>,
+  <span class='kw'>new_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>h</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>bias_adjust</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>point_forecast</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>.mean</span> <span class='kw'>=</span> <span class='no'>mean</span>),
+  <span class='no'>...</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -172,8 +182,10 @@ time series with no exogenous regressors).</p></td>
     </tr>
     <tr>
       <th>point_forecast</th>
-      <td><p>Which point forecast measure should be returned in the
-resulting fable (possible values include: "mean", "median").</p></td>
+      <td><p>The point forecast measure(s) which should be returned
+in the resulting fable. Specified as a named list of functions which accept
+a distribution and return a vector. To compute forecast medians, you can use
+<code><a href='https://rdrr.io/r/base/list.html'>list(.median = median)</a></code>.</p></td>
     </tr>
     <tr>
       <th>bias_adjust</th>
@@ -249,7 +261,8 @@ extract the numerical upper and lower bounds you can use <code><a href='https://
 <span class='no'>fit</span> <span class='kw'>%&gt;%</span>
   <span class='fu'>forecast</span>(<span class='kw'>new_data</span> <span class='kw'>=</span> <span class='no'>future_aus</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>aus_economy</span>)
-}</div><div class='output co'>#&gt; <span class='error'>Error: Distributions must have the same `dimnames` to be combined.</span></div><div class='input'>
+}</div><div class='output co'>#&gt; <span class='warning'>Warning: 1 error encountered for lm</span>
+#&gt; <span class='warning'>[1] The `urca` package must be installed to use this functionality. It can be installed with install.packages("urca")</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 10 row(s) containing missing values (geom_path).</span></div><div class='img'><img src='forecast-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

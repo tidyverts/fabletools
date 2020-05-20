@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Forecast reconciliation — reconcile • fabletools</title>
+<title>Internal vctrs methods — aggregation-vctrs • fabletools</title>
 
 
 <!-- jquery -->
@@ -35,9 +35,9 @@
 
 
 
-<meta property="og:title" content="Forecast reconciliation — reconcile" />
-<meta property="og:description" content="This function allows you to specify the method used to reconcile forecasts
-in accordance with its key structure." />
+<meta property="og:title" content="Internal vctrs methods — aggregation-vctrs" />
+<meta property="og:description" content="These methods are the extensions that allow aggregation vectors to work with
+vctrs." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -121,67 +121,47 @@ in accordance with its key structure." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Forecast reconciliation</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/reconciliation.R'><code>R/reconciliation.R</code></a></small>
-    <div class="hidden name"><code>reconcile.Rd</code></div>
+    <h1>Internal vctrs methods</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/aggregate.R'><code>R/aggregate.R</code></a></small>
+    <div class="hidden name"><code>aggregation-vctrs.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function allows you to specify the method used to reconcile forecasts
-in accordance with its key structure.</p>
+    <p>These methods are the extensions that allow aggregation vectors to work with
+vctrs.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>reconcile</span>(<span class='no'>.data</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>vec_ptype2.agg_vec</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for mdl_df</span>
-<span class='fu'>reconcile</span>(<span class='no'>.data</span>, <span class='no'>...</span>)</pre>
+<span class='co'># S3 method for agg_vec.agg_vec</span>
+<span class='fu'>vec_ptype2</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='no'>...</span>)
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>.data</th>
-      <td><p>A mable.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Reconciliation methods applied to model columns within <code>.data</code>.</p></td>
-    </tr>
-    </table>
+<span class='co'># S3 method for agg_vec.default</span>
+<span class='fu'>vec_ptype2</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for character.agg_vec</span>
+<span class='fu'>vec_ptype2</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for agg_vec</span>
+<span class='fu'>vec_ptype_abbr</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+
+<span class='fu'>vec_cast.agg_vec</span>(<span class='no'>x</span>, <span class='no'>to</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for agg_vec.agg_vec</span>
+<span class='fu'>vec_cast</span>(<span class='no'>x</span>, <span class='no'>to</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for agg_vec.default</span>
+<span class='fu'>vec_cast</span>(<span class='no'>x</span>, <span class='no'>to</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for character.agg_vec</span>
+<span class='fu'>vec_cast</span>(<span class='no'>x</span>, <span class='no'>to</span>, <span class='no'>...</span>)</pre>
 
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>fable</span>)
-<span class='no'>lung_deaths_agg</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/as-tsibble.html'>as_tsibble</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='no'>mdeaths</span>, <span class='no'>fdeaths</span>)) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='aggregate_key.html'>aggregate_key</a></span>(<span class='no'>key</span>, <span class='kw'>value</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='no'>value</span>))
 
-<span class='no'>lung_deaths_agg</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>lm</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='no'>value</span> ~ <span class='fu'>trend</span>() + <span class='fu'>season</span>())) <span class='kw'>%&gt;%</span>
-  <span class='fu'>reconcile</span>(<span class='kw'>lm</span> <span class='kw'>=</span> <span class='fu'><a href='min_trace.html'>min_trace</a></span>(<span class='no'>lm</span>)) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='forecast.html'>forecast</a></span>()
-}</div><div class='output co'>#&gt; <span style='color: #555555;'># A fable: 72 x 5 [1M]</span><span>
-#&gt; </span><span style='color: #555555;'># Key:     key, .model [3]</span><span>
-#&gt;    key     .model    index        value .mean
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;mth&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;dist&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span> fdeaths lm     1980 Jan N(794, 5606)  794.
-#&gt; </span><span style='color: #555555;'> 2</span><span> fdeaths lm     1980 Feb N(778, 5606)  778.
-#&gt; </span><span style='color: #555555;'> 3</span><span> fdeaths lm     1980 Mar N(737, 5606)  737.
-#&gt; </span><span style='color: #555555;'> 4</span><span> fdeaths lm     1980 Apr N(577, 5606)  577.
-#&gt; </span><span style='color: #555555;'> 5</span><span> fdeaths lm     1980 May N(456, 5606)  456.
-#&gt; </span><span style='color: #555555;'> 6</span><span> fdeaths lm     1980 Jun N(386, 5606)  386.
-#&gt; </span><span style='color: #555555;'> 7</span><span> fdeaths lm     1980 Jul N(379, 5606)  379.
-#&gt; </span><span style='color: #555555;'> 8</span><span> fdeaths lm     1980 Aug N(335, 5606)  335.
-#&gt; </span><span style='color: #555555;'> 9</span><span> fdeaths lm     1980 Sep N(340, 5606)  340.
-#&gt; </span><span style='color: #555555;'>10</span><span> fdeaths lm     1980 Oct N(413, 5606)  413.
-#&gt; </span><span style='color: #555555;'># … with 62 more rows</span><span></div><div class='input'>
-</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>
