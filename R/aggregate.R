@@ -29,7 +29,7 @@ aggregate_key <- function(.data, .spec, ...){
 }
 
 #' @export
-aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){
+aggregate_key.tbl_ts <- function(.data, .spec = NULL, ..., no_idx_grp = FALSE){
   .spec <- enexpr(.spec)
   if(is.null(.spec)){
     message(
@@ -51,16 +51,41 @@ aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){
   
   idx <- index2_var(.data)
   intvl <- interval(.data)
+  kd <- key_data(.data)
+  has_varied_index <- any(has_gaps(.data, .full = TRUE)[[".gaps"]]) && !is_ordered(.data)
   .data <- as_tibble(.data)
   
   kv <- unique(unlist(key_comb, recursive = FALSE))
-  agg_dt <- vctrs::vec_rbind(!!!map(unname(key_comb), function(x){
-    gd <- group_data(group_by(.data, !!sym(idx), !!!set_names(map(x, function(.) expr(agg_vec(!!sym(.)))), x)))
-    agg_keys <- setdiff(kv, x)
-    agg_cols <- rep(list(agg_vec(NA_character_, aggregated = TRUE)), length(agg_keys))
-    gd[agg_keys] <- agg_cols
-    gd[c(idx, kv, ".rows")]
-  }))
+  if(!no_idx_grp){
+    agg_dt <- map(unname(key_comb), function(x){
+      gd <- group_data(group_by(.data, !!sym(idx), !!!set_names(map(x, function(.) expr(agg_vec(!!sym(.)))), x)))
+      agg_keys <- setdiff(kv, x)
+      agg_cols <- rep(list(agg_vec(NA_character_, aggregated = TRUE)), length(agg_keys))
+      gd[agg_keys] <- agg_cols
+      gd[c(idx, kv, ".rows")]
+    })
+    agg_dt <- vctrs::vec_rbind(!!!agg_dt)
+  } else {
+    idx_val <- .data[[idx]][kd[[".rows"]][[1]]]
+    split_rows <- function(x){
+      x <- matrix(unlist(x, recursive = FALSE, use.names = FALSE), ncol = length(x))
+      lapply(seq_len(nrow(x)), function(i) x[i,,drop=TRUE])
+    }
+    agg_dt <- map(unname(key_comb), function(x){
+      cat(x, "\n")
+      gd <- group_by(kd, !!!set_names(map(x, function(.) expr(agg_vec(!!sym(.)))), x))
+      # if(n_groups(gd) == nrow(gd)){
+      #   gd <- .data
+      #   gd
+      # }
+      gd <- summarise(gd, !!idx := idx_val, .rows = split_rows(.rows))
+      agg_keys <- setdiff(kv, x)
+      agg_cols <- rep(list(agg_vec(NA_character_, aggregated = TRUE)), length(agg_keys))
+      gd[agg_keys] <- agg_cols
+      gd[c(idx, kv, ".rows")]
+    })
+    agg_dt <- vctrs::vec_rbind(!!!agg_dt)
+  }
   
   .data <- dplyr::new_grouped_df(.data, groups = agg_dt)
   
