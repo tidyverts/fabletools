@@ -255,3 +255,33 @@ is_aggregated <- function(x){
 }
 
 scale_type.agg_vec <- function(x) "discrete"
+
+# Space efficient group identifiers, storing group positions as vectors instead of lists
+group_by_alt <- function(.data, ...){
+  .data <- transmute(as_tibble(.data), ...)
+  grps <- vctrs::vec_group_id(.data)
+  list(pos = order(grps, method = "radix"), len = tabulate(grps), var = names(.data))
+}
+
+# Simplified summarise(), which uses the group identifiers from group_by_alt()
+summarise_alt <- function(.data, ..., .grps = group_by_alt(.data)){
+  .data <- as.data.frame(.data)
+  dots <- enquos(..., .named = TRUE)
+  dots_names <- names(dots)
+  n_grps <- length(.grps[["len"]])
+  grp_start <- 1 + cumsum(c(0, .grps[["len"]][-n_grps]))
+  out <- slice(.data[.grps[["var"]]], .grps[["pos"]][grp_start])
+  for(i in seq_along(dots)){
+    res <- NULL
+    for(grp in seq_along(.grps[["len"]])){
+      grp_data <- .data[.grps[["pos"]][seq(grp_start[grp], length.out = .grps[["len"]][grp])],]
+      val <- eval_tidy(dots[[i]], data = grp_data)
+      if(is.null(res)){
+        res <- vec_init(val, n = n_grps)
+      }
+      res[grp] <- val
+    }
+    out[names(dots)[[i]]] <- res
+  }
+  out
+}
