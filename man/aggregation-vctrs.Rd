@@ -5,6 +5,7 @@
 \alias{vec_ptype2.agg_vec}
 \alias{vec_ptype2.agg_vec.agg_vec}
 \alias{vec_ptype2.agg_vec.default}
+\alias{vec_ptype2.agg_vec.character}
 \alias{vec_ptype2.character.agg_vec}
 \alias{vec_ptype_abbr.agg_vec}
 \alias{vec_cast.agg_vec}
@@ -18,6 +19,8 @@ vec_ptype2.agg_vec(x, y, ...)
 \method{vec_ptype2}{agg_vec.agg_vec}(x, y, ...)
 
 \method{vec_ptype2}{agg_vec.default}(x, y, ...)
+
+\method{vec_ptype2}{agg_vec.character}(x, y, ...)
 
 \method{vec_ptype2}{character.agg_vec}(x, y, ...)
 

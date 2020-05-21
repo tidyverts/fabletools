@@ -216,6 +216,9 @@ vec_ptype2.agg_vec.agg_vec <- function(x, y, ...) agg_vec()
 vec_ptype2.agg_vec.default <- function(x, y, ...) agg_vec()
 #' @rdname aggregation-vctrs
 #' @export
+vec_ptype2.agg_vec.character <- function(x, y, ...) agg_vec()
+#' @rdname aggregation-vctrs
+#' @export
 vec_ptype2.character.agg_vec <- function(x, y, ...) agg_vec()
 
 #' @rdname aggregation-vctrs
@@ -233,6 +236,8 @@ vec_cast.agg_vec.agg_vec <- function(x, to, ...) x
 #' @rdname aggregation-vctrs
 #' @export
 vec_cast.agg_vec.default <- function(x, to, ...) agg_vec(x)
+#' @export
+vec_cast.agg_vec.character <- function(x, to, ...) agg_vec(x)
 #' @rdname aggregation-vctrs
 #' @export
 vec_cast.character.agg_vec <- function(x, to, ...) trimws(format(x))
