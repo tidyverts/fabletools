@@ -268,18 +268,47 @@ summarise_alt <- function(.data, ..., .grps = group_by_alt(.data)){
   .data <- as.data.frame(.data)
   dots <- enquos(..., .named = TRUE)
   dots_names <- names(dots)
-  n_grps <- length(.grps[["len"]])
-  grp_start <- 1 + cumsum(c(0, .grps[["len"]][-n_grps]))
-  out <- slice(.data[.grps[["var"]]], .grps[["pos"]][grp_start])
+  
+  grp_pos <- .grps[["pos"]]
+  grp_len <- .grps[["len"]]
+  
+  n_grps <- length(grp_len)
+  grp_start <- 1 + cumsum(c(0, grp_len[-n_grps]))
+  out <- .data[.grps[["var"]]][grp_pos[grp_start],,drop = FALSE]
+  
+  # Promise based group aware data mask (adapted from dplyr:::DataMask)
+  bindings <- env(empty_env())
+  resolved <- logical(ncol(.data))
+  promise_fn <- function(index) {
+    resolved[[index]] <<- TRUE
+    vec_slice(.subset2(.data, index), rows)
+  }
+  promise_env <- get_env(promise_fn)
+  promises <- map(seq_len(ncol(.data)), function(.x) expr(promise_fn(!!.x)))
+  promises <- set_names(promises, names2(.data))
+  env <- current_env()
+  env_bind_lazy(bindings, !!!promises)
+  mask <- new_data_mask(bindings)
+  mask$.data <- as_data_pronoun(mask)
+  
+  # Compute dots over groups
   for(i in seq_along(dots)){
     res <- NULL
-    for(grp in seq_along(.grps[["len"]])){
-      grp_data <- .data[.grps[["pos"]][seq(grp_start[grp], length.out = .grps[["len"]][grp])],]
-      val <- eval_tidy(dots[[i]], data = grp_data)
+    dot <- dots[[i]]
+    for(grp in seq_len(n_grps)){
+      size <- grp_len[grp]
+      idx <- grp_start[grp]
+      promise_env$rows <- .subset(grp_pos, idx:(idx+size-1))
+      val <- eval_tidy(dot, mask)
       if(is.null(res)){
         res <- vec_init(val, n = n_grps)
       }
       res[grp] <- val
+      # Reset promises for new groups
+      for(j in which(resolved)){
+        delayedAssign(names(promises)[[j]], promise_fn(j), env, bindings)
+        resolved[j] <- FALSE
+      }
     }
     out[names(dots)[[i]]] <- res
   }
