@@ -142,8 +142,18 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
   if(is.null(new_data)){
     new_data <- make_future_data(object$data, h)
   }
+  
+  # Useful variables
+  idx <- index_var(new_data)
+  mv <- measured_vars(new_data)
+  resp_vars <- map_chr(object$response, expr_name)
+  dist_col <- if(length(resp_vars) > 1) ".distribution" else resp_vars
+  
+  # If there's nothing to forecast, return an empty fable.
   if(NROW(new_data) == 0){
-    abort("There are no forecasts to be made. Check that your forecast horizon includes at least one future value.")
+    new_data[[dist_col]] <- distributional::new_dist(dimnames = resp_vars)
+    fbl <- build_fable(new_data, response = resp_vars, distribution =  !!sym(dist_col))
+    return(fbl)
   }
   
   # Compute specials with new_data
@@ -193,16 +203,9 @@ These required variables can be provided by specifying `new_data`.",
     }
   }
   
-  # Create output object
-  idx <- index_var(new_data)
-  mv <- measured_vars(new_data)
-  resp_vars <- map_chr(object$response, expr_name)
-  
-  dist_col <- if(length(resp_vars) > 1) ".distribution" else resp_vars
-  pred_col <- NULL
-  
   new_data[[dist_col]] <- fc
   
+  pred_col <- NULL
   point_fc <- map(point_forecast, calc, fc)
   if(length(resp_vars) > 1) point_fc <- map(point_fc, set_names, resp_vars)
   point_fc <- flatten_with_names(point_fc)
@@ -217,8 +220,7 @@ These required variables can be provided by specifying `new_data`.",
     interval = interval(new_data)
   )
   
-  build_fable(fbl, response = resp_vars, distribution =  !!sym(dist_col)
-  )
+  build_fable(fbl, response = resp_vars, distribution =  !!sym(dist_col))
 }
 
 #' Construct a new set of forecasts

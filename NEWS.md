@@ -19,6 +19,8 @@
   decide if, when, and how progress is reported. To show progress, wrap your 
   code in the `progressr::with_progress()` function. Progress will no longer be
   displayed automatically during lengthy calculations.
+* `forecast()` will now return an empty fable instead of erroring when no
+  forecasts are requested.
 * Documentation improvements.
 
 ## Breaking changes
@@ -52,6 +54,8 @@
 * `aggregate_key()` no longer drops keys, instead they are kept as <aggregated>.
 * Forecast reconciliation now works with historical data that is not temporally
   aligned.
+* Fixed `forecast()` producing forecasts via `h` when `new_data` does not 
+  include a given series (#202).
 
 # fabletools 0.1.3
 

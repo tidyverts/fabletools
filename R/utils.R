@@ -70,6 +70,11 @@ bind_new_data <- function(object, new_data){
   
   if(length(key_vars(object)) > 0){
     object <- left_join(object, new_data, by = key_vars(object))
+    # Use empty tsibbles for non-matches
+    no_new_data <- map_lgl(object[["new_data"]], is_null)
+    if(any(no_new_data)){
+      object[["new_data"]][no_new_data] <- rep(list(new_data[["new_data"]][[1]][0,]), sum(no_new_data))
+    }
   }
   else{
     object[["new_data"]] <- new_data[["new_data"]]
