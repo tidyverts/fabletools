@@ -2,8 +2,9 @@
 
 ## Improvements
 
-* Improved support for streaming data to models with transformed response variables
-* `hilo.fbl_ts()` now keeps existing columns of a fable.
+* Distributions are now provided by the distributional package, which is more
+  space efficient and allows calculation of distributional statistics including
+  the `mean()`, `median()`, `quantile()`, `cdf()`, and `density()`.
 * `autoplot.fbl_ts()` and `autolayer.fbl_ts()` now accept the `point_forecast`
   argument, which is a named list of functions that describe the method used to
   obtain the point forecasts. If multiple are specified, each method will be
@@ -11,35 +12,35 @@
 * Improved dplyr support. You can now use `bind_*()` and `*_join()` operations
   on mables, dables, and fables. More verbs are supported by these extension
   data classes, and so behaviour should work closer to what is expected.
-* Added accuracy measures: `RMSSE()`, `pinball_loss()`, `scaled_pinball_loss()`.
-* Distributions are now provided by the distributional package, which is more
-  space efficient and allows calculation of distributional statistics including
-  the `mean()`, `median()`, `quantile()`, `cdf()`, and `density()`.
 * Progress reporting is now handled by the progressr package. This allows you to
   decide if, when, and how progress is reported. To show progress, wrap your 
   code in the `progressr::with_progress()` function. Progress will no longer be
   displayed automatically during lengthy calculations.
+* Added accuracy measures: `RMSSE()`, `pinball_loss()`, `scaled_pinball_loss()`.
+* Added accessor functions for column names (or metadata) of interest. This 
+  includes models in a mable (`mable_vars()`), response variables 
+  (`response_vars()`) and distribution variables (`distribution_var()`).
+* Improved support for streaming data to models with transformed response
+  variables.
+* `hilo.fbl_ts()` now keeps existing columns of a fable.
 * `forecast()` will now return an empty fable instead of erroring when no
   forecasts are requested.
 * Documentation improvements.
 
 ## Breaking changes
 
+* The fable returned by `forecast()` now stores the distribution in the column
+  named the response variable (previously, this was the point forecast). Point
+  forecasts are now stored in the `.mean` column, which can be customised using
+  the `point_forecast` argument.
 * The `bias_adjust` option for forecast() is replaced by `point_forecast`,
   allowing you to specify which point forecast measures to display (fable/#226).
   This has been done to reduce confusion around the argument's usage, 
   disambiguate the returned point forecast's meaning, and also allow users 
   to specify which (if any) point forecasts to provide.
-* The fable returned by `forecast()` now stores the distribution in the column
-  named the response variable (previously, this was the point forecast). Point
-  forecasts are now stored in the `.mean` column, which can be customised using
-  the `point_forecast` argument.
 * The data coercion functions `as_mable`, `as_dable`, and `as_fable` have been
   changed to accept character vectors for specifying common attributes (such as
   response variables, and distributions).
-* Added accessor functions for column names (or metadata) of interest. This 
-  includes models in a mable (`mable_vars()`), response variables 
-  (`response_vars()`) and distribution variables (`distribution_var()`).
 * The `models` argument for `mable` and `as_mable` has been replaced with `model`
   for consistency with the lack of plural in `key`.
 * Intervals from multivariate distributions are now returned as data frames of 
