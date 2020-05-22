@@ -139,6 +139,8 @@
 <li>Added accuracy measures: <code><a href="../reference/point_accuracy_measures.html">RMSSE()</a></code>, <code><a href="../reference/interval_accuracy_measures.html">pinball_loss()</a></code>, <code><a href="../reference/interval_accuracy_measures.html">scaled_pinball_loss()</a></code>.</li>
 <li>Distributions are now provided by the distributional package, which is more space efficient and allows calculation of distributional statistics including the <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>, <code><a href="https://rdrr.io/r/stats/median.html">median()</a></code>, <code><a href="https://rdrr.io/r/stats/quantile.html">quantile()</a></code>, <code>cdf()</code>, and <code><a href="https://rdrr.io/r/stats/density.html">density()</a></code>.</li>
 <li>Progress reporting is now handled by the progressr package. This allows you to decide if, when, and how progress is reported. To show progress, wrap your code in the <code><a href="https://rdrr.io/pkg/progressr/man/with_progress.html">progressr::with_progress()</a></code> function. Progress will no longer be displayed automatically during lengthy calculations.</li>
+<li>
+<code><a href="../reference/forecast.html">forecast()</a></code> will now return an empty fable instead of erroring when no forecasts are requested.</li>
 <li>Documentation improvements.</li>
 </ul>
 </div>
@@ -167,6 +169,7 @@
 <code><a href="../reference/aggregate_key.html">aggregate_key()</a></code> no longer drops keys, instead they are kept as <aggregated>.</aggregated>
 </li>
 <li>Forecast reconciliation now works with historical data that is not temporally aligned.</li>
+<li>Fixed <code><a href="../reference/forecast.html">forecast()</a></code> producing forecasts via <code>h</code> when <code>new_data</code> does not include a given series (<a href='https://github.com/tidyverts/fabletools/issues/202'>#202</a>).</li>
 </ul>
 </div>
 </div>
