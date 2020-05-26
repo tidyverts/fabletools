@@ -274,7 +274,7 @@ accuracy <- function(object, ...){
 #' @export
 accuracy.mdl_df <- function(object, measures = point_accuracy_measures, ...){
   as_tibble(object) %>% 
-    gather(".model", "fit", !!!syms(mable_vars(object))) %>% 
+    tidyr::pivot_longer(mable_vars(object), names_to = ".model", values_to = "fit") %>% 
     mutate(fit = map(!!sym("fit"), accuracy, measures = measures, ...)) %>% 
     unnest_tbl("fit")
 }
