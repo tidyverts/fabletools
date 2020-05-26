@@ -12,6 +12,7 @@
 \alias{vec_cast.agg_vec.agg_vec}
 \alias{vec_cast.agg_vec.default}
 \alias{vec_cast.character.agg_vec}
+\alias{vec_proxy_compare.agg_vec}
 \title{Internal vctrs methods}
 \usage{
 vec_ptype2.agg_vec(x, y, ...)
@@ -33,6 +34,8 @@ vec_cast.agg_vec(x, to, ...)
 \method{vec_cast}{agg_vec.default}(x, to, ...)
 
 \method{vec_cast}{character.agg_vec}(x, to, ...)
+
+\method{vec_proxy_compare}{agg_vec}(x, to, ...)
 }
 \description{
 These methods are the extensions that allow aggregation vectors to work with

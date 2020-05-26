@@ -70,7 +70,7 @@ aggregate_key.tbl_ts <- function(.data, .spec = NULL, ..., dev = FALSE){
     agg_dt <- map(unname(key_comb), function(x){
       gd <- group_data(group_by(.data, !!sym(idx), !!!set_names(map(x, function(.) expr(agg_vec(!!sym(.)))), x)))
       agg_keys <- setdiff(kv, x)
-      agg_cols <- rep(list(agg_vec(NA_character_, aggregated = TRUE)), length(agg_keys))
+      agg_cols <- rep(list(agg_vec("", aggregated = TRUE)), length(agg_keys))
       gd[agg_keys] <- agg_cols
       gd[c(idx, kv, ".rows")]
     })
@@ -231,6 +231,11 @@ vec_cast.agg_vec.character <- function(x, to, ...) agg_vec(x)
 #' @rdname aggregation-vctrs
 #' @export
 vec_cast.character.agg_vec <- function(x, to, ...) trimws(format(x))
+
+#' @rdname aggregation-vctrs
+#' @export
+vec_proxy_compare.agg_vec <- function(x, to, ...) new_tibble(vec_data(x), nrow = vec_size(x))
+
 
 #' Is the element an aggregation of smaller data
 #' 
