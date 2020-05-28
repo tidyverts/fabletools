@@ -337,7 +337,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     mapping$group <- expr(interaction(!!!map(grp, function(x) expr(format(!!x))), sep = "/"))
   }
   
-  single_row <- filter(key_data, lengths(.rows) == 1)
+  single_row <- filter(key_data(object), lengths(.rows) == 1)
   
   out <- list()
   object <- object %>% 
