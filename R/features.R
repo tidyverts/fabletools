@@ -91,6 +91,19 @@ features_impl <- function(.tbl, .var, features, ...){
 #' @param .predicate A predicate function (or lambda expression) to be applied to the columns or a logical vector. The variables for which .predicate is or returns TRUE are selected.
 #' @param ... Additional arguments to be passed to each feature. These arguments will only be passed to features which use it in their formal arguments ([`base::formals()`]), and not via their `...`. While passing `na.rm = TRUE` to [`stats::var()`] will work, it will not for [`base::mean()`] as its formals are `x` and `...`. To more precisely pass inputs to each function, you can use lambdas in the list of features (`~ mean(., na.rm = TRUE)`).
 #'
+#' @seealso [`feature_set()`]
+#'
+#' @examples 
+#' # Provide a set of functions as a named list to features.
+#' library(tsibble)
+#' tourism %>% 
+#'   features(Trips, features = list(mean = mean, sd = sd))
+#'
+#' # Search and use useful features with `feature_set()`. 
+#' if(requireNamespace("feasts")) library(feasts)
+#' tourism %>% 
+#'   features(Trips, features = feature_set(tags = "autocorrelation"))
+#'
 #' @export
 features <- function(.tbl, .var, features, ...){
   UseMethod("features")

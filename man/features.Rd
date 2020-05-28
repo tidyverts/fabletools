@@ -36,3 +36,18 @@ Lists of available features can be found in the following pages:
 \item \link[=features_by_tag]{Features by tag}
 }
 }
+\examples{
+# Provide a set of functions as a named list to features.
+library(tsibble)
+tourism \%>\% 
+  features(Trips, features = list(mean = mean, sd = sd))
+
+# Search and use useful features with `feature_set()`. 
+if(requireNamespace("feasts")) library(feasts)
+tourism \%>\% 
+  features(Trips, features = feature_set(tags = "autocorrelation"))
+
+}
+\seealso{
+\code{\link[=feature_set]{feature_set()}}
+}
