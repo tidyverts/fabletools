@@ -385,11 +385,11 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   if(!is.null(col)){
     mapping$colour <- col
     out[[length(out) + 1]] <- geom_line(mapping = mapping, data = dplyr::anti_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
-    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = mapping, data = dplyr::semi_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE)
+    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = mapping, data = dplyr::semi_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
     out[[length(out) + 1]] <- ggplot2::labs(colour = col_nm)
   } else {
     out[[length(out) + 1]] <- geom_line(mapping = mapping, data = dplyr::anti_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
-    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = mapping, data = dplyr::semi_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE)
+    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = mapping, data = dplyr::semi_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
   }
   out
 }
