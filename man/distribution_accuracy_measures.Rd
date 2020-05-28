@@ -6,7 +6,9 @@
 \alias{CRPS}
 \alias{distribution_accuracy_measures}
 \title{Distribution accuracy measures}
-\format{An object of class \code{list} of length 2.}
+\format{
+An object of class \code{list} of length 2.
+}
 \usage{
 percentile_score(.dist, .actual, na.rm = TRUE, ...)
 

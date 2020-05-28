@@ -13,7 +13,9 @@
 \alias{ACF1}
 \alias{point_accuracy_measures}
 \title{Point estimate accuracy measures}
-\format{An object of class \code{list} of length 7.}
+\format{
+An object of class \code{list} of length 7.
+}
 \usage{
 ME(.resid, na.rm = TRUE, ...)
 

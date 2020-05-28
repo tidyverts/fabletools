@@ -7,7 +7,9 @@
 \alias{scaled_pinball_loss}
 \alias{interval_accuracy_measures}
 \title{Interval estimate accuracy measures}
-\format{An object of class \code{list} of length 1.}
+\format{
+An object of class \code{list} of length 1.
+}
 \usage{
 winkler_score(.dist, .actual, level = 95, na.rm = TRUE, ...)
 
