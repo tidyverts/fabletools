@@ -18,7 +18,6 @@ test_that("augment", {
   expect_equal(aug$.fitted, fitted(mbl_complex)$.fitted)
   expect_equal(aug$.resid, residuals(mbl_complex)$.resid)
 
-  skip("mv not supported")
   aug <- augment(mbl_mv)
   expect_equal(aug$index, rep(lung_deaths_wide_tr$index, 2))
   expect_equal(aug$.fitted, c(fitted(mbl_mv)$mdeaths, fitted(mbl_mv)$fdeaths))
@@ -38,7 +37,6 @@ test_that("glance", {
   expect_equal(gl_complex$key, rep(c("fdeaths", "mdeaths"), 2))
   expect_equal(gl_multi[-2], gl_complex[c(1,2), names(gl_multi)][-2])
   
-  skip("mv not supported")
   gl_mv <- glance(mbl_mv)
   expect_equal(NROW(gl_mv), 1)
 })
@@ -55,7 +53,6 @@ test_that("tidy", {
   expect_equal(unique(td_complex$.model), c("ets", "lm"))
   expect_equal(unique(td_complex$key), c("fdeaths", "mdeaths"))
   
-  skip("mv not supported")
   td_mv <- tidy(mbl_mv)
   expect_equal(unique(td_mv$.model), "var")
   expect_equal(unique(td_mv$.response), c("mdeaths", "fdeaths"))

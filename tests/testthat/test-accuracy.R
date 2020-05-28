@@ -37,7 +37,6 @@ test_that("In-sample accuracy", {
   expect_equal(acc_complex[1:2, -2], acc_multi[,-2])
   expect_true(!any(map_lgl(acc_complex, compose(any, is.na))))
   
-  skip("mv not supported")
   acc_mv <- accuracy(mbl_mv)
   expect_equal(
     acc_mv$.response,
