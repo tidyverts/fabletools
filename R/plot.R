@@ -273,6 +273,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   mdl_key <- object%@%"model_cn"
   fc_key <- setdiff(key_vars(object), mdl_key)
   key_data <- key_data(object)
+  key_vars <- key_vars(object)
   resp_var <- response_vars(object)
   dist_var <- distribution_var(object)
   idx <- index(object)
@@ -336,11 +337,13 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     mapping$group <- expr(interaction(!!!map(grp, function(x) expr(format(!!x))), sep = "/"))
   }
   
+  single_row <- filter(key_data, lengths(.rows) == 1)
+  
   out <- list()
   object <- object %>% 
     dplyr::mutate_if(~inherits(., "agg_vec"), compose(trimws, format))
   if(!is.null(level)){
-    interval_data <- hilo(object, level = level) %>% 
+    interval_data <- as_tibble(hilo(object, level = level)) %>% 
       tidyr::pivot_longer(paste0(level, "%"), names_to = "..unused", values_to = "hilo")
     if(length(resp_var) > 1){
       interval_data <- interval_data %>% 
@@ -349,12 +352,17 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     }
     intvl_mapping <- mapping
     intvl_mapping$hilo <- sym("hilo")
+    
     if(!is.null(col)){
       intvl_mapping$fill <- col
-      out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = interval_data, ..., inherit.aes = FALSE)
-      out[[2]] <- ggplot2::labs(fill = col_nm)
+      out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = dplyr::anti_join(interval_data, single_row, by = key_vars), ..., inherit.aes = FALSE)
+      intvl_mapping$colour <- col
+      intvl_mapping$fill <- NULL
+      out[[2]] <- distributional::geom_hilo_linerange(intvl_mapping, data = dplyr::semi_join(interval_data, single_row, by = key_vars), ..., inherit.aes = FALSE)
+      out[[3]] <- ggplot2::labs(fill = col_nm)
     } else {
-      out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = interval_data, fill = colour, ..., inherit.aes = FALSE)
+      out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = dplyr::anti_join(interval_data, single_row, by = key_vars), fill = colour, ..., inherit.aes = FALSE)
+      out[[2]] <- distributional::geom_hilo_linerange(intvl_mapping, data = dplyr::semi_join(interval_data, single_row, by = key_vars), colour = colour, ..., inherit.aes = FALSE)
     }
   }
   
@@ -373,12 +381,15 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     grp <- c(grp, mapping$linetype)
     mapping$group <- expr(interaction(!!!map(grp, function(x) expr(format(!!x))), sep = "/"))
   }
+  object <- as_tibble(object)
   if(!is.null(col)){
     mapping$colour <- col
-    out[[length(out) + 1]] <- geom_line(mapping = mapping, data = as_tibble(object), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
+    out[[length(out) + 1]] <- geom_line(mapping = mapping, data = dplyr::anti_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
+    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = mapping, data = dplyr::semi_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE)
     out[[length(out) + 1]] <- ggplot2::labs(colour = col_nm)
   } else {
-    out[[length(out) + 1]] <- geom_line(mapping = mapping, data = as_tibble(object), color = colour, ..., inherit.aes = FALSE)
+    out[[length(out) + 1]] <- geom_line(mapping = mapping, data = dplyr::anti_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
+    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = mapping, data = dplyr::semi_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE)
   }
   out
 }
