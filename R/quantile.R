@@ -266,6 +266,7 @@ length.fcdist <- function(x){
 
 #' @export
 quantile.fcdist <- function(x, probs = seq(0, 1, 0.25), ...){
+  .Deprecated("distributional::quantile")
   env <- x[[1]][[length(x[[1]])]]
   args <- transpose(x)[-length(x[[1]])]
   map(probs, function(prob){
