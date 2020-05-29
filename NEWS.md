@@ -4,7 +4,7 @@
 
 * Distributions are now provided by the distributional package, which is more
   space efficient and allows calculation of distributional statistics including
-  the `mean()`, `median()`, `quantile()`, `cdf()`, and `density()`.
+  the `mean()`, `median()`, `variance()`, `quantile()`, `cdf()` and `density()`.
 * `autoplot.fbl_ts()` and `autolayer.fbl_ts()` now accept the `point_forecast`
   argument, which is a named list of functions that describe the method used to
   obtain the point forecasts. If multiple are specified, each method will be
