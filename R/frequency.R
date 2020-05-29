@@ -37,7 +37,7 @@ common_periods.interval <- function(x){
   freq_sec <- c(year = 31557600, week = 604800, day = 86400, hour = 3600, minute = 60, second = 1,
                 millisecond = 1e-3, microsecond = 1e-6, nanosecond = 1e-9)
   nm <- names(x)[x!=0]
-  if(is_empty(x)) abort("Seasonal periods cannot be automatically identified from irregular time series.")
+  if(is_empty(x)) return(NULL)
   switch(paste(nm, collapse = ""),
          "unit" = c("none" = 1),
          "year" = c("year" = 1),
@@ -71,7 +71,7 @@ get_frequencies.numeric <- function(period, ...){
 get_frequencies.NULL <- function(period, data, ...,
                                  .auto = c("smallest", "largest", "all")){
   .auto <- match.arg(.auto)
-  frequencies <- common_periods(data)
+  frequencies <- common_periods(data) %||% 1
   if(.auto == "smallest") {
     return(frequencies[which.min(frequencies)])
   }
