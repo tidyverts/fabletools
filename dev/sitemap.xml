@@ -55,6 +55,9 @@
     <loc>https://fabletools.tidyverts.org/reference/construct_fc.html</loc>
   </url>
   <url>
+    <loc>https://fabletools.tidyverts.org/reference/dable-vctrs.html</loc>
+  </url>
+  <url>
     <loc>https://fabletools.tidyverts.org/reference/dable.html</loc>
   </url>
   <url>
@@ -119,6 +122,9 @@
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/is_aggregated.html</loc>
+  </url>
+  <url>
+    <loc>https://fabletools.tidyverts.org/reference/is_dable.html</loc>
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/is_fable.html</loc>
