@@ -47,6 +47,10 @@
   `hilo` intervals. The columns are the response variables. Similar structures 
   are returned when computing other distributional statistics like the `mean`.
 * `rbind()` methods are deprecated in favour of `bind_rows()`
+* The row order of wide to long mable operations (such as `accuracy()`) has 
+  changed (due to shift to `pivot_longer()` from `gather()`). Model column name
+  values are now nested within key values, rather than key values nested in
+  model name values.
 
 ## Bug fixes
 
