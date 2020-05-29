@@ -29,7 +29,7 @@ aggregate_key <- function(.data, .spec, ...){
 }
 
 #' @export
-aggregate_key.tbl_ts <- function(.data, .spec = NULL, ..., dev = FALSE){
+aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){#, dev = FALSE){
   .spec <- enexpr(.spec)
   if(is.null(.spec)){
     message(
@@ -56,28 +56,28 @@ aggregate_key.tbl_ts <- function(.data, .spec = NULL, ..., dev = FALSE){
   .data <- as_tibble(.data)
   
   kv <- unique(unlist(key_comb, recursive = FALSE))
-  if(dev){
-    .data <- map(unname(key_comb), function(x){
-      agg <- summarise_alt(.data, ..., 
-                           .grps = group_by_alt(.data, !!sym(idx), !!!syms(x)))
-      agg[x] <- map(agg[x], agg_vec)
-      agg_keys <- setdiff(kv, x)
-      agg[agg_keys] <- rep(list(agg_vec(NA_character_, aggregated = TRUE)), length(agg_keys))
-      agg
-    })
-    .data <- vctrs::vec_rbind(!!!.data)
-  } else {
-    agg_dt <- map(unname(key_comb), function(x){
-      gd <- group_data(group_by(.data, !!sym(idx), !!!set_names(map(x, function(.) expr(agg_vec(!!sym(.)))), x)))
-      agg_keys <- setdiff(kv, x)
-      agg_cols <- rep(list(agg_vec("", aggregated = TRUE)), length(agg_keys))
-      gd[agg_keys] <- agg_cols
-      gd[c(idx, kv, ".rows")]
-    })
-    agg_dt <- vctrs::vec_rbind(!!!agg_dt)
-    .data <- dplyr::new_grouped_df(.data, groups = agg_dt)
-    .data <- summarise(.data, ...)
-  }
+  # if(dev){
+  #   .data <- map(unname(key_comb), function(x){
+  #     agg <- summarise_alt(.data, ..., 
+  #                          .grps = group_by_alt(.data, !!sym(idx), !!!syms(x)))
+  #     agg[x] <- map(agg[x], agg_vec)
+  #     agg_keys <- setdiff(kv, x)
+  #     agg[agg_keys] <- rep(list(agg_vec(NA_character_, aggregated = TRUE)), length(agg_keys))
+  #     agg
+  #   })
+  #   .data <- vctrs::vec_rbind(!!!.data)
+  # } else {
+  agg_dt <- map(unname(key_comb), function(x){
+    gd <- group_data(group_by(.data, !!sym(idx), !!!set_names(map(x, function(.) expr(agg_vec(!!sym(.)))), x)))
+    agg_keys <- setdiff(kv, x)
+    agg_cols <- rep(list(agg_vec("", aggregated = TRUE)), length(agg_keys))
+    gd[agg_keys] <- agg_cols
+    gd[c(idx, kv, ".rows")]
+  })
+  agg_dt <- vctrs::vec_rbind(!!!agg_dt)
+  .data <- dplyr::new_grouped_df(.data, groups = agg_dt)
+  .data <- summarise(.data, ...)
+  # }
   
   # Re-order columns into index, keys, values order
   .data <- .data[c(idx, kv, setdiff(colnames(.data), c(idx,kv)))]
@@ -251,63 +251,63 @@ is_aggregated <- function(x){
 
 scale_type.agg_vec <- function(x) "discrete"
 
-# Space efficient group identifiers, storing group positions as vectors instead of lists
-group_by_alt <- function(.data, ...){
-  .data <- transmute(as_tibble(.data), ...)
-  grps <- vctrs::vec_group_id(.data)
-  list(pos = order(grps, method = "radix"), len = tabulate(grps), var = names(.data))
-}
-
-# Simplified summarise(), which uses the group identifiers from group_by_alt()
-summarise_alt <- function(.data, ..., .grps = group_by_alt(.data)){
-  .data <- as.data.frame(.data)
-  dots <- enquos(..., .named = TRUE)
-  dots_names <- names(dots)
-  
-  grp_pos <- .grps[["pos"]]
-  grp_len <- .grps[["len"]]
-  
-  n_grps <- length(grp_len)
-  grp_start <- 1 + cumsum(c(0, grp_len[-n_grps]))
-  out <- vec_slice(.data[.grps[["var"]]], grp_pos[grp_start])
-  
-  # Promise based group aware data mask (adapted from dplyr:::DataMask)
-  bindings <- env(empty_env())
-  resolved <- rep_len(TRUE, ncol(.data))
-  promise_fn <- function(index) {
-    resolved[[index]] <<- TRUE
-    vec_slice(.subset2(.data, index), rows)
-  }
-  promise_env <- get_env(promise_fn)
-  nm <- names2(.data)
-  promises <- map(seq_len(ncol(.data)), function(.x) expr(delayedAssign(!!nm[[.x]], promise_fn(!!.x), env, bindings)))
-  env <- current_env()
-  # env_bind_lazy(bindings, !!!promises)
-  mask <- new_data_mask(bindings)
-  mask$.data <- as_data_pronoun(mask)
-  
-  # Compute dots over groups
-  for(i in seq_along(dots)){
-    res <- NULL
-    dot <- dots[[i]]
-    for(grp in seq_len(n_grps)){
-      # Set groups and reset resolved promises
-      size <- grp_len[grp]
-      idx <- grp_start[grp]
-      promise_env$rows <- .subset(grp_pos, idx:(idx+size-1))
-      for(j in which(resolved)){
-        eval(promises[[j]])
-        resolved[j] <- FALSE
-      }
-      
-      # Compute and store calculation
-      val <- eval_tidy(dot, mask)
-      if(is.null(res)){
-        res <- vec_init(val, n = n_grps)
-      }
-      res[grp] <- val
-    }
-    out[names(dots)[[i]]] <- res
-  }
-  out
-}
+# # Space efficient group identifiers, storing group positions as vectors instead of lists
+# group_by_alt <- function(.data, ...){
+#   .data <- transmute(as_tibble(.data), ...)
+#   grps <- vctrs::vec_group_id(.data)
+#   list(pos = order(grps, method = "radix"), len = tabulate(grps), var = names(.data))
+# }
+# 
+# # Simplified summarise(), which uses the group identifiers from group_by_alt()
+# summarise_alt <- function(.data, ..., .grps = group_by_alt(.data)){
+#   .data <- as.data.frame(.data)
+#   dots <- enquos(..., .named = TRUE)
+#   dots_names <- names(dots)
+#   
+#   grp_pos <- .grps[["pos"]]
+#   grp_len <- .grps[["len"]]
+#   
+#   n_grps <- length(grp_len)
+#   grp_start <- 1 + cumsum(c(0, grp_len[-n_grps]))
+#   out <- vec_slice(.data[.grps[["var"]]], grp_pos[grp_start])
+#   
+#   # Promise based group aware data mask (adapted from dplyr:::DataMask)
+#   bindings <- env(empty_env())
+#   resolved <- rep_len(TRUE, ncol(.data))
+#   promise_fn <- function(index) {
+#     resolved[[index]] <<- TRUE
+#     vec_slice(.subset2(.data, index), rows)
+#   }
+#   promise_env <- get_env(promise_fn)
+#   nm <- names2(.data)
+#   promises <- map(seq_len(ncol(.data)), function(.x) expr(delayedAssign(!!nm[[.x]], promise_fn(!!.x), env, bindings)))
+#   env <- current_env()
+#   # env_bind_lazy(bindings, !!!promises)
+#   mask <- new_data_mask(bindings)
+#   mask$.data <- as_data_pronoun(mask)
+#   
+#   # Compute dots over groups
+#   for(i in seq_along(dots)){
+#     res <- NULL
+#     dot <- dots[[i]]
+#     for(grp in seq_len(n_grps)){
+#       # Set groups and reset resolved promises
+#       size <- grp_len[grp]
+#       idx <- grp_start[grp]
+#       promise_env$rows <- .subset(grp_pos, idx:(idx+size-1))
+#       for(j in which(resolved)){
+#         eval(promises[[j]])
+#         resolved[j] <- FALSE
+#       }
+#       
+#       # Compute and store calculation
+#       val <- eval_tidy(dot, mask)
+#       if(is.null(res)){
+#         res <- vec_init(val, n = n_grps)
+#       }
+#       res[grp] <- val
+#     }
+#     out[names(dots)[[i]]] <- res
+#   }
+#   out
+# }
