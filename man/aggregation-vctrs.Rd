@@ -35,7 +35,7 @@ vec_cast.agg_vec(x, to, ...)
 
 \method{vec_cast}{character.agg_vec}(x, to, ...)
 
-\method{vec_proxy_compare}{agg_vec}(x, to, ...)
+\method{vec_proxy_compare}{agg_vec}(x, ...)
 }
 \description{
 These methods are the extensions that allow aggregation vectors to work with
