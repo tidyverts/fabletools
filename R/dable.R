@@ -21,6 +21,15 @@ dable <- function(..., response, method = NULL, seasons = list(), aliases = list
   as_dable(tsbl, !!enexpr(response), method = method, seasons = seasons, aliases = aliases)
 }
 
+#' Is the object a dable
+#' 
+#' @param x An object.
+#' 
+#' @export
+is_dable <- function(x){
+  inherits(x, "dcmp_ts")
+}
+
 #' Coerce to a dable object
 #' 
 #' @inheritParams as_fable
