@@ -265,8 +265,9 @@ is_aggregated <- function(x){
   vec_data(x)[["agg"]]
 }
 
-scale_type.agg_vec <- function(x) "discrete"
-
+scale_type.agg_vec <- function(x) {
+  abort("Cannot add an aggregated vector to a plot, use format() to plot with your aggregations.")
+}
 # # Space efficient group identifiers, storing group positions as vectors instead of lists
 # group_by_alt <- function(.data, ...){
 #   .data <- transmute(as_tibble(.data), ...)
