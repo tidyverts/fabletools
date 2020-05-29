@@ -350,24 +350,12 @@ accuracy.mdl_ts <- function(object, measures = point_accuracy_measures, ...){
 #' @export
 accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..., 
                             by = NULL){
-  resp <- syms(response_vars(object))
+  resp <- response_vars(object)
   dist <- sym(distribution_var(object))
   
   if(is.null(by)){
-    by <- intersect(c(".model", ".response", key_vars(data)), colnames(object))
-  }
-  
-  if(length(resp) > 1){
-    abort("Accuracy evaluation is not currently supported for multivariate forecasts.")
-    object <- as_tsibble(object) %>% 
-      # select(!!expr(-!!attr(object, "dist"))) %>% 
-      gather(".response", "value", !!!resp, factor_key = TRUE)
-    data <- gather(data, ".response", "value", !!!resp, factor_key = TRUE)
-    resp <- sym("value")
-    by <- union(by, ".response")
-  }
-  else{
-    resp <- resp[[1]]
+    by <- intersect(c(".model", key_vars(data)), colnames(object))
+    if(length(resp) > 1) by <- c(by, ".response")
   }
   
   grp <- c(syms(by), groups(object))
@@ -391,8 +379,19 @@ accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..
   
   # Compute .fc, .dist, .actual and .resid
   object <- as_tsibble(object)
-  aug <- transmute(object, .fc = mean(!!dist), .dist = !!dist, !!!syms(by))
-  aug_dt <- transmute(data, !!index(data), .actual = !!resp)
+  
+  if(mv <- length(resp) > 1){
+    aug <- object <- tidyr::pivot_longer(
+      transmute(object, mean(!!dist), .dist = !!dist, !!!syms(intersect(by, colnames(object)))),
+      resp, names_to = ".response", values_to = ".fc")
+    aug_dt <- data <- tidyr::pivot_longer(
+      transmute(data, !!index(data), !!!syms(resp)),
+      resp, names_to = ".response", values_to = ".actual")
+    resp <- ".actual"
+  } else {
+    aug <- transmute(object, .fc = mean(!!dist), .dist = !!dist, !!!syms(by))
+    aug_dt <- transmute(data, !!index(data), .actual = !!sym(resp))
+  }
   aug <- left_join(aug, aug_dt,
       by = intersect(colnames(aug_dt), by),
       suffix = c("", ".y")
@@ -408,7 +407,7 @@ accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..
     cnds <- map2(syms(names(cnds)), cnds, function(x, y){
       if(is.na(y)) expr(is.na(!!x)) else expr(!!x == !!y)
     })
-    eval_tidy(resp, data = filter(data, !!index(data) < idx, !!!cnds))
+    eval_tidy(sym(resp), data = filter(data, !!index(data) < idx, !!!cnds))
   }
   mutual_keys <- intersect(key(data), key(object))
   mutual_keys <- set_names(mutual_keys, map_chr(mutual_keys, as_string))
