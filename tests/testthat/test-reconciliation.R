@@ -37,12 +37,12 @@ test_that("reconciliation", {
   )
   
   fit_agg <- lung_deaths_agg %>% 
-    model(aaa = fable::ETS(value ~ error("A") + trend("A") + season("A")))
+    model(ses = fable::ETS(value ~ error("A") + trend("A") + season("A")))
   fc_agg <- fit_agg %>% forecast()
-  fc_agg_reconciled <- fit_agg %>% reconcile(aaa = min_trace(aaa)) %>% forecast()
+  fc_agg_reconciled <- fit_agg %>% reconcile(ses = min_trace(ses)) %>% forecast()
   expect_equal(
-    mean(fc_agg_reconciled$value[1:24]),
-    mean(fc_agg_reconciled$value[(25:48)] + fc_agg_reconciled$value[49:72]),
+    mean(fc_agg_reconciled$value[48 + (1:24)]),
+    mean(fc_agg_reconciled$value[(1:24)] + fc_agg_reconciled$value[24 + (1:24)]),
   )
   expect_failure(
     expect_equal(
@@ -51,10 +51,10 @@ test_that("reconciliation", {
     )
   )
   
-  fc_agg_reconciled <- fit_agg %>% reconcile(aaa = min_trace(aaa, method = "wls_var")) %>% forecast()
+  fc_agg_reconciled <- fit_agg %>% reconcile(ses = min_trace(ses, method = "wls_var")) %>% forecast()
   expect_equal(
-    mean(fc_agg_reconciled$value[1:24]),
-    mean(fc_agg_reconciled$value[(25:48)] + fc_agg_reconciled$value[49:72]),
+    mean(fc_agg_reconciled$value[48 + (1:24)]),
+    mean(fc_agg_reconciled$value[(1:24)] + fc_agg_reconciled$value[24 + (1:24)])
   )
   expect_failure(
     expect_equal(
@@ -63,10 +63,10 @@ test_that("reconciliation", {
     )
   )
   
-  fc_agg_reconciled <- fit_agg %>% reconcile(aaa = min_trace(aaa, method = "ols")) %>% forecast()
+  fc_agg_reconciled <- fit_agg %>% reconcile(ses = min_trace(ses, method = "ols")) %>% forecast()
   expect_equal(
-    mean(fc_agg_reconciled$value[1:24]),
-    mean(fc_agg_reconciled$value[(25:48)] + fc_agg_reconciled$value[49:72]),
+    mean(fc_agg_reconciled$value[48 + (1:24)]),
+    mean(fc_agg_reconciled$value[(1:24)] + fc_agg_reconciled$value[24 + (1:24)])
   )
   expect_failure(
     expect_equal(
@@ -75,10 +75,10 @@ test_that("reconciliation", {
     )
   )
   
-  fc_agg_reconciled <- fit_agg %>% reconcile(aaa = min_trace(aaa, method = "mint_cov")) %>% forecast()
+  fc_agg_reconciled <- fit_agg %>% reconcile(ses = min_trace(ses, method = "mint_cov")) %>% forecast()
   expect_equal(
-    mean(fc_agg_reconciled$value[1:24]),
-    mean(fc_agg_reconciled$value[(25:48)] + fc_agg_reconciled$value[49:72]),
+    mean(fc_agg_reconciled$value[48 + (1:24)]),
+    mean(fc_agg_reconciled$value[(1:24)] + fc_agg_reconciled$value[24 + (1:24)])
   )
   expect_failure(
     expect_equal(
