@@ -344,7 +344,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     dplyr::mutate_if(~inherits(., "agg_vec"), compose(trimws, format))
   if(!is.null(level)){
     interval_data <- as_tibble(hilo(object, level = level)) %>% 
-      tidyr::pivot_longer(paste0(level, "%"), names_to = "..unused", values_to = "hilo")
+      tidyr::pivot_longer(paste0(level, "%"), names_to = NULL, values_to = "hilo")
     if(length(resp_var) > 1){
       interval_data <- interval_data %>% 
         tidyr::unpack("hilo") %>% 

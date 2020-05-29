@@ -29,7 +29,7 @@ Imports:
     rlang (>= 0.4.5),
     stats,
     dplyr (>= 0.8.99),
-    tidyr (>= 1.0.0),
+    tidyr (>= 1.1.0),
     generics,
     R6,
     utils,
