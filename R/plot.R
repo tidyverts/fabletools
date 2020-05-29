@@ -425,7 +425,7 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE, ...){
   
   .vars <- enquo(.vars)
   if(quo_is_null(.vars)){
-    .vars <- response_vars(object)
+    .vars <- sym(response_vars(object))
   }
   dcmp_str <- dcmp <- (object%@%"aliases")[[expr_name(get_expr(.vars))]]
   if(!is.null(dcmp_str)){
