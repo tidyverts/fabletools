@@ -453,7 +453,7 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE, ...){
   # Rangebars
   if (scale_bars) {
     xranges <- range(object[[expr_name(idx)]])
-    barwidth <- pmax(1, round((1 / 64) * diff(units_since(xranges))))
+    barwidth <- pmax(1, round((1 / 64) * diff(as.double(xranges))))
     
     # Avoid issues with visible bindings
     ymin <- ymax <- center <- diff <- NULL
