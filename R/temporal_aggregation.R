@@ -1,5 +1,5 @@
 # Adapted from cut.Date
-date_breaks <- function(x, breaks, start_monday = TRUE){
+date_breaks <- function(x, breaks, start_monday = TRUE, offset = TRUE){
   # Currently only dates are supported
   x <- as.Date(x)
   
@@ -76,16 +76,20 @@ date_breaks <- function(x, breaks, start_monday = TRUE){
     breaks <- breaks[seq_len(1L + max(which(breaks <= 
                                               maxx)))]
   }
+  if(offset){
+    breaks <- breaks + (x[length(x)] - breaks[length(breaks)])
+  }
   breaks
 }
 
-bin_date <- function(time, breaks){
+bin_date <- function(time, breaks, offset){
   if(is.character(breaks) && length(breaks) == 1){
-    breaks <- date_breaks(time, breaks)
+    breaks <- date_breaks(time, breaks, offset)
   }
+  bincode <- .bincode(unclass(as.Date(time)), unclass(breaks))
   list(
-    bin = breaks[.bincode(unclass(as.Date(time)), unclass(breaks))],
-    complete_size = diff(breaks)
+    bin = breaks[bincode],
+    complete_size = diff(breaks)[unique(bincode)]
   )
 }
 
@@ -119,11 +123,9 @@ bin_date <- function(time, breaks){
 #'   dplyr::summarise(Count = sum(Count)) %>% 
 #'   # Compute weekly aggregates
 #'   fabletools:::aggregate_index("1 week", Count = sum(Count))
-aggregate_index <- function(.data, .window, ..., .offset = FALSE){
-  if(.offset) abort(".offset=TRUE is not yet implemented.")
-  
+aggregate_index <- function(.data, .window, ..., .offset = TRUE){
   # Compute temporal bins and bin sizes
-  new_index <- bin_date(.data[[index_var(.data)]], .window)
+  new_index <- bin_date(.data[[index_var(.data)]], .window, .offset)
   
   as_tibble(.data) %>% 
     # Compute groups of temporal bins
