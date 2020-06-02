@@ -6,7 +6,10 @@
 \alias{fabletools-package}
 \title{fabletools: Core Tools for Packages in the 'fable' Framework}
 \description{
-Provides tools, helpers and data structures for developing models and time series functions for 'fable' and extension packages. These tools support a consistent and tidy interface for time series modelling and analysis.
+Provides tools, helpers and data structures for
+    developing models and time series functions for 'fable' and extension
+    packages. These tools support a consistent and tidy interface for time
+    series modelling and analysis.
 }
 \seealso{
 Useful links:
