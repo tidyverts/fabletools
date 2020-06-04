@@ -1,6 +1,6 @@
 Package: fabletools
 Title: Core Tools for Packages in the 'fable' Framework
-Version: 0.1.3.9000
+Version: 0.2.0
 Authors@R:
     c(person(given = "Mitchell",
              family = "O'Hara-Wild",
@@ -29,13 +29,13 @@ BugReports: https://github.com/tidyverts/fabletools/issues
 Depends:
     R (>= 3.1.3)
 Imports:
-    tsibble (>= 0.8.9.9000),
+    tsibble (>= 0.9.0),
     tibble (>= 1.4.1),
     ggplot2 (>= 3.0.0),
     tidyselect,
     rlang (>= 0.4.5),
     stats,
-    dplyr (>= 0.8.99),
+    dplyr (>= 1.0.0),
     tidyr (>= 1.1.0),
     generics,
     R6,
@@ -48,7 +48,7 @@ Suggests:
     covr,
     crayon,
     digest,
-    fable,
+    fable (>= 0.2.1),
     future.apply,
     knitr,
     methods,
@@ -58,19 +58,13 @@ Suggests:
     scales,
     spelling,
     testthat,
-    tsibbledata (>= 0.1.0.9000),
+    tsibbledata (>= 0.2.0),
     lubridate,
     SparseM
 VignetteBuilder: 
     knitr
 RdMacros: 
     lifecycle
-Remotes:
-    tidyverts/tsibble,
-    tidyverts/tsibbledata,
-    tidyverts/fable,
-    tidyverse/dplyr,
-    mitchelloharawild/distributional
 ByteCompile: true
 Encoding: UTF-8
 Language: en-GB
