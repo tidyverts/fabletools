@@ -204,11 +204,7 @@ These required variables can be provided by specifying `new_data`.",
   }
   
   new_data[[dist_col]] <- fc
-  
-  pred_col <- NULL
-  point_fc <- map(point_forecast, calc, fc)
-  if(length(resp_vars) > 1) point_fc <- map(point_fc, set_names, resp_vars)
-  point_fc <- flatten_with_names(point_fc)
+  point_fc <- compute_point_forecasts(fc, point_forecast)
   new_data[names(point_fc)] <- point_fc
   
   cn <- c(dist_col, names(point_fc))
@@ -250,6 +246,13 @@ construct_fc <- function(point, sd, dist){
   } else {
     abort("Unknown forecast distribution type to convert.")
   }
+}
+
+compute_point_forecasts <- function(distribution, measures){
+  measures <- map(measures, calc, distribution)
+  resp <- dimnames(distribution)
+  if(length(resp) > 1) measures <- map(measures, set_names, resp)
+  flatten_with_names(measures)
 }
 
 #' @export

@@ -58,10 +58,13 @@ min_trace <- function(models, method = c("wls_var", "ols", "wls_struct", "mint_c
 
 #' @importFrom utils combn
 #' @export
-forecast.lst_mint_mdl <- function(object, key_data, ...){
+forecast.lst_mint_mdl <- function(object, key_data, 
+                                  point_forecast = list(.mean = mean), ...){
   method <- object%@%"method"
   sparse <- object%@%"sparse"
   
+  point_method <- point_forecast
+  point_forecast <- list()
   # Get forecasts
   fc <- NextMethod()
   if(length(unique(map(fc, interval))) > 1){
@@ -163,8 +166,10 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   
   # Update fables
   map2(fc, fc_dist, function(fc, dist){
-    dimnames(dist) <- dimnames(fc[[expr_name(attr(fc,"dist"))]])
-    fc[[expr_name(attr(fc,"dist"))]] <- dist
+    dimnames(dist) <- dimnames(fc[[distribution_var(fc)]])
+    fc[[distribution_var(fc)]] <- dist
+    point_fc <- compute_point_forecasts(dist, point_method)
+    fc[names(point_fc)] <- point_fc
     fc
   })
 }
@@ -175,18 +180,20 @@ bottom_up <- function(models){
 
 #' @importFrom utils combn
 #' @export
-forecast.lst_btmup_mdl <- function(object, key_data, ...){
-  method <- object%@%"method"
-  
+forecast.lst_btmup_mdl <- function(object, key_data, 
+                                   point_forecast = list(.mean = mean), ...){
   # Keep only bottom layer
   S <- build_smat_rows(key_data)
   object <- object[rowSums(S) == 1]
   
-  # Get forecasts
+  point_method <- point_forecast
+  point_forecast <- list()
+  # Get base forecasts
   fc <- NextMethod()
   if(length(unique(map(fc, interval))) > 1){
     abort("Reconciliation of temporal hierarchies is not yet supported.")
   }
+  
   fc_dist <- map(fc, function(x) x[[distribution_var(x)]])
   fc_mean <- as.matrix(invoke(cbind, map(fc_dist, mean)))
   fc_var <- transpose_dbl(map(fc_dist, distributional::variance))
@@ -199,8 +206,10 @@ forecast.lst_btmup_mdl <- function(object, key_data, ...){
   
   # Update fables
   pmap(list(rep_along(fc_mean, fc[1]), fc_mean, fc_dist), function(fc, point, dist){
-    dimnames(dist) <- dimnames(fc[[expr_name(attr(fc,"dist"))]])
-    fc[[expr_name(attr(fc,"dist"))]] <- dist
+    dimnames(dist) <- dimnames(fc[[distribution_var(fc)]])
+    fc[[distribution_var(fc)]] <- dist
+    point_fc <- compute_point_forecasts(dist, point_method)
+    fc[names(point_fc)] <- point_fc
     fc
   })
 }
