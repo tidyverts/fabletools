@@ -163,6 +163,7 @@ forecast.lst_mint_mdl <- function(object, key_data, ...){
   
   # Update fables
   map2(fc, fc_dist, function(fc, dist){
+    dimnames(dist) <- dimnames(fc[[expr_name(attr(fc,"dist"))]])
     fc[[expr_name(attr(fc,"dist"))]] <- dist
     fc
   })
@@ -186,27 +187,19 @@ forecast.lst_btmup_mdl <- function(object, key_data, ...){
   if(length(unique(map(fc, interval))) > 1){
     abort("Reconciliation of temporal hierarchies is not yet supported.")
   }
-  fc_point <- fc %>% 
-    map(`[[`, expr_name(attr(fc[[1]],"response")[[1]])) %>% 
-    invoke(cbind, .) %>% 
-    as.matrix()
-  fc_var <- fc %>% 
-    map(`[[`, expr_name(attr(fc[[1]],"dist"))) %>% 
-    map(function(x){
-      if(!is_dist_normal(x)) abort("Reconciliation of non-normal forecasts is not yet supported.")
-      map_dbl(x, `[[`, "sd")^2
-    }) %>% 
-    transpose_dbl()
+  fc_dist <- map(fc, function(x) x[[distribution_var(x)]])
+  fc_mean <- as.matrix(invoke(cbind, map(fc_dist, mean)))
+  fc_var <- transpose_dbl(map(fc_dist, distributional::variance))
   
   # Apply to forecasts
-  fc_point <- as.matrix(S%*%t(fc_point))
-  fc_point <- split(fc_point, row(fc_point))
+  fc_mean <- as.matrix(S%*%t(fc_mean))
+  fc_mean <- split(fc_mean, row(fc_mean))
   fc_var <- map(fc_var, function(W) diag(S%*%diag(W)%*%t(S)))
-  fc_dist <- map2(fc_point, transpose_dbl(map(fc_var, sqrt)), dist_normal)
+  fc_dist <- map2(fc_mean, transpose_dbl(map(fc_var, sqrt)), distributional::dist_normal)
   
   # Update fables
-  pmap(list(rep_along(fc_point, fc[1]), fc_point, fc_dist), function(fc, point, dist){
-    fc[[expr_name(attr(fc,"response")[[1]])]] <- point
+  pmap(list(rep_along(fc_mean, fc[1]), fc_mean, fc_dist), function(fc, point, dist){
+    dimnames(dist) <- dimnames(fc[[expr_name(attr(fc,"dist"))]])
     fc[[expr_name(attr(fc,"dist"))]] <- dist
     fc
   })
