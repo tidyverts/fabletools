@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -83,6 +83,18 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/extension_models.html">Extending fabletools: Models</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -130,6 +142,17 @@
 <span class='fu'>MAPE</span>(<span class='no'>.resid</span>, <span class='no'>.actual</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
 
 <span class='fu'>MASE</span>(
+  <span class='no'>.resid</span>,
+  <span class='no'>.train</span>,
+  <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>.period</span>,
+  <span class='kw'>d</span> <span class='kw'>=</span> <span class='no'>.period</span> <span class='kw'>==</span> <span class='fl'>1</span>,
+  <span class='kw'>D</span> <span class='kw'>=</span> <span class='no'>.period</span> <span class='kw'>&gt;</span> <span class='fl'>1</span>,
+  <span class='no'>...</span>
+)
+
+<span class='fu'>RMSSE</span>(
   <span class='no'>.resid</span>,
   <span class='no'>.train</span>,
   <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,

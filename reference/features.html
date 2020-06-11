@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -83,6 +83,18 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/extension_models.html">Extending fabletools: Models</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -157,13 +169,56 @@
 <li><p><a href='features_by_tag.html'>Features by tag</a></p></li>
 </ul>
 
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
+    <div class='dont-index'><p><code><a href='feature_set.html'>feature_set()</a></code></p></div>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># Provide a set of functions as a named list to features.</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibble</span>)
+<span class='no'>tourism</span> <span class='kw'>%&gt;%</span>
+  <span class='fu'>features</span>(<span class='no'>Trips</span>, <span class='kw'>features</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>mean</span> <span class='kw'>=</span> <span class='no'>mean</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='no'>sd</span>))</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 304 x 5</span><span>
+#&gt;    Region         State              Purpose    mean    sd
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>              </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> Adelaide       South Australia    Business 156.   35.6 
+#&gt; </span><span style='color: #555555;'> 2</span><span> Adelaide       South Australia    Holiday  157.   27.1 
+#&gt; </span><span style='color: #555555;'> 3</span><span> Adelaide       South Australia    Other     56.6  17.3 
+#&gt; </span><span style='color: #555555;'> 4</span><span> Adelaide       South Australia    Visiting 205.   32.5 
+#&gt; </span><span style='color: #555555;'> 5</span><span> Adelaide Hills South Australia    Business   2.66  4.30
+#&gt; </span><span style='color: #555555;'> 6</span><span> Adelaide Hills South Australia    Holiday   10.5   6.37
+#&gt; </span><span style='color: #555555;'> 7</span><span> Adelaide Hills South Australia    Other      1.40  1.65
+#&gt; </span><span style='color: #555555;'> 8</span><span> Adelaide Hills South Australia    Visiting  14.2  10.7 
+#&gt; </span><span style='color: #555555;'> 9</span><span> Alice Springs  Northern Territory Business  14.6   7.20
+#&gt; </span><span style='color: #555555;'>10</span><span> Alice Springs  Northern Territory Holiday   31.9  18.1 
+#&gt; </span><span style='color: #555555;'># … with 294 more rows</span><span></div><div class='input'>
+<span class='co'># Search and use useful features with `feature_set()`. </span>
+<span class='kw'>if</span>(<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"feasts"</span>)) <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>feasts</span>)
+<span class='no'>tourism</span> <span class='kw'>%&gt;%</span>
+  <span class='fu'>features</span>(<span class='no'>Trips</span>, <span class='kw'>features</span> <span class='kw'>=</span> <span class='fu'><a href='feature_set.html'>feature_set</a></span>(<span class='kw'>tags</span> <span class='kw'>=</span> <span class='st'>"autocorrelation"</span>))</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 304 x 14</span><span>
+#&gt;    Region State Purpose     acf1 acf10 diff1_acf1 diff1_acf10 diff2_acf1
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> Adela… Sout… Busine…  0.033</span><span style='text-decoration: underline;'>3</span><span>  0.131     -</span><span style='color: #BB0000;'>0.520</span><span>       0.463     -</span><span style='color: #BB0000;'>0.676</span><span>
+#&gt; </span><span style='color: #555555;'> 2</span><span> Adela… Sout… Holiday  0.045</span><span style='text-decoration: underline;'>6</span><span>  0.372     -</span><span style='color: #BB0000;'>0.343</span><span>       0.614     -</span><span style='color: #BB0000;'>0.487</span><span>
+#&gt; </span><span style='color: #555555;'> 3</span><span> Adela… Sout… Other    0.517   1.15      -</span><span style='color: #BB0000;'>0.409</span><span>       0.383     -</span><span style='color: #BB0000;'>0.675</span><span>
+#&gt; </span><span style='color: #555555;'> 4</span><span> Adela… Sout… Visiti…  0.068</span><span style='text-decoration: underline;'>4</span><span>  0.294     -</span><span style='color: #BB0000;'>0.394</span><span>       0.452     -</span><span style='color: #BB0000;'>0.518</span><span>
+#&gt; </span><span style='color: #555555;'> 5</span><span> Adela… Sout… Busine…  0.070</span><span style='text-decoration: underline;'>9</span><span>  0.134     -</span><span style='color: #BB0000;'>0.580</span><span>       0.415     -</span><span style='color: #BB0000;'>0.750</span><span>
+#&gt; </span><span style='color: #555555;'> 6</span><span> Adela… Sout… Holiday  0.131   0.313     -</span><span style='color: #BB0000;'>0.536</span><span>       0.500     -</span><span style='color: #BB0000;'>0.716</span><span>
+#&gt; </span><span style='color: #555555;'> 7</span><span> Adela… Sout… Other    0.261   0.330     -</span><span style='color: #BB0000;'>0.253</span><span>       0.317     -</span><span style='color: #BB0000;'>0.457</span><span>
+#&gt; </span><span style='color: #555555;'> 8</span><span> Adela… Sout… Visiti…  0.139   0.117     -</span><span style='color: #BB0000;'>0.472</span><span>       0.239     -</span><span style='color: #BB0000;'>0.626</span><span>
+#&gt; </span><span style='color: #555555;'> 9</span><span> Alice… Nort… Busine…  0.217   0.367     -</span><span style='color: #BB0000;'>0.500</span><span>       0.381     -</span><span style='color: #BB0000;'>0.658</span><span>
+#&gt; </span><span style='color: #555555;'>10</span><span> Alice… Nort… Holiday -</span><span style='color: #BB0000;'>0.006</span><span style='color: #BB0000;text-decoration: underline;'>60</span><span> 2.11      -</span><span style='color: #BB0000;'>0.153</span><span>       2.11      -</span><span style='color: #BB0000;'>0.274</span><span>
+#&gt; </span><span style='color: #555555;'># … with 294 more rows, and 6 more variables: diff2_acf10 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   season_acf1 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, pacf5 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, diff1_pacf5 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, diff2_pacf5 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   season_pacf </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#details">Details</a></li>
+      <li><a href="#see-also">See also</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>

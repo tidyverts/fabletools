@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -83,6 +83,18 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/extension_models.html">Extending fabletools: Models</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -119,6 +131,21 @@
 
     <pre class="usage"><span class='fu'>winkler_score</span>(<span class='no'>.dist</span>, <span class='no'>.actual</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>95</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
 
+<span class='fu'>pinball_loss</span>(<span class='no'>.dist</span>, <span class='no'>.actual</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>95</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+
+<span class='fu'>scaled_pinball_loss</span>(
+  <span class='no'>.dist</span>,
+  <span class='no'>.actual</span>,
+  <span class='no'>.train</span>,
+  <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>95</span>,
+  <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>.period</span>,
+  <span class='kw'>d</span> <span class='kw'>=</span> <span class='no'>.period</span> <span class='kw'>==</span> <span class='fl'>1</span>,
+  <span class='kw'>D</span> <span class='kw'>=</span> <span class='no'>.period</span> <span class='kw'>&gt;</span> <span class='fl'>1</span>,
+  <span class='no'>...</span>
+)
+
 <span class='no'>interval_accuracy_measures</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -144,6 +171,28 @@
     <tr>
       <th>...</th>
       <td><p>Additional arguments for each measure.</p></td>
+    </tr>
+    <tr>
+      <th>.train</th>
+      <td><p>A vector of responses used to train the model
+(for forecast accuracy, the <code>orig_data</code> must be provided).</p></td>
+    </tr>
+    <tr>
+      <th>demean</th>
+      <td><p>Should the response be demeaned (MASE)</p></td>
+    </tr>
+    <tr>
+      <th>.period</th>
+      <td><p>The seasonal period of the data (defaulting to 'smallest' seasonal period).
+from a model, or forecasted values from the forecast.</p></td>
+    </tr>
+    <tr>
+      <th>d</th>
+      <td><p>Should the response model include a first difference?</p></td>
+    </tr>
+    <tr>
+      <th>D</th>
+      <td><p>Should the response model include a seasonal difference?</p></td>
     </tr>
     </table>
 

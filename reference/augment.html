@@ -70,7 +70,7 @@ residuals." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -84,6 +84,18 @@ residuals." />
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/extension_models.html">Extending fabletools: Models</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -148,21 +160,20 @@ residuals.</p>
 <span class='no'>aus_production</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Beer</span>) ~ <span class='fu'>error</span>(<span class='st'>"M"</span>) + <span class='fu'>trend</span>(<span class='st'>"Ad"</span>) + <span class='fu'>season</span>(<span class='st'>"A"</span>))) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/generics/man/augment.html'>augment</a></span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"response"</span>)
-}</div><div class='output co'>#&gt; <span class='warning'>Warning: 1 error encountered for ets</span>
-#&gt; <span class='warning'>[1] .data contains implicit gaps in time. You should check your data and convert implicit gaps into explicit missing values using `tsibble::fill_gaps()` if required.</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tsibble: 218 x 5 [1Q]</span><span>
+}</div><div class='output co'>#&gt; <span style='color: #555555;'># A tsibble: 218 x 5 [1Q]</span><span>
 #&gt; </span><span style='color: #555555;'># Key:       .model [1]</span><span>
-#&gt;    .model Quarter     Beer .fitted[,"log(Beer)"] .resid[,"log(Beer)"]
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;qtr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>                 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>                </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span> ets    1956-01-01  284.                    </span><span style='color: #BB0000;'>NA</span><span>                   </span><span style='color: #BB0000;'>NA</span><span>
-#&gt; </span><span style='color: #555555;'> 2</span><span> ets    1956-04-01  213.                    </span><span style='color: #BB0000;'>NA</span><span>                   </span><span style='color: #BB0000;'>NA</span><span>
-#&gt; </span><span style='color: #555555;'> 3</span><span> ets    1956-07-01  227.                    </span><span style='color: #BB0000;'>NA</span><span>                   </span><span style='color: #BB0000;'>NA</span><span>
-#&gt; </span><span style='color: #555555;'> 4</span><span> ets    1956-10-01  308.                    </span><span style='color: #BB0000;'>NA</span><span>                   </span><span style='color: #BB0000;'>NA</span><span>
-#&gt; </span><span style='color: #555555;'> 5</span><span> ets    1957-01-01  262.                    </span><span style='color: #BB0000;'>NA</span><span>                   </span><span style='color: #BB0000;'>NA</span><span>
-#&gt; </span><span style='color: #555555;'> 6</span><span> ets    1957-04-01  228.                    </span><span style='color: #BB0000;'>NA</span><span>                   </span><span style='color: #BB0000;'>NA</span><span>
-#&gt; </span><span style='color: #555555;'> 7</span><span> ets    1957-07-01  236.                    </span><span style='color: #BB0000;'>NA</span><span>                   </span><span style='color: #BB0000;'>NA</span><span>
-#&gt; </span><span style='color: #555555;'> 8</span><span> ets    1957-10-01  320.                    </span><span style='color: #BB0000;'>NA</span><span>                   </span><span style='color: #BB0000;'>NA</span><span>
-#&gt; </span><span style='color: #555555;'> 9</span><span> ets    1958-01-01  272.                    </span><span style='color: #BB0000;'>NA</span><span>                   </span><span style='color: #BB0000;'>NA</span><span>
-#&gt; </span><span style='color: #555555;'>10</span><span> ets    1958-04-01  233.                    </span><span style='color: #BB0000;'>NA</span><span>                   </span><span style='color: #BB0000;'>NA</span><span>
+#&gt;    .model Quarter  Beer .fitted .resid
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;qtr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> ets    1956 Q1  284.    267.  17.0 
+#&gt; </span><span style='color: #555555;'> 2</span><span> ets    1956 Q2  213.    224. -</span><span style='color: #BB0000;'>10.6</span><span> 
+#&gt; </span><span style='color: #555555;'> 3</span><span> ets    1956 Q3  227.    236.  -</span><span style='color: #BB0000;'>9.02</span><span>
+#&gt; </span><span style='color: #555555;'> 4</span><span> ets    1956 Q4  308.    303.   4.62
+#&gt; </span><span style='color: #555555;'> 5</span><span> ets    1957 Q1  262.    272.  -</span><span style='color: #BB0000;'>9.61</span><span>
+#&gt; </span><span style='color: #555555;'> 6</span><span> ets    1957 Q2  228.    218.   9.96
+#&gt; </span><span style='color: #555555;'> 7</span><span> ets    1957 Q3  236.    234.   2.34
+#&gt; </span><span style='color: #555555;'> 8</span><span> ets    1957 Q4  320.    306.  13.6 
+#&gt; </span><span style='color: #555555;'> 9</span><span> ets    1958 Q1  272.    273.  -</span><span style='color: #BB0000;'>1.49</span><span>
+#&gt; </span><span style='color: #555555;'>10</span><span> ets    1958 Q2  233.    225.   7.90
 #&gt; </span><span style='color: #555555;'># … with 208 more rows</span><span></div><div class='input'>
 </div></span></pre>
   </div>

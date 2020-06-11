@@ -73,7 +73,7 @@ list column itself (lst_mdl) describes how these models are related." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -87,6 +87,18 @@ list column itself (lst_mdl) describes how these models are related." />
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/extension_models.html">Extending fabletools: Models</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -125,17 +137,22 @@ must contain at least one column of time series models (<code>mdl_ts</code>), wh
 list column itself (<code>lst_mdl</code>) describes how these models are related.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mable</span>(<span class='no'>...</span>, <span class='kw'>key</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>models</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>mable</span>(<span class='no'>...</span>, <span class='kw'>key</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>...</th>
-      <td><p>A set of name-value pairs. Arguments are evaluated sequentially,
-so you can refer to previously created elements. These arguments are
+      <td><p>&lt;<code><a href='https://rlang.r-lib.org/reference/dyn-dots.html'>dynamic-dots</a></code>&gt;
+A set of name-value pairs. These arguments are
 processed with <code><a href='https://rlang.r-lib.org/reference/nse-defuse.html'>rlang::quos()</a></code> and support unquote via <code>!!</code> and
-unquote-splice via <code>!!!</code>. Use <code>:=</code> to create columns that start with a dot.</p></td>
+unquote-splice via <code>!!!</code>. Use <code>:=</code> to create columns that start with a dot.</p>
+<p>Arguments are evaluated sequentially.
+You can refer to previously created elements directly or using the .data
+pronoun.
+An existing <code>.data</code> pronoun, provided e.g. inside <code><a href='https://dplyr.tidyverse.org/reference/mutate.html'>dplyr::mutate()</a></code>,
+is not available.</p></td>
     </tr>
     <tr>
       <th>key</th>
@@ -144,10 +161,6 @@ unquote-splice via <code>!!!</code>. Use <code>:=</code> to create columns that 
     <tr>
       <th>model</th>
       <td><p>Identifiers for the columns containing model(s).</p></td>
-    </tr>
-    <tr>
-      <th>models</th>
-      <td><p>Deprecated in favour of the model argument.</p></td>
     </tr>
     </table>
 

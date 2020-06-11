@@ -70,7 +70,7 @@ each model in the mable." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -84,6 +84,18 @@ each model in the mable." />
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/extension_models.html">Extending fabletools: Models</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -153,15 +165,9 @@ each model in the mable.</p>
 <span class='no'>olympic_running</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>lm</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Time</span>) ~ <span class='fu'>trend</span>())) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/generics/man/tidy.html'>tidy</a></span>()
-}</div><div class='output co'>#&gt; <span class='message'>New names:</span>
-#&gt; <span class='message'>* tidied1 -&gt; tidied1...1</span>
-#&gt; <span class='message'>* tidied2 -&gt; tidied2...2</span>
-#&gt; <span class='message'>* tidied1 -&gt; tidied1...3</span>
-#&gt; <span class='message'>* tidied2 -&gt; tidied2...4</span>
-#&gt; <span class='message'>* tidied1 -&gt; tidied1...5</span>
-#&gt; <span class='message'>* ...</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 28 x 8</span><span>
+}</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 28 x 8</span><span>
 #&gt;    Length Sex   .model term        estimate std.error statistic  p.value
-#&gt;  </span><span style='color: #555555;'>*</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt;     </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span>    100 men   lm     (Intercept)  2.41     0.008</span><span style='text-decoration: underline;'>13</span><span>     297.   2.01</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-47</span><span>
 #&gt; </span><span style='color: #555555;'> 2</span><span>    100 men   lm     trend()     -</span><span style='color: #BB0000;'>0.004</span><span style='color: #BB0000;text-decoration: underline;'>82</span><span>  0.000</span><span style='text-decoration: underline;'>429</span><span>    -</span><span style='color: #BB0000;'>11.2</span><span>  1.78</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-11</span><span>
 #&gt; </span><span style='color: #555555;'> 3</span><span>    100 women lm     (Intercept)  2.52     0.014</span><span style='text-decoration: underline;'>3</span><span>      176.   5.28</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-32</span><span>

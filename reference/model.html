@@ -75,7 +75,7 @@ in the mable identifies a single model." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -89,6 +89,18 @@ in the mable identifies a single model." />
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/extension_models.html">Extending fabletools: Models</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -183,16 +195,13 @@ according to that plan.</p>
     <span class='kw'>snaive</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/RW.html'>SNAIVE</a></span>(<span class='no'>Turnover</span>),
     <span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Turnover</span>) ~ <span class='fu'>error</span>(<span class='st'>"A"</span>) + <span class='fu'>trend</span>(<span class='st'>"A"</span>) + <span class='fu'>season</span>(<span class='st'>"A"</span>)),
   )
-}</div><div class='output co'>#&gt; <span class='warning'>Warning: 1 error encountered for ets</span>
-#&gt; <span class='warning'>[1] .data contains implicit gaps in time. You should check your data and convert implicit gaps into explicit missing values using `tsibble::fill_gaps()` if required.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: 3 errors (1 unique) encountered for snaive</span>
-#&gt; <span class='warning'>[3] .data contains implicit gaps in time. You should check your data and convert implicit gaps into explicit missing values using `tsibble::fill_gaps()` if required.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: 3 errors (1 unique) encountered for ets</span>
-#&gt; <span class='warning'>[3] .data contains implicit gaps in time. You should check your data and convert implicit gaps into explicit missing values using `tsibble::fill_gaps()` if required.</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A mable: 3 x 4</span><span>
+}</div><div class='output co'>#&gt; <span style='color: #555555;'># A mable: 3 x 4</span><span>
 #&gt; </span><span style='color: #555555;'># Key:     State, Industry [3]</span><span>
-#&gt;   State           Industry             snaive          ets
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #555555;font-style: italic;'>&lt;model&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;model&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> New South Wales Food retailing &lt;NULL model&gt; &lt;NULL model&gt;
-#&gt; </span><span style='color: #555555;'>2</span><span> Queensland      Food retailing &lt;NULL model&gt; &lt;NULL model&gt;
-#&gt; </span><span style='color: #555555;'>3</span><span> Victoria        Food retailing &lt;NULL model&gt; &lt;NULL model&gt;</div><div class='input'>
+#&gt;   State           Industry         snaive          ets
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;model&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;model&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span> New South Wales Food retailing &lt;SNAIVE&gt; &lt;ETS(A,A,A)&gt;
+#&gt; </span><span style='color: #555555;'>2</span><span> Queensland      Food retailing &lt;SNAIVE&gt; &lt;ETS(A,A,A)&gt;
+#&gt; </span><span style='color: #555555;'>3</span><span> Victoria        Food retailing &lt;SNAIVE&gt; &lt;ETS(A,A,A)&gt;</div><div class='input'>
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

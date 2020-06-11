@@ -13,6 +13,9 @@
     <loc>https://fabletools.tidyverts.org/reference/aggregate_key.html</loc>
   </url>
   <url>
+    <loc>https://fabletools.tidyverts.org/reference/aggregation-vctrs.html</loc>
+  </url>
+  <url>
     <loc>https://fabletools.tidyverts.org/reference/as-dable.html</loc>
   </url>
   <url>
@@ -52,6 +55,9 @@
     <loc>https://fabletools.tidyverts.org/reference/construct_fc.html</loc>
   </url>
   <url>
+    <loc>https://fabletools.tidyverts.org/reference/dable-vctrs.html</loc>
+  </url>
+  <url>
     <loc>https://fabletools.tidyverts.org/reference/dable.html</loc>
   </url>
   <url>
@@ -61,10 +67,16 @@
     <loc>https://fabletools.tidyverts.org/reference/distribution_accuracy_measures.html</loc>
   </url>
   <url>
+    <loc>https://fabletools.tidyverts.org/reference/distribution_var.html</loc>
+  </url>
+  <url>
     <loc>https://fabletools.tidyverts.org/reference/distributions.html</loc>
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/estimate.html</loc>
+  </url>
+  <url>
+    <loc>https://fabletools.tidyverts.org/reference/fable-vctrs.html</loc>
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/fable.html</loc>
@@ -100,16 +112,7 @@
     <loc>https://fabletools.tidyverts.org/reference/generate.mdl_df.html</loc>
   </url>
   <url>
-    <loc>https://fabletools.tidyverts.org/reference/geom_forecast.html</loc>
-  </url>
-  <url>
     <loc>https://fabletools.tidyverts.org/reference/glance.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/guide-helpers.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/guide_level.html</loc>
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/interpolate.html</loc>
@@ -121,6 +124,9 @@
     <loc>https://fabletools.tidyverts.org/reference/is_aggregated.html</loc>
   </url>
   <url>
+    <loc>https://fabletools.tidyverts.org/reference/is_dable.html</loc>
+  </url>
+  <url>
     <loc>https://fabletools.tidyverts.org/reference/is_fable.html</loc>
   </url>
   <url>
@@ -130,7 +136,13 @@
     <loc>https://fabletools.tidyverts.org/reference/is_model.html</loc>
   </url>
   <url>
+    <loc>https://fabletools.tidyverts.org/reference/mable-vctrs.html</loc>
+  </url>
+  <url>
     <loc>https://fabletools.tidyverts.org/reference/mable.html</loc>
+  </url>
+  <url>
+    <loc>https://fabletools.tidyverts.org/reference/mable_vars.html</loc>
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/min_trace.html</loc>
@@ -193,7 +205,7 @@
     <loc>https://fabletools.tidyverts.org/reference/response.html</loc>
   </url>
   <url>
-    <loc>https://fabletools.tidyverts.org/reference/scale_level.html</loc>
+    <loc>https://fabletools.tidyverts.org/reference/response_vars.html</loc>
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/stream.html</loc>
@@ -209,5 +221,8 @@
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/validate_formula.html</loc>
+  </url>
+  <url>
+    <loc>https://fabletools.tidyverts.org/articles/extension_models.html</loc>
   </url>
 </urlset>

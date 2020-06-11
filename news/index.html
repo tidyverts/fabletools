@@ -67,7 +67,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -81,6 +81,18 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/extension_models.html">Extending fabletools: Models</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -110,32 +122,78 @@
       <small>Source: <a href='https://github.com/tidyverts/fabletools/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="fabletools-development-version" class="section level1">
+    <div id="fabletools-020" class="section level1">
 <h1 class="page-header">
-<a href="#fabletools-development-version" class="anchor"></a>fabletools (development version)<small> Unreleased </small>
+<a href="#fabletools-020" class="anchor"></a>fabletools 0.2.0<small> Unreleased </small>
 </h1>
 <div id="improvements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#improvements" class="anchor"></a>Improvements</h2>
 <ul>
-<li>Documentation improvements</li>
+<li>Distributions are now provided by the distributional package, which is more space efficient and allows calculation of distributional statistics including the <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>, <code><a href="https://rdrr.io/r/stats/median.html">median()</a></code>, <code>variance()</code>, <code><a href="https://rdrr.io/r/stats/quantile.html">quantile()</a></code>, <code>cdf()</code> and <code><a href="https://rdrr.io/r/stats/density.html">density()</a></code>.</li>
+<li>
+<code><a href="../reference/autoplot.fbl_ts.html">autoplot.fbl_ts()</a></code> and <code><a href="../reference/autoplot.fbl_ts.html">autolayer.fbl_ts()</a></code> now accept the <code>point_forecast</code> argument, which is a named list of functions that describe the method used to obtain the point forecasts. If multiple are specified, each method will be identified using the <code>linetype</code>.</li>
+<li>Improved dplyr support. You can now use <code>bind_*()</code> and <code>*_join()</code> operations on mables, dables, and fables. More verbs are supported by these extension data classes, and so behaviour should work closer to what is expected.</li>
+<li>Progress reporting is now handled by the progressr package. This allows you to decide if, when, and how progress is reported. To show progress, wrap your code in the <code><a href="https://rdrr.io/pkg/progressr/man/with_progress.html">progressr::with_progress()</a></code> function. Progress will no longer be displayed automatically during lengthy calculations.</li>
+<li>Added accuracy measures: <code><a href="../reference/point_accuracy_measures.html">RMSSE()</a></code>, <code><a href="../reference/interval_accuracy_measures.html">pinball_loss()</a></code>, <code><a href="../reference/interval_accuracy_measures.html">scaled_pinball_loss()</a></code>.</li>
+<li>Added accessor functions for column names (or metadata) of interest. This includes models in a mable (<code><a href="../reference/mable_vars.html">mable_vars()</a></code>), response variables (<code><a href="../reference/response_vars.html">response_vars()</a></code>) and distribution variables (<code><a href="../reference/distribution_var.html">distribution_var()</a></code>).</li>
+<li>Improved support for streaming data to models with transformed response variables.</li>
+<li>
+<code>hilo.fbl_ts()</code> now keeps existing columns of a fable.</li>
+<li>
+<code><a href="../reference/forecast.html">forecast()</a></code> will now return an empty fable instead of erroring when no forecasts are requested.</li>
+<li>Added support for combinations of non-normal forecasts, which produces mean point forecasts only.</li>
+<li>Documentation improvements.</li>
 </ul>
 </div>
 <div id="breaking-changes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#breaking-changes" class="anchor"></a>Breaking changes</h2>
 <ul>
+<li>The fable returned by <code><a href="../reference/forecast.html">forecast()</a></code> now stores the distribution in the column named the response variable (previously, this was the point forecast). Point forecasts are now stored in the <code>.mean</code> column, which can be customised using the <code>point_forecast</code> argument.</li>
 <li>The <code>bias_adjust</code> option for forecast() is replaced by <code>point_forecast</code>, allowing you to specify which point forecast measures to display (fable/<a href='https://github.com/tidyverts/fabletools/issues/226'>#226</a>). This has been done to reduce confusion around the argument’s usage, disambiguate the returned point forecast’s meaning, and also allow users to specify which (if any) point forecasts to provide.</li>
+<li>The data coercion functions <code>as_mable</code>, <code>as_dable</code>, and <code>as_fable</code> have been changed to accept character vectors for specifying common attributes (such as response variables, and distributions).</li>
+<li>The <code>models</code> argument for <code>mable</code> and <code>as_mable</code> has been replaced with <code>model</code> for consistency with the lack of plural in <code>key</code>.</li>
+<li>Intervals from multivariate distributions are now returned as data frames of <code>hilo</code> intervals. The columns are the response variables. Similar structures are returned when computing other distributional statistics like the <code>mean</code>.</li>
+<li>
+<code><a href="https://rdrr.io/r/base/cbind.html">rbind()</a></code> methods are deprecated in favour of <code>bind_rows()</code>
+</li>
+<li>The row order of wide to long mable operations (such as <code><a href="../reference/accuracy.html">accuracy()</a></code>) has changed (due to shift to <code>pivot_longer()</code> from <code>gather()</code>). Model column name values are now nested within key values, rather than key values nested in model name values.</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
 <ul>
-<li>Fixed <code>show_gap</code> option not working when more than one forecast is plotted</li>
+<li>Fixed <code>show_gap</code> option not working when more than one forecast is plotted.</li>
+<li>Fixed <code><a href="https://ggplot2.tidyverse.org/reference/autolayer.html">autolayer()</a></code> plotting issues due to inherited aesthetics.</li>
 <li>
-<code><a href="../reference/aggregate_key.html">aggregate_key()</a></code> no longer drops key variables, instead they are kept as <aggregated></aggregated>
+<code><a href="../reference/aggregate_key.html">aggregate_key()</a></code> no longer drops keys, instead they are kept as <aggregated>.</aggregated>
 </li>
+<li>Forecast reconciliation now works with historical data that is not temporally aligned.</li>
+<li>Fixed <code><a href="../reference/forecast.html">forecast()</a></code> producing forecasts via <code>h</code> when <code>new_data</code> does not include a given series (<a href='https://github.com/tidyverts/fabletools/issues/202'>#202</a>).</li>
+</ul>
+</div>
+</div>
+    <div id="fabletools-013" class="section level1">
+<h1 class="page-header">
+<a href="#fabletools-013" class="anchor"></a>fabletools 0.1.3<small> 2020-03-24 </small>
+</h1>
+<div id="improvements-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#improvements-1" class="anchor"></a>Improvements</h2>
+<ul>
+<li>Better support for tidyverse packages using vctrs.</li>
+<li>Performance improvements for reconciliation and parsing.</li>
+<li>
+<code>xreg()</code> can now be called directly as a special.</li>
+</ul>
+</div>
+<div id="bug-fixes-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h2>
+<ul>
+<li>Fixed <code><a href="../reference/accuracy.html">accuracy.fbl_ts()</a></code> error when certain names were used in the fable.</li>
 </ul>
 </div>
 </div>
@@ -143,9 +201,9 @@
 <h1 class="page-header">
 <a href="#fabletools-012" class="anchor"></a>fabletools 0.1.2<small> 2020-01-29 </small>
 </h1>
-<div id="improvements-1" class="section level2">
+<div id="improvements-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements-1" class="anchor"></a>Improvements</h2>
+<a href="#improvements-2" class="anchor"></a>Improvements</h2>
 <ul>
 <li>Added MAAPE accuracy measure.</li>
 <li>Added support for exogenous regressors in decomposition models.</li>
@@ -160,9 +218,9 @@
 <li>Decompositions are now treated as models. To access the decomposed values, you will now have to use <code><a href="https://rdrr.io/pkg/generics/man/components.html">components()</a></code>. For example, <code>tourism %&gt;% STL(Trips)</code> is now <code>tourism %&gt;% model(STL(Trips)) %&gt;% components()</code>. This change allows for more flexible decomposition specifications, and better interfaces for decomposition modelling.</li>
 </ul>
 </div>
-<div id="bug-fixes-1" class="section level2">
+<div id="bug-fixes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Fixed <code>select.mdl_df()</code> usage with negative select values (<a href='https://github.com/tidyverts/fabletools/issues/120'>#120</a>).</li>
 <li>Fixed <code><a href="../reference/features.html">features()</a></code> for a tsibble with key variables but only one series.</li>
@@ -182,9 +240,9 @@
 <li>Updated method names available for <code><a href="../reference/min_trace.html">min_trace()</a></code> reconciliation (<a href='https://github.com/GeorgeAthana'>@GeorgeAthana</a>).</li>
 </ul>
 </div>
-<div id="improvements-2" class="section level2">
+<div id="improvements-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements-2" class="anchor"></a>Improvements</h2>
+<a href="#improvements-3" class="anchor"></a>Improvements</h2>
 <ul>
 <li>Improved error messaging for failing features.</li>
 <li>Added Continuous Ranked Probability Score (<code><a href="../reference/distribution_accuracy_measures.html">CRPS()</a></code>) accuracy measure.</li>
@@ -194,9 +252,9 @@
 <li>Documentation improvements.</li>
 </ul>
 </div>
-<div id="bug-fixes-2" class="section level2">
+<div id="bug-fixes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-3" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Added failure condition for disjoint reconciliation graphs.</li>
 </ul>
@@ -235,7 +293,7 @@
 <a href="#forecasting" class="anchor"></a>Forecasting</h3>
 <ul>
 <li>Added <code><a href="../reference/forecast.html">forecast()</a></code>, which allows you to produce future predictions of a time series from fitted models. The methods provided in fabletools handle the application of new data (such as the future index or exogenous regressors) to model specials, giving a simple and consistent interface to forecasting any model. The forecast methods will automatically backtransform and bias adjust any transformations specified in the model formula. This function returns a fable (<code>fbl_ts</code>) object.</li>
-<li>Added a forecast distribution class (<code>fcdist</code>) which is used to describe the distribution of forecasts. Common forecast distributions have been added to the package, including the normal distribution (<code><a href="../reference/distributions.html">dist_normal()</a></code>), multivariate normal (<code><a href="../reference/distributions.html">dist_mv_normal()</a></code>) and simulated/sampled distributions (<code><a href="../reference/distributions.html">dist_sim()</a></code>). In addition to this, <code><a href="../reference/distributions.html">dist_unknown()</a></code> is available for methods that don’t support distributional forecasts. A new distribution can be added using the <code><a href="../reference/fcdist.html">new_fcdist()</a></code> function. The forecast distribution class handles transformations on the distribution, and is used to create forecast intervals of the <code>hilo</code> class using the <code>hilo()</code> function. Mathematical operations on the normal distribution are supported.</li>
+<li>Added a forecast distribution class (<code>fcdist</code>) which is used to describe the distribution of forecasts. Common forecast distributions have been added to the package, including the normal distribution (<code><a href="../reference/distributions.html">dist_normal()</a></code>), multivariate normal (<code><a href="../reference/distributions.html">dist_mv_normal()</a></code>) and simulated/sampled distributions (<code><a href="../reference/distributions.html">dist_sim()</a></code>). In addition to this, <code><a href="../reference/distributions.html">dist_unknown()</a></code> is available for methods that don’t support distributional forecasts. A new distribution can be added using the <code><a href="../reference/fcdist.html">new_fcdist()</a></code> function. The forecast distribution class handles transformations on the distribution, and is used to create forecast intervals of the <code>hilo</code> class using the <code><a href="https://rdrr.io/pkg/distributional/man/hilo.html">hilo()</a></code> function. Mathematical operations on the normal distribution are supported.</li>
 <li>Added tools for working with transformations in models, including automatic back-transformation, transformation classes (<code><a href="../reference/new_transformation.html">new_transformation()</a></code>), and bias adjustment (<code><a href="../reference/bias_adjust.html">bias_adjust()</a></code>) methods.</li>
 <li>Added <code><a href="../reference/aggregate_key.html">aggregate_key()</a></code>, which is used to compute all levels of aggregation in a specified key structure. It supports nested structures using <code>parent / key</code> and crossed structures using <code>keyA * keyB</code>.</li>
 <li>Added support for forecast reconciliation using <code><a href="../reference/reconcile.html">reconcile()</a></code>. This function modifies the way in which forecasts from a model column are combined to give coherent forecasts. In this version the MinT (<code><a href="../reference/min_trace.html">min_trace()</a></code>) reconciliation technique is available. This is commonly used in combination with <code><a href="../reference/aggregate_key.html">aggregate_key()</a></code>.</li>
@@ -282,7 +340,8 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#fabletools-development-version">development version</a></li>
+        <li><a href="#fabletools-020">0.2.0</a></li>
+        <li><a href="#fabletools-013">0.1.3</a></li>
         <li><a href="#fabletools-012">0.1.2</a></li>
         <li><a href="#fabletools-011">0.1.1</a></li>
         <li><a href="#fabletools-010">0.1.0</a></li>

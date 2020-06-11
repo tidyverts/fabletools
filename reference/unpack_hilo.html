@@ -70,7 +70,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -84,6 +84,18 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/extension_models.html">Extending fabletools: Models</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -119,7 +131,7 @@
 "upper", and "level".</p>
     </div>
 
-    <pre class="usage"><span class='fu'>unpack_hilo</span>(<span class='no'>data</span>, <span class='no'>cols</span>, <span class='kw'>names_sep</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>names_repair</span> <span class='kw'>=</span> <span class='st'>"check_unique"</span>)</pre>
+    <pre class="usage"><span class='fu'>unpack_hilo</span>(<span class='no'>data</span>, <span class='no'>cols</span>, <span class='kw'>names_sep</span> <span class='kw'>=</span> <span class='st'>"_"</span>, <span class='kw'>names_repair</span> <span class='kw'>=</span> <span class='st'>"check_unique"</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -134,11 +146,15 @@
     </tr>
     <tr>
       <th>names_sep</th>
-      <td><p>If <code>NULL</code>, the default, the names of new columns will
-come directly from the inner data frame.</p>
-<p>If a string, the names of the new columns will be formed by pasting
-together the outer column name with the inner names, separated by
-<code>names_sep</code>.</p></td>
+      <td><p>If <code>NULL</code>, the default, the names will be left
+as is. In <code>pack()</code>, inner names will come from the former outer names;
+in <code>unpack()</code>, the new outer names will come from the inner names.</p>
+<p>If a string, the inner and outer names will be used together. In <code>pack()</code>,
+the names of the new outer columns will be formed by pasting together the
+outer and the inner column names, separated by <code>names_sep</code>. In <code>unpack()</code>,
+the new inner names will have the outer names (+ <code>names_sep</code>) automatically
+stripped. This makes <code>names_sep</code> roughly symmetric between packing
+and unpacking.</p></td>
     </tr>
     <tr>
       <th>names_repair</th>
@@ -153,7 +169,7 @@ names. Must be one of the following options:</p><ul>
 <li><p>a formula: a purrr-style anonymous function (see <code><a href='https://rlang.r-lib.org/reference/as_function.html'>rlang::as_function()</a></code>)</p></li>
 </ul>
 
-<p>See <code><a href='https://rdrr.io/pkg/vctrs/man/vec_as_names.html'>vctrs::vec_as_names()</a></code> for more details on these terms and the
+<p>See <code><a href='https://vctrs.r-lib.org/reference/vec_as_names.html'>vctrs::vec_as_names()</a></code> for more details on these terms and the
 strategies used to enforce them.</p></td>
     </tr>
     </table>
