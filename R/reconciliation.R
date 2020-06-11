@@ -32,7 +32,9 @@ reconcile.mdl_df <- function(.data, ...){
 #' Minimum trace forecast reconciliation
 #' 
 #' Reconciles a hierarchy using the minimum trace combination method. The 
-#' response variable of the hierarchy must be aggregated using sums.
+#' response variable of the hierarchy must be aggregated using sums. The 
+#' forecasted time points must match for all series in the hierarchy (caution:
+#' this is not yet tested for beyond the series length).
 #' 
 #' @param models A column of models in a mable.
 #' @param method The reconciliation method to use.
@@ -59,6 +61,7 @@ min_trace <- function(models, method = c("wls_var", "ols", "wls_struct", "mint_c
 #' @importFrom utils combn
 #' @export
 forecast.lst_mint_mdl <- function(object, key_data, 
+                                  new_data = NULL, h = NULL,
                                   point_forecast = list(.mean = mean), ...){
   method <- object%@%"method"
   sparse <- object%@%"sparse"
