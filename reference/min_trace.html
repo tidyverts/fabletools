@@ -37,7 +37,9 @@
 
 <meta property="og:title" content="Minimum trace forecast reconciliation — min_trace" />
 <meta property="og:description" content="Reconciles a hierarchy using the minimum trace combination method. The
-response variable of the hierarchy must be aggregated using sums." />
+response variable of the hierarchy must be aggregated using sums. The
+forecasted time points must match for all series in the hierarchy (caution:
+this is not yet tested for beyond the series length)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -128,7 +130,9 @@ response variable of the hierarchy must be aggregated using sums." />
 
     <div class="ref-description">
     <p>Reconciles a hierarchy using the minimum trace combination method. The
-response variable of the hierarchy must be aggregated using sums.</p>
+response variable of the hierarchy must be aggregated using sums. The
+forecasted time points must match for all series in the hierarchy (caution:
+this is not yet tested for beyond the series length).</p>
     </div>
 
     <pre class="usage"><span class='fu'>min_trace</span>(
