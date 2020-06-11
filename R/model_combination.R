@@ -246,21 +246,24 @@ forecast.model_combination <- function(object, new_data, specials, ...){
     fc_cov <- 0
   }
   object[mdls] <- map(object[mdls], forecast, new_data = new_data, ...)
+  object[mdls] <- map(object[mdls], function(x) x[[distribution_var(x)]])
   
   if(all(mdls)){
     fc_sd <- object %>% 
-      map(function(x) sqrt(distributional::variance(x[[expr_name(attr(x,"dist"))]]))) %>% 
+      map(function(x) sqrt(distributional::variance(x))) %>% 
       transpose_dbl()
     fc_cov <- suppressWarnings(stats::cov2cor(fc_cov))
     fc_cov[!is.finite(fc_cov)] <- 0 # In case of perfect forecasts
     fc_cov <- map_dbl(fc_sd, function(sigma) (diag(sigma)%*%fc_cov%*%t(diag(sigma)))[1,2])
   }
   
-  get_attr_col <- function(x, col) if(is_fable(x)) x[[expr_name(attr(x, col))]] else x 
-  # var(x) + var(y) + 2*cov(x,y)
-  .dist <- eval_tidy(expr, map(object, get_attr_col, "dist"))
-  if(inherits(.dist[[1]], "dist_normal")){ # Improve check to ensure all distributions are normal
+  is_normal <- map_lgl(object[mdls], function(x) inherits(x[[1]], "dist_normal"))
+  if(all(is_normal)){ # Improve check to ensure all distributions are normal
+    .dist <- eval_tidy(expr, object)
+    # var(x) + var(y) + 2*cov(x,y)
     .dist <- distributional::dist_normal(mean(.dist), sqrt(distributional::variance(.dist) + 2*fc_cov))
+  } else {
+    .dist <- distributional::dist_degenerate(eval_tidy(expr, map(object, mean)))
   }
   
   .dist

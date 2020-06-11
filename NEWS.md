@@ -25,6 +25,8 @@
 * `hilo.fbl_ts()` now keeps existing columns of a fable.
 * `forecast()` will now return an empty fable instead of erroring when no
   forecasts are requested.
+* Added support for combinations of non-normal forecasts, which produces mean
+  point forecasts only.
 * Documentation improvements.
 
 ## Breaking changes
