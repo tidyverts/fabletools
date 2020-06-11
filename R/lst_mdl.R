@@ -8,5 +8,5 @@ type_sum.lst_mdl <- function(x){
 
 #' @export
 format.lst_mdl <- function(x, ...){
-  x %>% map_chr(model_sum) %>% map(function(x) paste0("<", x, ">"))
+  map_chr(x, function(x) paste0("<", model_sum(x), ">"))
 }
