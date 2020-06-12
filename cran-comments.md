@@ -1,4 +1,5 @@
-This submission resolves issues with a soon to be released version of tibble.
+This submission resolves check issues introduced by the dplyr v1.0.0  and
+tsibble v0.9.0 release.
 
 ## Test environments
 * local ubuntu 18.04 install, R 3.6.3
@@ -11,8 +12,14 @@ This submission resolves issues with a soon to be released version of tibble.
 
 0 errors | 0 warnings | 0 notes
 
+Passing checks requires v0.2.1 of the suggested package fable, which has been
+submitted to CRAN. This is due to upstream changes in the tsibble package, which
+has broken a fabletools example which used fable as a suggested package. If an
+older version of fable is used for checking fabletools, this error will occur:
+> `levels.yearquarter()` not supported.
+
 ## revdep checks
 
-All revdeps have been checked. All changes to worse (in fpp3 and feasts) are due
-to upstream changes in tsibble v0.9.0, and have fixed versions ready for 
-submission.
+All revdeps have been checked. All changes to worse are due to upstream changes
+in tsibble v0.9.0 and dplyr v1.0.0. These packages have fixed versions ready for 
+submission once fabletools is accepted.
