@@ -27,6 +27,8 @@
   forecasts are requested.
 * Added support for combinations of non-normal forecasts, which produces mean
   point forecasts only.
+* Added support for reconciling non-normal forecasts, which produces reconciled
+  point forecasts only.
 * Documentation improvements.
 
 ## Breaking changes

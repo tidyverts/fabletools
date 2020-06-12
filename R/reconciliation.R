@@ -74,6 +74,8 @@ forecast.lst_mint_mdl <- function(object, key_data,
     abort("Reconciliation of temporal hierarchies is not yet supported.")
   }
   fc_dist <- map(fc, function(x) x[[distribution_var(x)]])
+  is_normal <- all(map_lgl(fc_dist, function(x) inherits(x[[1]], "dist_normal")))
+  
   fc_mean <- as.matrix(invoke(cbind, map(fc_dist, mean)))
   fc_var <- transpose_dbl(map(fc_dist, distributional::variance))
   
@@ -164,8 +166,12 @@ forecast.lst_mint_mdl <- function(object, key_data,
   # Apply to forecasts
   fc_mean <- as.matrix(S%*%P%*%t(fc_mean))
   fc_mean <- split(fc_mean, row(fc_mean))
-  fc_var <- map(W_h, function(W) diag(S%*%P%*%W%*%t(P)%*%t(S)))
-  fc_dist <- map2(fc_mean, transpose_dbl(map(fc_var, sqrt)), distributional::dist_normal)
+  if(is_normal){
+    fc_var <- map(W_h, function(W) diag(S%*%P%*%W%*%t(P)%*%t(S)))
+    fc_dist <- map2(fc_mean, transpose_dbl(map(fc_var, sqrt)), distributional::dist_normal)
+  } else {
+    fc_dist <- map(fc_mean, distributional::dist_degenerate)
+  }
   
   # Update fables
   map2(fc, fc_dist, function(fc, dist){
@@ -198,14 +204,20 @@ forecast.lst_btmup_mdl <- function(object, key_data,
   }
   
   fc_dist <- map(fc, function(x) x[[distribution_var(x)]])
+  is_normal <- all(map_lgl(fc_dist, function(x) inherits(x[[1]], "dist_normal")))
+  
   fc_mean <- as.matrix(invoke(cbind, map(fc_dist, mean)))
   fc_var <- transpose_dbl(map(fc_dist, distributional::variance))
   
   # Apply to forecasts
   fc_mean <- as.matrix(S%*%t(fc_mean))
   fc_mean <- split(fc_mean, row(fc_mean))
-  fc_var <- map(fc_var, function(W) diag(S%*%diag(W)%*%t(S)))
-  fc_dist <- map2(fc_mean, transpose_dbl(map(fc_var, sqrt)), distributional::dist_normal)
+  if(is_normal){
+    fc_var <- map(fc_var, function(W) diag(S%*%diag(W)%*%t(S)))
+    fc_dist <- map2(fc_mean, transpose_dbl(map(fc_var, sqrt)), distributional::dist_normal)
+  } else {
+    fc_dist <- map(fc_mean, distributional::dist_degenerate)
+  }
   
   # Update fables
   pmap(list(rep_along(fc_mean, fc[1]), fc_mean, fc_dist), function(fc, point, dist){
