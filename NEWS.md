@@ -1,6 +1,6 @@
 # fabletools 0.2.0
 
-## Improvements
+## New features
 
 * Distributions are now provided by the distributional package, which is more
   space efficient and allows calculation of distributional statistics including
@@ -9,6 +9,17 @@
   argument, which is a named list of functions that describe the method used to
   obtain the point forecasts. If multiple are specified, each method will be
   identified using the `linetype`.
+* Added accuracy measures: `RMSSE()`, `pinball_loss()`, `scaled_pinball_loss()`.
+* Added accessor functions for column names (or metadata) of interest. This 
+  includes models in a mable (`mable_vars()`), response variables 
+  (`response_vars()`) and distribution variables (`distribution_var()`).
+* Added support for combinations of non-normal forecasts, which produces mean
+  point forecasts only.
+* Added support for reconciling non-normal forecasts, which produces reconciled
+  point forecasts only.
+  
+## Improvements
+
 * Improved dplyr support. You can now use `bind_*()` and `*_join()` operations
   on mables, dables, and fables. More verbs are supported by these extension
   data classes, and so behaviour should work closer to what is expected.
@@ -16,19 +27,11 @@
   decide if, when, and how progress is reported. To show progress, wrap your 
   code in the `progressr::with_progress()` function. Progress will no longer be
   displayed automatically during lengthy calculations.
-* Added accuracy measures: `RMSSE()`, `pinball_loss()`, `scaled_pinball_loss()`.
-* Added accessor functions for column names (or metadata) of interest. This 
-  includes models in a mable (`mable_vars()`), response variables 
-  (`response_vars()`) and distribution variables (`distribution_var()`).
 * Improved support for streaming data to models with transformed response
   variables.
 * `hilo.fbl_ts()` now keeps existing columns of a fable.
 * `forecast()` will now return an empty fable instead of erroring when no
   forecasts are requested.
-* Added support for combinations of non-normal forecasts, which produces mean
-  point forecasts only.
-* Added support for reconciling non-normal forecasts, which produces reconciled
-  point forecasts only.
 * Documentation improvements.
 
 ## Breaking changes
