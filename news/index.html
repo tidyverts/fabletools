@@ -156,6 +156,8 @@
 <li>The <code>models</code> argument for <code>mable</code> and <code>as_mable</code> has been replaced with <code>model</code> for consistency with the lack of plural in <code>key</code>.</li>
 <li>Intervals from multivariate distributions are now returned as data frames of <code>hilo</code> intervals. The columns are the response variables. Similar structures are returned when computing other distributional statistics like the <code>mean</code>.</li>
 <li>
+<code>hilo</code> intervals can no longer be unnested as they are now stored more efficiently as a vctrs record type. The <code><a href="../reference/unpack_hilo.html">unpack_hilo()</a></code> function will continue to function as expected, and you can now obtain the components of the interval with <code>x$lower</code>, <code>x$upper</code>, and <code>x$level</code>,</li>
+<li>
 <code><a href="https://rdrr.io/r/base/cbind.html">rbind()</a></code> methods are deprecated in favour of <code>bind_rows()</code>
 </li>
 <li>The row order of wide to long mable operations (such as <code><a href="../reference/accuracy.html">accuracy()</a></code>) has changed (due to shift to <code>pivot_longer()</code> from <code>gather()</code>). Model column name values are now nested within key values, rather than key values nested in model name values.</li>
