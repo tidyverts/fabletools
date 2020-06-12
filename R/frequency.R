@@ -71,7 +71,8 @@ get_frequencies.numeric <- function(period, ...){
 get_frequencies.NULL <- function(period, data, ...,
                                  .auto = c("smallest", "largest", "all")){
   .auto <- match.arg(.auto)
-  frequencies <- common_periods(data) %||% 1
+  frequencies <- Filter(function(x) x >= 1, common_periods(data))
+  if(is_empty(frequencies)) frequencies <- 1
   if(.auto == "smallest") {
     return(frequencies[which.min(frequencies)])
   }
