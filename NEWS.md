@@ -48,6 +48,10 @@
 * Intervals from multivariate distributions are now returned as data frames of 
   `hilo` intervals. The columns are the response variables. Similar structures 
   are returned when computing other distributional statistics like the `mean`.
+* `hilo` intervals can no longer be unnested as they are now stored more 
+  efficiently as a vctrs record type. The `unpack_hilo()` function will continue
+  to function as expected, and you can now obtain the components of the interval
+  with `x$lower`, `x$upper`, and `x$level`,
 * `rbind()` methods are deprecated in favour of `bind_rows()`
 * The row order of wide to long mable operations (such as `accuracy()`) has 
   changed (due to shift to `pivot_longer()` from `gather()`). Model column name
