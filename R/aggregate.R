@@ -261,8 +261,11 @@ vec_proxy_compare.agg_vec <- function(x, ...) {
 #' 
 #' @export
 is_aggregated <- function(x){
-  vec_assert(x, agg_vec())
-  vec_data(x)[["agg"]]
+  if(!inherits(x, "agg_vec")){
+    logical(vec_size(x))
+  } else {
+    vec_proxy(x)[["agg"]]
+  }
 }
 
 scale_type.agg_vec <- function(x) {

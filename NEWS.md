@@ -32,6 +32,7 @@
 * `hilo.fbl_ts()` now keeps existing columns of a fable.
 * `forecast()` will now return an empty fable instead of erroring when no
   forecasts are requested.
+* `is_aggregated()` now works for non-aggregated data types.
 * Documentation improvements.
 
 ## Breaking changes
