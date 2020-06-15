@@ -17,3 +17,7 @@ tsibble v0.9.0 release.
 All revdeps have been checked. All changes to worse are due to upstream changes
 in tsibble v0.9.0 and dplyr v1.0.0. These packages have fixed versions ready for 
 submission once fabletools is accepted.
+
+## Resubmission
+
+Fixed non-file package-anchored links.
