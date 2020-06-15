@@ -10,6 +10,7 @@
 #' @param ... Other arguments passed to methods.
 #' 
 #' @examples 
+#' \dontrun{
 #' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(fable)
 #' library(tsibbledata)
@@ -19,6 +20,7 @@
 #'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) %>% 
 #'   components() %>% 
 #'   autoplot()
+#' }
 #' }
 #'
 #' @rdname components

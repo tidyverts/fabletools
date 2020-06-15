@@ -12,12 +12,6 @@ tsibble v0.9.0 release.
 
 0 errors | 0 warnings | 0 notes
 
-Passing checks requires v0.2.1 of the suggested package fable, which has been
-submitted to CRAN. This is due to upstream changes in the tsibble package, which
-has broken a fabletools example which used fable as a suggested package. If an
-older version of fable is used for checking fabletools, this error will occur:
-> `levels.yearquarter()` not supported.
-
 ## revdep checks
 
 All revdeps have been checked. All changes to worse are due to upstream changes
