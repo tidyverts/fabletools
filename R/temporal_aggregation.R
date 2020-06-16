@@ -2,7 +2,6 @@
 date_breaks <- function(x, breaks, start_monday = TRUE, offset = TRUE){
   # Currently only dates are supported
   x <- as.Date(x)
-  
   by2 <- strsplit(breaks, " ", fixed = TRUE)[[1L]]
   if (length(by2) > 2L || length(by2) < 1L) 
     stop("invalid specification of 'breaks'")
@@ -84,7 +83,7 @@ date_breaks <- function(x, breaks, start_monday = TRUE, offset = TRUE){
 
 bin_date <- function(time, breaks, offset){
   if(is.character(breaks) && length(breaks) == 1){
-    breaks <- date_breaks(time, breaks, offset)
+    breaks <- date_breaks(time, breaks, offset = offset)
   }
   bincode <- .bincode(unclass(as.Date(time)), unclass(breaks))
   list(
