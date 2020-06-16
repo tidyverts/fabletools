@@ -42,5 +42,5 @@ Allows a hilo column to be unpacked into its component columns: "lower",
 "upper", and "level".
 }
 \seealso{
-\code{\link[tidyr:unpack]{tidyr::unpack()}}
+\code{\link[tidyr:pack]{tidyr::unpack()}}
 }

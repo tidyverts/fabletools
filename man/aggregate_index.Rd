@@ -4,7 +4,7 @@
 \alias{aggregate_index}
 \title{Expand a dataset to include temporal aggregates}
 \usage{
-aggregate_index(.data, .window, ..., .offset = FALSE)
+aggregate_index(.data, .window, ..., .offset = TRUE, .bin_size = NULL)
 }
 \arguments{
 \item{.data}{A tsibble.}
@@ -25,6 +25,8 @@ The value can be:
 
 \item{.offset}{Offset the temporal aggregation windows to align with the end
 of the data.}
+
+\item{bin_size}{Temporary. Define the number of observations in each temporal bucket}
 }
 \description{
 \lifecycle{experimental}

@@ -13,7 +13,7 @@
 
 \item{scale_bars}{If \code{TRUE}, each facet will include a scale bar which represents the same units across each facet.}
 
-\item{...}{Further arguments passed to \code{\link[ggplot2:geom_line]{ggplot2::geom_line()}}, which can be used to specify fixed aesthetics such as \code{colour = "red"} or \code{size = 3}.}
+\item{...}{Further arguments passed to \code{\link[ggplot2:geom_path]{ggplot2::geom_line()}}, which can be used to specify fixed aesthetics such as \code{colour = "red"} or \code{size = 3}.}
 }
 \description{
 Produces a faceted plot of the components used to build the response

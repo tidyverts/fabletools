@@ -88,8 +88,9 @@ bin_date <- function(time, breaks, offset){
   }
   bincode <- .bincode(unclass(as.Date(time)), unclass(breaks))
   list(
-    bin = breaks[bincode],
-    complete_size = diff(breaks)[unique(bincode)]
+    bin = bincode,
+    breaks = breaks,
+    complete_size = diff(breaks)
   )
 }
 
@@ -106,6 +107,7 @@ bin_date <- function(time, breaks, offset){
 #' specified in several ways (see details).
 #' @param .offset Offset the temporal aggregation windows to align with the end 
 #' of the data.
+#' @param bin_size Temporary. Define the number of observations in each temporal bucket
 #' 
 #' @details 
 #' The aggregation `.window` can be specified in several ways:
@@ -123,18 +125,19 @@ bin_date <- function(time, breaks, offset){
 #'   dplyr::summarise(Count = sum(Count)) %>% 
 #'   # Compute weekly aggregates
 #'   fabletools:::aggregate_index("1 week", Count = sum(Count))
-aggregate_index <- function(.data, .window, ..., .offset = TRUE){
+aggregate_index <- function(.data, .window, ..., .offset = TRUE, .bin_size = NULL){
+  idx <- index_var(.data)
   # Compute temporal bins and bin sizes
-  new_index <- bin_date(.data[[index_var(.data)]], .window, .offset)
-  
+  new_index <- bin_date(.data[[idx]], .window, .offset)
+  if(!is.null(.bin_size)) new_index$complete_size <- vec_recycle(.bin_size, length(new_index$complete_size))
   as_tibble(.data) %>% 
     # Compute groups of temporal bins
     group_by(
-      !!index_var(.data) := !!new_index$bin,
+      !!idx := !!{new_index$breaks[new_index$bin]},
       !!!key(.data)
     ) %>% 
     # Keep only complete windows, currently assumes daily base interval
-    filter(dplyr::n() == {!!new_index$complete_size}[dplyr::cur_group_id()]) %>%
+    filter(dplyr::n() == (!!new_index$complete_size)[match((!!sym(idx))[1], !!new_index$breaks)]) %>%
     # Compute aggregates
     summarise(..., .groups = "drop") %>% 
     # Rebuild tsibble
