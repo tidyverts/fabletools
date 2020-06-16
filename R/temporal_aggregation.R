@@ -85,7 +85,7 @@ bin_date <- function(time, breaks, offset){
   if(is.character(breaks) && length(breaks) == 1){
     breaks <- date_breaks(time, breaks, offset = offset)
   }
-  bincode <- .bincode(unclass(as.Date(time)), unclass(breaks))
+  bincode <- .bincode(unclass(as.Date(time)), unclass(breaks), right = FALSE)
   list(
     bin = bincode,
     breaks = breaks,
