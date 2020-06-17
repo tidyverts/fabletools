@@ -67,7 +67,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.3.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.2.0.9000</span>
       </span>
     </div>
 
@@ -126,22 +126,37 @@
 <h1 class="page-header">
 <a href="#fabletools-development-version" class="anchor"></a>fabletools (development version)<small> Unreleased </small>
 </h1>
-<div id="improvements" class="section level2">
+</div>
+    <div id="fabletools-020" class="section level1">
+<h1 class="page-header">
+<a href="#fabletools-020" class="anchor"></a>fabletools 0.2.0<small> 2020-06-15 </small>
+</h1>
+<div id="new-features" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements" class="anchor"></a>Improvements</h2>
+<a href="#new-features" class="anchor"></a>New features</h2>
 <ul>
 <li>Distributions are now provided by the distributional package, which is more space efficient and allows calculation of distributional statistics including the <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>, <code><a href="https://rdrr.io/r/stats/median.html">median()</a></code>, <code>variance()</code>, <code><a href="https://rdrr.io/r/stats/quantile.html">quantile()</a></code>, <code>cdf()</code> and <code><a href="https://rdrr.io/r/stats/density.html">density()</a></code>.</li>
 <li>
 <code><a href="../reference/autoplot.fbl_ts.html">autoplot.fbl_ts()</a></code> and <code><a href="../reference/autoplot.fbl_ts.html">autolayer.fbl_ts()</a></code> now accept the <code>point_forecast</code> argument, which is a named list of functions that describe the method used to obtain the point forecasts. If multiple are specified, each method will be identified using the <code>linetype</code>.</li>
-<li>Improved dplyr support. You can now use <code>bind_*()</code> and <code>*_join()</code> operations on mables, dables, and fables. More verbs are supported by these extension data classes, and so behaviour should work closer to what is expected.</li>
-<li>Progress reporting is now handled by the progressr package. This allows you to decide if, when, and how progress is reported. To show progress, wrap your code in the <code><a href="https://rdrr.io/pkg/progressr/man/with_progress.html">progressr::with_progress()</a></code> function. Progress will no longer be displayed automatically during lengthy calculations.</li>
 <li>Added accuracy measures: <code><a href="../reference/point_accuracy_measures.html">RMSSE()</a></code>, <code><a href="../reference/interval_accuracy_measures.html">pinball_loss()</a></code>, <code><a href="../reference/interval_accuracy_measures.html">scaled_pinball_loss()</a></code>.</li>
 <li>Added accessor functions for column names (or metadata) of interest. This includes models in a mable (<code><a href="../reference/mable_vars.html">mable_vars()</a></code>), response variables (<code><a href="../reference/response_vars.html">response_vars()</a></code>) and distribution variables (<code><a href="../reference/distribution_var.html">distribution_var()</a></code>).</li>
+<li>Added support for combinations of non-normal forecasts, which produces mean point forecasts only.</li>
+<li>Added support for reconciling non-normal forecasts, which produces reconciled point forecasts only.</li>
+</ul>
+</div>
+<div id="improvements" class="section level2">
+<h2 class="hasAnchor">
+<a href="#improvements" class="anchor"></a>Improvements</h2>
+<ul>
+<li>Improved dplyr support. You can now use <code>bind_*()</code> and <code>*_join()</code> operations on mables, dables, and fables. More verbs are supported by these extension data classes, and so behaviour should work closer to what is expected.</li>
+<li>Progress reporting is now handled by the progressr package. This allows you to decide if, when, and how progress is reported. To show progress, wrap your code in the <code><a href="https://rdrr.io/pkg/progressr/man/with_progress.html">progressr::with_progress()</a></code> function. Progress will no longer be displayed automatically during lengthy calculations.</li>
 <li>Improved support for streaming data to models with transformed response variables.</li>
 <li>
 <code>hilo.fbl_ts()</code> now keeps existing columns of a fable.</li>
 <li>
 <code><a href="../reference/forecast.html">forecast()</a></code> will now return an empty fable instead of erroring when no forecasts are requested.</li>
+<li>
+<code><a href="../reference/is_aggregated.html">is_aggregated()</a></code> now works for non-aggregated data types.</li>
 <li>Documentation improvements.</li>
 </ul>
 </div>
@@ -154,6 +169,8 @@
 <li>The data coercion functions <code>as_mable</code>, <code>as_dable</code>, and <code>as_fable</code> have been changed to accept character vectors for specifying common attributes (such as response variables, and distributions).</li>
 <li>The <code>models</code> argument for <code>mable</code> and <code>as_mable</code> has been replaced with <code>model</code> for consistency with the lack of plural in <code>key</code>.</li>
 <li>Intervals from multivariate distributions are now returned as data frames of <code>hilo</code> intervals. The columns are the response variables. Similar structures are returned when computing other distributional statistics like the <code>mean</code>.</li>
+<li>
+<code>hilo</code> intervals can no longer be unnested as they are now stored more efficiently as a vctrs record type. The <code><a href="../reference/unpack_hilo.html">unpack_hilo()</a></code> function will continue to function as expected, and you can now obtain the components of the interval with <code>x$lower</code>, <code>x$upper</code>, and <code>x$level</code>,</li>
 <li>
 <code><a href="https://rdrr.io/r/base/cbind.html">rbind()</a></code> methods are deprecated in favour of <code>bind_rows()</code>
 </li>
@@ -266,9 +283,9 @@
 <ul>
 <li>First release.</li>
 </ul>
-<div id="new-features" class="section level2">
+<div id="new-features-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features" class="anchor"></a>New features</h2>
+<a href="#new-features-1" class="anchor"></a>New features</h2>
 <div id="data-structures" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data-structures" class="anchor"></a>Data structures</h3>
@@ -340,6 +357,7 @@
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
         <li><a href="#fabletools-development-version">development version</a></li>
+        <li><a href="#fabletools-020">0.2.0</a></li>
         <li><a href="#fabletools-013">0.1.3</a></li>
         <li><a href="#fabletools-012">0.1.2</a></li>
         <li><a href="#fabletools-011">0.1.1</a></li>

@@ -37,7 +37,9 @@
 
 <meta property="og:title" content="Minimum trace forecast reconciliation — min_trace" />
 <meta property="og:description" content="Reconciles a hierarchy using the minimum trace combination method. The
-response variable of the hierarchy must be aggregated using sums." />
+response variable of the hierarchy must be aggregated using sums. The
+forecasted time points must match for all series in the hierarchy (caution:
+this is not yet tested for beyond the series length)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -70,7 +72,7 @@ response variable of the hierarchy must be aggregated using sums." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.3.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.2.0.9000</span>
       </span>
     </div>
 
@@ -128,7 +130,9 @@ response variable of the hierarchy must be aggregated using sums." />
 
     <div class="ref-description">
     <p>Reconciles a hierarchy using the minimum trace combination method. The
-response variable of the hierarchy must be aggregated using sums.</p>
+response variable of the hierarchy must be aggregated using sums. The
+forecasted time points must match for all series in the hierarchy (caution:
+this is not yet tested for beyond the series length).</p>
     </div>
 
     <pre class="usage"><span class='fu'>min_trace</span>(
