@@ -103,59 +103,59 @@ aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){#, dev = FALSE){
 # #' library(tsibble)
 # #' pedestrian %>% 
 # #'   aggregate_index()
-aggregate_index <- function(.data, .times, ...){
-  UseMethod("aggregate_index")
-}
-
-#' @export
-aggregate_index.tbl_ts <- function(.data, .times = NULL, ...){
-  warn("Temporal aggregation is highly experimental. The interface will be refined in the near future.")
-  
-  require_package("lubridate")
-  idx <- index(.data)
-  kv <- key_vars(.data)
-  
-  # Parse times as lubridate::period
-  if(is.null(.times)){
-    interval <- with(interval(.data), lubridate::years(year) + 
-           lubridate::period(3*quarter + month, units = "month") + lubridate::weeks(week) +
-           lubridate::days(day) + lubridate::hours(hour) + lubridate::minutes(minute) + 
-           lubridate::seconds(second) + lubridate::milliseconds(millisecond) + 
-           lubridate::microseconds(microsecond) + lubridate::nanoseconds(nanosecond))
-    periods <- common_periods(.data)
-    .times <- c(set_names(names(periods), names(periods)), list2(!!format(interval(.data)) := interval))
-  }
-  .times <- set_names(map(.times, lubridate::as.period), names(.times) %||% .times)
-  
-  secs <- map_dbl(.times, lubridate::period_to_seconds)
-  .times <- .times[order(secs, decreasing = TRUE)]
-  
-  # Temporal aggregations
-  .data <- as_tibble(.data)
-  agg_dt <- vctrs::vec_rbind(
-    !!!map(seq_along(.times), function(tm){
-      group_data(
-        group_by(.data,
-                 !!!set_names(names(.times), names(.times))[seq_len(tm-1) + 1],
-                 !!as_string(idx) := lubridate::floor_date(!!idx, .times[[tm]]),
-                 !!!syms(kv))
-      )
-    })
-  )
-  kv <- setdiff(colnames(agg_dt), c(as_string(idx), ".rows"))
-  agg_dt <- agg_dt[c(as_string(idx), kv, ".rows")]
-  
-  .data <- dplyr::new_grouped_df(.data, groups = agg_dt)
-  
-  # Compute aggregates and repair index attributes
-  idx_attr <- attributes(.data[[as_string(idx)]])
-  .data <- ungroup(summarise(.data, ...))
-  attributes(.data[[as_string(idx)]]) <- idx_attr
-  
-  # Return tsibble
-  as_tsibble(.data, key = kv, index = !!idx) %>% 
-    mutate(!!!set_names(map(kv, function(x) expr(agg_vec(!!sym(x)))), kv))
-}
+# aggregate_index <- function(.data, .times, ...){
+#   UseMethod("aggregate_index")
+# }
+# 
+# #' @export
+# aggregate_index.tbl_ts <- function(.data, .times = NULL, ...){
+#   warn("Temporal aggregation is highly experimental. The interface will be refined in the near future.")
+#   
+#   require_package("lubridate")
+#   idx <- index(.data)
+#   kv <- key_vars(.data)
+#   
+#   # Parse times as lubridate::period
+#   if(is.null(.times)){
+#     interval <- with(interval(.data), lubridate::years(year) + 
+#            lubridate::period(3*quarter + month, units = "month") + lubridate::weeks(week) +
+#            lubridate::days(day) + lubridate::hours(hour) + lubridate::minutes(minute) + 
+#            lubridate::seconds(second) + lubridate::milliseconds(millisecond) + 
+#            lubridate::microseconds(microsecond) + lubridate::nanoseconds(nanosecond))
+#     periods <- common_periods(.data)
+#     .times <- c(set_names(names(periods), names(periods)), list2(!!format(interval(.data)) := interval))
+#   }
+#   .times <- set_names(map(.times, lubridate::as.period), names(.times) %||% .times)
+#   
+#   secs <- map_dbl(.times, lubridate::period_to_seconds)
+#   .times <- .times[order(secs, decreasing = TRUE)]
+#   
+#   # Temporal aggregations
+#   .data <- as_tibble(.data)
+#   agg_dt <- vctrs::vec_rbind(
+#     !!!map(seq_along(.times), function(tm){
+#       group_data(
+#         group_by(.data,
+#                  !!!set_names(names(.times), names(.times))[seq_len(tm-1) + 1],
+#                  !!as_string(idx) := lubridate::floor_date(!!idx, .times[[tm]]),
+#                  !!!syms(kv))
+#       )
+#     })
+#   )
+#   kv <- setdiff(colnames(agg_dt), c(as_string(idx), ".rows"))
+#   agg_dt <- agg_dt[c(as_string(idx), kv, ".rows")]
+#   
+#   .data <- dplyr::new_grouped_df(.data, groups = agg_dt)
+#   
+#   # Compute aggregates and repair index attributes
+#   idx_attr <- attributes(.data[[as_string(idx)]])
+#   .data <- ungroup(summarise(.data, ...))
+#   attributes(.data[[as_string(idx)]]) <- idx_attr
+#   
+#   # Return tsibble
+#   as_tsibble(.data, key = kv, index = !!idx) %>% 
+#     mutate(!!!set_names(map(kv, function(x) expr(agg_vec(!!sym(x)))), kv))
+# }
 
 agg_vec <- function(x = character(), aggregated = logical(vec_size(x))){
   vec_assert(aggregated, ptype = logical())
