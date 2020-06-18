@@ -30,5 +30,7 @@ fitted.mdl_ts <- function(object, ...){
   
   nm <- if(length(fits) == 1) ".fitted" else map_chr(object$response, expr_name)
   
-  transmute(object$data, !!!set_names(fits, nm))
+  out <- object$data[index_var(object$data)]
+  out[nm] <- fits
+  out
 }

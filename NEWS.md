@@ -1,5 +1,9 @@
 # fabletools (development version)
 
+## Improvements
+* Documentation improvements
+* Performance improvements
+
 # fabletools 0.2.0
 
 ## New features
