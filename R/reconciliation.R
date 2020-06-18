@@ -310,3 +310,30 @@ build_smat_rows <- function(key_data){
   
   return(smat)
 }
+
+build_key_data_smat <- function(x){
+  kv <- names(x)[-ncol(x)]
+  agg_shadow <- as_tibble(map(x[kv], is_aggregated))
+  grp <- as_tibble(vctrs::vec_group_loc(agg_shadow))
+  leaf <- rowSums(grp$key)==0 # This only supports non-aggregated leafs
+  x_leaf <- x[grp$loc[[which(leaf)]],]
+  idx_leaf <- vec_c(!!!x_leaf$.rows)
+  
+  grp$match <- lapply(unname(split(grp, seq_len(nrow(grp)))), function(level){
+    disagg_col <- which(!vec_c(!!!level$key))
+    pos <- vec_match(x_leaf[disagg_col], x[level[["loc"]][[1]],disagg_col])
+    # lapply(vec_group_loc(pos)$loc, function(i) idx_leaf[i])
+    pos <- vec_group_loc(pos)
+    pos$loc[order(pos$key)]
+  })
+  x$.rows[vec_c(!!!grp$loc)] <- vec_c(!!!grp$match)
+  .rows <- lapply(x$.rows, function(x){
+    out <- integer(length(idx_leaf))
+    out[x] <- 1L
+    out
+  })
+  matrix(
+    vec_c(!!!.rows), byrow = TRUE,
+    nrow = nrow(x), ncol = length(idx_leaf)
+  )
+}
