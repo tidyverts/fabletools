@@ -127,7 +127,7 @@ validate_fable <- function(fbl){
     abort(sprintf("Could not find distribution variable `%s` in the fable. A fable must contain a distribution, if you want to remove it convert to a tsibble with `as_tsibble()`.",
                   chr_dist))
   }
-  vec_is(fbl[[chr_dist]], distributional::new_dist())
+  vec_assert(fbl[[chr_dist]], distributional::new_dist())
 }
 
 tbl_sum.fbl_ts <- function(x){
