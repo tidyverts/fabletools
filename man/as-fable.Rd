@@ -26,10 +26,10 @@ as_fable(x, ...)
 
 \item{...}{Additional arguments passed to methods}
 
-\item{response}{The response variable(s). A single response can be specified
-directly via \code{response = y}, multiple responses should be use \code{response = c(y, z)}.}
+\item{response}{The character vector of response variable(s).}
 
-\item{distribution}{The distribution variable (given as a bare or unquoted variable).}
+\item{distribution}{The name of the distribution column (can be provided
+using a bare expression).}
 }
 \description{
 Coerce to a fable object

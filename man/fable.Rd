@@ -9,15 +9,14 @@ fable(..., response, distribution)
 \arguments{
 \item{...}{Arguments passed to \code{\link[tsibble:tsibble]{tsibble::tsibble()}}.}
 
-\item{response}{The response variable(s). A single response can be specified
-directly via \code{response = y}, multiple responses should be use \code{response = c(y, z)}.}
+\item{response}{The character vector of response variable(s).}
 
-\item{distribution}{The distribution variable (given as a bare or unquoted variable).}
+\item{distribution}{The name of the distribution column (can be provided
+using a bare expression).}
 }
 \description{
 A fable (forecast table) data class (\code{fbl_ts}) which is a tsibble-like data
 structure for representing forecasts. In extension to the key and index from
-the tsibble (\code{tbl_ts}) class, a fable (\code{fbl_ts}) must contain columns of
-point forecasts for the response variable(s), and a single distribution
-column (\code{fcdist}).
+the tsibble (\code{tbl_ts}) class, a fable (\code{fbl_ts}) must also contain a single
+distribution column that uses values from the distributional package.
 }

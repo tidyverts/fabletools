@@ -17,8 +17,7 @@ as_dable(x, ...)
 
 \item{...}{Additional arguments passed to methods}
 
-\item{response}{The response variable(s). A single response can be specified
-directly via \code{response = y}, multiple responses should be use \code{response = c(y, z)}.}
+\item{response}{The character vector of response variable(s).}
 
 \item{method}{The name of the decomposition method.}
 

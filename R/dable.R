@@ -9,6 +9,7 @@
 #'
 #' @inheritParams fable
 #' @param ... Arguments passed to [tsibble::tsibble()].
+#' @param response The name of the response variable column.
 #' @param method The name of the decomposition method.
 #' @param seasons A named list describing the structure of seasonal components
 #' (such as `period`, and `base`).
