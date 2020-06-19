@@ -229,41 +229,6 @@ forecast.lst_btmup_mdl <- function(object, key_data,
   })
 }
 
-build_smat <- function(key_data){
-  row_col <- sym(colnames(key_data)[length(key_data)])
-  
-  fct <- key_data %>%
-    unnest(!!row_col) %>% 
-    dplyr::arrange(!!row_col) %>% 
-    select(!!expr(-!!row_col)) %>% 
-    dplyr::mutate_all(factor)
-  
-  lvls <- invoke(paste, fct[stats::complete.cases(fct),])
-  
-  smat <- map(fct, function(x){
-    mat <- rep(0, length(x)*length(levels(x)))
-    i <- which(!is.na(x))
-    if(length(i) == length(x) && length(levels(x)) > 1){
-      abort("Reconciliation of disjoint hierarchical structures is not yet supported.")
-    }
-    j <- as.numeric(x[i])
-    mat[i + length(x) * (j-1)] <- 1
-    mat <- matrix(mat, nrow = length(x), ncol = length(levels(x)),
-                  dimnames = list(NULL, levels(x)))
-    mat[is.na(x), ] <- 1
-    mat
-  })
-  
-  join_smat <- function(x, y){
-    smat <- map(split(x, col(x)), `*`, y)
-    smat <- map2(smat, colnames(x), function(S, cn) `colnames<-`(S, paste(cn, colnames(S))))
-    invoke(cbind, smat)
-  }
-
-  reduce(smat, join_smat)[,lvls,drop = FALSE]
-}
-
-
 build_smat_rows <- function(key_data){
   row_col <- sym(colnames(key_data)[length(key_data)])
   
