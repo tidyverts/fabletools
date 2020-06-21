@@ -65,6 +65,18 @@ forecast.lst_mint_mdl <- function(object, key_data,
                                   point_forecast = list(.mean = mean), ...){
   method <- object%@%"method"
   sparse <- object%@%"sparse"
+  if(sparse){
+    require_package("Matrix")
+    require_package("methods")
+    as.matrix <- Matrix::as.matrix
+    t <- Matrix::t
+    diag <- function(x) if(is.vector(x)) Matrix::Diagonal(x = x) else Matrix::diag(x)
+    solve <- Matrix::solve
+    cov2cor <- Matrix::cov2cor
+    rowSums <- Matrix::rowSums
+  } else {
+    cov2cor <- stats::cov2cor
+  }
   
   point_method <- point_forecast
   point_forecast <- list()
@@ -79,9 +91,6 @@ forecast.lst_mint_mdl <- function(object, key_data,
   fc_mean <- as.matrix(invoke(cbind, map(fc_dist, mean)))
   fc_var <- transpose_dbl(map(fc_dist, distributional::variance))
   
-  # Construct S matrix - ??GA: have moved this here as I need it for Structural scaling
-  S <- build_smat_rows(key_data)
-
   # Compute weights (sample covariance)
   res <- map(object, function(x, ...) residuals(x, ...), type = "response")
   if(length(unique(map_dbl(res, nrow))) > 1){
@@ -91,17 +100,20 @@ forecast.lst_mint_mdl <- function(object, key_data,
     res <- matrix(invoke(c, map(res, `[[`, 2)), ncol = length(object))
   }
   
+  # Construct S matrix - ??GA: have moved this here as I need it for Structural scaling
+  agg_data <- build_key_data_smat(key_data)
+  
   n <- nrow(res)
   covm <- crossprod(stats::na.omit(res)) / n
   if(method == "ols"){
     # OLS
-    W <- diag(nrow = nrow(covm), ncol = ncol(covm))
+    W <- diag(rep(1L, nrow(covm)))
   } else if(method == "wls_var"){
     # WLS variance scaling
     W <- diag(diag(covm))
   } else if (method == "wls_struct"){
     # WLS structural scaling
-    W <- diag(apply(S,1,sum))
+    W <- diag(vapply(agg_data$agg,length,integer(1L)))
   } else if (method == "mint_cov"){
     # min_trace covariance
     W <- covm
@@ -129,36 +141,28 @@ forecast.lst_mint_mdl <- function(object, key_data,
   }
   
   # Reconciliation matrices
-  R1 <- stats::cov2cor(W)
+  R1 <- cov2cor(W)
   W_h <- map(fc_var, function(var) diag(sqrt(var))%*%R1%*%t(diag(sqrt(var))))
   
-  if(sparse){
-    require_package("SparseM")
-    require_package("methods")
-    as.matrix <- SparseM::as.matrix
-    t <- SparseM::t
-    diag <- SparseM::diag
-    
-    row_btm <- key_data %>%
-      dplyr::filter(
-        !!!map(colnames(key_data[-length(key_data)]), function(x){
-          expr(!is_aggregated(!!sym(x)))
-        })
-      )
-    row_btm <- vctrs::vec_c(!!!row_btm[[length(row_btm)]])
-    row_agg <- seq_len(NROW(key_data))[-row_btm]
-    
-    i_pos <- which(as.logical(S[row_btm,]))
-    S <- SparseM::as.matrix.csr(S)
-    J <- methods::new("matrix.csr", ra = rep(1,ncol(S)), ja = row_btm,
-                      ia = c((i_pos-1L)%/%ncol(S)+1L, ncol(S) + 1L), dimension = rev(dim(S)))
-    
-    U <- cbind(methods::as(diff(dim(J)), "matrix.diag.csr"), SparseM::as.matrix.csr(-S[row_agg,]))
-    U <- U[, order(c(row_agg, row_btm))]
-    
-    P <- J - J%*%W%*%t(U)%*%SparseM::solve(U%*%W%*%t(U), eps = Inf)%*%U
+  if(sparse){ 
+    row_btm <- agg_data$leaf
+    row_agg <- seq_len(nrow(key_data))[-row_btm]
+    S <- Matrix::sparseMatrix(
+      i = rep(seq_along(agg_data$agg), lengths(agg_data$agg)),
+      j = vec_c(!!!agg_data$agg),
+      x = rep(1, sum(lengths(agg_data$agg))))
+    J <- Matrix::sparseMatrix(i = S[row_btm,]@i+1, j = row_btm, x = 1L, 
+                              dims = rev(dim(S)))
+    U <- cbind(
+      Matrix::Diagonal(diff(dim(J))),
+      -S[row_agg,,drop = FALSE]
+    )
+    U <- U[, order(c(row_agg, row_btm)), drop = FALSE]
+    P <- J - J%*%W%*%t(U)%*%solve(U%*%W%*%t(U))%*%U
   }
   else {
+    S <- matrix(0L, nrow = length(agg_data$agg), ncol = max(vec_c(!!!agg_data$agg)))
+    S[length(agg_data$agg)*(vec_c(!!!agg_data$agg)-1) + rep(seq_along(agg_data$agg), lengths(agg_data$agg))] <- 1L
     R <- t(S)%*%solve(W)
     P <- solve(R%*%S)%*%R
   }
@@ -292,13 +296,8 @@ build_key_data_smat <- function(x){
     pos$loc[order(pos$key)]
   })
   x$.rows[vec_c(!!!grp$loc)] <- vec_c(!!!grp$match)
-  .rows <- lapply(x$.rows, function(x){
-    out <- integer(length(idx_leaf))
-    out[x] <- 1L
-    out
-  })
-  matrix(
-    vec_c(!!!.rows), byrow = TRUE,
-    nrow = nrow(x), ncol = length(idx_leaf)
-  )
+  return(list(agg = x$.rows, leaf = idx_leaf))
+  # out <- matrix(0L, nrow = nrow(x), ncol = length(idx_leaf))
+  # out[nrow(x)*(vec_c(!!!x$.rows)-1) + rep(seq_along(x$.rows), lengths(x$.rows))] <- 1L
+  # out
 }

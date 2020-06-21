@@ -60,7 +60,7 @@ Suggests:
     testthat,
     tsibbledata (>= 0.2.0),
     lubridate,
-    SparseM
+    Matrix
 VignetteBuilder: 
     knitr
 RdMacros: 

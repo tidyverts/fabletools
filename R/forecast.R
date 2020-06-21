@@ -181,13 +181,13 @@ Does your model require extra variables to produce forecasts?", e$message))
     env <- new_environment(new_data, get_env(bt))
     req_vars <- setdiff(all.vars(body(bt)), names(formals(bt)))
     exists_vars <- map_lgl(req_vars, exists, env)
-    if(any(!exists_vars)){
-      bt <- custom_error(bt, sprintf(
-"Unable to find all required variables to back-transform the forecasts (missing %s).
-These required variables can be provided by specifying `new_data`.",
-        paste0("`", req_vars[!exists_vars], "`", collapse = ", ")
-      ))
-    }
+#     if(any(!exists_vars)){
+#       bt <- custom_error(bt, sprintf(
+# "Unable to find all required variables to back-transform the forecasts (missing %s).
+# These required variables can be provided by specifying `new_data`.",
+#         paste0("`", req_vars[!exists_vars], "`", collapse = ", ")
+#       ))
+#     }
     set_env(bt, env)
   })
   
