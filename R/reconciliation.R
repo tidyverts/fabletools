@@ -52,7 +52,7 @@ reconcile.mdl_df <- function(.data, ...){
 min_trace <- function(models, method = c("wls_var", "ols", "wls_struct", "mint_cov", "mint_shrink"),
                  sparse = NULL){
   if(is.null(sparse)){
-    sparse <- requireNamespace("SparseM", quietly = TRUE)
+    sparse <- requireNamespace("Matrix", quietly = TRUE)
   }
   structure(models, class = c("lst_mint_mdl", "lst_mdl", "list"),
             method = match.arg(method), sparse = sparse)
