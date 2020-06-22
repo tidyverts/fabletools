@@ -94,6 +94,10 @@ build_fable <- function (x, response, distribution) {
       x, response = response, dist = distribution, model_cn = ".model",
       class = "fbl_ts")
   }
+  if(is.null(dimnames(fbl[[distribution]]))) {
+    warn("The dimnames of the fable's distribution are missing and have been set to match the response variables.")
+    dimnames(fbl[[distribution]]) <- response
+  }
   validate_fable(fbl)
   fbl
 }
@@ -126,8 +130,7 @@ validate_fable <- function(fbl){
     abort(sprintf("Could not find distribution variable `%s` in the fable. A fable must contain a distribution, if you want to remove it convert to a tsibble with `as_tsibble()`.",
                   chr_dist))
   }
-  vec_assert(fbl[[chr_dist]], 
-             distributional::new_dist(dimnames = response_vars(fbl)))
+  vec_assert(fbl[[chr_dist]], distributional::new_dist(dimnames = response_vars(fbl)))
 }
 
 tbl_sum.fbl_ts <- function(x){
