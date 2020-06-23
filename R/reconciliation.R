@@ -120,12 +120,12 @@ forecast.lst_mint_mdl <- function(object, key_data,
   } else if (method == "mint_shrink"){
     # min_trace shrink
     tar <- diag(apply(res, 2, compose(crossprod, stats::na.omit))/n)
-    corm <- stats::cov2cor(covm)
+    corm <- cov2cor(covm)
     xs <- scale(res, center = FALSE, scale = sqrt(diag(covm)))
     xs <- xs[stats::complete.cases(xs),]
     v <- (1/(n * (n - 1))) * (crossprod(xs^2) - 1/n * (crossprod(xs))^2)
     diag(v) <- 0
-    corapn <- stats::cov2cor(tar)
+    corapn <- cov2cor(tar)
     d <- (corm - corapn)^2
     lambda <- sum(v)/sum(d)
     lambda <- max(min(lambda, 1), 0)
