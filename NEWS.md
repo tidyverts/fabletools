@@ -4,6 +4,10 @@
 * Documentation improvements
 * Performance improvements
 
+## Bug fixes
+
+* Fixed issue with aggregated date vectors (#230).
+
 # fabletools 0.2.0
 
 ## New features

@@ -235,7 +235,7 @@ vec_cast.agg_vec <- function(x, to, ...) UseMethod("vec_cast.agg_vec")
 #' @export
 vec_cast.agg_vec.agg_vec <- function(x, to, ...) {
   x <- vec_proxy(x)
-  if(all(x$agg)) x$x <- rep_len(vec_cast(NA, vec_proxy(to)$x), length(x$x))
+  if(all(x$agg)) x$x <- vec_rep(vec_cast(NA, vec_proxy(to)$x), length(x$x))
   vec_restore(x, to)
 }
 #' @rdname aggregation-vctrs
