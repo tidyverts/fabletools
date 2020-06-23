@@ -4,7 +4,7 @@
 \alias{aggregate_index}
 \title{Expand a dataset to include temporal aggregates}
 \usage{
-aggregate_index(.data, .window, ..., .offset = TRUE, .bin_size = NULL)
+aggregate_index(.data, .window, ..., .offset = "end", .bin_size = NULL)
 }
 \arguments{
 \item{.data}{A tsibble.}
@@ -23,8 +23,9 @@ The value can be:
 \item A data frame, to add multiple columns from a single expression.
 }}
 
-\item{.offset}{Offset the temporal aggregation windows to align with the end
-of the data.}
+\item{.offset}{Offset the temporal aggregation windows to align with the start
+or end of the data. If FALSE, no offset will be applied (giving common
+breakpoints for temporal bins.)}
 
 \item{bin_size}{Temporary. Define the number of observations in each temporal bucket}
 }

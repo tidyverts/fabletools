@@ -75,8 +75,10 @@ date_breaks <- function(x, breaks, start_monday = TRUE, offset = TRUE){
     breaks <- breaks[seq_len(1L + max(which(breaks <= 
                                               maxx)))]
   }
-  if(offset){
+  if(offset == "end" || offset) {
     breaks <- breaks + (x[length(x)] - breaks[length(breaks)])
+  } else if (offset == "start") {
+    breaks <- breaks + (x[1] - breaks[1])
   }
   breaks
 }
@@ -104,8 +106,9 @@ bin_date <- function(time, breaks, offset){
 #' @param .window Temporal aggregations to include. The default (NULL) will
 #' automatically identify appropriate temporal aggregations. This can be 
 #' specified in several ways (see details).
-#' @param .offset Offset the temporal aggregation windows to align with the end 
-#' of the data.
+#' @param .offset Offset the temporal aggregation windows to align with the start
+#' or end of the data. If FALSE, no offset will be applied (giving common 
+#' breakpoints for temporal bins.)
 #' @param bin_size Temporary. Define the number of observations in each temporal bucket
 #' 
 #' @details 
@@ -124,7 +127,7 @@ bin_date <- function(time, breaks, offset){
 #'   dplyr::summarise(Count = sum(Count)) %>% 
 #'   # Compute weekly aggregates
 #'   fabletools:::aggregate_index("1 week", Count = sum(Count))
-aggregate_index <- function(.data, .window, ..., .offset = TRUE, .bin_size = NULL){
+aggregate_index <- function(.data, .window, ..., .offset = "end", .bin_size = NULL){
   idx <- index_var(.data)
   # Compute temporal bins and bin sizes
   new_index <- bin_date(.data[[idx]], .window, .offset)
