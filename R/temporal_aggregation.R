@@ -75,7 +75,7 @@ date_breaks <- function(x, breaks, start_monday = TRUE, offset = TRUE){
     breaks <- breaks[seq_len(1L + max(which(breaks <= 
                                               maxx)))]
   }
-  if(offset == "end" || offset) {
+  if(offset == "end" || (is.logical(offset) && offset)) {
     breaks <- breaks + (x[length(x)] - breaks[length(breaks)])
   } else if (offset == "start") {
     breaks <- breaks + (x[1] - breaks[1])
