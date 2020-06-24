@@ -7,6 +7,7 @@
 ## Bug fixes
 
 * Fixed issue with aggregated date vectors (#230).
+* Fixed display of models in `View()` panel.
 
 # fabletools 0.2.0
 

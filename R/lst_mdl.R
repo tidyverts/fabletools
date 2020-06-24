@@ -10,3 +10,6 @@ type_sum.lst_mdl <- function(x){
 format.lst_mdl <- function(x, ...){
   map_chr(x, function(x) paste0("<", model_sum(x), ">"))
 }
+
+#' @export
+vec_cast.character.lst_mdl <- function(x, to, ...) format(x)
