@@ -129,7 +129,7 @@
     <p><a href='https://www.tidyverse.org/lifecycle/#experimental'><img src='figures/lifecycle-experimental.svg' alt='Experimental lifecycle'></a></p>
     </div>
 
-    <pre class="usage"><span class='fu'>aggregate_index</span>(<span class='no'>.data</span>, <span class='no'>.window</span>, <span class='no'>...</span>, <span class='kw'>.offset</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>.bin_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>aggregate_index</span>(<span class='no'>.data</span>, <span class='no'>.window</span>, <span class='no'>...</span>, <span class='kw'>.offset</span> <span class='kw'>=</span> <span class='st'>"end"</span>, <span class='kw'>.bin_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -156,8 +156,9 @@ functions. The name will be the name of the variable in the result.</p>
     </tr>
     <tr>
       <th>.offset</th>
-      <td><p>Offset the temporal aggregation windows to align with the end
-of the data.</p></td>
+      <td><p>Offset the temporal aggregation windows to align with the start
+or end of the data. If FALSE, no offset will be applied (giving common
+breakpoints for temporal bins.)</p></td>
     </tr>
     <tr>
       <th>bin_size</th>
