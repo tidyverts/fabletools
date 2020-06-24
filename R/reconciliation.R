@@ -287,17 +287,37 @@ build_key_data_smat <- function(x){
   kv <- names(x)[-ncol(x)]
   agg_shadow <- as_tibble(map(x[kv], is_aggregated))
   grp <- as_tibble(vctrs::vec_group_loc(agg_shadow))
-  leaf <- rowSums(grp$key)==0 # This only supports non-aggregated leafs
-  x_leaf <- x[grp$loc[[which(leaf)]],]
-  idx_leaf <- vec_c(!!!x_leaf$.rows)
+  num_agg <- rowSums(grp$key)
+  # Initialise comparison leafs with known/guaranteed leafs
+  x_leaf <- x[vec_c(!!!grp$loc[which(num_agg == min(num_agg))]),]
+  
+  # Sort by disaggregation to identify aggregated leafs in order
+  grp <- grp[order(num_agg),]
   
   grp$match <- lapply(unname(split(grp, seq_len(nrow(grp)))), function(level){
     disagg_col <- which(!vec_c(!!!level$key))
-    pos <- vec_match(x_leaf[disagg_col], x[level[["loc"]][[1]],disagg_col])
-    # lapply(vec_group_loc(pos)$loc, function(i) idx_leaf[i])
+    agg_idx <- level[["loc"]][[1]]
+    pos <- vec_match(x_leaf[disagg_col], x[agg_idx, disagg_col])
     pos <- vec_group_loc(pos)
+    # Add non-matches as leaf nodes
+    agg_leaf <- setdiff(seq_along(agg_idx), pos$key)
+    if(!is_empty(agg_leaf)){
+      pos <- vec_rbind(
+        pos,
+        structure(list(key = agg_leaf, loc = as.list(agg_idx[agg_leaf])), 
+                  class = "data.frame", row.names = agg_leaf)
+      )
+      x_leaf <<- vec_rbind(
+        x_leaf, 
+        x[agg_idx[agg_leaf],]
+      )
+    }
     pos$loc[order(pos$key)]
   })
+  if(any(lengths(grp$loc) != lengths(grp$match))) {
+    abort("An error has occurred when constructing the summation matrix.\nPlease report this bug here: https://github.com/tidyverts/fabletools/issues")
+  }
+  idx_leaf <- vec_c(!!!x_leaf$.rows)
   x$.rows[vec_c(!!!grp$loc)] <- vec_c(!!!grp$match)
   return(list(agg = x$.rows, leaf = idx_leaf))
   # out <- matrix(0L, nrow = nrow(x), ncol = length(idx_leaf))
