@@ -20,8 +20,9 @@
 #' @rdname augment
 #' @export
 augment.mdl_df <- function(x, ...){
-  x <- gather(x, ".model", ".fit", !!!syms(mable_vars(x)))
   kv <- key_vars(x)
+  x <- tidyr::pivot_longer(x, all_of(mable_vars(x)),
+                           names_to = ".model", values_to = ".fit")
   x <- transmute(as_tibble(x), !!!syms(kv), !!sym(".model"),
                  aug = map(!!sym(".fit"), augment, ...))
   unnest_tsbl(x, "aug", parent_key = kv)
@@ -80,10 +81,11 @@ augment.mdl_ts <- function(x, ...){
 #' @rdname glance
 #' @export
 glance.mdl_df <- function(x, ...){
-  x <- gather(x, ".model", ".fit", !!!syms(mable_vars(x)))
-  keys <- key(x)
+  kv <- key_vars(x)
+  x <- tidyr::pivot_longer(x, all_of(mable_vars(x)),
+                           names_to = ".model", values_to = ".fit")
   x <- transmute(as_tibble(x),
-                 !!!keys, !!sym(".model"), glanced = map(!!sym(".fit"), glance))
+                 !!!syms(kv), !!sym(".model"), glanced = map(!!sym(".fit"), glance))
   unnest_tbl(x, "glanced")
 }
 
@@ -114,10 +116,11 @@ glance.mdl_ts <- function(x, ...){
 #' @rdname tidy
 #' @export
 tidy.mdl_df <- function(x, ...){
-  x <- gather(x, ".model", ".fit", !!!syms(mable_vars(x)))
-  keys <- key(x)
+  kv <- key_vars(x)
+  x <- tidyr::pivot_longer(x, all_of(mable_vars(x)),
+                           names_to = ".model", values_to = ".fit")
   x <- transmute(as_tibble(x),
-                 !!!keys, !!sym(".model"), tidied = map(!!sym(".fit"), tidy))
+                 !!!syms(kv), !!sym(".model"), tidied = map(!!sym(".fit"), tidy))
   unnest_tbl(x, "tidied")
 }
 

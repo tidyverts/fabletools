@@ -9,7 +9,8 @@
 #' @importFrom stats residuals
 #' @export
 residuals.mdl_df <- function(object, ...){
-  out <- gather(object, ".model", ".fit", !!!syms(mable_vars(object)))
+  out <- tidyr::pivot_longer(object, all_of(mable_vars(object)),
+                             names_to = ".model", values_to = ".fit")
   kv <- key_vars(out)
   out <- transmute(as_tibble(out),
     !!!syms(kv),

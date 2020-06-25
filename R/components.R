@@ -26,8 +26,9 @@
 #' @rdname components
 #' @export
 components.mdl_df <- function(object, ...){
-  object <- gather(object, ".model", ".fit", !!!syms(mable_vars(object)))
   kv <- key_vars(object)
+  object <- tidyr::pivot_longer(object, all_of(mable_vars(object)),
+                             names_to = ".model", values_to = ".fit")
   object <- transmute(as_tibble(object),
                       !!!syms(kv), !!sym(".model"),
                       cmp = map(!!sym(".fit"), components))
