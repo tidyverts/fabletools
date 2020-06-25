@@ -36,8 +36,7 @@
 
 
 <meta property="og:title" content="Construct a new set of forecasts — construct_fc" />
-<meta property="og:description" content="Will be deprecated in the future, forecast objects should be produced with
-either fable or as_fable functions." />
+<meta property="og:description" content="" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -127,8 +126,7 @@ either fable or as_fable functions." />
     </div>
 
     <div class="ref-description">
-    <p>Will be deprecated in the future, forecast objects should be produced with
-either <code>fable</code> or <code>as_fable</code> functions.</p>
+    <p><img src='figures/lifecycle-deprecated.svg' alt='Deprecated lifecycle' /></p>
     </div>
 
     <pre class="usage"><span class='fu'>construct_fc</span>(<span class='no'>point</span>, <span class='no'>sd</span>, <span class='no'>dist</span>)</pre>
@@ -152,7 +150,9 @@ either <code>fable</code> or <code>as_fable</code> functions.</p>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Backtransformations are automatically handled, and so no transformations should be specified here.</p>
+    <p>This function is deprecated. <code><a href='forecast.html'>forecast()</a></code> methods for a model should return
+a vector of distributions using the distributional package.</p>
+<p>Backtransformations are automatically handled, and so no transformations should be specified here.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
