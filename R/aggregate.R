@@ -39,14 +39,7 @@ aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){#, dev = FALSE){
     .spec <- parse_expr(paste(key_vars(.data), collapse = "*"))
   }
   
-  # Key combinations
-  tm <- stats::terms(new_formula(lhs = NULL, rhs = .spec), env = empty_env())
-  key_comb <- attr(tm, "factors")
-  key_vars <- rownames(key_comb)
-  key_comb <- map(split(key_comb, col(key_comb)), function(x) key_vars[x!=0])
-  if(attr(tm, "intercept")){
-    key_comb <- c(list(chr()), key_comb)
-  }
+  key_comb <- parse_agg_spec(.spec)
   
   idx <- index2_var(.data)
   intvl <- interval(.data)
@@ -89,6 +82,18 @@ aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){#, dev = FALSE){
   build_tsibble_meta(.data, key_data = key_dt, index = idx, 
                      index2 = as_string(idx), ordered = TRUE,
                      interval = intvl)
+}
+
+parse_agg_spec <- function(expr){
+  # Key combinations
+  tm <- stats::terms(new_formula(lhs = NULL, rhs = expr), env = empty_env())
+  key_comb <- attr(tm, "factors")
+  key_vars <- rownames(key_comb)
+  key_comb <- map(split(key_comb, col(key_comb)), function(x) key_vars[x!=0])
+  if(attr(tm, "intercept")){
+    key_comb <- c(list(chr()), key_comb)
+  }
+  unname(key_comb)
 }
 
 
