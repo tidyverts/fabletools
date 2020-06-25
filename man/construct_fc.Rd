@@ -14,9 +14,11 @@ construct_fc(point, sd, dist)
 \item{dist}{The forecast distribution (typically produced using \code{new_fcdist})}
 }
 \description{
-Will be deprecated in the future, forecast objects should be produced with
-either \code{fable} or \code{as_fable} functions.
+\lifecycle{deprecated}
 }
 \details{
+This function is deprecated. \code{forecast()} methods for a model should return
+a vector of distributions using the distributional package.
+
 Backtransformations are automatically handled, and so no transformations should be specified here.
 }

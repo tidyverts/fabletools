@@ -36,10 +36,11 @@ forecast <- function(object, ...){
 #' A fable containing the following columns:
 #' - `.model`: The name of the model used to obtain the forecast. Taken from
 #'   the column names of models in the provided mable.
-#' - The point forecast, which by default is the mean. The name of this column
-#'   will be the same as the dependent variable in the model(s).
-#' - `.distribution`. A column of objects of class `fcdist`, representing the
-#'   statistical distribution of the forecast in the given time period.
+#' - The forecast distribution. The name of this column will be the same as the 
+#'   dependent variable in the model(s). If multiple dependent variables exist,
+#'   it will be named `.distribution`.
+#' - Point forecasts computed from the distribution using the functions in the
+#'   `point_forecast` argument.
 #' - All columns in `new_data`, excluding those whose names conflict with the
 #'   above.
 #' @examples 
@@ -221,8 +222,10 @@ Does your model require extra variables to produce forecasts?", e$message))
 
 #' Construct a new set of forecasts
 #' 
-#' Will be deprecated in the future, forecast objects should be produced with
-#' either `fable` or `as_fable` functions.
+#' \lifecycle{deprecated}
+#' 
+#' This function is deprecated. `forecast()` methods for a model should return
+#' a vector of distributions using the distributional package.
 #' 
 #' Backtransformations are automatically handled, and so no transformations should be specified here.
 #' 

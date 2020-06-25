@@ -48,10 +48,11 @@ A fable containing the following columns:
 \itemize{
 \item \code{.model}: The name of the model used to obtain the forecast. Taken from
 the column names of models in the provided mable.
-\item The point forecast, which by default is the mean. The name of this column
-will be the same as the dependent variable in the model(s).
-\item \code{.distribution}. A column of objects of class \code{fcdist}, representing the
-statistical distribution of the forecast in the given time period.
+\item The forecast distribution. The name of this column will be the same as the
+dependent variable in the model(s). If multiple dependent variables exist,
+it will be named \code{.distribution}.
+\item Point forecasts computed from the distribution using the functions in the
+\code{point_forecast} argument.
 \item All columns in \code{new_data}, excluding those whose names conflict with the
 above.
 }
