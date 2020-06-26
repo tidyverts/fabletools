@@ -86,63 +86,6 @@ MAAPE <- function(.resid, .actual, na.rm = TRUE, ...){
   mean(atan(abs(.resid / .actual * 100)), na.rm = na.rm)
 }
 
-#' Mean Directional Accuracy
-#' 
-#' @inheritParams point_accuracy_measures
-#' 
-#' @references 
-#' Blaskowitz and H. Herwartz (2011) "On economic evaluation of directional forecasts". \emph{International Journal of Forecasting},
-#' \bold{27}(4), 1058-1065.
-#' 
-#' @export
-MDA <- function(.resid, .actual, na.rm = TRUE, reward = 1, penalty = 0, ...){
-  actual_change <- .actual - dplyr::lag(.actual)
-  actual_direction <- ifelse(actual_change > 0, 1, ifelse(actual_change < 0, -1, 0))
-  predicted_change <- actual_change - .resid
-  predicted_direction <- ifelse(predicted_change > 0, 1, ifelse(predicted_change < 0, -1, 0))
-  directional_error <- ifelse(actual_direction == predicted_direction, 1, 0)
-  
-  (reward-penalty) * mean(directional_error, na.rm = na.rm) + penalty
-}
-
-#' Mean Directional Value
-#' 
-#' @inheritParams point_accuracy_measures
-#' 
-#' @references 
-#' Blaskowitz and H. Herwartz (2011) "On economic evaluation of directional forecasts". \emph{International Journal of Forecasting},
-#' \bold{27}(4), 1058-1065.
-#' 
-#' @export
-MDV <- function(.resid, .actual, na.rm = TRUE, ...){
-  actual_change <- .actual - dplyr::lag(.actual)
-  actual_direction <- ifelse(actual_change > 0, 1, ifelse(actual_change < 0, -1, 0))
-  predicted_change <- actual_change - .resid
-  predicted_direction <- ifelse(predicted_change > 0, 1, ifelse(predicted_change < 0, -1, 0))
-  directional_accuracy <- ifelse(actual_direction == predicted_direction, 1, -1)
-  
-  mean(abs(actual_change) * directional_accuracy, na.rm = na.rm)
-}
-
-#' Mean Directional Percentage Value
-#' 
-#' @inheritParams point_accuracy_measures
-#' 
-#' @references 
-#' Blaskowitz and H. Herwartz (2011) "On economic evaluation of directional forecasts". \emph{International Journal of Forecasting},
-#' \bold{27}(4), 1058-1065.
-#' 
-#' @export
-MDPV <- function(.resid, .actual, na.rm = TRUE, ...){
-  actual_change <- .actual - dplyr::lag(.actual)
-  actual_direction <- ifelse(actual_change > 0, 1, ifelse(actual_change < 0, -1, 0))
-  predicted_change <- actual_change - .resid
-  predicted_direction <- ifelse(predicted_change > 0, 1, ifelse(predicted_change < 0, -1, 0))
-  directional_accuracy <- ifelse(actual_direction == predicted_direction, 1, -1)
-  
-  mean(abs(actual_change / .actual) * directional_accuracy, na.rm = na.rm) * 100
-}
-
 #' Point estimate accuracy measures
 #' 
 #' @param .resid A vector of residuals from either the training (model accuracy)
@@ -165,6 +108,76 @@ MDPV <- function(.resid, .actual, na.rm = TRUE, ...){
 #' @export
 point_accuracy_measures <- list(ME = ME, RMSE = RMSE, MAE = MAE,
                        MPE = MPE, MAPE = MAPE, MASE = MASE, ACF1 = ACF1)
+
+#' Mean Directional Accuracy
+#' 
+#' @inheritParams directional_accuracy_measures
+#' 
+#' @references 
+#' Blaskowitz and H. Herwartz (2011) "On economic evaluation of directional forecasts". \emph{International Journal of Forecasting},
+#' \bold{27}(4), 1058-1065.
+#' 
+#' @export
+MDA <- function(.resid, .actual, na.rm = TRUE, reward = 1, penalty = 0, ...){
+  actual_change <- .actual - dplyr::lag(.actual)
+  actual_direction <- ifelse(actual_change > 0, 1, ifelse(actual_change < 0, -1, 0))
+  predicted_change <- actual_change - .resid
+  predicted_direction <- ifelse(predicted_change > 0, 1, ifelse(predicted_change < 0, -1, 0))
+  directional_error <- ifelse(actual_direction == predicted_direction, 1, 0)
+  
+  (reward-penalty) * mean(directional_error, na.rm = na.rm) + penalty
+}
+
+#' Mean Directional Value
+#' 
+#' @inheritParams directional_accuracy_measures
+#' 
+#' @references 
+#' Blaskowitz and H. Herwartz (2011) "On economic evaluation of directional forecasts". \emph{International Journal of Forecasting},
+#' \bold{27}(4), 1058-1065.
+#' 
+#' @export
+MDV <- function(.resid, .actual, na.rm = TRUE, ...){
+  actual_change <- .actual - dplyr::lag(.actual)
+  actual_direction <- ifelse(actual_change > 0, 1, ifelse(actual_change < 0, -1, 0))
+  predicted_change <- actual_change - .resid
+  predicted_direction <- ifelse(predicted_change > 0, 1, ifelse(predicted_change < 0, -1, 0))
+  directional_accuracy <- ifelse(actual_direction == predicted_direction, 1, -1)
+  
+  mean(abs(actual_change) * directional_accuracy, na.rm = na.rm)
+}
+
+#' Mean Directional Percentage Value
+#' 
+#' @inheritParams directional_accuracy_measures
+#' 
+#' @references 
+#' Blaskowitz and H. Herwartz (2011) "On economic evaluation of directional forecasts". \emph{International Journal of Forecasting},
+#' \bold{27}(4), 1058-1065.
+#' 
+#' @export
+MDPV <- function(.resid, .actual, na.rm = TRUE, ...){
+  actual_change <- .actual - dplyr::lag(.actual)
+  actual_direction <- ifelse(actual_change > 0, 1, ifelse(actual_change < 0, -1, 0))
+  predicted_change <- actual_change - .resid
+  predicted_direction <- ifelse(predicted_change > 0, 1, ifelse(predicted_change < 0, -1, 0))
+  directional_accuracy <- ifelse(actual_direction == predicted_direction, 1, -1)
+  
+  mean(abs(actual_change / .actual) * directional_accuracy, na.rm = na.rm) * 100
+}
+
+#' Directional accuracy measures
+#' 
+#' @param .resid A vector of residuals from either the training (model accuracy)
+#'  or test (forecast accuracy) data.
+#' @param .actual A vector of responses matching the fitted values 
+#' (for forecast accuracy, `new_data` must be provided).
+#' @param na.rm Remove the missing values before calculating the accuracy measure
+#' @param ... Additional arguments for each measure.
+#' @param na.action Function to handle missing values.
+#' 
+#' @export
+directional_accuracy_measures <- list(MDA = MDA, MDV = MDV, MDPV = MDPV)
 
 #' @rdname interval_accuracy_measures
 #' @export
