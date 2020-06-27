@@ -95,7 +95,7 @@ tbl_sum.dcmp_ts <- function(x){
 
 #' @export
 rbind.dcmp_ts <- function(...){
-  .Deprecated("bind_rows()")
+  deprecate_warn("0.2.0", "rbind.fbl_ts()", "bind_rows()")
   dots <- dots_list(...)
   
   attrs <- combine_dcmp_attr(dots)

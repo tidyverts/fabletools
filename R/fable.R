@@ -206,7 +206,7 @@ ungroup.grouped_fbl <- group_by.fbl_ts
 
 #' @export
 rbind.fbl_ts <- function(...){
-  .Deprecated("bind_rows()")
+  deprecate_warn("0.2.0", "rbind.fbl_ts()", "bind_rows()")
   fbls <- dots_list(...)
   response <- map(fbls, response_vars)
   dist <- map(fbls, distribution_var)
