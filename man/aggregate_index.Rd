@@ -27,7 +27,7 @@ The value can be:
 or end of the data. If FALSE, no offset will be applied (giving common
 breakpoints for temporal bins.)}
 
-\item{bin_size}{Temporary. Define the number of observations in each temporal bucket}
+\item{.bin_size}{Temporary. Define the number of observations in each temporal bucket}
 }
 \description{
 \lifecycle{experimental}

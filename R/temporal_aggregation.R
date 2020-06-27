@@ -109,7 +109,7 @@ bin_date <- function(time, breaks, offset){
 #' @param .offset Offset the temporal aggregation windows to align with the start
 #' or end of the data. If FALSE, no offset will be applied (giving common 
 #' breakpoints for temporal bins.)
-#' @param bin_size Temporary. Define the number of observations in each temporal bucket
+#' @param .bin_size Temporary. Define the number of observations in each temporal bucket
 #' 
 #' @details 
 #' The aggregation `.window` can be specified in several ways:
