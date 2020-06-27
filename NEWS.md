@@ -1,6 +1,10 @@
 # fabletools (development version)
 
 ## Improvements
+
+* Fixed some inconsistencies in key ordering of model accessors (such as 
+  `augment()`, `tidy()` and `glance()`) with model methods (such as `forecast()`
+  and `generate()`).
 * Documentation improvements
 * Performance improvements
 

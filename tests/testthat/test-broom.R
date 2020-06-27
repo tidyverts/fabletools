@@ -34,8 +34,8 @@ test_that("glance", {
   expect_equal(gl_multi$key, c("fdeaths", "mdeaths"))
   gl_complex <- glance(mbl_complex)
   expect_equal(NROW(gl_complex), 4)
-  expect_equal(gl_complex$key, rep(c("fdeaths", "mdeaths"), 2))
-  expect_equal(gl_multi[-2], gl_complex[c(1,2), names(gl_multi)][-2])
+  expect_equal(gl_complex$key, rep(c("fdeaths", "mdeaths"), each = 2))
+  expect_equal(gl_multi[-2], gl_complex[c(1,3), names(gl_multi)][-2])
   
   gl_mv <- glance(mbl_mv)
   expect_equal(NROW(gl_mv), 1)
