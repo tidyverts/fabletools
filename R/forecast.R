@@ -147,7 +147,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
   # Useful variables
   idx <- index_var(new_data)
   mv <- measured_vars(new_data)
-  resp_vars <- map_chr(object$response, expr_name)
+  resp_vars <- vapply(object$response, expr_name, character(1L), USE.NAMES = FALSE)
   dist_col <- if(length(resp_vars) > 1) ".distribution" else resp_vars
   
   # If there's nothing to forecast, return an empty fable.
@@ -174,7 +174,7 @@ Does your model require extra variables to produce forecasts?", e$message))
 
   # Compute forecasts
   fc <- forecast(object$fit, new_data, specials = specials, ...)
-  dimnames(fc) <- vapply(object$response, expr_name, character(1L), USE.NAMES = FALSE)
+  dimnames(fc) <- resp_vars
   
   # Back-transform forecast distributions
   bt <- map(object$transformation, function(x){
