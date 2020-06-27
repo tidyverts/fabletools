@@ -222,7 +222,7 @@ Ops.mdl_ts <- function(e1, e2){
 
 #' @export
 Ops.lst_mdl <- function(e1, e2){
-  structure(map2(e1, e2, .Generic), class = c("lst_mdl", "list"))
+  list_of_models(map2(e1, e2, .Generic))
 }
 
 #' @importFrom stats var

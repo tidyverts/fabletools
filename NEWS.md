@@ -8,6 +8,7 @@
 
 * Fixed issue with aggregated date vectors (#230).
 * Fixed display of models in `View()` panel.
+* Fixed issue with combination models not inheriting vctrs functionality (#237).
 
 # fabletools 0.2.0
 
