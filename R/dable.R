@@ -7,7 +7,6 @@
 #' `autoplot()` method for displaying decompositions. Beyond this, a dable
 #' (`dcmp_ts`) behaves very similarly to a tsibble (`tbl_ts`).
 #'
-#' @inheritParams fable
 #' @param ... Arguments passed to [tsibble::tsibble()].
 #' @param response The name of the response variable column.
 #' @param method The name of the decomposition method.
