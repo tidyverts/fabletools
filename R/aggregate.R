@@ -258,6 +258,29 @@ vec_proxy_compare.agg_vec <- function(x, ...) {
   vec_proxy(x)[c(2,1)]
 }
 
+#' @export
+`==.agg_vec` <- function(e1, e2){
+  e1_agg <- inherits(e1, "agg_vec")
+  e2_agg <- inherits(e2, "agg_vec")
+  
+  if(!e1_agg || !e2_agg){
+    x <- list(e1,e2)[[which(!c(e1_agg, e2_agg))]]
+    is_agg <- x == "<aggregated>"
+    if(any(is_agg)){
+      warn("<aggregated> character values have been converted to aggregated values.
+Hint: If you're trying to compare aggregated values, use `is_aggregated()`.")
+    }
+    x <- agg_vec(ifelse(is_agg, NA, x), aggregated = is_agg)
+    if(!e1_agg) e1 <- x else e2 <- x
+  }
+  
+  x <- vec_recycle_common(e1, e2)
+  e1 <- vec_proxy(x[[1]])
+  e2 <- vec_proxy(x[[2]])
+  
+  (e1$agg == e2$agg) | (e1$x == e2$x)
+}
+
 #' Is the element an aggregation of smaller data
 #' 
 #' @param x An object.
