@@ -5,6 +5,8 @@
 * Fixed some inconsistencies in key ordering of model accessors (such as 
   `augment()`, `tidy()` and `glance()`) with model methods (such as `forecast()`
   and `generate()`).
+* Improved equality comparison of `agg_vec` classes, aggregated values will now
+  always match regardless of the value used.
 * Documentation improvements
 * Performance improvements
 
