@@ -7,6 +7,8 @@
   and `generate()`).
 * Improved equality comparison of `agg_vec` classes, aggregated values will now
   always match regardless of the value used.
+* Using `summarise()` with a fable will now retain the fable class if the 
+  distribution still exists under the same variable name.
 * Documentation improvements
 * Performance improvements
 
