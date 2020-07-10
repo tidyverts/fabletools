@@ -9,6 +9,8 @@
   always match regardless of the value used.
 * Using `summarise()` with a fable will now retain the fable class if the 
   distribution still exists under the same variable name.
+* Added `as_fable.forecast()` to convert forecast objects from the forecast
+  package to work with fable.
 * Documentation improvements
 * Performance improvements
 
