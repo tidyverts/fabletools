@@ -174,7 +174,13 @@ similar way to how <code>[dplyr::summarise()]</code> is used.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibble</span>)
 <span class='no'>tourism</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>aggregate_key</span>(<span class='no'>Purpose</span> * (<span class='no'>State</span> / <span class='no'>Region</span>), <span class='kw'>Trips</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='no'>Trips</span>))</div><div class='output co'>#&gt; <span style='color: #555555;'># A tsibble: 34,000 x 5 [1Q]</span><span>
+  <span class='fu'>aggregate_key</span>(<span class='no'>Purpose</span> * (<span class='no'>State</span> / <span class='no'>Region</span>), <span class='kw'>Trips</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='no'>Trips</span>))</div><div class='output co'>#&gt; <span class='warning'>Warning: `...` is not empty.</span>
+#&gt; <span class='warning'></span>
+#&gt; <span class='warning'>We detected these problematic arguments:</span>
+#&gt; <span class='warning'>* `needs_dots`</span>
+#&gt; <span class='warning'></span>
+#&gt; <span class='warning'>These dots only exist to allow future extensions and should be empty.</span>
+#&gt; <span class='warning'>Did you misspecify an argument?</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tsibble: 34,000 x 5 [1Q]</span><span>
 #&gt; </span><span style='color: #555555;'># Key:       Purpose, State, Region [425]</span><span>
 #&gt;    Quarter Purpose      State        Region        Trips
 #&gt;      </span><span style='color: #555555;font-style: italic;'>&lt;qtr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>

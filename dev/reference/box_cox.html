@@ -166,7 +166,13 @@ transformations. <em>JRSS B</em> <b>26</b> 211--246.</p>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
 <span class='no'>airmiles</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://tsibble.tidyverts.org/reference/as-tsibble.html'>as_tsibble</a></span>() <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>box_cox</span> <span class='kw'>=</span> <span class='fu'>box_cox</span>(<span class='no'>value</span>, <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='fl'>0.3</span>))</div><div class='output co'>#&gt; <span style='color: #555555;'># A tsibble: 24 x 3 [1Y]</span><span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>box_cox</span> <span class='kw'>=</span> <span class='fu'>box_cox</span>(<span class='no'>value</span>, <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='fl'>0.3</span>))</div><div class='output co'>#&gt; <span class='warning'>Warning: `...` is not empty.</span>
+#&gt; <span class='warning'></span>
+#&gt; <span class='warning'>We detected these problematic arguments:</span>
+#&gt; <span class='warning'>* `needs_dots`</span>
+#&gt; <span class='warning'></span>
+#&gt; <span class='warning'>These dots only exist to allow future extensions and should be empty.</span>
+#&gt; <span class='warning'>Did you misspecify an argument?</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tsibble: 24 x 3 [1Y]</span><span>
 #&gt;    index value box_cox
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span>  </span><span style='text-decoration: underline;'>1</span><span>937   412    17.0

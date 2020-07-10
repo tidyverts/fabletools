@@ -184,7 +184,13 @@ treated as innovations for the simulated paths..</p>
 <span class='no'>UKLungDeaths</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>lm</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='no'>mdeaths</span> ~ <span class='fu'>fourier</span>(<span class='st'>"year"</span>, <span class='kw'>K</span> <span class='kw'>=</span> <span class='fl'>4</span>) + <span class='no'>fdeaths</span>)) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/generics/man/generate.html'>generate</a></span>(<span class='no'>UKLungDeaths</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fl'>5</span>)
-}</div><div class='output co'>#&gt; <span style='color: #555555;'># A tsibble: 360 x 4 [1M]</span><span>
+}</div><div class='output co'>#&gt; <span class='warning'>Warning: `...` is not empty.</span>
+#&gt; <span class='warning'></span>
+#&gt; <span class='warning'>We detected these problematic arguments:</span>
+#&gt; <span class='warning'>* `needs_dots`</span>
+#&gt; <span class='warning'></span>
+#&gt; <span class='warning'>These dots only exist to allow future extensions and should be empty.</span>
+#&gt; <span class='warning'>Did you misspecify an argument?</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tsibble: 360 x 4 [1M]</span><span>
 #&gt; </span><span style='color: #555555;'># Key:       .model, .rep [5]</span><span>
 #&gt;    .model    index .rep  .sim[,1]
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;mth&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>

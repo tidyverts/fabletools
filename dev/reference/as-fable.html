@@ -144,7 +144,10 @@
 <span class='fu'>as_fable</span>(<span class='no'>x</span>, <span class='no'>response</span>, <span class='no'>distribution</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for grouped_df</span>
-<span class='fu'>as_fable</span>(<span class='no'>x</span>, <span class='no'>response</span>, <span class='no'>distribution</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>as_fable</span>(<span class='no'>x</span>, <span class='no'>response</span>, <span class='no'>distribution</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for forecast</span>
+<span class='fu'>as_fable</span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>point_forecast</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>.mean</span> <span class='kw'>=</span> <span class='no'>mean</span>))</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -165,6 +168,13 @@
       <th>distribution</th>
       <td><p>The name of the distribution column (can be provided
 using a bare expression).</p></td>
+    </tr>
+    <tr>
+      <th>point_forecast</th>
+      <td><p>The point forecast measure(s) which should be returned
+in the resulting fable. Specified as a named list of functions which accept
+a distribution and return a vector. To compute forecast medians, you can use
+<code><a href='https://rdrr.io/r/base/list.html'>list(.median = median)</a></code>.</p></td>
     </tr>
     </table>
 

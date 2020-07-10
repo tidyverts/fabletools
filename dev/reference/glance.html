@@ -163,7 +163,13 @@ will be represented with a row of output.</p>
 <span class='no'>olympic_running</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>lm</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Time</span>) ~ <span class='fu'>trend</span>())) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/generics/man/glance.html'>glance</a></span>()
-}</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 14 x 17</span><span>
+}</div><div class='output co'>#&gt; <span class='warning'>Warning: `...` is not empty.</span>
+#&gt; <span class='warning'></span>
+#&gt; <span class='warning'>We detected these problematic arguments:</span>
+#&gt; <span class='warning'>* `needs_dots`</span>
+#&gt; <span class='warning'></span>
+#&gt; <span class='warning'>These dots only exist to allow future extensions and should be empty.</span>
+#&gt; <span class='warning'>Did you misspecify an argument?</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 14 x 17</span><span>
 #&gt;    Length Sex   .model r_squared adj_r_squared  sigma2 statistic  p_value    df
 #&gt;     </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span>    100 men   lm       0.829          0.823  4.31</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-4</span><span>  126.     1.78</span><span style='color: #555555;'>e</span><span style='color: #BB0000;'>-11</span><span>     2

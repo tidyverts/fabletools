@@ -186,7 +186,13 @@ and a space, or followed by "s".</p></li>
   <span class='fu'><a href='https://tsibble.tidyverts.org/reference/index-by.html'>index_by</a></span>(<span class='no'>Date</span>) <span class='kw'>%&gt;%</span>
   <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span>(<span class='kw'>Count</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='no'>Count</span>)) <span class='kw'>%&gt;%</span>
   <span class='co'># Compute weekly aggregates</span>
-  <span class='kw pkg'>fabletools</span><span class='kw ns'>:::</span><span class='fu'><a href='https://fabletools.tidyverts.org/reference/aggregate_index.html'>aggregate_index</a></span>(<span class='st'>"1 week"</span>, <span class='kw'>Count</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='no'>Count</span>))</div><div class='output co'>#&gt; <span style='color: #555555;'># A tsibble: 104 x 2 [7D]</span><span>
+  <span class='kw pkg'>fabletools</span><span class='kw ns'>:::</span><span class='fu'><a href='https://fabletools.tidyverts.org/reference/aggregate_index.html'>aggregate_index</a></span>(<span class='st'>"1 week"</span>, <span class='kw'>Count</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='no'>Count</span>))</div><div class='output co'>#&gt; <span class='warning'>Warning: `...` is not empty.</span>
+#&gt; <span class='warning'></span>
+#&gt; <span class='warning'>We detected these problematic arguments:</span>
+#&gt; <span class='warning'>* `needs_dots`</span>
+#&gt; <span class='warning'></span>
+#&gt; <span class='warning'>These dots only exist to allow future extensions and should be empty.</span>
+#&gt; <span class='warning'>Did you misspecify an argument?</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tsibble: 104 x 2 [7D]</span><span>
 #&gt;    Date        Count
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span> 2015-01-03 </span><span style='text-decoration: underline;'>182</span><span>896
