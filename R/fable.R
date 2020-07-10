@@ -101,8 +101,8 @@ as_fable.forecast <- function(x, ..., point_forecast = list(.mean = mean)){
     if(!is.null(x$lambda)){
       dist <- distributional::dist_transformed(
         dist, 
-        transform = purrr::partial(inv_box_cox, lambda = x$lambda), 
-        inverse = purrr::partial(box_cox, lambda = x$lambda)
+        transform = rlang::new_function(exprs(x = ), expr(inv_box_cox(x, !!x$lambda)), env = rlang::pkg_env("fabletools")), 
+        inverse = rlang::new_function(exprs(x = ), expr(inv_box_cox(x, !!x$lambda)), env = rlang::pkg_env("fabletools"))
       )
     }
   }
