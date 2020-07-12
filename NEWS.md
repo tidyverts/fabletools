@@ -11,6 +11,7 @@
   distribution still exists under the same variable name.
 * Added `as_fable.forecast()` to convert forecast objects from the forecast
   package to work with fable.
+* Improved `CRPS()` performance when using sampling distributions (#240).
 * Documentation improvements
 * Performance improvements
 
