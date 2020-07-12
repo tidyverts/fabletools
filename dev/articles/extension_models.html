@@ -214,17 +214,10 @@
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>fit &lt;-<span class="st"> </span>tsibbledata<span class="op">::</span>aus_production <span class="op">%&gt;%</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a><span class="st">  </span><span class="kw"><a href="../reference/model.html">model</a></span>(<span class="kw">SMEAN</span>(Beer))</span>
 <span id="cb6-3"><a href="#cb6-3"></a>fit</span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="co">#&gt; Warning: `...` is not empty.</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt; </span></span>
-<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt; We detected these problematic arguments:</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a><span class="co">#&gt; * `needs_dots`</span></span>
-<span id="cb6-8"><a href="#cb6-8"></a><span class="co">#&gt; </span></span>
-<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#&gt; These dots only exist to allow future extensions and should be empty.</span></span>
-<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#&gt; Did you misspecify an argument?</span></span>
-<span id="cb6-11"><a href="#cb6-11"></a><span class="co">#&gt; # A mable: 1 x 1</span></span>
-<span id="cb6-12"><a href="#cb6-12"></a><span class="co">#&gt;   `SMEAN(Beer)`</span></span>
-<span id="cb6-13"><a href="#cb6-13"></a><span class="co">#&gt;         &lt;model&gt;</span></span>
-<span id="cb6-14"><a href="#cb6-14"></a><span class="co">#&gt; 1    &lt;modl_smn&gt;</span></span></code></pre></div>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co">#&gt; # A mable: 1 x 1</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt;   `SMEAN(Beer)`</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt;         &lt;model&gt;</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="co">#&gt; 1    &lt;modl_smn&gt;</span></span></code></pre></div>
 <p>It doesn’t look like much, but it has used the above specials and training method to compute the seasonal average and store it in the object. However we can’t see any details about the model yet. To make the model useful, we’ll need to define some methods.</p>
 </div>
 </div>
@@ -323,17 +316,10 @@
 <span id="cb7-5"><a href="#cb7-5"></a>}</span>
 <span id="cb7-6"><a href="#cb7-6"></a></span>
 <span id="cb7-7"><a href="#cb7-7"></a>fit</span>
-<span id="cb7-8"><a href="#cb7-8"></a><span class="co">#&gt; Warning: `...` is not empty.</span></span>
-<span id="cb7-9"><a href="#cb7-9"></a><span class="co">#&gt; </span></span>
-<span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt; We detected these problematic arguments:</span></span>
-<span id="cb7-11"><a href="#cb7-11"></a><span class="co">#&gt; * `needs_dots`</span></span>
-<span id="cb7-12"><a href="#cb7-12"></a><span class="co">#&gt; </span></span>
-<span id="cb7-13"><a href="#cb7-13"></a><span class="co">#&gt; These dots only exist to allow future extensions and should be empty.</span></span>
-<span id="cb7-14"><a href="#cb7-14"></a><span class="co">#&gt; Did you misspecify an argument?</span></span>
-<span id="cb7-15"><a href="#cb7-15"></a><span class="co">#&gt; # A mable: 1 x 1</span></span>
-<span id="cb7-16"><a href="#cb7-16"></a><span class="co">#&gt;   `SMEAN(Beer)`</span></span>
-<span id="cb7-17"><a href="#cb7-17"></a><span class="co">#&gt;         &lt;model&gt;</span></span>
-<span id="cb7-18"><a href="#cb7-18"></a><span class="co">#&gt; 1    &lt;SMEAN[4]&gt;</span></span></code></pre></div>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="co">#&gt; # A mable: 1 x 1</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a><span class="co">#&gt;   `SMEAN(Beer)`</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt;         &lt;model&gt;</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="co">#&gt; 1    &lt;SMEAN[4]&gt;</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co">#' @importFrom fabletools report</span></span>
 <span id="cb8-2"><a href="#cb8-2"></a><span class="co">#' @export</span></span>
 <span id="cb8-3"><a href="#cb8-3"></a>report.model_smean &lt;-<span class="st"> </span><span class="cf">function</span>(x){</span>
@@ -372,20 +358,13 @@
 <span id="cb9-8"><a href="#cb9-8"></a>}</span>
 <span id="cb9-9"><a href="#cb9-9"></a></span>
 <span id="cb9-10"><a href="#cb9-10"></a><span class="kw"><a href="https://rdrr.io/pkg/generics/man/tidy.html">tidy</a></span>(fit)</span>
-<span id="cb9-11"><a href="#cb9-11"></a><span class="co">#&gt; Warning: `...` is not empty.</span></span>
-<span id="cb9-12"><a href="#cb9-12"></a><span class="co">#&gt; </span></span>
-<span id="cb9-13"><a href="#cb9-13"></a><span class="co">#&gt; We detected these problematic arguments:</span></span>
-<span id="cb9-14"><a href="#cb9-14"></a><span class="co">#&gt; * `needs_dots`</span></span>
-<span id="cb9-15"><a href="#cb9-15"></a><span class="co">#&gt; </span></span>
-<span id="cb9-16"><a href="#cb9-16"></a><span class="co">#&gt; These dots only exist to allow future extensions and should be empty.</span></span>
-<span id="cb9-17"><a href="#cb9-17"></a><span class="co">#&gt; Did you misspecify an argument?</span></span>
-<span id="cb9-18"><a href="#cb9-18"></a><span class="co">#&gt; # A tibble: 4 x 3</span></span>
-<span id="cb9-19"><a href="#cb9-19"></a><span class="co">#&gt;   .model      term     estimate</span></span>
-<span id="cb9-20"><a href="#cb9-20"></a><span class="co">#&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;dbl&gt;</span></span>
-<span id="cb9-21"><a href="#cb9-21"></a><span class="co">#&gt; 1 SMEAN(Beer) season_1     417.</span></span>
-<span id="cb9-22"><a href="#cb9-22"></a><span class="co">#&gt; 2 SMEAN(Beer) season_2     373.</span></span>
-<span id="cb9-23"><a href="#cb9-23"></a><span class="co">#&gt; 3 SMEAN(Beer) season_3     387.</span></span>
-<span id="cb9-24"><a href="#cb9-24"></a><span class="co">#&gt; 4 SMEAN(Beer) season_4     485.</span></span></code></pre></div>
+<span id="cb9-11"><a href="#cb9-11"></a><span class="co">#&gt; # A tibble: 4 x 3</span></span>
+<span id="cb9-12"><a href="#cb9-12"></a><span class="co">#&gt;   .model      term     estimate</span></span>
+<span id="cb9-13"><a href="#cb9-13"></a><span class="co">#&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;dbl&gt;</span></span>
+<span id="cb9-14"><a href="#cb9-14"></a><span class="co">#&gt; 1 SMEAN(Beer) season_1     417.</span></span>
+<span id="cb9-15"><a href="#cb9-15"></a><span class="co">#&gt; 2 SMEAN(Beer) season_2     373.</span></span>
+<span id="cb9-16"><a href="#cb9-16"></a><span class="co">#&gt; 3 SMEAN(Beer) season_3     387.</span></span>
+<span id="cb9-17"><a href="#cb9-17"></a><span class="co">#&gt; 4 SMEAN(Beer) season_4     485.</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co">#' @importFrom fabletools glance</span></span>
 <span id="cb10-2"><a href="#cb10-2"></a><span class="co">#' @export</span></span>
 <span id="cb10-3"><a href="#cb10-3"></a>glance.model_smean &lt;-<span class="st"> </span><span class="cf">function</span>(x){</span>
@@ -395,17 +374,10 @@
 <span id="cb10-7"><a href="#cb10-7"></a>}</span>
 <span id="cb10-8"><a href="#cb10-8"></a></span>
 <span id="cb10-9"><a href="#cb10-9"></a><span class="kw"><a href="https://rdrr.io/pkg/generics/man/glance.html">glance</a></span>(fit)</span>
-<span id="cb10-10"><a href="#cb10-10"></a><span class="co">#&gt; Warning: `...` is not empty.</span></span>
-<span id="cb10-11"><a href="#cb10-11"></a><span class="co">#&gt; </span></span>
-<span id="cb10-12"><a href="#cb10-12"></a><span class="co">#&gt; We detected these problematic arguments:</span></span>
-<span id="cb10-13"><a href="#cb10-13"></a><span class="co">#&gt; * `needs_dots`</span></span>
-<span id="cb10-14"><a href="#cb10-14"></a><span class="co">#&gt; </span></span>
-<span id="cb10-15"><a href="#cb10-15"></a><span class="co">#&gt; These dots only exist to allow future extensions and should be empty.</span></span>
-<span id="cb10-16"><a href="#cb10-16"></a><span class="co">#&gt; Did you misspecify an argument?</span></span>
-<span id="cb10-17"><a href="#cb10-17"></a><span class="co">#&gt; # A tibble: 1 x 2</span></span>
-<span id="cb10-18"><a href="#cb10-18"></a><span class="co">#&gt;   .model      sigma2</span></span>
-<span id="cb10-19"><a href="#cb10-19"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;dbl&gt;</span></span>
-<span id="cb10-20"><a href="#cb10-20"></a><span class="co">#&gt; 1 SMEAN(Beer)  5495.</span></span></code></pre></div>
+<span id="cb10-10"><a href="#cb10-10"></a><span class="co">#&gt; # A tibble: 1 x 2</span></span>
+<span id="cb10-11"><a href="#cb10-11"></a><span class="co">#&gt;   .model      sigma2</span></span>
+<span id="cb10-12"><a href="#cb10-12"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;dbl&gt;</span></span>
+<span id="cb10-13"><a href="#cb10-13"></a><span class="co">#&gt; 1 SMEAN(Beer)  5495.</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co">#' @importFrom fabletools forecast</span></span>
 <span id="cb11-2"><a href="#cb11-2"></a><span class="co">#' @export</span></span>
 <span id="cb11-3"><a href="#cb11-3"></a>forecast.model_smean &lt;-<span class="st"> </span><span class="cf">function</span>(object, new_data, ...){</span>
@@ -429,25 +401,18 @@
 <span id="cb11-21"><a href="#cb11-21"></a>}</span>
 <span id="cb11-22"><a href="#cb11-22"></a></span>
 <span id="cb11-23"><a href="#cb11-23"></a><span class="kw"><a href="../reference/forecast.html">forecast</a></span>(fit)</span>
-<span id="cb11-24"><a href="#cb11-24"></a><span class="co">#&gt; Warning: `...` is not empty.</span></span>
-<span id="cb11-25"><a href="#cb11-25"></a><span class="co">#&gt; </span></span>
-<span id="cb11-26"><a href="#cb11-26"></a><span class="co">#&gt; We detected these problematic arguments:</span></span>
-<span id="cb11-27"><a href="#cb11-27"></a><span class="co">#&gt; * `needs_dots`</span></span>
-<span id="cb11-28"><a href="#cb11-28"></a><span class="co">#&gt; </span></span>
-<span id="cb11-29"><a href="#cb11-29"></a><span class="co">#&gt; These dots only exist to allow future extensions and should be empty.</span></span>
-<span id="cb11-30"><a href="#cb11-30"></a><span class="co">#&gt; Did you misspecify an argument?</span></span>
-<span id="cb11-31"><a href="#cb11-31"></a><span class="co">#&gt; # A fable: 8 x 4 [1Q]</span></span>
-<span id="cb11-32"><a href="#cb11-32"></a><span class="co">#&gt; # Key:     .model [1]</span></span>
-<span id="cb11-33"><a href="#cb11-33"></a><span class="co">#&gt;   .model      Quarter         Beer .mean</span></span>
-<span id="cb11-34"><a href="#cb11-34"></a><span class="co">#&gt;   &lt;chr&gt;         &lt;qtr&gt;       &lt;dist&gt; &lt;dbl&gt;</span></span>
-<span id="cb11-35"><a href="#cb11-35"></a><span class="co">#&gt; 1 SMEAN(Beer) 2010 Q3 N(387, 4808)  387.</span></span>
-<span id="cb11-36"><a href="#cb11-36"></a><span class="co">#&gt; 2 SMEAN(Beer) 2010 Q4 N(485, 7057)  485.</span></span>
-<span id="cb11-37"><a href="#cb11-37"></a><span class="co">#&gt; 3 SMEAN(Beer) 2011 Q1 N(417, 5352)  417.</span></span>
-<span id="cb11-38"><a href="#cb11-38"></a><span class="co">#&gt; 4 SMEAN(Beer) 2011 Q2 N(373, 5083)  373.</span></span>
-<span id="cb11-39"><a href="#cb11-39"></a><span class="co">#&gt; 5 SMEAN(Beer) 2011 Q3 N(387, 4808)  387.</span></span>
-<span id="cb11-40"><a href="#cb11-40"></a><span class="co">#&gt; 6 SMEAN(Beer) 2011 Q4 N(485, 7057)  485.</span></span>
-<span id="cb11-41"><a href="#cb11-41"></a><span class="co">#&gt; 7 SMEAN(Beer) 2012 Q1 N(417, 5352)  417.</span></span>
-<span id="cb11-42"><a href="#cb11-42"></a><span class="co">#&gt; 8 SMEAN(Beer) 2012 Q2 N(373, 5083)  373.</span></span></code></pre></div>
+<span id="cb11-24"><a href="#cb11-24"></a><span class="co">#&gt; # A fable: 8 x 4 [1Q]</span></span>
+<span id="cb11-25"><a href="#cb11-25"></a><span class="co">#&gt; # Key:     .model [1]</span></span>
+<span id="cb11-26"><a href="#cb11-26"></a><span class="co">#&gt;   .model      Quarter         Beer .mean</span></span>
+<span id="cb11-27"><a href="#cb11-27"></a><span class="co">#&gt;   &lt;chr&gt;         &lt;qtr&gt;       &lt;dist&gt; &lt;dbl&gt;</span></span>
+<span id="cb11-28"><a href="#cb11-28"></a><span class="co">#&gt; 1 SMEAN(Beer) 2010 Q3 N(387, 4808)  387.</span></span>
+<span id="cb11-29"><a href="#cb11-29"></a><span class="co">#&gt; 2 SMEAN(Beer) 2010 Q4 N(485, 7057)  485.</span></span>
+<span id="cb11-30"><a href="#cb11-30"></a><span class="co">#&gt; 3 SMEAN(Beer) 2011 Q1 N(417, 5352)  417.</span></span>
+<span id="cb11-31"><a href="#cb11-31"></a><span class="co">#&gt; 4 SMEAN(Beer) 2011 Q2 N(373, 5083)  373.</span></span>
+<span id="cb11-32"><a href="#cb11-32"></a><span class="co">#&gt; 5 SMEAN(Beer) 2011 Q3 N(387, 4808)  387.</span></span>
+<span id="cb11-33"><a href="#cb11-33"></a><span class="co">#&gt; 6 SMEAN(Beer) 2011 Q4 N(485, 7057)  485.</span></span>
+<span id="cb11-34"><a href="#cb11-34"></a><span class="co">#&gt; 7 SMEAN(Beer) 2012 Q1 N(417, 5352)  417.</span></span>
+<span id="cb11-35"><a href="#cb11-35"></a><span class="co">#&gt; 8 SMEAN(Beer) 2012 Q2 N(373, 5083)  373.</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="co">#' @importFrom fabletools stream</span></span>
 <span id="cb12-2"><a href="#cb12-2"></a><span class="co">#' @export</span></span>
 <span id="cb12-3"><a href="#cb12-3"></a>stream.model_smean &lt;-<span class="st"> </span><span class="cf">function</span>(object, new_data, specials, ...){</span>
@@ -541,28 +506,21 @@
 <span id="cb13-5"><a href="#cb13-5"></a>}</span>
 <span id="cb13-6"><a href="#cb13-6"></a></span>
 <span id="cb13-7"><a href="#cb13-7"></a><span class="kw"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span>(fit)</span>
-<span id="cb13-8"><a href="#cb13-8"></a><span class="co">#&gt; Warning: `...` is not empty.</span></span>
-<span id="cb13-9"><a href="#cb13-9"></a><span class="co">#&gt; </span></span>
-<span id="cb13-10"><a href="#cb13-10"></a><span class="co">#&gt; We detected these problematic arguments:</span></span>
-<span id="cb13-11"><a href="#cb13-11"></a><span class="co">#&gt; * `needs_dots`</span></span>
-<span id="cb13-12"><a href="#cb13-12"></a><span class="co">#&gt; </span></span>
-<span id="cb13-13"><a href="#cb13-13"></a><span class="co">#&gt; These dots only exist to allow future extensions and should be empty.</span></span>
-<span id="cb13-14"><a href="#cb13-14"></a><span class="co">#&gt; Did you misspecify an argument?</span></span>
-<span id="cb13-15"><a href="#cb13-15"></a><span class="co">#&gt; # A tsibble: 218 x 3 [1Q]</span></span>
-<span id="cb13-16"><a href="#cb13-16"></a><span class="co">#&gt; # Key:       .model [1]</span></span>
-<span id="cb13-17"><a href="#cb13-17"></a><span class="co">#&gt;    .model      Quarter .fitted</span></span>
-<span id="cb13-18"><a href="#cb13-18"></a><span class="co">#&gt;    &lt;chr&gt;         &lt;qtr&gt;   &lt;dbl&gt;</span></span>
-<span id="cb13-19"><a href="#cb13-19"></a><span class="co">#&gt;  1 SMEAN(Beer) 1956 Q1    417.</span></span>
-<span id="cb13-20"><a href="#cb13-20"></a><span class="co">#&gt;  2 SMEAN(Beer) 1956 Q2    373.</span></span>
-<span id="cb13-21"><a href="#cb13-21"></a><span class="co">#&gt;  3 SMEAN(Beer) 1956 Q3    387.</span></span>
-<span id="cb13-22"><a href="#cb13-22"></a><span class="co">#&gt;  4 SMEAN(Beer) 1956 Q4    485.</span></span>
-<span id="cb13-23"><a href="#cb13-23"></a><span class="co">#&gt;  5 SMEAN(Beer) 1957 Q1    417.</span></span>
-<span id="cb13-24"><a href="#cb13-24"></a><span class="co">#&gt;  6 SMEAN(Beer) 1957 Q2    373.</span></span>
-<span id="cb13-25"><a href="#cb13-25"></a><span class="co">#&gt;  7 SMEAN(Beer) 1957 Q3    387.</span></span>
-<span id="cb13-26"><a href="#cb13-26"></a><span class="co">#&gt;  8 SMEAN(Beer) 1957 Q4    485.</span></span>
-<span id="cb13-27"><a href="#cb13-27"></a><span class="co">#&gt;  9 SMEAN(Beer) 1958 Q1    417.</span></span>
-<span id="cb13-28"><a href="#cb13-28"></a><span class="co">#&gt; 10 SMEAN(Beer) 1958 Q2    373.</span></span>
-<span id="cb13-29"><a href="#cb13-29"></a><span class="co">#&gt; # … with 208 more rows</span></span></code></pre></div>
+<span id="cb13-8"><a href="#cb13-8"></a><span class="co">#&gt; # A tsibble: 218 x 3 [1Q]</span></span>
+<span id="cb13-9"><a href="#cb13-9"></a><span class="co">#&gt; # Key:       .model [1]</span></span>
+<span id="cb13-10"><a href="#cb13-10"></a><span class="co">#&gt;    .model      Quarter .fitted</span></span>
+<span id="cb13-11"><a href="#cb13-11"></a><span class="co">#&gt;    &lt;chr&gt;         &lt;qtr&gt;   &lt;dbl&gt;</span></span>
+<span id="cb13-12"><a href="#cb13-12"></a><span class="co">#&gt;  1 SMEAN(Beer) 1956 Q1    417.</span></span>
+<span id="cb13-13"><a href="#cb13-13"></a><span class="co">#&gt;  2 SMEAN(Beer) 1956 Q2    373.</span></span>
+<span id="cb13-14"><a href="#cb13-14"></a><span class="co">#&gt;  3 SMEAN(Beer) 1956 Q3    387.</span></span>
+<span id="cb13-15"><a href="#cb13-15"></a><span class="co">#&gt;  4 SMEAN(Beer) 1956 Q4    485.</span></span>
+<span id="cb13-16"><a href="#cb13-16"></a><span class="co">#&gt;  5 SMEAN(Beer) 1957 Q1    417.</span></span>
+<span id="cb13-17"><a href="#cb13-17"></a><span class="co">#&gt;  6 SMEAN(Beer) 1957 Q2    373.</span></span>
+<span id="cb13-18"><a href="#cb13-18"></a><span class="co">#&gt;  7 SMEAN(Beer) 1957 Q3    387.</span></span>
+<span id="cb13-19"><a href="#cb13-19"></a><span class="co">#&gt;  8 SMEAN(Beer) 1957 Q4    485.</span></span>
+<span id="cb13-20"><a href="#cb13-20"></a><span class="co">#&gt;  9 SMEAN(Beer) 1958 Q1    417.</span></span>
+<span id="cb13-21"><a href="#cb13-21"></a><span class="co">#&gt; 10 SMEAN(Beer) 1958 Q2    373.</span></span>
+<span id="cb13-22"><a href="#cb13-22"></a><span class="co">#&gt; # … with 208 more rows</span></span></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co">#' @importFrom fabletools residuals</span></span>
 <span id="cb14-2"><a href="#cb14-2"></a><span class="co">#' @export</span></span>
 <span id="cb14-3"><a href="#cb14-3"></a>residuals.model_smean &lt;-<span class="st"> </span><span class="cf">function</span>(object, ...){</span>
@@ -570,28 +528,21 @@
 <span id="cb14-5"><a href="#cb14-5"></a>}</span>
 <span id="cb14-6"><a href="#cb14-6"></a></span>
 <span id="cb14-7"><a href="#cb14-7"></a><span class="kw"><a href="https://rdrr.io/r/stats/residuals.html">residuals</a></span>(fit)</span>
-<span id="cb14-8"><a href="#cb14-8"></a><span class="co">#&gt; Warning: `...` is not empty.</span></span>
-<span id="cb14-9"><a href="#cb14-9"></a><span class="co">#&gt; </span></span>
-<span id="cb14-10"><a href="#cb14-10"></a><span class="co">#&gt; We detected these problematic arguments:</span></span>
-<span id="cb14-11"><a href="#cb14-11"></a><span class="co">#&gt; * `needs_dots`</span></span>
-<span id="cb14-12"><a href="#cb14-12"></a><span class="co">#&gt; </span></span>
-<span id="cb14-13"><a href="#cb14-13"></a><span class="co">#&gt; These dots only exist to allow future extensions and should be empty.</span></span>
-<span id="cb14-14"><a href="#cb14-14"></a><span class="co">#&gt; Did you misspecify an argument?</span></span>
-<span id="cb14-15"><a href="#cb14-15"></a><span class="co">#&gt; # A tsibble: 218 x 3 [1Q]</span></span>
-<span id="cb14-16"><a href="#cb14-16"></a><span class="co">#&gt; # Key:       .model [1]</span></span>
-<span id="cb14-17"><a href="#cb14-17"></a><span class="co">#&gt;    .model      Quarter .resid</span></span>
-<span id="cb14-18"><a href="#cb14-18"></a><span class="co">#&gt;    &lt;chr&gt;         &lt;qtr&gt;  &lt;dbl&gt;</span></span>
-<span id="cb14-19"><a href="#cb14-19"></a><span class="co">#&gt;  1 SMEAN(Beer) 1956 Q1  -133.</span></span>
-<span id="cb14-20"><a href="#cb14-20"></a><span class="co">#&gt;  2 SMEAN(Beer) 1956 Q2  -160.</span></span>
-<span id="cb14-21"><a href="#cb14-21"></a><span class="co">#&gt;  3 SMEAN(Beer) 1956 Q3  -160.</span></span>
-<span id="cb14-22"><a href="#cb14-22"></a><span class="co">#&gt;  4 SMEAN(Beer) 1956 Q4  -177.</span></span>
-<span id="cb14-23"><a href="#cb14-23"></a><span class="co">#&gt;  5 SMEAN(Beer) 1957 Q1  -155.</span></span>
-<span id="cb14-24"><a href="#cb14-24"></a><span class="co">#&gt;  6 SMEAN(Beer) 1957 Q2  -145.</span></span>
-<span id="cb14-25"><a href="#cb14-25"></a><span class="co">#&gt;  7 SMEAN(Beer) 1957 Q3  -151.</span></span>
-<span id="cb14-26"><a href="#cb14-26"></a><span class="co">#&gt;  8 SMEAN(Beer) 1957 Q4  -165.</span></span>
-<span id="cb14-27"><a href="#cb14-27"></a><span class="co">#&gt;  9 SMEAN(Beer) 1958 Q1  -145.</span></span>
-<span id="cb14-28"><a href="#cb14-28"></a><span class="co">#&gt; 10 SMEAN(Beer) 1958 Q2  -140.</span></span>
-<span id="cb14-29"><a href="#cb14-29"></a><span class="co">#&gt; # … with 208 more rows</span></span></code></pre></div>
+<span id="cb14-8"><a href="#cb14-8"></a><span class="co">#&gt; # A tsibble: 218 x 3 [1Q]</span></span>
+<span id="cb14-9"><a href="#cb14-9"></a><span class="co">#&gt; # Key:       .model [1]</span></span>
+<span id="cb14-10"><a href="#cb14-10"></a><span class="co">#&gt;    .model      Quarter .resid</span></span>
+<span id="cb14-11"><a href="#cb14-11"></a><span class="co">#&gt;    &lt;chr&gt;         &lt;qtr&gt;  &lt;dbl&gt;</span></span>
+<span id="cb14-12"><a href="#cb14-12"></a><span class="co">#&gt;  1 SMEAN(Beer) 1956 Q1  -133.</span></span>
+<span id="cb14-13"><a href="#cb14-13"></a><span class="co">#&gt;  2 SMEAN(Beer) 1956 Q2  -160.</span></span>
+<span id="cb14-14"><a href="#cb14-14"></a><span class="co">#&gt;  3 SMEAN(Beer) 1956 Q3  -160.</span></span>
+<span id="cb14-15"><a href="#cb14-15"></a><span class="co">#&gt;  4 SMEAN(Beer) 1956 Q4  -177.</span></span>
+<span id="cb14-16"><a href="#cb14-16"></a><span class="co">#&gt;  5 SMEAN(Beer) 1957 Q1  -155.</span></span>
+<span id="cb14-17"><a href="#cb14-17"></a><span class="co">#&gt;  6 SMEAN(Beer) 1957 Q2  -145.</span></span>
+<span id="cb14-18"><a href="#cb14-18"></a><span class="co">#&gt;  7 SMEAN(Beer) 1957 Q3  -151.</span></span>
+<span id="cb14-19"><a href="#cb14-19"></a><span class="co">#&gt;  8 SMEAN(Beer) 1957 Q4  -165.</span></span>
+<span id="cb14-20"><a href="#cb14-20"></a><span class="co">#&gt;  9 SMEAN(Beer) 1958 Q1  -145.</span></span>
+<span id="cb14-21"><a href="#cb14-21"></a><span class="co">#&gt; 10 SMEAN(Beer) 1958 Q2  -140.</span></span>
+<span id="cb14-22"><a href="#cb14-22"></a><span class="co">#&gt; # … with 208 more rows</span></span></code></pre></div>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co">#' @importFrom fabletools components</span></span>
 <span id="cb15-2"><a href="#cb15-2"></a><span class="co">#' @export</span></span>
 <span id="cb15-3"><a href="#cb15-3"></a>components.model_smean &lt;-<span class="st"> </span><span class="cf">function</span>(object, ...){</span>
