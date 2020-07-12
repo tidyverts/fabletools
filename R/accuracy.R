@@ -184,6 +184,7 @@ percentile_score <- function(.dist, .actual, na.rm = TRUE, ...){
 #' @export
 CRPS <- function(.dist, .actual, n_quantiles = 1000, na.rm = TRUE, ...){
   is_normal <- map_lgl(.dist, inherits, "dist_normal")
+  is_sample <- map_lgl(.dist, inherits, "dist_sample")
   z <- rep(NA_real_, length(.dist))
   
   if(any(is_normal)){
@@ -193,17 +194,26 @@ CRPS <- function(.dist, .actual, n_quantiles = 1000, na.rm = TRUE, ...){
     zn <- sd*(zn*(2*stats::pnorm(zn)-1)+2*stats::dnorm(zn)-1/sqrt(pi))
     z[is_normal] <- zn
   }
-  
-  if(any(!is_normal)){
+  if(any(is_sample)){
+    z[is_sample] <- map2_dbl(
+      .dist[is_sample], .actual[is_sample], 
+      function(d, y){
+        x <- sort(d$x)
+        m <- length(x)
+        (2/m) * mean((x-y)*(m*(y<x) - seq_len(m) + 0.5))
+      }
+    )
+  }
+  is_default <- is.na(z)
+  if(any(is_default)){
     probs <- seq(0, 1, length.out = n_quantiles + 2)[seq_len(n_quantiles) + 1]
-    percentiles <- map(probs, quantile, x = .dist[!is_normal])
+    percentiles <- map(probs, quantile, x = .dist[is_default])
     if(!is.numeric(percentiles[[1]])) abort("Percentile scores are not supported for multivariate distributions.")
-    za <- map2_dbl(percentiles, probs, function(percentile, prob){
-      L <- ifelse(.actual[!is_normal] < percentile, (1-prob), prob)*abs(percentile-.actual[!is_normal])
-      mean(L, na.rm = na.rm)
-    })
+    za <- transpose_dbl(map2(percentiles, probs, function(percentile, prob){
+      ifelse(.actual[is_default] < percentile, (1-prob), prob)*abs(percentile-.actual[is_default])
+    }))
     
-    z[!is_normal] <- za*2
+    z[is_default] <- vapply(za, mean, numeric(1L), na.rm = na.rm)*2
   }
   
   mean(z, na.rm = na.rm)
