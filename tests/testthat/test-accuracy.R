@@ -1,5 +1,14 @@
 context("test-accuracy")
 
+test_that("accuracy() hints", {
+  skip_if_not_installed("fable")
+  expect_error(
+    accuracy(mbl, us_deaths),
+    "To compute forecast accuracy, you'll need to compute the forecasts first.",
+    fixed = TRUE
+  )
+})
+
 test_that("In-sample accuracy", {
   skip_if_not_installed("fable")
   

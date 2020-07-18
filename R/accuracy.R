@@ -283,6 +283,10 @@ accuracy <- function(object, ...){
 #' 
 #' @export
 accuracy.mdl_df <- function(object, measures = point_accuracy_measures, ...){
+  if(is_tsibble(measures)){
+    abort("The `measures` argument must contain a list of accuracy measures.
+Hint: A tsibble of future values is only required when computing accuracy of a fable. To compute forecast accuracy, you'll need to compute the forecasts first.")
+  }
   as_tibble(object) %>% 
     tidyr::pivot_longer(mable_vars(object), names_to = ".model", values_to = "fit") %>% 
     mutate(fit = map(!!sym("fit"), accuracy, measures = measures, ...)) %>% 
