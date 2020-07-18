@@ -32,12 +32,10 @@ residuals.mdl_ts <- function(object, type = "innovation", ...){
   else{
     .resid <- residuals(object$fit, type = type, ...)
     if(is.null(.resid)){
-        warn(sprintf(
-'Residuals of type `%s` are not supported for %s models.
-Defaulting to `type="response"`', type, model_sum(object)))
-      .resid <- response(object)
-      .fits <- fitted(object)
-      .resid <- as.matrix(.resid[measured_vars(.resid)]) - as.matrix(.fits[measured_vars(.fits)])
+#         warn(sprintf(
+# 'Residuals of type `%s` are not supported for %s models.
+# Defaulting to `type="response"`', type, model_sum(object)))
+      return(residuals(object, type = "response", ...))
     }
   }
   .resid <- as.matrix(.resid)
