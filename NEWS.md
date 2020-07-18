@@ -15,6 +15,15 @@
 * Documentation improvements
 * Performance improvements
 
+## Breaking changes
+
+* The residuals obtained from the `augment()` function are no longer controlled
+  by the `type` argument. Response residuals (`y - yhat`) are now always found
+  in the `.resid` column, and innovation residuals (the model's error) are now
+  found in the `.innov` column. Response residuals will differ from innovation
+  residuals when transformations are used, and if the model has non-additive
+  residuals.
+
 ## Bug fixes
 
 * Fixed issue with aggregated date vectors (#230).
