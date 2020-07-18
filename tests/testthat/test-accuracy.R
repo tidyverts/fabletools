@@ -25,7 +25,7 @@ test_that("In-sample accuracy", {
   expect_true(!any(map_lgl(acc, compose(any, is.na))))
   expect_equal(
     as.list(acc),
-    as_tibble(augment(mbl, type = "response")) %>% 
+    as_tibble(augment(mbl)) %>% 
       group_by(.model) %>% 
       summarise(.type = "Training", ME = mean(.resid), RMSE = sqrt(mean(.resid^2)),
                 MAE = mean(abs(.resid)), MPE = mean(.resid/value*100),

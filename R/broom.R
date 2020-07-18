@@ -14,21 +14,22 @@
 #' # Forecasting with an ETS(M,Ad,A) model to Australian beer production
 #' aus_production %>%
 #'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) %>% 
-#'   augment(type = "response")
+#'   augment()
 #' }
 #' 
 #' @rdname augment
 #' @export
 augment.mdl_df <- function(x, ...){
-  x <- tidyr::pivot_longer(x, all_of(mable_vars(x)),
-                           names_to = ".model", values_to = ".fit")
+  mbl_vars <- mable_vars(x)
   kv <- key_vars(x)
-  x <- transmute(as_tibble(x), !!!syms(kv), !!sym(".model"),
-                 aug = map(!!sym(".fit"), augment, ...))
-  unnest_tsbl(x, "aug", parent_key = kv)
+  x <- mutate(as_tibble(x), 
+              dplyr::across(all_of(mbl_vars), function(x) lapply(x, augment, ...)))
+  x <- pivot_longer(x, mbl_vars, names_to = ".model", values_to = ".aug")
+  unnest_tsbl(x, ".aug", parent_key = c(kv, ".model"))
 }
 
 #' @rdname augment
+#' @param type Deprecated.
 #' @export
 augment.mdl_ts <- function(x, type = NULL, ...){
   if (!is.null(type)) { 
@@ -92,12 +93,11 @@ Response residuals are now always found in `.resid` and innovation residuals are
 #' @rdname glance
 #' @export
 glance.mdl_df <- function(x, ...){
-  x <- tidyr::pivot_longer(x, all_of(mable_vars(x)),
-                           names_to = ".model", values_to = ".fit")
-  kv <- key_vars(x)
-  x <- transmute(as_tibble(x),
-                 !!!syms(kv), !!sym(".model"), glanced = map(!!sym(".fit"), glance))
-  unnest_tbl(x, "glanced")
+  mbl_vars <- mable_vars(x)
+  x <- mutate(as_tibble(x), 
+              dplyr::across(all_of(mbl_vars), function(x) lapply(x, glance, ...)))
+  x <- pivot_longer(x, mbl_vars, names_to = ".model", values_to = ".glanced")
+  unnest(x, ".glanced")
 }
 
 #' @rdname glance
@@ -127,12 +127,11 @@ glance.mdl_ts <- function(x, ...){
 #' @rdname tidy
 #' @export
 tidy.mdl_df <- function(x, ...){
-  x <- tidyr::pivot_longer(x, all_of(mable_vars(x)),
-                           names_to = ".model", values_to = ".fit")
-  kv <- key_vars(x)
-  x <- transmute(as_tibble(x),
-                 !!!syms(kv), !!sym(".model"), tidied = map(!!sym(".fit"), tidy))
-  unnest_tbl(x, "tidied")
+  mbl_vars <- mable_vars(x)
+  x <- mutate(as_tibble(x), 
+         dplyr::across(all_of(mbl_vars), function(x) lapply(x, tidy, ...)))
+  x <- pivot_longer(x, mbl_vars, names_to = ".model", values_to = ".tidied")
+  unnest(x, ".tidied")
 }
 
 #' @rdname tidy

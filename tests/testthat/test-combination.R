@@ -7,8 +7,8 @@ test_that("Combination modelling", {
     transmute(combination = (ets + ets)/2)
   
   expect_equal(
-    augment(mbl_cmbn, type = "response")[,-1],
-    augment(mbl, type = "response")[,-1]
+    select(augment(mbl_cmbn), -.model, -.innov),
+    select(augment(mbl), -.model, -.innov)
   )
   
   expect_equivalent(

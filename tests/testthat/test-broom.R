@@ -6,17 +6,20 @@ test_that("augment", {
   aug <- augment(mbl)
   expect_equal(aug$index, us_deaths_tr$index)
   expect_equal(aug$.fitted, fitted(mbl)$.fitted)
-  expect_equal(aug$.resid, residuals(mbl)$.resid)
+  expect_equal(aug$.resid, residuals(mbl, type ="response")$.resid)
+  expect_equal(aug$.innov, residuals(mbl)$.resid)
   
   aug <- augment(mbl_multi)
   expect_equal(aug$index, lung_deaths_long_tr$index)
   expect_equal(aug$.fitted, fitted(mbl_multi)$.fitted)
-  expect_equal(aug$.resid, residuals(mbl_multi)$.resid)
+  expect_equal(aug$.resid, residuals(mbl_multi, type = "response")$.resid)
+  expect_equal(aug$.innov, residuals(mbl_multi)$.resid)
   
   aug <- augment(mbl_complex)
   expect_equal(aug$index, rep(lung_deaths_long_tr$index, 2))
   expect_equal(aug$.fitted, fitted(mbl_complex)$.fitted)
-  expect_equal(aug$.resid, residuals(mbl_complex)$.resid)
+  expect_equal(aug$.resid, residuals(mbl_complex, type = "response")$.resid)
+  expect_equal(aug$.innov, residuals(mbl_complex)$.resid)
 
   aug <- augment(mbl_mv)
   expect_equal(aug$index, rep(lung_deaths_wide_tr$index, 2))

@@ -10,15 +10,12 @@
 #' @importFrom stats fitted
 #' @export
 fitted.mdl_df <- function(object, ...){
-  object <- tidyr::pivot_longer(object, all_of(mable_vars(object)),
-                             names_to = ".model", values_to = ".fit")
+  mbl_vars <- mable_vars(object)
   kv <- key_vars(object)
-  object <- transmute(as_tibble(object),
-    !!!syms(kv),
-    !!sym(".model"),
-    fitted = map(!!sym(".fit"), fitted, ...)
-  )
-  unnest_tsbl(object, "fitted", parent_key = kv)
+  object <- mutate(as_tibble(object), 
+              dplyr::across(all_of(mbl_vars), function(x) lapply(x, fitted, ...)))
+  object <- pivot_longer(object, mbl_vars, names_to = ".model", values_to = ".fitted")
+  unnest_tsbl(object, ".fitted", parent_key = c(kv, ".model"))
 }
 
 #' @rdname fitted.mdl_df

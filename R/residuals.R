@@ -9,15 +9,12 @@
 #' @importFrom stats residuals
 #' @export
 residuals.mdl_df <- function(object, ...){
-  object <- tidyr::pivot_longer(object, all_of(mable_vars(object)),
-                             names_to = ".model", values_to = ".fit")
+  mbl_vars <- mable_vars(object)
   kv <- key_vars(object)
-  object <- transmute(as_tibble(object),
-    !!!syms(kv),
-    !!sym(".model"),
-    residuals = map(!!sym(".fit"), residuals, ...)
-  )
-  unnest_tsbl(object, "residuals", parent_key = kv)
+  object <- mutate(as_tibble(object), 
+              dplyr::across(all_of(mbl_vars), function(x) lapply(x, residuals, ...)))
+  object <- pivot_longer(object, mbl_vars, names_to = ".model", values_to = ".resid")
+  unnest_tsbl(object, ".resid", parent_key = c(kv, ".model"))
 }
 
 #' @param type The type of residuals to compute. If `type="response"`, residuals on the back-transformed data will be computed.
