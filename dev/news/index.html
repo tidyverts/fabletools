@@ -143,6 +143,13 @@
 <li>Performance improvements</li>
 </ul>
 </div>
+<div id="breaking-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#breaking-changes" class="anchor"></a>Breaking changes</h2>
+<ul>
+<li>The residuals obtained from the <code><a href="https://rdrr.io/pkg/generics/man/augment.html">augment()</a></code> function are no longer controlled by the <code>type</code> argument. Response residuals (<code>y - yhat</code>) are now always found in the <code>.resid</code> column, and innovation residuals (the model’s error) are now found in the <code>.innov</code> column. Response residuals will differ from innovation residuals when transformations are used, and if the model has non-additive residuals.</li>
+</ul>
+</div>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
@@ -186,9 +193,9 @@
 <li>Documentation improvements.</li>
 </ul>
 </div>
-<div id="breaking-changes" class="section level2">
+<div id="breaking-changes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes" class="anchor"></a>Breaking changes</h2>
+<a href="#breaking-changes-1" class="anchor"></a>Breaking changes</h2>
 <ul>
 <li>The fable returned by <code><a href="../reference/forecast.html">forecast()</a></code> now stores the distribution in the column named the response variable (previously, this was the point forecast). Point forecasts are now stored in the <code>.mean</code> column, which can be customised using the <code>point_forecast</code> argument.</li>
 <li>The <code>bias_adjust</code> option for forecast() is replaced by <code>point_forecast</code>, allowing you to specify which point forecast measures to display (fable/<a href='https://github.com/tidyverts/fabletools/issues/226'>#226</a>). This has been done to reduce confusion around the argument’s usage, disambiguate the returned point forecast’s meaning, and also allow users to specify which (if any) point forecasts to provide.</li>
@@ -253,9 +260,9 @@
 <li>Forecast plots via <code><a href="../reference/autoplot.fbl_ts.html">autoplot.fbl_ts()</a></code> and <code><a href="../reference/autoplot.fbl_ts.html">autolayer.fbl_ts()</a></code> now support the <code>show_gap</code> argument. This can be used to connect the historical observations to the forecasts (<a href='https://github.com/tidyverts/fabletools/issues/113'>#113</a>).</li>
 </ul>
 </div>
-<div id="breaking-changes-1" class="section level2">
+<div id="breaking-changes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes-1" class="anchor"></a>Breaking changes</h2>
+<a href="#breaking-changes-2" class="anchor"></a>Breaking changes</h2>
 <ul>
 <li>Decompositions are now treated as models. To access the decomposed values, you will now have to use <code><a href="https://rdrr.io/pkg/generics/man/components.html">components()</a></code>. For example, <code>tourism %&gt;% STL(Trips)</code> is now <code>tourism %&gt;% model(STL(Trips)) %&gt;% components()</code>. This change allows for more flexible decomposition specifications, and better interfaces for decomposition modelling.</li>
 </ul>
@@ -275,9 +282,9 @@
 <h1 class="page-header" data-toc-text="0.1.1">
 <a href="#fabletools-011" class="anchor"></a>fabletools 0.1.1<small> 2019-09-16 </small>
 </h1>
-<div id="breaking-changes-2" class="section level2">
+<div id="breaking-changes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes-2" class="anchor"></a>Breaking changes</h2>
+<a href="#breaking-changes-3" class="anchor"></a>Breaking changes</h2>
 <ul>
 <li>Updated method names available for <code><a href="../reference/min_trace.html">min_trace()</a></code> reconciliation (<a href='https://github.com/GeorgeAthana'>@GeorgeAthana</a>).</li>
 </ul>
