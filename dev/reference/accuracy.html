@@ -211,12 +211,10 @@ used to train the model.</p>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. </span>
-#&gt; <span class='warning'>2 observations are missing between 2010 Q3 and 2010 Q4</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. </span>
-#&gt; <span class='warning'>2 observations are missing between 2010 Q3 and 2010 Q4</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 1 x 5</span><span>
-#&gt;   .model .type winkler percentile  CRPS
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> ets    Test     101.       3.81  7.56</div><div class='input'>
+#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='output co'>#&gt; <span class='warning'>Warning: 1 error encountered for ets</span>
+#&gt; <span class='warning'>[1] Only univariate responses are supported by ETS.</span></div><div class='output co'>#&gt; <span class='error'>Error: Problem with `mutate()` input `fit`.</span>
+#&gt; <span class='error'><span style='color: #BB0000;'>✖</span><span> `nm` must be `NULL` or a character vector the same length as `x`</span>
+#&gt; <span class='error'></span><span style='color: #0000BB;'>ℹ</span><span> Input `fit` is `map(fit, accuracy, measures = measures, ...)`.</span></div><div class='input'>
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
