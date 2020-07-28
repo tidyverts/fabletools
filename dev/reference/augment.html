@@ -167,10 +167,21 @@ residuals.</p>
 <span class='no'>aus_production</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Beer</span>) ~ <span class='fu'>error</span>(<span class='st'>"M"</span>) + <span class='fu'>trend</span>(<span class='st'>"Ad"</span>) + <span class='fu'>season</span>(<span class='st'>"A"</span>))) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/generics/man/augment.html'>augment</a></span>()
-}</div><div class='output co'>#&gt; <span class='warning'>Warning: 1 error encountered for ets</span>
-#&gt; <span class='warning'>[1] Only univariate responses are supported by ETS.</span></div><div class='output co'>#&gt; <span class='error'>Error: Problem with `mutate()` input `..1`.</span>
-#&gt; <span class='error'><span style='color: #BB0000;'>✖</span><span> `nm` must be `NULL` or a character vector the same length as `x`</span>
-#&gt; <span class='error'></span><span style='color: #0000BB;'>ℹ</span><span> Input `..1` is `dplyr::across(...)`.</span></div><div class='input'>
+}</div><div class='output co'>#&gt; <span style='color: #555555;'># A tsibble: 218 x 6 [1Q]</span><span>
+#&gt; </span><span style='color: #555555;'># Key:       .model [1]</span><span>
+#&gt;    .model Quarter  Beer .fitted .resid    .innov
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;qtr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> ets    1956 Q1  284.    267.  17.0   0.011</span><span style='text-decoration: underline;'>1</span><span>  
+#&gt; </span><span style='color: #555555;'> 2</span><span> ets    1956 Q2  213.    224. -</span><span style='color: #BB0000;'>10.6</span><span>  -</span><span style='color: #BB0000;'>0.008</span><span style='color: #BB0000;text-decoration: underline;'>99</span><span> 
+#&gt; </span><span style='color: #555555;'> 3</span><span> ets    1956 Q3  227.    236.  -</span><span style='color: #BB0000;'>9.02</span><span> -</span><span style='color: #BB0000;'>0.007</span><span style='color: #BB0000;text-decoration: underline;'>13</span><span> 
+#&gt; </span><span style='color: #555555;'> 4</span><span> ets    1956 Q4  308.    303.   4.62  0.002</span><span style='text-decoration: underline;'>64</span><span> 
+#&gt; </span><span style='color: #555555;'> 5</span><span> ets    1957 Q1  262.    272.  -</span><span style='color: #BB0000;'>9.61</span><span> -</span><span style='color: #BB0000;'>0.006</span><span style='color: #BB0000;text-decoration: underline;'>43</span><span> 
+#&gt; </span><span style='color: #555555;'> 6</span><span> ets    1957 Q2  228.    218.   9.96  0.008</span><span style='text-decoration: underline;'>30</span><span> 
+#&gt; </span><span style='color: #555555;'> 7</span><span> ets    1957 Q3  236.    234.   2.34  0.001</span><span style='text-decoration: underline;'>83</span><span> 
+#&gt; </span><span style='color: #555555;'> 8</span><span> ets    1957 Q4  320.    306.  13.6   0.007</span><span style='text-decoration: underline;'>61</span><span> 
+#&gt; </span><span style='color: #555555;'> 9</span><span> ets    1958 Q1  272.    273.  -</span><span style='color: #BB0000;'>1.49</span><span> -</span><span style='color: #BB0000;'>0.000</span><span style='color: #BB0000;text-decoration: underline;'>974</span><span>
+#&gt; </span><span style='color: #555555;'>10</span><span> ets    1958 Q2  233.    225.   7.90  0.006</span><span style='text-decoration: underline;'>37</span><span> 
+#&gt; </span><span style='color: #555555;'># … with 208 more rows</span><span></div><div class='input'>
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
