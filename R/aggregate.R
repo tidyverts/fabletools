@@ -32,13 +32,14 @@ aggregate_key <- function(.data, .spec, ...){
 aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){#, dev = FALSE){
   .spec <- enexpr(.spec)
   if(is.null(.spec)){
+    kv <- syms(key_vars(.data))
     message(
       sprintf("Key structural specification not found, defaulting to `.spec = %s`",
-              paste(key_vars(.data), collapse = "*"))
+              paste(kv, collapse = "*"))
     )
-    .spec <- parse_expr(paste(key_vars(.data), collapse = "*"))
+    .spec <- reduce(kv, call2, .fn = "*")
   }
-  
+
   key_comb <- parse_agg_spec(.spec)
   
   idx <- index2_var(.data)
@@ -88,7 +89,7 @@ parse_agg_spec <- function(expr){
   # Key combinations
   tm <- stats::terms(new_formula(lhs = NULL, rhs = expr), env = empty_env())
   key_comb <- attr(tm, "factors")
-  key_vars <- rownames(key_comb)
+  key_vars <- sub("^`(.*)`$", "\\1", rownames(key_comb))
   key_comb <- map(split(key_comb, col(key_comb)), function(x) key_vars[x!=0])
   if(attr(tm, "intercept")){
     key_comb <- c(list(chr()), key_comb)
