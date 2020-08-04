@@ -1,5 +1,9 @@
 # fabletools (development version)
 
+## New features
+
+* Added `bottom_up()` forecast reconciliation method.
+
 ## Improvements
 
 * Fixed some inconsistencies in key ordering of model accessors (such as 

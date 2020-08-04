@@ -162,6 +162,17 @@ forecast.lst_mint_mdl <- function(object, key_data,
   reconcile_fbl_list(fc, S, P, W, point_forecast = point_method)
 }
 
+#' Bottom up forecast reconciliation
+#' 
+#' Reconciles a hierarchy using the bottom up reconciliation method. The 
+#' response variable of the hierarchy must be aggregated using sums. The 
+#' forecasted time points must match for all series in the hierarchy.
+#' 
+#' @param models A column of models in a mable.
+#' 
+#' @seealso 
+#' [`reconcile()`], [`aggregate_key()`]
+#' @export
 bottom_up <- function(models){
   structure(models, class = c("lst_btmup_mdl", "lst_mdl", "list"))
 }
