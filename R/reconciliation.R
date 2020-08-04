@@ -202,6 +202,72 @@ forecast.lst_btmup_mdl <- function(object, key_data,
                      point_forecast = point_method)
 }
 
+
+#' Top down forecast reconciliation
+#' 
+#' Reconciles a hierarchy using the top down reconciliation method. The 
+#' response variable of the hierarchy must be aggregated using sums. The 
+#' forecasted time points must match for all series in the hierarchy.
+#' 
+#' @param models A column of models in a mable.
+#' @param method The reconciliation method to use.
+#' 
+#' @seealso 
+#' [`reconcile()`], [`aggregate_key()`]
+#' 
+#' @export
+top_down <- function(models, method = c("avg_prop", "prop_avg", "fc_prop")){
+  structure(models, class = c("lst_topdwn_mdl", "lst_mdl", "list"),
+            method = match.arg(method))
+}
+
+#' @export
+forecast.lst_topdwn_mdl <- function(object, key_data, 
+                                   point_forecast = list(.mean = mean), ...){
+  method <- object%@%"method"
+  point_method <- point_forecast
+  point_forecast <- list()
+  
+  # TODO: Add check for grouped hierarchies
+  
+  S <- build_smat_rows(key_data)
+  # Identify top and bottom level
+  top <- which.max(rowSums(S))
+  btm <- which(rowSums(S) == 1L)
+  
+  if(method == "fc_prop") {
+    abort("`method = 'fc_prop'` is not yet supported")
+    fc <- NextMethod()
+    fc_mean <- lapply(fc, function(x) mean(x[[distribution_var(x)]]))
+  } else {
+    # Compute dis-aggregation matrix
+    history <- lapply(object, function(x) response(x)[[".response"]])
+    top_y <- history[[top]]
+    btm_y <- history[btm]
+    if (method == "avg_prop") { 
+      prop <- map_dbl(btm_y, function(y) mean(y/top_y))
+    } else if (method == "prop_avg") {
+      prop <- map_dbl(btm_y, mean) / mean(top_y)
+    }
+    
+    # Keep only top layer
+    object <- object[top]
+    
+    # Get base forecasts
+    fc <- vector("list", nrow(S))
+    fc[top] <- NextMethod()
+    
+    # Add dummy forecasts to unused levels
+    fc[seq_along(fc)[-top]] <- fc[top]
+  }
+  
+  P <- matrix(0L, nrow = ncol(S), ncol = nrow(S))
+  P[,top] <- prop
+  
+  reconcile_fbl_list(fc, S, P, W = diag(nrow(S)),
+                     point_forecast = point_method)
+}
+
 reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
   if(length(unique(map(fc, interval))) > 1){
     abort("Reconciliation of temporal hierarchies is not yet supported.")
