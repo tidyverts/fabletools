@@ -2,7 +2,7 @@
 title: "Extending fabletools: Models"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{extension_models}
+  %\VignetteIndexEntry{Extending fabletools: Models}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
