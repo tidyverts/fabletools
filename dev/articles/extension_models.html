@@ -397,7 +397,7 @@
   <span class="no">fc_id</span> <span class="kw">&lt;-</span> (<span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="fl">0</span>, <span class="no">h</span>-<span class="fl">1</span>) + <span class="no">n</span> <span class="kw">%%</span> <span class="no">m</span>) <span class="kw">%%</span> <span class="no">m</span> + <span class="fl">1</span>
   <span class="no">mu</span> <span class="kw">&lt;-</span> <span class="no">coef</span>[<span class="no">fc_id</span>]
   <span class="no">sigma</span> <span class="kw">&lt;-</span> <span class="no">season_sd</span>[<span class="no">fc_id</span>]
-  <span class="kw pkg">distributional</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/distributional/man/dist_normal.html">dist_normal</a></span>(<span class="no">mu</span>, <span class="no">sigma</span>)
+  <span class="kw pkg">distributional</span><span class="kw ns">::</span><span class="fu"><a href="https://pkg.mitchelloharawild.com/distributional/reference/dist_normal.html">dist_normal</a></span>(<span class="no">mu</span>, <span class="no">sigma</span>)
 }
 
 <span class="fu"><a href="../reference/forecast.html">forecast</a></span>(<span class="no">fit</span>)

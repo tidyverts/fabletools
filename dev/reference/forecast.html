@@ -215,7 +215,7 @@ above.</p></li>
 
     <p>The forecasts returned contain both point forecasts and their distribution.
 A specific forecast interval can be extracted from the distribution using the
-<code><a href='https://rdrr.io/pkg/distributional/man/hilo.html'>hilo()</a></code> function, and multiple intervals can be obtained using <code><a href='report.html'>report()</a></code>.
+<code><a href='https://pkg.mitchelloharawild.com/distributional/reference/hilo.html'>hilo()</a></code> function, and multiple intervals can be obtained using <code><a href='report.html'>report()</a></code>.
 These intervals are stored in a single column using the <code>hilo</code> class, to
 extract the numerical upper and lower bounds you can use <code><a href='https://tidyr.tidyverse.org/reference/nest.html'>tidyr::unnest()</a></code>.</p>
 
@@ -234,7 +234,7 @@ extract the numerical upper and lower bounds you can use <code><a href='https://
 
 <span class='co'># Compute 80% and 95% forecast intervals</span>
 <span class='no'>beer_fc</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/distributional/man/hilo.html'>hilo</a></span>(<span class='kw'>level</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>80</span>, <span class='fl'>95</span>))
+  <span class='fu'><a href='https://pkg.mitchelloharawild.com/distributional/reference/hilo.html'>hilo</a></span>(<span class='kw'>level</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>80</span>, <span class='fl'>95</span>))
 
 <span class='no'>beer_fc</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>aus_production</span>)
