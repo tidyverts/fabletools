@@ -182,7 +182,7 @@ forecast.lst_btmup_mdl <- function(object, key_data,
                                    point_forecast = list(.mean = mean), ...){
   # Keep only bottom layer
   S <- build_smat_rows(key_data)
-  btm <- rowSums(S) == 1
+  btm <- which(rowSums(S) == 1)
   object <- object[btm]
   
   point_method <- point_forecast
@@ -193,10 +193,10 @@ forecast.lst_btmup_mdl <- function(object, key_data,
   fc[btm] <- NextMethod()
   
   # Add dummy forecasts to unused levels
-  fc[!btm] <- fc[which(btm)[1]]
+  fc[seq_along(fc)[-btm]] <- fc[btm[1]]
   
   P <- matrix(0L, nrow = ncol(S), ncol = nrow(S))
-  P[(seq_len(nrow(P))-1L)*nrow(P) + seq_len(nrow(P))] <- 1L
+  P[(btm-1L)*nrow(P) + seq_len(nrow(P))] <- 1L
   
   reconcile_fbl_list(fc, S, P, W = diag(nrow(S)),
                      point_forecast = point_method)
