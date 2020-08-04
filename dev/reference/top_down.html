@@ -40,9 +40,7 @@
 
 
 <meta property="og:title" content="Top down forecast reconciliation — top_down" />
-<meta property="og:description" content="Reconciles a hierarchy using the top down reconciliation method. The
-response variable of the hierarchy must be aggregated using sums. The
-forecasted time points must match for all series in the hierarchy." />
+<meta property="og:description" content="" />
 
 
 <meta name="robots" content="noindex">
@@ -131,9 +129,7 @@ forecasted time points must match for all series in the hierarchy." />
     </div>
 
     <div class="ref-description">
-    <p>Reconciles a hierarchy using the top down reconciliation method. The
-response variable of the hierarchy must be aggregated using sums. The
-forecasted time points must match for all series in the hierarchy.</p>
+    <p><a href='https://www.tidyverse.org/lifecycle/#experimental'><img src='figures/lifecycle-experimental.svg' alt='Experimental lifecycle'></a></p>
     </div>
 
     <pre class="usage"><span class='fu'>top_down</span>(<span class='no'>models</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"avg_prop"</span>, <span class='st'>"prop_avg"</span>, <span class='st'>"fc_prop"</span>))</pre>
@@ -151,6 +147,11 @@ forecasted time points must match for all series in the hierarchy.</p>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Reconciles a hierarchy using the top down reconciliation method. The
+response variable of the hierarchy must be aggregated using sums. The
+forecasted time points must match for all series in the hierarchy.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='reconcile.html'>reconcile()</a></code>, <code><a href='aggregate_key.html'>aggregate_key()</a></code></p></div>
