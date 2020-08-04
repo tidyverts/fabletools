@@ -10,6 +10,9 @@ bottom_up(models)
 \item{models}{A column of models in a mable.}
 }
 \description{
+\lifecycle{experimental}
+}
+\details{
 Reconciles a hierarchy using the bottom up reconciliation method. The
 response variable of the hierarchy must be aggregated using sums. The
 forecasted time points must match for all series in the hierarchy.

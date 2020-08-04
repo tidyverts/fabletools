@@ -164,6 +164,8 @@ forecast.lst_mint_mdl <- function(object, key_data,
 
 #' Bottom up forecast reconciliation
 #' 
+#' \lifecycle{experimental}
+#' 
 #' Reconciles a hierarchy using the bottom up reconciliation method. The 
 #' response variable of the hierarchy must be aggregated using sums. The 
 #' forecasted time points must match for all series in the hierarchy.
@@ -204,6 +206,8 @@ forecast.lst_btmup_mdl <- function(object, key_data,
 
 
 #' Top down forecast reconciliation
+#' 
+#' \lifecycle{experimental}
 #' 
 #' Reconciles a hierarchy using the top down reconciliation method. The 
 #' response variable of the hierarchy must be aggregated using sums. The 

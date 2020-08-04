@@ -12,6 +12,9 @@ top_down(models, method = c("avg_prop", "prop_avg", "fc_prop"))
 \item{method}{The reconciliation method to use.}
 }
 \description{
+\lifecycle{experimental}
+}
+\details{
 Reconciles a hierarchy using the top down reconciliation method. The
 response variable of the hierarchy must be aggregated using sums. The
 forecasted time points must match for all series in the hierarchy.
