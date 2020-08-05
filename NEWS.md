@@ -34,6 +34,8 @@
 * Fixed display of models in `View()` panel.
 * Fixed issue with combination models not inheriting vctrs functionality (#237).
 * `aggregate_key()` can now be used with non-syntactic variable names.
+* Added tsibble cast methods for fable and dable objects, fixing issues with
+  tidyverse functionality between datasets of different column orders (#247).
 
 # fabletools 0.2.0
 
