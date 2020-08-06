@@ -220,7 +220,7 @@ forecast.lst_btmup_mdl <- function(object, key_data,
 #' [`reconcile()`], [`aggregate_key()`]
 #' 
 #' @export
-top_down <- function(models, method = c("avg_prop", "prop_avg", "fc_prop")){
+top_down <- function(models, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
   structure(models, class = c("lst_topdwn_mdl", "lst_mdl", "list"),
             method = match.arg(method))
 }
@@ -239,8 +239,8 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
   top <- which.max(rowSums(S))
   btm <- which(rowSums(S) == 1L)
   
-  if(method == "fc_prop") {
-    abort("`method = 'fc_prop'` is not yet supported")
+  if(method == "forecast_proportions") {
+    abort("`method = 'forecast_proportions'` is not yet supported")
     fc <- NextMethod()
     fc_mean <- lapply(fc, function(x) mean(x[[distribution_var(x)]]))
   } else {
@@ -248,10 +248,12 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
     history <- lapply(object, function(x) response(x)[[".response"]])
     top_y <- history[[top]]
     btm_y <- history[btm]
-    if (method == "avg_prop") { 
+    if (method == "average_proportions") { 
       prop <- map_dbl(btm_y, function(y) mean(y/top_y))
-    } else if (method == "prop_avg") {
+    } else if (method == "proportion_averages") {
       prop <- map_dbl(btm_y, mean) / mean(top_y)
+    } else {
+      abort("Unkown `top_down()` reconciliation `method`.")
     }
     
     # Keep only top layer

@@ -4,7 +4,10 @@
 \alias{top_down}
 \title{Top down forecast reconciliation}
 \usage{
-top_down(models, method = c("avg_prop", "prop_avg", "fc_prop"))
+top_down(
+  models,
+  method = c("forecast_proportions", "average_proportions", "proportion_averages")
+)
 }
 \arguments{
 \item{models}{A column of models in a mable.}
