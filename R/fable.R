@@ -96,7 +96,7 @@ as_fable.forecast <- function(x, ..., point_forecast = list(.mean = mean)){
     level <- as.numeric(gsub("^[^0-9]+|%", "", level))/100
     mid <- (x$upper[,1] - x$lower[,1])/2
     mu <- x$lower[,1] + mid
-    sigma <- mid/(qnorm((1+level)/2))
+    sigma <- mid/(stats::qnorm((1+level)/2))
     dist <- distributional::dist_normal(mu = as.numeric(mu), sigma = as.numeric(sigma))
     if(!is.null(x$lambda)){
       dist <- distributional::dist_transformed(

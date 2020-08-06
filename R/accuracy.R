@@ -132,7 +132,7 @@ winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
 #' @rdname interval_accuracy_measures
 #' @export
 pinball_loss <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
-  q <- quantile(.dist, level/100)
+  q <- stats::quantile(.dist, level/100)
   loss <- ifelse(.actual>=q, level/100 * (.actual-q), (1-level/100) * (q-.actual))
   mean(loss, na.rm = na.rm)
 }
@@ -153,7 +153,7 @@ scaled_pinball_loss <- function(.dist, .actual, .train, level = 95, na.rm = TRUE
   }
   scale <- mean(abs(.train), na.rm = na.rm)
   
-  q <- quantile(.dist, level/100)
+  q <- stats::quantile(.dist, level/100)
   loss <- ifelse(.actual>=q, level/100 * (.actual-q), (1-level/100) * (q-.actual))
   mean(loss/scale, na.rm = na.rm)
 }

@@ -235,20 +235,8 @@ Does your model require extra variables to produce forecasts?", e$message))
 #' 
 #' @export
 construct_fc <- function(point, sd, dist){
-  stopifnot(inherits(dist, "fcdist"))
-  
-  dist_env <- dist[[1]]$.env
-  if(identical(dist_env, env_dist_normal)){
-    distributional::dist_normal(map_dbl(dist, `[[`, "mean"), map_dbl(dist, `[[`, "sd"))
-  } else if(identical(dist_env, env_dist_sim)){
-    distributional::dist_sample(flatten(map(dist, `[[`, 1)))
-  } else if(identical(dist_env, env_dist_unknown)){
-    distributional::dist_degenerate(point)
-  } else if(identical(dist_env, env_dist_mv_normal)){
-    distributional::dist_multivariate_normal(map(dist, `[[`, "mean"), map(dist, `[[`, "sd"))
-  } else {
-    abort("Unknown forecast distribution type to convert.")
-  }
+  lifecycle::deprecate_stop("0.3.0", what = "fabletools::construct_fc()",
+                            details = "The forecast function should now return a vector of distributions from the 'distributional' package.")
 }
 
 compute_point_forecasts <- function(distribution, measures){

@@ -31,7 +31,7 @@ is_null_model <- function(x){
 #' @export
 forecast.null_mdl <- function(object, new_data, ...){
   h <- NROW(new_data)
-  construct_fc(rep(NA_real_, h), rep(0, h), dist_unknown(h))
+  vec_cast(rep(NA_real_, h), distributional::new_dist())
 }
 
 #' @export

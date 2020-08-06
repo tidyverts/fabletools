@@ -27,6 +27,9 @@
   found in the `.innov` column. Response residuals will differ from innovation
   residuals when transformations are used, and if the model has non-additive
   residuals.
+* `dist_*()` functions are now removed, and are completely replaced by the 
+  distributional package. These are removed to prevent masking issues when
+  loading packages.
 
 ## Bug fixes
 
