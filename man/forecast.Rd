@@ -70,7 +70,7 @@ The forecasts returned contain both point forecasts and their distribution.
 A specific forecast interval can be extracted from the distribution using the
 \code{\link[=hilo]{hilo()}} function, and multiple intervals can be obtained using \code{\link[=report]{report()}}.
 These intervals are stored in a single column using the \code{hilo} class, to
-extract the numerical upper and lower bounds you can use \code{\link[tidyr:nest]{tidyr::unnest()}}.
+extract the numerical upper and lower bounds you can use \code{\link[=unpack_hilo]{unpack_hilo()}}.
 }
 \examples{
 if (requireNamespace("fable", quietly = TRUE)) {
