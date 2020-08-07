@@ -11,7 +11,7 @@
 #' A specific forecast interval can be extracted from the distribution using the
 #' [`hilo()`] function, and multiple intervals can be obtained using [`report()`].
 #' These intervals are stored in a single column using the `hilo` class, to
-#' extract the numerical upper and lower bounds you can use [`tidyr::unnest()`].
+#' extract the numerical upper and lower bounds you can use [`unpack_hilo()`].
 #' 
 #' @param object The time series model used to produce the forecasts
 #' 
