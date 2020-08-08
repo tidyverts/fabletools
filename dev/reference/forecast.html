@@ -217,7 +217,7 @@ above.</p></li>
 A specific forecast interval can be extracted from the distribution using the
 <code><a href='https://pkg.mitchelloharawild.com/distributional/reference/hilo.html'>hilo()</a></code> function, and multiple intervals can be obtained using <code><a href='report.html'>report()</a></code>.
 These intervals are stored in a single column using the <code>hilo</code> class, to
-extract the numerical upper and lower bounds you can use <code><a href='https://tidyr.tidyverse.org/reference/nest.html'>tidyr::unnest()</a></code>.</p>
+extract the numerical upper and lower bounds you can use <code><a href='unpack_hilo.html'>unpack_hilo()</a></code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
