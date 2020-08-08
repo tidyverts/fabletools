@@ -278,8 +278,8 @@ Hint: If you're trying to compare aggregated values, use `is_aggregated()`.")
   x <- vec_recycle_common(e1, e2)
   e1 <- vec_proxy(x[[1]])
   e2 <- vec_proxy(x[[2]])
-  
-  (e1$agg == e2$agg) | (e1$x == e2$x)
+  out <- logical(vec_size(e1))
+  (e1$agg & e2$agg) | vec_equal(e1$x, e2$x, na_equal = TRUE)
 }
 
 #' Is the element an aggregation of smaller data
