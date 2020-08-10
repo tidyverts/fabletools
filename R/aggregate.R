@@ -282,6 +282,11 @@ Hint: If you're trying to compare aggregated values, use `is_aggregated()`.")
   (e1$agg & e2$agg) | vec_equal(e1$x, e2$x, na_equal = TRUE)
 }
 
+#' @export
+is.na.agg_vec <- function(x) {
+  is.na(field(x, "x")) & !field(x, "agg")
+}
+
 #' Is the element an aggregation of smaller data
 #' 
 #' @param x An object.
