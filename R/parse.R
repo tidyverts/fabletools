@@ -178,7 +178,7 @@ parse_model_lhs <- function(model){
     .g = function(x){
       if(all(names(x) != "response") && !is.null(attr(x, "call"))){
         # parent_len <- length(eval(attr(x, "call") %||% x[[1]], envir = model$data))
-        len <- map_dbl(x, function(y) length(eval(attr(y, "call") %||% y[[1]], envir = model$data, enclos = model$env)))
+        len <- map_dbl(x, function(y) length(eval(attr(y, "call") %||% y[[1]], envir = model$data, enclos = model$specials)))
         if(sum(len == max(len)) == 1){
           names(x)[which.max(len)] <- "response"
         }
