@@ -91,6 +91,16 @@ test_that("Model parsing scope", {
   
   expect_equal(mdl[[1]][[1]]$response[[1]], sym("value"))
   
+  # Transformation from scalar in function env
+  mdl <- eval({
+    {function() {
+      scale <- pi
+      model(us_deaths, no_specials(value/scale))
+    }} ()
+  }, envir = new_environment(list(no_specials = no_specials)))
+  
+  expect_equal(mdl[[1]][[1]]$response[[1]], sym("value"))
+  
   # Specials missing values
   expect_warning(
     eval({
