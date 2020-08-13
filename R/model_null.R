@@ -88,15 +88,11 @@ fitted.NULL <- function(object, new_data, ...) {
 glance.null_mdl <- function(x, ...){
   tibble()
 }
-#' @export
-glance.NULL <- glance.null_mdl
 
 #' @export
 tidy.null_mdl <- function(x, ...){
   tibble(term = character(), estimate = numeric())
 }
-#' @export
-tidy.NULL <- tidy.null_mdl
 
 #' @export
 report.null_mdl <- function(object, ...){
