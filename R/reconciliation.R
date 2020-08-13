@@ -388,7 +388,7 @@ build_key_data_smat <- function(x){
     if(!is_empty(agg_leaf)){
       pos <- vec_rbind(
         pos,
-        structure(list(key = agg_leaf, loc = as.list(agg_idx[agg_leaf])), 
+        structure(list(key = agg_leaf, loc = as.list(seq_len(agg_leaf) + nrow(x_leaf))), 
                   class = "data.frame", row.names = agg_leaf)
       )
       x_leaf <<- vec_rbind(
