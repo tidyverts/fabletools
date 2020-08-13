@@ -402,7 +402,7 @@ build_key_data_smat <- function(x){
     abort("An error has occurred when constructing the summation matrix.\nPlease report this bug here: https://github.com/tidyverts/fabletools/issues")
   }
   idx_leaf <- vec_c(!!!x_leaf$.rows)
-  x$.rows[vec_c(!!!grp$loc)] <- vec_c(!!!grp$match)
+  x$.rows[unlist(x$.rows)[vec_c(!!!grp$loc)]] <- vec_c(!!!grp$match)
   return(list(agg = x$.rows, leaf = idx_leaf))
   # out <- matrix(0L, nrow = nrow(x), ncol = length(idx_leaf))
   # out[nrow(x)*(vec_c(!!!x$.rows)-1) + rep(seq_along(x$.rows), lengths(x$.rows))] <- 1L
