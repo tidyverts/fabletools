@@ -33,7 +33,7 @@ summarise.fbl_ts <- function(.data, ..., .groups = NULL) {
   .data <- summarise(as_tsibble(.data), ..., .groups = .groups)
   
   # If the distribution is lost, return a tsibble
-  if(dist_var %in% names(.data)) {
+  if(!(dist_var %in% names(.data))) {
     if(!vec_is(.data[[dist_var]], dist_ptype)){
       return(.data)
     }
