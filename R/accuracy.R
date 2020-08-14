@@ -436,7 +436,7 @@ accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..
   by <- union(index_var(object), by)
   
   
-  if(!(".model" %in% by)){
+  if(!(".model" %in% by) & ".model" %in% names(object)){
     warn('Accuracy measures should be computed separately for each model, have you forgotten to add ".model" to your `by` argument?')
   }
   
