@@ -227,6 +227,66 @@ CRPS <- function(.dist, .actual, n_quantiles = 1000, na.rm = TRUE, ...){
 #' @export
 distribution_accuracy_measures <- list(percentile = percentile_score, CRPS = CRPS)
 
+
+#' Forecast skill score measure
+#' 
+#' This function converts other error metrics such as `MSE` into a skill score.
+#' The reference or benchmark forecasting method is the Naive method for 
+#' non-seasonal data, and the seasonal naive method for seasonal data.
+#' 
+#' @param measure The accuracy measure to use in computing the skill score.
+#' 
+#' @examples 
+#' 
+#' skill_score(MSE)
+#' 
+#' if (requireNamespace("fable", quietly = TRUE)) {
+#' library(fable)
+#' library(tsibble)
+#' 
+#' lung_deaths <- as_tsibble(cbind(mdeaths, fdeaths))
+#' lung_deaths %>% 
+#'   dplyr::filter(index < yearmonth("1979 Jan")) %>%
+#'   model(
+#'     ets = ETS(value ~ error("M") + trend("A") + season("A")),
+#'     lm = TSLM(value ~ trend() + season())
+#'   ) %>%
+#'   forecast(h = "1 year") %>%
+#'   accuracy(lung_deaths, measures = list(skill = skill_score(MSE)))
+#' }
+#' 
+#' @export
+skill_score <- function(measure) {
+  function(...) {
+    # Compute accuracy measure for forecasts
+    score <- measure(...)
+    
+    # Compute arguments of benchmark method using .train
+    bench <- list(...)
+    lag <- bench$.period
+    n <- length(bench$.train)
+    y <- bench$.train
+    
+    ## Compute point forecast from benchmark
+    bench$.fc <- rep_len(
+      y[c(rep(NA, max(0, lag - n)), seq_len(min(n, lag)) + n - min(n, lag))],
+      length(bench$.fc)
+    )
+    bench$.resid <- bench$.actual - bench$.fc
+    
+    # Compute forecast distribution from benchmark
+    e <- y - c(rep(NA, min(lag, n)), y[seq_len(length(y) - lag)])
+    mse <- mean(e^2, na.rm = TRUE)
+    h <- length(bench$.actual)
+    fullperiods <- (h - 1) / lag + 1
+    steps <- rep(seq_len(fullperiods), rep(lag, fullperiods))[seq_len(h)]
+    bench$.dist <- distributional::dist_normal(bench$.fc, sqrt(mse * steps))
+    ref_score <- do.call(measure, bench)
+    
+    1 - score / ref_score
+  }
+}
+
 #' Evaluate accuracy of a forecast or model
 #' 
 #' Summarise the performance of the model using accuracy measures. Accuracy

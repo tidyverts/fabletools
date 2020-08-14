@@ -3,6 +3,7 @@
 ## New features
 
 * Added `bottom_up()` forecast reconciliation method.
+* Added the `skill_score()` accuracy measure modifier.
 
 ## Improvements
 
