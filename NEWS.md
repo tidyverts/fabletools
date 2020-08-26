@@ -33,6 +33,11 @@
 * `dist_*()` functions are now removed, and are completely replaced by the 
   distributional package. These are removed to prevent masking issues when
   loading packages.
+* `fortify(<fable>)` will now return a tibble with the same structure as the 
+  fable, which is more useful for plotting forecast distributions with the 
+  ggdist package. It can no longer be used to extract intervals from the 
+  forecasts, this can be done using `hilo()`, and numerical values from a 
+  `<hilo>` can be extracted with `unpack_hilo()` or `interval$lower`.
 
 ## Bug fixes
 

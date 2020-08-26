@@ -121,45 +121,11 @@ autolayer.tbl_ts <- function(object, .vars = NULL, ...){
 #' @importFrom ggplot2 fortify
 #' @export
 fortify.fbl_ts <- function(object, level = c(80, 95)){
-  resp <- response_vars(object)
-  dist <- distribution_var(object)
-  idx <- index(object)
-  kv <- key_vars(object)
-  # if(length(resp) > 1){
-  #   object <- object %>%
-  #     mutate(
-  #       .response = rep(list(factor(resp)), NROW(object)),
-  #       value = transpose_dbl(list2(!!!syms(resp)))
-  #     )
-  # }
-  # 
-  if(!is.null(level)){
-    object[as.character(level)] <- map(level, hilo, x = object[[dist]])
-    object[resp] <- mean(object[[dist]])
-    object <- tidyr::pivot_longer(as_tibble(object), as.character(level), names_to = ".rm", values_to = ".hilo")
-    
-    if(length(resp) > 1){
-      stop("Plotting multivariate forecasts is not currently supported.")
-      tidyr::unpack(object, c(dist, ".hilo"), names_sep = "?")
-      
-      object <- unnest_tbl(object, c(".response", "value", ".hilo"))
-      resp <- "value"
-      kv <- c(kv, ".response")
-    }
-    else{
-      object[c(".lower", ".upper", ".level")] <- vec_data(object[[".hilo"]])
-    }
-    kv <- c(kv, ".level")
-    
-    # Drop temporary col
-    object[c(".rm", ".hilo")] <- NULL
+  if(deparse(match.call()) != "fortify.fbl_ts(object = data)"){
+    warn("The output of `fortify(<fable>)` has changed to better suit usage with the ggdist package.
+If you're using it to extract intervals, consider using `hilo()` to compute intervals, and `unpack_hilo()` to obtain values.")
   }
-  else if (length(resp) > 1) {
-    object <- unnest_tbl(object, c(".response", "value"))
-    kv <- c(kv, ".response")
-  }
-  
-  as_tsibble(object, key = !!kv, index = !!idx, validate = FALSE) 
+  return(as_tibble(object))
 }
 
 #' Plot a set of forecasts
