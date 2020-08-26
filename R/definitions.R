@@ -35,7 +35,7 @@ model_definition <- R6::R6Class(NULL,
     },
     recall_lag = function(x, n = 1L, ...){
       start <- NULL
-      if(self$stage == "forecast"){
+      if(self$stage %in% c("generate", "forecast")){
         x_expr <- enexpr(x)
         start <- eval_tidy(x_expr, self$recent_data)
       }
