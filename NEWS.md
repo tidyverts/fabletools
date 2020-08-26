@@ -48,6 +48,7 @@
 * `aggregate_key()` can now be used with non-syntactic variable names.
 * Added tsibble cast methods for fable and dable objects, fixing issues with
   tidyverse functionality between datasets of different column orders (#247).
+* Fixed `refit()` dropping reconciliation attributes (#251).
 
 # fabletools 0.2.0
 

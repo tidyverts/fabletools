@@ -33,7 +33,10 @@ refit.mdl_df <- function(object, new_data, ...){
 
 #' @export
 refit.lst_mdl <- function(object, new_data, ...){
-  `class<-`(map2(object, new_data, refit, ...), class(object))
+  attrb <- attributes(object)
+  object <- map2(object, new_data, refit, ...)
+  attributes(object) <- attrb
+  object
 }
 
 #' @rdname refit
