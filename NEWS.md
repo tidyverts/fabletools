@@ -4,6 +4,7 @@
 
 * Added `bottom_up()` forecast reconciliation method.
 * Added the `skill_score()` accuracy measure modifier.
+* Added `agg_vec()` for manually producing aggregation vectors.
 
 ## Improvements
 

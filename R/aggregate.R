@@ -163,6 +163,25 @@ parse_agg_spec <- function(expr){
 #     mutate(!!!set_names(map(kv, function(x) expr(agg_vec(!!sym(x)))), kv))
 # }
 
+#' Create an aggregation vector
+#' 
+#' \lifecycle{maturing}
+#' 
+#' An aggregation vector extends usual vectors by adding <aggregated> values.
+#' These vectors are typically produced via the [`aggregate_key()`] function,
+#' however it can be useful to create them manually to produce more complicated
+#' hierarchies (such as unbalanced hierarchies).
+#' 
+#' @param x The vector of values.
+#' @param aggregated A logical vector to identify which values are <aggregated>.
+#' 
+#' @example 
+#' agg_vec(
+#'   x = c(NA, "A", "B"),
+#'   aggregated = c(TRUE, FALSE, FALSE)
+#' )
+#' 
+#' @export
 agg_vec <- function(x = character(), aggregated = logical(vec_size(x))){
   is_agg <- is_aggregated(x)
   x[is_agg] <- NA
