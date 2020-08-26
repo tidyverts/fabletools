@@ -130,6 +130,7 @@ winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
 }
 
 #' @rdname interval_accuracy_measures
+#' @importFrom stats quantile
 #' @export
 pinball_loss <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
   q <- stats::quantile(.dist, level/100)
