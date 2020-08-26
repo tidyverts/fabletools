@@ -17,6 +17,8 @@
 * Added `as_fable.forecast()` to convert forecast objects from the forecast
   package to work with fable.
 * Improved `CRPS()` performance when using sampling distributions (#240).
+* Reconciliation now works with hierarchies containing aggregate leaf nodes,
+  allowing unbalanced hierarchies to be reconciled.
 * Documentation improvements
 * Performance improvements
 

@@ -183,7 +183,11 @@ bottom_up <- function(models){
 forecast.lst_btmup_mdl <- function(object, key_data, 
                                    point_forecast = list(.mean = mean), ...){
   # Keep only bottom layer
-  S <- build_smat_rows(key_data)
+  agg_data <- build_key_data_smat(key_data)
+  
+  S <- matrix(0L, nrow = length(agg_data$agg), ncol = max(vec_c(!!!agg_data$agg)))
+  S[length(agg_data$agg)*(vec_c(!!!agg_data$agg)-1) + rep(seq_along(agg_data$agg), lengths(agg_data$agg))] <- 1L
+  
   btm <- which(rowSums(S) == 1)
   object <- object[btm]
   
@@ -233,8 +237,10 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
   point_forecast <- list()
   
   # TODO: Add check for grouped hierarchies
+  agg_data <- build_key_data_smat(key_data)
+  S <- matrix(0L, nrow = length(agg_data$agg), ncol = max(vec_c(!!!agg_data$agg)))
+  S[length(agg_data$agg)*(vec_c(!!!agg_data$agg)-1) + rep(seq_along(agg_data$agg), lengths(agg_data$agg))] <- 1L
   
-  S <- build_smat_rows(key_data)
   # Identify top and bottom level
   top <- which.max(rowSums(S))
   btm <- which(rowSums(S) == 1L)
@@ -321,6 +327,7 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
 }
 
 build_smat_rows <- function(key_data){
+  lifecycle::deprecate_warn("0.2.1", "fabletools::build_smat_rows()", "fabletools::build_key_data_smat()")
   row_col <- sym(colnames(key_data)[length(key_data)])
   
   smat <- key_data %>%
