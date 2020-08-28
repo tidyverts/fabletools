@@ -390,6 +390,7 @@ build_key_data_smat <- function(x){
     agg_idx <- level[["loc"]][[1]]
     pos <- vec_match(x_leaf[disagg_col], x[agg_idx, disagg_col])
     pos <- vec_group_loc(pos)
+    pos <- pos[!is.na(pos$key),]
     # Add non-matches as leaf nodes
     agg_leaf <- setdiff(seq_along(agg_idx), pos$key)
     if(!is_empty(agg_leaf)){
