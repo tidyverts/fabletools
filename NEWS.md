@@ -20,6 +20,7 @@
 * Improved `CRPS()` performance when using sampling distributions (#240).
 * Reconciliation now works with hierarchies containing aggregate leaf nodes,
   allowing unbalanced hierarchies to be reconciled.
+* Produce unique names for unnamed features used with `features()` (#258).
 * Documentation improvements
 * Performance improvements
 

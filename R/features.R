@@ -28,7 +28,7 @@ features_impl <- function(.tbl, .var, features, ...){
       res <- transpose(map(key_dt[[".rows"]], function(i){
         out <- do.call(fn_safe, c(list(x[i]), dots[intersect(names(fmls), names(dots))]))
         if(is.null(names(out[["result"]]))) 
-          names(out[["result"]]) <- rep(".?", length(out[["result"]]))
+          names(out[["result"]]) <- paste0(".?", seq_along(out[["result"]]))
         out
       }))
       err <- compact(res[["error"]])
