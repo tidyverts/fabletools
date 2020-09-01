@@ -181,18 +181,18 @@
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibble</span>)
 <span class='no'>tourism</span> <span class='kw'>%&gt;%</span>
   <span class='fu'>features</span>(<span class='no'>Trips</span>, <span class='kw'>features</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>mean</span> <span class='kw'>=</span> <span class='no'>mean</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='no'>sd</span>))</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 304 x 5</span><span>
-#&gt;    Region         State              Purpose  `mean_.?1` `sd_.?1`
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>              </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span> Adelaide       South Australia    Business     156.      35.6 
-#&gt; </span><span style='color: #555555;'> 2</span><span> Adelaide       South Australia    Holiday      157.      27.1 
-#&gt; </span><span style='color: #555555;'> 3</span><span> Adelaide       South Australia    Other         56.6     17.3 
-#&gt; </span><span style='color: #555555;'> 4</span><span> Adelaide       South Australia    Visiting     205.      32.5 
-#&gt; </span><span style='color: #555555;'> 5</span><span> Adelaide Hills South Australia    Business       2.66     4.30
-#&gt; </span><span style='color: #555555;'> 6</span><span> Adelaide Hills South Australia    Holiday       10.5      6.37
-#&gt; </span><span style='color: #555555;'> 7</span><span> Adelaide Hills South Australia    Other          1.40     1.65
-#&gt; </span><span style='color: #555555;'> 8</span><span> Adelaide Hills South Australia    Visiting      14.2     10.7 
-#&gt; </span><span style='color: #555555;'> 9</span><span> Alice Springs  Northern Territory Business      14.6      7.20
-#&gt; </span><span style='color: #555555;'>10</span><span> Alice Springs  Northern Territory Holiday       31.9     18.1 
+#&gt;    Region         State              Purpose    mean    sd
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>              </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> Adelaide       South Australia    Business 156.   35.6 
+#&gt; </span><span style='color: #555555;'> 2</span><span> Adelaide       South Australia    Holiday  157.   27.1 
+#&gt; </span><span style='color: #555555;'> 3</span><span> Adelaide       South Australia    Other     56.6  17.3 
+#&gt; </span><span style='color: #555555;'> 4</span><span> Adelaide       South Australia    Visiting 205.   32.5 
+#&gt; </span><span style='color: #555555;'> 5</span><span> Adelaide Hills South Australia    Business   2.66  4.30
+#&gt; </span><span style='color: #555555;'> 6</span><span> Adelaide Hills South Australia    Holiday   10.5   6.37
+#&gt; </span><span style='color: #555555;'> 7</span><span> Adelaide Hills South Australia    Other      1.40  1.65
+#&gt; </span><span style='color: #555555;'> 8</span><span> Adelaide Hills South Australia    Visiting  14.2  10.7 
+#&gt; </span><span style='color: #555555;'> 9</span><span> Alice Springs  Northern Territory Business  14.6   7.20
+#&gt; </span><span style='color: #555555;'>10</span><span> Alice Springs  Northern Territory Holiday   31.9  18.1 
 #&gt; </span><span style='color: #555555;'># … with 294 more rows</span><span></div><div class='input'>
 <span class='co'># Search and use useful features with `feature_set()`. </span>
 <span class='kw'>if</span>(<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"feasts"</span>)) <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>feasts</span>)
