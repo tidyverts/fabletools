@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -53,7 +57,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -67,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
       </span>
     </div>
 
@@ -100,7 +104,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/tidyverts/fabletools">
+  <a href="https://github.com/tidyverts/fabletools/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -118,17 +122,70 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Changelog <small></small></h1>
+      <h1 data-toc-skip>Changelog <small></small></h1>
       <small>Source: <a href='https://github.com/tidyverts/fabletools/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="fabletools-020" class="section level1">
-<h1 class="page-header">
-<a href="#fabletools-020" class="anchor"></a>fabletools 0.2.0<small> 2020-06-15 </small>
+    <div id="fabletools-021" class="section level1">
+<h1 class="page-header" data-toc-text="0.2.1">
+<a href="#fabletools-021" class="anchor"></a>fabletools 0.2.1<small> Unreleased </small>
 </h1>
 <div id="new-features" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New features</h2>
+<ul>
+<li>Added <code><a href="../reference/bottom_up.html">bottom_up()</a></code> forecast reconciliation method.</li>
+<li>Added the <code><a href="../reference/skill_score.html">skill_score()</a></code> accuracy measure modifier.</li>
+<li>Added <code><a href="../reference/agg_vec.html">agg_vec()</a></code> for manually producing aggregation vectors.</li>
+</ul>
+</div>
+<div id="improvements" class="section level2">
+<h2 class="hasAnchor">
+<a href="#improvements" class="anchor"></a>Improvements</h2>
+<ul>
+<li>Fixed some inconsistencies in key ordering of model accessors (such as <code><a href="https://rdrr.io/pkg/generics/man/augment.html">augment()</a></code>, <code><a href="https://rdrr.io/pkg/generics/man/tidy.html">tidy()</a></code> and <code><a href="https://rdrr.io/pkg/generics/man/glance.html">glance()</a></code>) with model methods (such as <code><a href="../reference/forecast.html">forecast()</a></code> and <code><a href="https://rdrr.io/pkg/generics/man/generate.html">generate()</a></code>).</li>
+<li>Improved equality comparison of <code>agg_vec</code> classes, aggregated values will now always match regardless of the value used.</li>
+<li>Using <code>summarise()</code> with a fable will now retain the fable class if the distribution still exists under the same variable name.</li>
+<li>Added <code><a href="../reference/as-fable.html">as_fable.forecast()</a></code> to convert forecast objects from the forecast package to work with fable.</li>
+<li>Improved <code><a href="../reference/distribution_accuracy_measures.html">CRPS()</a></code> performance when using sampling distributions (<a href='https://github.com/tidyverts/fabletools/issues/240'>#240</a>).</li>
+<li>Reconciliation now works with hierarchies containing aggregate leaf nodes, allowing unbalanced hierarchies to be reconciled.</li>
+<li>Produce unique names for unnamed features used with <code><a href="../reference/features.html">features()</a></code> (<a href='https://github.com/tidyverts/fabletools/issues/258'>#258</a>).</li>
+<li>Documentation improvements</li>
+<li>Performance improvements</li>
+</ul>
+</div>
+<div id="breaking-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#breaking-changes" class="anchor"></a>Breaking changes</h2>
+<ul>
+<li>The residuals obtained from the <code><a href="https://rdrr.io/pkg/generics/man/augment.html">augment()</a></code> function are no longer controlled by the <code>type</code> argument. Response residuals (<code>y - yhat</code>) are now always found in the <code>.resid</code> column, and innovation residuals (the model’s error) are now found in the <code>.innov</code> column. Response residuals will differ from innovation residuals when transformations are used, and if the model has non-additive residuals.</li>
+<li>
+<code>dist_*()</code> functions are now removed, and are completely replaced by the distributional package. These are removed to prevent masking issues when loading packages.</li>
+<li>
+<code>fortify(&lt;fable&gt;)</code> will now return a tibble with the same structure as the fable, which is more useful for plotting forecast distributions with the ggdist package. It can no longer be used to extract intervals from the forecasts, this can be done using <code><a href="https://pkg.mitchelloharawild.com/distributional/reference/hilo.html">hilo()</a></code>, and numerical values from a <code>&lt;hilo&gt;</code> can be extracted with <code><a href="../reference/unpack_hilo.html">unpack_hilo()</a></code> or <code>interval$lower</code>.</li>
+</ul>
+</div>
+<div id="bug-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
+<ul>
+<li>Fixed issue with aggregated date vectors (<a href='https://github.com/tidyverts/fabletools/issues/230'>#230</a>).</li>
+<li>Fixed display of models in <code><a href="https://rdrr.io/r/utils/View.html">View()</a></code> panel.</li>
+<li>Fixed issue with combination models not inheriting vctrs functionality (<a href='https://github.com/tidyverts/fabletools/issues/237'>#237</a>).</li>
+<li>
+<code><a href="../reference/aggregate_key.html">aggregate_key()</a></code> can now be used with non-syntactic variable names.</li>
+<li>Added tsibble cast methods for fable and dable objects, fixing issues with tidyverse functionality between datasets of different column orders (<a href='https://github.com/tidyverts/fabletools/issues/247'>#247</a>).</li>
+<li>Fixed <code><a href="https://rdrr.io/pkg/generics/man/refit.html">refit()</a></code> dropping reconciliation attributes (<a href='https://github.com/tidyverts/fabletools/issues/251'>#251</a>).</li>
+</ul>
+</div>
+</div>
+    <div id="fabletools-020" class="section level1">
+<h1 class="page-header" data-toc-text="0.2.0">
+<a href="#fabletools-020" class="anchor"></a>fabletools 0.2.0<small> 2020-06-15 </small>
+</h1>
+<div id="new-features-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features-1" class="anchor"></a>New features</h2>
 <ul>
 <li>Distributions are now provided by the distributional package, which is more space efficient and allows calculation of distributional statistics including the <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>, <code><a href="https://rdrr.io/r/stats/median.html">median()</a></code>, <code>variance()</code>, <code><a href="https://rdrr.io/r/stats/quantile.html">quantile()</a></code>, <code>cdf()</code> and <code><a href="https://rdrr.io/r/stats/density.html">density()</a></code>.</li>
 <li>
@@ -139,9 +196,9 @@
 <li>Added support for reconciling non-normal forecasts, which produces reconciled point forecasts only.</li>
 </ul>
 </div>
-<div id="improvements" class="section level2">
+<div id="improvements-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements" class="anchor"></a>Improvements</h2>
+<a href="#improvements-1" class="anchor"></a>Improvements</h2>
 <ul>
 <li>Improved dplyr support. You can now use <code>bind_*()</code> and <code>*_join()</code> operations on mables, dables, and fables. More verbs are supported by these extension data classes, and so behaviour should work closer to what is expected.</li>
 <li>Progress reporting is now handled by the progressr package. This allows you to decide if, when, and how progress is reported. To show progress, wrap your code in the <code><a href="https://rdrr.io/pkg/progressr/man/with_progress.html">progressr::with_progress()</a></code> function. Progress will no longer be displayed automatically during lengthy calculations.</li>
@@ -155,9 +212,9 @@
 <li>Documentation improvements.</li>
 </ul>
 </div>
-<div id="breaking-changes" class="section level2">
+<div id="breaking-changes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes" class="anchor"></a>Breaking changes</h2>
+<a href="#breaking-changes-1" class="anchor"></a>Breaking changes</h2>
 <ul>
 <li>The fable returned by <code><a href="../reference/forecast.html">forecast()</a></code> now stores the distribution in the column named the response variable (previously, this was the point forecast). Point forecasts are now stored in the <code>.mean</code> column, which can be customised using the <code>point_forecast</code> argument.</li>
 <li>The <code>bias_adjust</code> option for forecast() is replaced by <code>point_forecast</code>, allowing you to specify which point forecast measures to display (fable/<a href='https://github.com/tidyverts/fabletools/issues/226'>#226</a>). This has been done to reduce confusion around the argument’s usage, disambiguate the returned point forecast’s meaning, and also allow users to specify which (if any) point forecasts to provide.</li>
@@ -172,9 +229,9 @@
 <li>The row order of wide to long mable operations (such as <code><a href="../reference/accuracy.html">accuracy()</a></code>) has changed (due to shift to <code>pivot_longer()</code> from <code>gather()</code>). Model column name values are now nested within key values, rather than key values nested in model name values.</li>
 </ul>
 </div>
-<div id="bug-fixes" class="section level2">
+<div id="bug-fixes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Fixed <code>show_gap</code> option not working when more than one forecast is plotted.</li>
 <li>Fixed <code><a href="https://ggplot2.tidyverse.org/reference/autolayer.html">autolayer()</a></code> plotting issues due to inherited aesthetics.</li>
@@ -187,12 +244,12 @@
 </div>
 </div>
     <div id="fabletools-013" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.1.3">
 <a href="#fabletools-013" class="anchor"></a>fabletools 0.1.3<small> 2020-03-24 </small>
 </h1>
-<div id="improvements-1" class="section level2">
+<div id="improvements-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements-1" class="anchor"></a>Improvements</h2>
+<a href="#improvements-2" class="anchor"></a>Improvements</h2>
 <ul>
 <li>Better support for tidyverse packages using vctrs.</li>
 <li>Performance improvements for reconciliation and parsing.</li>
@@ -200,21 +257,21 @@
 <code>xreg()</code> can now be called directly as a special.</li>
 </ul>
 </div>
-<div id="bug-fixes-1" class="section level2">
+<div id="bug-fixes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Fixed <code><a href="../reference/accuracy.html">accuracy.fbl_ts()</a></code> error when certain names were used in the fable.</li>
 </ul>
 </div>
 </div>
     <div id="fabletools-012" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.1.2">
 <a href="#fabletools-012" class="anchor"></a>fabletools 0.1.2<small> 2020-01-29 </small>
 </h1>
-<div id="improvements-2" class="section level2">
+<div id="improvements-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements-2" class="anchor"></a>Improvements</h2>
+<a href="#improvements-3" class="anchor"></a>Improvements</h2>
 <ul>
 <li>Added MAAPE accuracy measure.</li>
 <li>Added support for exogenous regressors in decomposition models.</li>
@@ -222,16 +279,16 @@
 <li>Forecast plots via <code><a href="../reference/autoplot.fbl_ts.html">autoplot.fbl_ts()</a></code> and <code><a href="../reference/autoplot.fbl_ts.html">autolayer.fbl_ts()</a></code> now support the <code>show_gap</code> argument. This can be used to connect the historical observations to the forecasts (<a href='https://github.com/tidyverts/fabletools/issues/113'>#113</a>).</li>
 </ul>
 </div>
-<div id="breaking-changes-1" class="section level2">
+<div id="breaking-changes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes-1" class="anchor"></a>Breaking changes</h2>
+<a href="#breaking-changes-2" class="anchor"></a>Breaking changes</h2>
 <ul>
 <li>Decompositions are now treated as models. To access the decomposed values, you will now have to use <code><a href="https://rdrr.io/pkg/generics/man/components.html">components()</a></code>. For example, <code>tourism %&gt;% STL(Trips)</code> is now <code>tourism %&gt;% model(STL(Trips)) %&gt;% components()</code>. This change allows for more flexible decomposition specifications, and better interfaces for decomposition modelling.</li>
 </ul>
 </div>
-<div id="bug-fixes-2" class="section level2">
+<div id="bug-fixes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-3" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Fixed <code>select.mdl_df()</code> usage with negative select values (<a href='https://github.com/tidyverts/fabletools/issues/120'>#120</a>).</li>
 <li>Fixed <code><a href="../reference/features.html">features()</a></code> for a tsibble with key variables but only one series.</li>
@@ -241,19 +298,19 @@
 </div>
 </div>
     <div id="fabletools-011" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.1.1">
 <a href="#fabletools-011" class="anchor"></a>fabletools 0.1.1<small> 2019-09-16 </small>
 </h1>
-<div id="breaking-changes-2" class="section level2">
+<div id="breaking-changes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes-2" class="anchor"></a>Breaking changes</h2>
+<a href="#breaking-changes-3" class="anchor"></a>Breaking changes</h2>
 <ul>
 <li>Updated method names available for <code><a href="../reference/min_trace.html">min_trace()</a></code> reconciliation (<a href='https://github.com/GeorgeAthana'>@GeorgeAthana</a>).</li>
 </ul>
 </div>
-<div id="improvements-3" class="section level2">
+<div id="improvements-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements-3" class="anchor"></a>Improvements</h2>
+<a href="#improvements-4" class="anchor"></a>Improvements</h2>
 <ul>
 <li>Improved error messaging for failing features.</li>
 <li>Added Continuous Ranked Probability Score (<code><a href="../reference/distribution_accuracy_measures.html">CRPS()</a></code>) accuracy measure.</li>
@@ -263,24 +320,24 @@
 <li>Documentation improvements.</li>
 </ul>
 </div>
-<div id="bug-fixes-3" class="section level2">
+<div id="bug-fixes-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-3" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-4" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Added failure condition for disjoint reconciliation graphs.</li>
 </ul>
 </div>
 </div>
     <div id="fabletools-010" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.1.0">
 <a href="#fabletools-010" class="anchor"></a>fabletools 0.1.0<small> 2019-08-08 </small>
 </h1>
 <ul>
 <li>First release.</li>
 </ul>
-<div id="new-features-1" class="section level2">
+<div id="new-features-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features-1" class="anchor"></a>New features</h2>
+<a href="#new-features-2" class="anchor"></a>New features</h2>
 <div id="data-structures" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data-structures" class="anchor"></a>Data structures</h3>
@@ -304,7 +361,7 @@
 <a href="#forecasting" class="anchor"></a>Forecasting</h3>
 <ul>
 <li>Added <code><a href="../reference/forecast.html">forecast()</a></code>, which allows you to produce future predictions of a time series from fitted models. The methods provided in fabletools handle the application of new data (such as the future index or exogenous regressors) to model specials, giving a simple and consistent interface to forecasting any model. The forecast methods will automatically backtransform and bias adjust any transformations specified in the model formula. This function returns a fable (<code>fbl_ts</code>) object.</li>
-<li>Added a forecast distribution class (<code>fcdist</code>) which is used to describe the distribution of forecasts. Common forecast distributions have been added to the package, including the normal distribution (<code><a href="../reference/distributions.html">dist_normal()</a></code>), multivariate normal (<code><a href="../reference/distributions.html">dist_mv_normal()</a></code>) and simulated/sampled distributions (<code><a href="../reference/distributions.html">dist_sim()</a></code>). In addition to this, <code><a href="../reference/distributions.html">dist_unknown()</a></code> is available for methods that don’t support distributional forecasts. A new distribution can be added using the <code><a href="../reference/fcdist.html">new_fcdist()</a></code> function. The forecast distribution class handles transformations on the distribution, and is used to create forecast intervals of the <code>hilo</code> class using the <code><a href="https://rdrr.io/pkg/distributional/man/hilo.html">hilo()</a></code> function. Mathematical operations on the normal distribution are supported.</li>
+<li>Added a forecast distribution class (<code>fcdist</code>) which is used to describe the distribution of forecasts. Common forecast distributions have been added to the package, including the normal distribution (<code>dist_normal()</code>), multivariate normal (<code>dist_mv_normal()</code>) and simulated/sampled distributions (<code>dist_sim()</code>). In addition to this, <code>dist_unknown()</code> is available for methods that don’t support distributional forecasts. A new distribution can be added using the <code>new_fcdist()</code> function. The forecast distribution class handles transformations on the distribution, and is used to create forecast intervals of the <code>hilo</code> class using the <code><a href="https://pkg.mitchelloharawild.com/distributional/reference/hilo.html">hilo()</a></code> function. Mathematical operations on the normal distribution are supported.</li>
 <li>Added tools for working with transformations in models, including automatic back-transformation, transformation classes (<code><a href="../reference/new_transformation.html">new_transformation()</a></code>), and bias adjustment (<code><a href="../reference/bias_adjust.html">bias_adjust()</a></code>) methods.</li>
 <li>Added <code><a href="../reference/aggregate_key.html">aggregate_key()</a></code>, which is used to compute all levels of aggregation in a specified key structure. It supports nested structures using <code>parent / key</code> and crossed structures using <code>keyA * keyB</code>.</li>
 <li>Added support for forecast reconciliation using <code><a href="../reference/reconcile.html">reconcile()</a></code>. This function modifies the way in which forecasts from a model column are combined to give coherent forecasts. In this version the MinT (<code><a href="../reference/min_trace.html">min_trace()</a></code>) reconciliation technique is available. This is commonly used in combination with <code><a href="../reference/aggregate_key.html">aggregate_key()</a></code>.</li>
@@ -347,17 +404,10 @@
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div id="tocnav">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#fabletools-020">0.2.0</a></li>
-        <li><a href="#fabletools-013">0.1.3</a></li>
-        <li><a href="#fabletools-012">0.1.2</a></li>
-        <li><a href="#fabletools-011">0.1.1</a></li>
-        <li><a href="#fabletools-010">0.1.0</a></li>
-      </ul>
-    </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 
 </div>
@@ -369,7 +419,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

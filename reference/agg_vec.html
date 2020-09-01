@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mean Arctangent Absolute Percentage Error — MAAPE • fabletools</title>
+<title>Create an aggregation vector — agg_vec • fabletools</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Mean Arctangent Absolute Percentage Error — MAAPE" />
-<meta property="og:description" content="Mean Arctangent Absolute Percentage Error" />
+<meta property="og:title" content="Create an aggregation vector — agg_vec" />
+<meta property="og:description" content="" />
 
 
 
@@ -123,45 +123,36 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Mean Arctangent Absolute Percentage Error</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/accuracy.R'><code>R/accuracy.R</code></a></small>
-    <div class="hidden name"><code>MAAPE.Rd</code></div>
+    <h1>Create an aggregation vector</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/aggregate.R'><code>R/aggregate.R</code></a></small>
+    <div class="hidden name"><code>agg_vec.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Mean Arctangent Absolute Percentage Error</p>
+    <p><a href='https://www.tidyverse.org/lifecycle/#maturing'><img src='figures/lifecycle-maturing.svg' alt='Maturing lifecycle'></a></p>
     </div>
 
-    <pre class="usage"><span class='fu'>MAAPE</span>(<span class='no'>.resid</span>, <span class='no'>.actual</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>agg_vec</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>(), <span class='kw'>aggregated</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/logical.html'>logical</a></span>(<span class='fu'>vec_size</span>(<span class='no'>x</span>)))</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>.resid</th>
-      <td><p>A vector of residuals from either the training (model accuracy)
-or test (forecast accuracy) data.</p></td>
+      <th>x</th>
+      <td><p>The vector of values.</p></td>
     </tr>
     <tr>
-      <th>.actual</th>
-      <td><p>A vector of responses matching the fitted values
-(for forecast accuracy, <code>new_data</code> must be provided).</p></td>
-    </tr>
-    <tr>
-      <th>na.rm</th>
-      <td><p>Remove the missing values before calculating the accuracy measure</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Additional arguments for each measure.</p></td>
+      <th>aggregated</th>
+      <td><p>A logical vector to identify which values are &lt;aggregated&gt;.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Kim, Sungil and Heeyoung Kim (2016) "A new metric of absolute percentage error
-for intermittent demand forecasts". <em>International Journal of Forecasting</em>,
-<b>32</b>(3), 669-679.</p>
+    <p>An aggregation vector extends usual vectors by adding &lt;aggregated&gt; values.
+These vectors are typically produced via the <code><a href='aggregate_key.html'>aggregate_key()</a></code> function,
+however it can be useful to create them manually to produce more complicated
+hierarchies (such as unbalanced hierarchies).</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
