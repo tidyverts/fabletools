@@ -1,6 +1,6 @@
 Package: fabletools
 Title: Core Tools for Packages in the 'fable' Framework
-Version: 0.2.0.9000
+Version: 0.2.1
 Authors@R:
     c(person(given = "Mitchell",
              family = "O'Hara-Wild",
