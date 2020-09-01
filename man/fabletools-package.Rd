@@ -14,7 +14,7 @@ Provides tools, helpers and data structures for
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://fabletools.tidyverts.org/}
+  \item \url{https://fabletools.tidyverts.org/}
   \item \url{https://github.com/tidyverts/fabletools}
   \item Report bugs at \url{https://github.com/tidyverts/fabletools/issues}
 }

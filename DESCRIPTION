@@ -23,7 +23,7 @@ Description: Provides tools, helpers and data structures for
     packages. These tools support a consistent and tidy interface for time
     series modelling and analysis.
 License: GPL-3
-URL: http://fabletools.tidyverts.org/,
+URL: https://fabletools.tidyverts.org/,
     https://github.com/tidyverts/fabletools
 BugReports: https://github.com/tidyverts/fabletools/issues
 Depends:
