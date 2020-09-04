@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.2.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.2.1.9000</span>
       </span>
     </div>
 
@@ -130,6 +130,18 @@
 <h1 class="page-header" data-toc-text="development version">
 <a href="#fabletools-development-version" class="anchor"></a>fabletools (development version)<small> Unreleased </small>
 </h1>
+<div id="bug-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
+<ul>
+<li>Data lines in fable <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot()</a></code> are now always grouped by the data’s key.</li>
+</ul>
+</div>
+</div>
+    <div id="fabletools-021" class="section level1">
+<h1 class="page-header" data-toc-text="0.2.1">
+<a href="#fabletools-021" class="anchor"></a>fabletools 0.2.1<small> 2020-09-03 </small>
+</h1>
 <div id="new-features" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New features</h2>
@@ -165,9 +177,9 @@
 <code>fortify(&lt;fable&gt;)</code> will now return a tibble with the same structure as the fable, which is more useful for plotting forecast distributions with the ggdist package. It can no longer be used to extract intervals from the forecasts, this can be done using <code><a href="https://pkg.mitchelloharawild.com/distributional/reference/hilo.html">hilo()</a></code>, and numerical values from a <code>&lt;hilo&gt;</code> can be extracted with <code><a href="../reference/unpack_hilo.html">unpack_hilo()</a></code> or <code>interval$lower</code>.</li>
 </ul>
 </div>
-<div id="bug-fixes" class="section level2">
+<div id="bug-fixes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Fixed issue with aggregated date vectors (<a href='https://github.com/tidyverts/fabletools/issues/230'>#230</a>).</li>
 <li>Fixed display of models in <code><a href="https://rdrr.io/r/utils/View.html">View()</a></code> panel.</li>
@@ -229,9 +241,9 @@
 <li>The row order of wide to long mable operations (such as <code><a href="../reference/accuracy.html">accuracy()</a></code>) has changed (due to shift to <code>pivot_longer()</code> from <code>gather()</code>). Model column name values are now nested within key values, rather than key values nested in model name values.</li>
 </ul>
 </div>
-<div id="bug-fixes-1" class="section level2">
+<div id="bug-fixes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Fixed <code>show_gap</code> option not working when more than one forecast is plotted.</li>
 <li>Fixed <code><a href="https://ggplot2.tidyverse.org/reference/autolayer.html">autolayer()</a></code> plotting issues due to inherited aesthetics.</li>
@@ -257,9 +269,9 @@
 <code>xreg()</code> can now be called directly as a special.</li>
 </ul>
 </div>
-<div id="bug-fixes-2" class="section level2">
+<div id="bug-fixes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-3" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Fixed <code><a href="../reference/accuracy.html">accuracy.fbl_ts()</a></code> error when certain names were used in the fable.</li>
 </ul>
@@ -286,9 +298,9 @@
 <li>Decompositions are now treated as models. To access the decomposed values, you will now have to use <code><a href="https://rdrr.io/pkg/generics/man/components.html">components()</a></code>. For example, <code>tourism %&gt;% STL(Trips)</code> is now <code>tourism %&gt;% model(STL(Trips)) %&gt;% components()</code>. This change allows for more flexible decomposition specifications, and better interfaces for decomposition modelling.</li>
 </ul>
 </div>
-<div id="bug-fixes-3" class="section level2">
+<div id="bug-fixes-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-3" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-4" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Fixed <code>select.mdl_df()</code> usage with negative select values (<a href='https://github.com/tidyverts/fabletools/issues/120'>#120</a>).</li>
 <li>Fixed <code><a href="../reference/features.html">features()</a></code> for a tsibble with key variables but only one series.</li>
@@ -320,9 +332,9 @@
 <li>Documentation improvements.</li>
 </ul>
 </div>
-<div id="bug-fixes-4" class="section level2">
+<div id="bug-fixes-5" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-4" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-5" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Added failure condition for disjoint reconciliation graphs.</li>
 </ul>
