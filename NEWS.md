@@ -1,5 +1,9 @@
 # fabletools (development version)
 
+## Bug fixes
+
+* Data lines in fable `autoplot()` are now always grouped by the data's key.
+
 # fabletools 0.2.1
 
 ## New features
