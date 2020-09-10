@@ -134,7 +134,7 @@
 "upper", and "level".</p>
     </div>
 
-    <pre class="usage"><span class='fu'>unpack_hilo</span>(<span class='no'>data</span>, <span class='no'>cols</span>, <span class='kw'>names_sep</span> <span class='kw'>=</span> <span class='st'>"_"</span>, <span class='kw'>names_repair</span> <span class='kw'>=</span> <span class='st'>"check_unique"</span>)</pre>
+    <pre class="usage"><span class='fu'>unpack_hilo</span>(<span class='kw'>data</span>, <span class='kw'>cols</span>, names_sep = <span class='st'>"_"</span>, names_repair = <span class='st'>"check_unique"</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -150,11 +150,11 @@
     <tr>
       <th>names_sep</th>
       <td><p>If <code>NULL</code>, the default, the names will be left
-as is. In <code>pack()</code>, inner names will come from the former outer names;
-in <code>unpack()</code>, the new outer names will come from the inner names.</p>
-<p>If a string, the inner and outer names will be used together. In <code>pack()</code>,
+as is. In <code><a href='https://tidyr.tidyverse.org/reference/pack.html'>pack()</a></code>, inner names will come from the former outer names;
+in <code><a href='https://tidyr.tidyverse.org/reference/pack.html'>unpack()</a></code>, the new outer names will come from the inner names.</p>
+<p>If a string, the inner and outer names will be used together. In <code><a href='https://tidyr.tidyverse.org/reference/pack.html'>pack()</a></code>,
 the names of the new outer columns will be formed by pasting together the
-outer and the inner column names, separated by <code>names_sep</code>. In <code>unpack()</code>,
+outer and the inner column names, separated by <code>names_sep</code>. In <code><a href='https://tidyr.tidyverse.org/reference/pack.html'>unpack()</a></code>,
 the new inner names will have the outer names (+ <code>names_sep</code>) automatically
 stripped. This makes <code>names_sep</code> roughly symmetric between packing
 and unpacking.</p></td>
@@ -196,7 +196,7 @@ strategies used to enforce them.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

@@ -132,7 +132,7 @@
     <p><a href='https://www.tidyverse.org/lifecycle/#experimental'><img src='figures/lifecycle-experimental.svg' alt='Experimental lifecycle'></a></p>
     </div>
 
-    <pre class="usage"><span class='fu'>aggregate_index</span>(<span class='no'>.data</span>, <span class='no'>.window</span>, <span class='no'>...</span>, <span class='kw'>.offset</span> <span class='kw'>=</span> <span class='st'>"end"</span>, <span class='kw'>.bin_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>aggregate_index</span>(<span class='kw'>.data</span>, <span class='kw'>.window</span>, <span class='kw'>...</span>, .offset = <span class='st'>"end"</span>, .bin_size = <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -152,7 +152,7 @@ specified in several ways (see details).</p></td>
       <td><p>&lt;<code><a href='https://dplyr.tidyverse.org/reference/dplyr_data_masking.html'>data-masking</a></code>&gt; Name-value pairs of summary
 functions. The name will be the name of the variable in the result.</p>
 <p>The value can be:</p><ul>
-<li><p>A vector of length 1, e.g. <code><a href='https://rdrr.io/r/base/Extremes.html'>min(x)</a></code>, <code>n()</code>, or <code><a href='https://rdrr.io/r/base/sum.html'>sum(is.na(y))</a></code>.</p></li>
+<li><p>A vector of length 1, e.g. <code><a href='https://rdrr.io/r/base/Extremes.html'>min(x)</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/context.html'>n()</a></code>, or <code><a href='https://rdrr.io/r/base/sum.html'>sum(is.na(y))</a></code>.</p></li>
 <li><p>A vector of length <code>n</code>, e.g. <code><a href='https://rdrr.io/r/stats/quantile.html'>quantile()</a></code>.</p></li>
 <li><p>A data frame, to add multiple columns from a single expression.</p></li>
 </ul></td>
@@ -183,13 +183,14 @@ and a space, or followed by "s".</p></li>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibble</span>)
-<span class='no'>pedestrian</span> <span class='kw'>%&gt;%</span>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tsibble.tidyverts.org'>tsibble</a></span>)
+<span class='kw'>pedestrian</span> <span class='op'>%&gt;%</span>
   <span class='co'># Currently only supports daily data</span>
-  <span class='fu'><a href='https://tsibble.tidyverts.org/reference/index-by.html'>index_by</a></span>(<span class='no'>Date</span>) <span class='kw'>%&gt;%</span>
-  <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span>(<span class='kw'>Count</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='no'>Count</span>)) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://tsibble.tidyverts.org/reference/index-by.html'>index_by</a></span>(<span class='kw'>Date</span>) <span class='op'>%&gt;%</span> 
+  <span class='kw'>dplyr</span>::<span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span>(Count = <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='kw'>Count</span>)) <span class='op'>%&gt;%</span> 
   <span class='co'># Compute weekly aggregates</span>
-  <span class='kw pkg'>fabletools</span><span class='kw ns'>:::</span><span class='fu'>aggregate_index</span>(<span class='st'>"1 week"</span>, <span class='kw'>Count</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='no'>Count</span>))</div><div class='output co'>#&gt; <span style='color: #555555;'># A tsibble: 104 x 2 [7D]</span><span>
+  <span class='kw'>fabletools</span>:::<span class='fu'>aggregate_index</span>(<span class='st'>"1 week"</span>, Count = <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='kw'>Count</span>))
+</div><div class='output co'>#&gt; <span style='color: #555555;'># A tsibble: 104 x 2 [7D]</span><span>
 #&gt;    Date        Count
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span> 2015-01-03 </span><span style='text-decoration: underline;'>182</span><span>896
@@ -218,7 +219,7 @@ and a space, or followed by "s".</p></li>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

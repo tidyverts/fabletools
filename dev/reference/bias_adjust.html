@@ -132,7 +132,7 @@
     <p>To produce forecast means (instead of forecast medians) it is necessary to adjust the back-transformation function relative to the forecast variance.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>bias_adjust</span>(<span class='no'>bt</span>, <span class='no'>sd</span>)</pre>
+    <pre class="usage"><span class='fu'>bias_adjust</span>(<span class='kw'>bt</span>, <span class='kw'>sd</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -154,10 +154,12 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='no'>adj_fn</span> <span class='kw'>&lt;-</span> <span class='fu'>bias_adjust</span>(<span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span>(<span class='no'>x</span>), <span class='fl'>1</span>:<span class='fl'>10</span>)
-<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span>(<span class='no'>y</span>)</div><div class='output co'>#&gt;  [1] 0.24658623 1.29087083 0.08739968 0.99444420 1.86181668 3.15318044
-#&gt;  [7] 0.16173151 0.78088663 0.78333126 0.75374177</div><div class='input'><span class='fu'>adj_fn</span>(<span class='no'>y</span>)</div><div class='output co'>#&gt;  [1]  0.3698793  3.8726125  0.4806983  8.9499978 25.1345252 59.9104283
+<span class='kw'>adj_fn</span> <span class='op'>&lt;-</span> <span class='fu'>bias_adjust</span>(<span class='fu'>function</span>(<span class='kw'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span>(<span class='kw'>x</span>), <span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>)
+<span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span>(<span class='kw'>y</span>)
+</div><div class='output co'>#&gt;  [1] 0.24658623 1.29087083 0.08739968 0.99444420 1.86181668 3.15318044
+#&gt;  [7] 0.16173151 0.78088663 0.78333126 0.75374177</div><div class='input'><span class='fu'>adj_fn</span>(<span class='kw'>y</span>)
+</div><div class='output co'>#&gt;  [1]  0.3698793  3.8726125  0.4806983  8.9499978 25.1345252 59.9104283
 #&gt;  [7]  4.1241535 25.7692587 32.5082473 38.4408303</div><div class='input'>
 </div></pre>
   </div>
@@ -175,7 +177,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

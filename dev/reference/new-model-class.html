@@ -133,18 +133,18 @@
     </div>
 
     <pre class="usage"><span class='fu'>new_model_class</span>(
-  <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"Unknown model"</span>,
-  <span class='kw'>train</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>.data</span>, <span class='no'>formula</span>, <span class='no'>specials</span>, <span class='no'>...</span>)
+  model = <span class='st'>"Unknown model"</span>,
+  train = <span class='fu'>function</span>(<span class='kw'>.data</span>, <span class='kw'>formula</span>, <span class='kw'>specials</span>, <span class='kw'>...</span>)
     <span class='fu'>abort</span>(<span class='st'>"This model has not defined a training method."</span>),
-  <span class='kw'>specials</span> <span class='kw'>=</span> <span class='fu'><a href='new_specials.html'>new_specials</a></span>(),
-  <span class='kw'>check</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>.data</span>) { },
-  <span class='kw'>prepare</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>...</span>) { },
-  <span class='no'>...</span>,
-  <span class='kw'>.env</span> <span class='kw'>=</span> <span class='fu'>caller_env</span>(),
-  <span class='kw'>.inherit</span> <span class='kw'>=</span> <span class='no'>model_definition</span>
+  specials = <span class='fu'><a href='new_specials.html'>new_specials</a></span>(),
+  check = <span class='fu'>function</span>(<span class='kw'>.data</span>) { },
+  prepare = <span class='fu'>function</span>(<span class='kw'>...</span>) { },
+  <span class='kw'>...</span>,
+  .env = <span class='fu'>caller_env</span>(),
+  .inherit = <span class='kw'>model_definition</span>
 )
 
-<span class='fu'>new_model_definition</span>(<span class='no'>.class</span>, <span class='no'>formula</span>, <span class='no'>...</span>, <span class='kw'>.env</span> <span class='kw'>=</span> <span class='fu'>caller_env</span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>2</span>))</pre>
+<span class='fu'>new_model_definition</span>(<span class='kw'>.class</span>, <span class='kw'>formula</span>, <span class='kw'>...</span>, .env = <span class='fu'>caller_env</span>(n = <span class='fl'>2</span>))</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -226,7 +226,7 @@ This can be useful to obtain elements set in the %TODO</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

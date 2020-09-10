@@ -157,9 +157,9 @@
 <ul>
 <li>Fixed some inconsistencies in key ordering of model accessors (such as <code><a href="https://rdrr.io/pkg/generics/man/augment.html">augment()</a></code>, <code><a href="https://rdrr.io/pkg/generics/man/tidy.html">tidy()</a></code> and <code><a href="https://rdrr.io/pkg/generics/man/glance.html">glance()</a></code>) with model methods (such as <code><a href="../reference/forecast.html">forecast()</a></code> and <code><a href="https://rdrr.io/pkg/generics/man/generate.html">generate()</a></code>).</li>
 <li>Improved equality comparison of <code>agg_vec</code> classes, aggregated values will now always match regardless of the value used.</li>
-<li>Using <code>summarise()</code> with a fable will now retain the fable class if the distribution still exists under the same variable name.</li>
-<li>Added <code><a href="../reference/as-fable.html">as_fable.forecast()</a></code> to convert forecast objects from the forecast package to work with fable.</li>
-<li>Improved <code><a href="../reference/distribution_accuracy_measures.html">CRPS()</a></code> performance when using sampling distributions (<a href='https://github.com/tidyverts/fabletools/issues/240'>#240</a>).</li>
+<li>Using <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise()</a></code> with a fable will now retain the fable class if the distribution still exists under the same variable name.</li>
+<li>Added <code><a href="../reference/as_fable.html">as_fable.forecast()</a></code> to convert forecast objects from the forecast package to work with fable.</li>
+<li>Improved <code><a href="../reference/percentile_score.html">CRPS()</a></code> performance when using sampling distributions (<a href='https://github.com/tidyverts/fabletools/issues/240'>#240</a>).</li>
 <li>Reconciliation now works with hierarchies containing aggregate leaf nodes, allowing unbalanced hierarchies to be reconciled.</li>
 <li>Produce unique names for unnamed features used with <code><a href="../reference/features.html">features()</a></code> (<a href='https://github.com/tidyverts/fabletools/issues/258'>#258</a>).</li>
 <li>Documentation improvements</li>
@@ -202,7 +202,7 @@
 <li>Distributions are now provided by the distributional package, which is more space efficient and allows calculation of distributional statistics including the <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>, <code><a href="https://rdrr.io/r/stats/median.html">median()</a></code>, <code>variance()</code>, <code><a href="https://rdrr.io/r/stats/quantile.html">quantile()</a></code>, <code>cdf()</code> and <code><a href="https://rdrr.io/r/stats/density.html">density()</a></code>.</li>
 <li>
 <code><a href="../reference/autoplot.fbl_ts.html">autoplot.fbl_ts()</a></code> and <code><a href="../reference/autoplot.fbl_ts.html">autolayer.fbl_ts()</a></code> now accept the <code>point_forecast</code> argument, which is a named list of functions that describe the method used to obtain the point forecasts. If multiple are specified, each method will be identified using the <code>linetype</code>.</li>
-<li>Added accuracy measures: <code><a href="../reference/point_accuracy_measures.html">RMSSE()</a></code>, <code><a href="../reference/interval_accuracy_measures.html">pinball_loss()</a></code>, <code><a href="../reference/interval_accuracy_measures.html">scaled_pinball_loss()</a></code>.</li>
+<li>Added accuracy measures: <code><a href="../reference/ME.html">RMSSE()</a></code>, <code><a href="../reference/winkler_score.html">pinball_loss()</a></code>, <code><a href="../reference/winkler_score.html">scaled_pinball_loss()</a></code>.</li>
 <li>Added accessor functions for column names (or metadata) of interest. This includes models in a mable (<code><a href="../reference/mable_vars.html">mable_vars()</a></code>), response variables (<code><a href="../reference/response_vars.html">response_vars()</a></code>) and distribution variables (<code><a href="../reference/distribution_var.html">distribution_var()</a></code>).</li>
 <li>Added support for combinations of non-normal forecasts, which produces mean point forecasts only.</li>
 <li>Added support for reconciling non-normal forecasts, which produces reconciled point forecasts only.</li>
@@ -236,9 +236,9 @@
 <li>
 <code>hilo</code> intervals can no longer be unnested as they are now stored more efficiently as a vctrs record type. The <code><a href="../reference/unpack_hilo.html">unpack_hilo()</a></code> function will continue to function as expected, and you can now obtain the components of the interval with <code>x$lower</code>, <code>x$upper</code>, and <code>x$level</code>,</li>
 <li>
-<code><a href="https://rdrr.io/r/base/cbind.html">rbind()</a></code> methods are deprecated in favour of <code>bind_rows()</code>
+<code><a href="https://rdrr.io/r/base/cbind.html">rbind()</a></code> methods are deprecated in favour of <code><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows()</a></code>
 </li>
-<li>The row order of wide to long mable operations (such as <code><a href="../reference/accuracy.html">accuracy()</a></code>) has changed (due to shift to <code>pivot_longer()</code> from <code>gather()</code>). Model column name values are now nested within key values, rather than key values nested in model name values.</li>
+<li>The row order of wide to long mable operations (such as <code><a href="../reference/accuracy.html">accuracy()</a></code>) has changed (due to shift to <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> from <code><a href="https://tidyr.tidyverse.org/reference/gather.html">gather()</a></code>). Model column name values are now nested within key values, rather than key values nested in model name values.</li>
 </ul>
 </div>
 <div id="bug-fixes-2" class="section level2">
@@ -325,7 +325,7 @@
 <a href="#improvements-4" class="anchor"></a>Improvements</h2>
 <ul>
 <li>Improved error messaging for failing features.</li>
-<li>Added Continuous Ranked Probability Score (<code><a href="../reference/distribution_accuracy_measures.html">CRPS()</a></code>) accuracy measure.</li>
+<li>Added Continuous Ranked Probability Score (<code><a href="../reference/percentile_score.html">CRPS()</a></code>) accuracy measure.</li>
 <li>Transformations of features are now computed for separately for each key, allowing transformations such as <code><a href="https://rdrr.io/r/base/scale.html">scale(value)</a></code> to be used.</li>
 <li>Added structural scaling method for MinT (<code><a href="../reference/min_trace.html">min_trace(method = "wls_struct")</a></code>) forecast reconciliation (<a href='https://github.com/GeorgeAthana'>@GeorgeAthana</a>).</li>
 <li>Performance improvements.</li>
@@ -363,7 +363,7 @@
 <h3 class="hasAnchor">
 <a href="#modelling" class="anchor"></a>Modelling</h3>
 <ul>
-<li>Support for model (<code><a href="../reference/new-model-class.html">new_model_class()</a></code>, <code><a href="../reference/new-model-class.html">new_model_definition()</a></code>) and decomposition definitions (<code>new_decomposition_class()</code>, <code>new_decomposition_definition()</code>).</li>
+<li>Support for model (<code><a href="../reference/new_model_class.html">new_model_class()</a></code>, <code><a href="../reference/new_model_class.html">new_model_definition()</a></code>) and decomposition definitions (<code>new_decomposition_class()</code>, <code>new_decomposition_definition()</code>).</li>
 <li>Added parsing tools to compactly specify models using a formula interface. Transformations specified on left hand side, where the response variable is determined by object length. In case of a conflict in object length, such as <code>GDP/CPI</code>, the response will be the ratio of the pair. To transform a variable by some other data variable, the response can be specified using <code>resp()</code>, giving <code>resp(GDP)/CPI</code>. Multiple variables (and separate transformations for each), can be specified using <code><a href="https://dplyr.tidyverse.org/reference/vars.html">vars()</a></code>: <code><a href="https://dplyr.tidyverse.org/reference/vars.html">vars(log(GDP), CPI)</a></code>. The inputs to the model are specified on the right hand side, and are handled using model defined specials (<code><a href="../reference/new_specials.html">new_specials()</a></code>).</li>
 <li>Added methods to train a model definition to a dataset. <code><a href="../reference/model.html">model()</a></code> is the recommended interface, which can fit many model definitions to each time series in the input dataset returning a mable (<code>mdl_df</code>). The lower level interface for model estimation is accessible using <code><a href="../reference/estimate.html">estimate()</a></code> which will return a time series model (<code>mdl_ts</code>), however using this interface is discouraged.</li>
 </ul>
@@ -409,7 +409,7 @@
 <h3 class="hasAnchor">
 <a href="#evaluation" class="anchor"></a>Evaluation</h3>
 <ul>
-<li>Added <code><a href="../reference/accuracy.html">accuracy()</a></code>, which allows the accuracy of a model to be evaluated. This function can be used to summarise model performance on the training data (<code><a href="../reference/accuracy.html">accuracy.mdl_df()</a></code>, <code>accuracy.mdl_ts()</code>), or to evaluate the accuracy of forecasts over a test dataset (<code><a href="../reference/accuracy.html">accuracy.fbl_ts()</a></code>). Several accuracy measures are supported, including <code>point_accuracy_measures</code> (<code>ME</code>, <code>MSE</code>, <code>RMSE</code>, <code>MAE</code>, <code>MPE</code>, <code>MAPE</code>, <code>MASE</code>, <code>ACF1</code>), <code>interval_accuracy_measures</code> (<code>winkler_score</code>) and <code>distribution_accuracy_measures</code> (<code>percentile_score</code>). These accuracy functions can be used in conjunction with the rolling functions in the tsibble package (<code>stretch_tsibble()</code>, <code>slide_tsibble()</code>, <code>tile_tsibble()</code>) to computed time series cross-validated accuracy measures.</li>
+<li>Added <code><a href="../reference/accuracy.html">accuracy()</a></code>, which allows the accuracy of a model to be evaluated. This function can be used to summarise model performance on the training data (<code><a href="../reference/accuracy.html">accuracy.mdl_df()</a></code>, <code>accuracy.mdl_ts()</code>), or to evaluate the accuracy of forecasts over a test dataset (<code><a href="../reference/accuracy.html">accuracy.fbl_ts()</a></code>). Several accuracy measures are supported, including <code>point_accuracy_measures</code> (<code>ME</code>, <code>MSE</code>, <code>RMSE</code>, <code>MAE</code>, <code>MPE</code>, <code>MAPE</code>, <code>MASE</code>, <code>ACF1</code>), <code>interval_accuracy_measures</code> (<code>winkler_score</code>) and <code>distribution_accuracy_measures</code> (<code>percentile_score</code>). These accuracy functions can be used in conjunction with the rolling functions in the tsibble package (<code><a href="https://tsibble.tidyverts.org/reference/stretch_tsibble.html">stretch_tsibble()</a></code>, <code><a href="https://tsibble.tidyverts.org/reference/slide_tsibble.html">slide_tsibble()</a></code>, <code><a href="https://tsibble.tidyverts.org/reference/tile_tsibble.html">tile_tsibble()</a></code>) to computed time series cross-validated accuracy measures.</li>
 </ul>
 </div>
 </div>
@@ -431,7 +431,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

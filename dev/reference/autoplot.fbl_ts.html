@@ -139,16 +139,16 @@ useful to focus on the more recent observations.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for fbl_ts</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>object</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>80</span>, <span class='fl'>95</span>), <span class='kw'>show_gap</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='kw'>object</span>, data = <span class='kw'>NULL</span>, level = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>80</span>, <span class='fl'>95</span>), show_gap = <span class='fl'>TRUE</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for fbl_ts</span>
 <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autolayer.html'>autolayer</a></span>(
-  <span class='no'>object</span>,
-  <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>level</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>80</span>, <span class='fl'>95</span>),
-  <span class='kw'>point_forecast</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>mean</span> <span class='kw'>=</span> <span class='no'>mean</span>),
-  <span class='kw'>show_gap</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>
+  <span class='kw'>object</span>,
+  data = <span class='kw'>NULL</span>,
+  level = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>80</span>, <span class='fl'>95</span>),
+  point_forecast = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(mean = <span class='kw'>mean</span>),
+  show_gap = <span class='fl'>TRUE</span>,
+  <span class='kw'>...</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -182,23 +182,25 @@ useful to focus on the more recent observations.</p>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibbledata</span>)
-<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>fable</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://tsibbledata.tidyverts.org'>tsibbledata</a></span>)
+<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, quietly = <span class='fl'>TRUE</span>)) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://fable.tidyverts.org'>fable</a></span>)
 
-<span class='no'>fc</span> <span class='kw'>&lt;-</span> <span class='no'>aus_production</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='model.html'>model</a></span>(<span class='kw'>ets</span> <span class='kw'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Beer</span>) ~ <span class='fu'>error</span>(<span class='st'>"M"</span>) + <span class='fu'>trend</span>(<span class='st'>"Ad"</span>) + <span class='fu'>season</span>(<span class='st'>"A"</span>))) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='forecast.html'>forecast</a></span>(<span class='kw'>h</span> <span class='kw'>=</span> <span class='st'>"3 years"</span>)
+<span class='kw'>fc</span> <span class='op'>&lt;-</span> <span class='kw'>aus_production</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='model.html'>model</a></span>(ets = <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='kw'>Beer</span>) <span class='op'>~</span> <span class='fu'>error</span>(<span class='st'>"M"</span>) <span class='op'>+</span> <span class='fu'>trend</span>(<span class='st'>"Ad"</span>) <span class='op'>+</span> <span class='fu'>season</span>(<span class='st'>"A"</span>))) <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='forecast.html'>forecast</a></span>(h = <span class='st'>"3 years"</span>) 
 
-<span class='no'>fc</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>aus_production</span>)
-}</div><div class='output co'>#&gt; <span class='error'>Error in interaction(): No factors specified</span></div><div class='input'>
+<span class='kw'>fc</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='kw'>aus_production</span>)
+}
+</div><div class='img'><img src='autoplot.fbl_ts-1.png' alt='' width='700' height='433' /></div><div class='input'>
 
-<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
-<span class='no'>aus_production</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>Beer</span>) +
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autolayer.html'>autolayer</a></span>(<span class='no'>fc</span>)
-}</div><div class='img'><img src='autoplot.fbl_ts-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, quietly = <span class='fl'>TRUE</span>)) {
+<span class='kw'>aus_production</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='kw'>Beer</span>) <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autolayer.html'>autolayer</a></span>(<span class='kw'>fc</span>)
+}
+</div><div class='img'><img src='autoplot.fbl_ts-2.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -215,7 +217,7 @@ useful to focus on the more recent observations.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

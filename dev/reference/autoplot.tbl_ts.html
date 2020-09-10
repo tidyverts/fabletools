@@ -137,10 +137,10 @@ colour.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for tbl_ts</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>object</span>, <span class='kw'>.vars</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='kw'>object</span>, .vars = <span class='kw'>NULL</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for tbl_ts</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autolayer.html'>autolayer</a></span>(<span class='no'>object</span>, <span class='kw'>.vars</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autolayer.html'>autolayer</a></span>(<span class='kw'>object</span>, .vars = <span class='kw'>NULL</span>, <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -161,14 +161,15 @@ colour.</p>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>fable</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibbledata</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibble</span>)
+    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, quietly = <span class='fl'>TRUE</span>)) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://fable.tidyverts.org'>fable</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://tsibbledata.tidyverts.org'>tsibbledata</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tsibble.tidyverts.org'>tsibble</a></span>)
 
-<span class='kw pkg'>tsibbledata</span><span class='kw ns'>::</span><span class='no'><a href='https://tsibbledata.tidyverts.org/reference/gafa_stock.html'>gafa_stock</a></span> <span class='kw'>%&gt;%</span>
- <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/vars.html'>vars</a></span>(<span class='no'>Close</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>Close</span>)))
-}</div><div class='img'><img src='autoplot.tbl_ts-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='kw'>tsibbledata</span>::<span class='kw'><a href='https://tsibbledata.tidyverts.org/reference/gafa_stock.html'>gafa_stock</a></span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/vars.html'>vars</a></span>(<span class='kw'>Close</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='kw'>Close</span>)))
+}
+</div><div class='img'><img src='autoplot.tbl_ts-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -185,7 +186,7 @@ colour.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

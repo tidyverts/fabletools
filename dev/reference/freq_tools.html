@@ -132,30 +132,30 @@
     <p>Extract frequencies for common seasonal periods</p>
     </div>
 
-    <pre class="usage"><span class='fu'>common_periods</span>(<span class='no'>x</span>)
+    <pre class="usage"><span class='fu'>common_periods</span>(<span class='kw'>x</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>common_periods</span>(<span class='no'>x</span>)
+<span class='fu'>common_periods</span>(<span class='kw'>x</span>)
 
 <span class='co'># S3 method for tbl_ts</span>
-<span class='fu'>common_periods</span>(<span class='no'>x</span>)
+<span class='fu'>common_periods</span>(<span class='kw'>x</span>)
 
 <span class='co'># S3 method for interval</span>
-<span class='fu'>common_periods</span>(<span class='no'>x</span>)
+<span class='fu'>common_periods</span>(<span class='kw'>x</span>)
 
-<span class='fu'>get_frequencies</span>(<span class='no'>period</span>, <span class='no'>...</span>)
+<span class='fu'>get_frequencies</span>(<span class='kw'>period</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for numeric</span>
-<span class='fu'>get_frequencies</span>(<span class='no'>period</span>, <span class='no'>...</span>)
+<span class='fu'>get_frequencies</span>(<span class='kw'>period</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for `NULL`</span>
-<span class='fu'>get_frequencies</span>(<span class='no'>period</span>, <span class='no'>data</span>, <span class='no'>...</span>, <span class='kw'>.auto</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"smallest"</span>, <span class='st'>"largest"</span>, <span class='st'>"all"</span>))
+<span class='fu'>get_frequencies</span>(<span class='kw'>period</span>, <span class='kw'>data</span>, <span class='kw'>...</span>, .auto = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"smallest"</span>, <span class='st'>"largest"</span>, <span class='st'>"all"</span>))
 
 <span class='co'># S3 method for character</span>
-<span class='fu'>get_frequencies</span>(<span class='no'>period</span>, <span class='no'>data</span>, <span class='no'>...</span>)
+<span class='fu'>get_frequencies</span>(<span class='kw'>period</span>, <span class='kw'>data</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for Period</span>
-<span class='fu'>get_frequencies</span>(<span class='no'>period</span>, <span class='no'>data</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>get_frequencies</span>(<span class='kw'>period</span>, <span class='kw'>data</span>, <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -191,7 +191,8 @@ periods</p></td>
     <p><a href='https://robjhyndman.com/hyndsight/seasonal-periods/'>https://robjhyndman.com/hyndsight/seasonal-periods/</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>common_periods</span>(<span class='kw pkg'>tsibble</span><span class='kw ns'>::</span><span class='no'><a href='https://tsibble.tidyverts.org/reference/pedestrian.html'>pedestrian</a></span>)</div><div class='output co'>#&gt; year week  day 
+    <pre class="examples"><div class='input'><span class='fu'>common_periods</span>(<span class='kw'>tsibble</span>::<span class='kw'><a href='https://tsibble.tidyverts.org/reference/pedestrian.html'>pedestrian</a></span>)
+</div><div class='output co'>#&gt; year week  day 
 #&gt; 8766  168   24 </div><div class='input'>
 </div></pre>
   </div>
@@ -209,7 +210,7 @@ periods</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>
