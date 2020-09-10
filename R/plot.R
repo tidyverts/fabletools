@@ -202,7 +202,11 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = T
     
   # Add historical data
   if(!is.null(data)){
-    p <- p + geom_line(aes(y = !!aes_y, group = interaction(!!!syms(key_vars(data)))))
+    hist_aes <- aes(y = !!aes_y)
+    if(length(key_vars(data)) > 0) {
+      hist_aes[["group"]] <- expr(interaction(!!!syms(key_vars(data))))
+    }
+    p <- p + geom_line(hist_aes)
   }
   
   # Add facets
