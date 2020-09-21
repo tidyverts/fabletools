@@ -188,7 +188,7 @@ forecast.lst_btmup_mdl <- function(object, key_data,
   S <- matrix(0L, nrow = length(agg_data$agg), ncol = max(vec_c(!!!agg_data$agg)))
   S[length(agg_data$agg)*(vec_c(!!!agg_data$agg)-1) + rep(seq_along(agg_data$agg), lengths(agg_data$agg))] <- 1L
   
-  btm <- which(rowSums(S) == 1)
+  btm <- agg_data$leaf
   object <- object[btm]
   
   point_method <- point_forecast

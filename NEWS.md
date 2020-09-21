@@ -3,6 +3,7 @@
 ## Bug fixes
 
 * Data lines in fable `autoplot()` are now always grouped by the data's key.
+* Fixed `bottom_up()` aggregation mismatch for redundant leaf nodes (#266).
 
 # fabletools 0.2.1
 
