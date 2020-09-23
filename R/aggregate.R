@@ -304,6 +304,11 @@ Hint: If you're trying to compare aggregated values, use `is_aggregated()`.")
 }
 
 #' @export
+`!=.agg_vec` <- function(e1, e2) {
+  !(e1 == e2)
+}
+
+#' @export
 is.na.agg_vec <- function(x) {
   is.na(field(x, "x")) & !field(x, "agg")
 }
