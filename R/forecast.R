@@ -108,7 +108,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
   object <- tidyr::pivot_longer(object, !!mdls, names_to = ".model", values_to = ".mdl")
   
   # Evaluate forecasts
-  if(is_attached("package:future")){
+  if(is_attached("package:future") && is.null(new_data)){
     require_package("future.apply")
     
     object[[".fc"]] <- future.apply::future_mapply(
