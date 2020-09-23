@@ -140,7 +140,7 @@ forecast.lst_mint_mdl <- function(object, key_data,
       i = rep(seq_along(agg_data$agg), lengths(agg_data$agg)),
       j = vec_c(!!!agg_data$agg),
       x = rep(1, sum(lengths(agg_data$agg))))
-    J <- Matrix::sparseMatrix(i = S[row_btm,]@i+1, j = row_btm, x = 1L, 
+    J <- Matrix::sparseMatrix(i = S[row_btm,,drop = FALSE]@i+1, j = row_btm, x = 1L, 
                               dims = rev(dim(S)))
     U <- cbind(
       Matrix::Diagonal(diff(dim(J))),
