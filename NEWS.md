@@ -30,7 +30,8 @@
   allowing unbalanced hierarchies to be reconciled.
 * Produce unique names for unnamed features used with `features()` (#258).
 * Documentation improvements
-* Performance improvements
+* Performance improvements, including using `future.apply()` to parallelize 
+  `forecast()` when the `future` package is attached (#268).
 
 ## Breaking changes
 
