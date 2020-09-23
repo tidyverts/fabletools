@@ -184,6 +184,7 @@ parse_agg_spec <- function(expr){
 #' @export
 agg_vec <- function(x = character(), aggregated = logical(vec_size(x))){
   is_agg <- is_aggregated(x)
+  if (inherits(x, "agg_vec")) x <- field(x, "x")
   x[is_agg] <- NA
   vec_assert(aggregated, ptype = logical())
   vctrs::new_rcrd(list(x = x, agg = is_agg | aggregated), class = "agg_vec")
