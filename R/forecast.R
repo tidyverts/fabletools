@@ -111,31 +111,60 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
   if(is_attached("package:future") && is.null(new_data)){
     require_package("future.apply")
     
-    object[[".fc"]] <- future.apply::future_mapply(
-      FUN = forecast,
-      object[[".mdl"]],
-      MoreArgs = list(
-        h = h, 
-        point_forecast = point_forecast,
-        ...,
-        key_data = key_data(object)
-      ),
-      SIMPLIFY = FALSE,
-      future.globals = FALSE
-    )
-  }
-  else{
-    object[[".fc"]] <- mapply(
-      FUN = forecast,
-      object[[".mdl"]],
-      MoreArgs = list(
-        h = h, 
-        point_forecast = point_forecast,
-        ...,
-        key_data = key_data(object)
-      ),
-      SIMPLIFY = FALSE
-    )
+    if(is.null(new_data)){
+      object[[".fc"]] <- future.apply::future_mapply(
+        FUN = forecast,
+        object[[".mdl"]],
+        MoreArgs = list(
+          point_forecast = point_forecast,
+          ...,
+          key_data = key_data(object)
+        ),
+        SIMPLIFY = FALSE,
+        future.globals = FALSE
+      )
+    }else{
+      object[[".fc"]] <- future.apply::future_mapply(
+        FUN = forecast,
+        object[[".mdl"]],
+        object[["new_data"]],
+        MoreArgs = list(
+          h = h, 
+          point_forecast = point_forecast,
+          ...,
+          key_data = key_data(object)
+        ),
+        SIMPLIFY = FALSE,
+        future.globals = FALSE
+      )
+    }
+  }else{
+    if(is.null(new_data)){
+      object[[".fc"]] <- mapply(
+        FUN = forecast,
+        object[[".mdl"]],
+        MoreArgs = list(
+          h = h, 
+          point_forecast = point_forecast,
+          ...,
+          key_data = key_data(object)
+        ),
+        SIMPLIFY = FALSE
+      )
+    }else{
+      object[[".fc"]] <- mapply(
+        FUN = forecast,
+        object[[".mdl"]],
+        object[["new_data"]],
+        MoreArgs = list(
+          h = h, 
+          point_forecast = point_forecast,
+          ...,
+          key_data = key_data(object)
+        ),
+        SIMPLIFY = FALSE
+      )
+    }
   }
   
   # Combine and re-construct fable
