@@ -17,6 +17,9 @@ Authors@R:
              role = "ctb"),
       person(given = "George",
              family = "Athanasopoulos",
+             role = "ctb"),
+      person(given = "David",
+             family = "Holt",
              role = "ctb"))
 Description: Provides tools, helpers and data structures for
     developing models and time series functions for 'fable' and extension
