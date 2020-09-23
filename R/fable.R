@@ -79,6 +79,47 @@ as_fable.fbl_ts <- function(x, response, distribution, ...){
 #' @export
 as_fable.grouped_df <- as_fable.tbl_df
 
+#' @inheritParams forecast.mdl_df
+#' @rdname as-fable
+#' @export
+as_fable.forecast <- function(x, ..., point_forecast = list(.mean = mean)){
+  if(is.null(x$upper)){
+    # Without intervals, the best guess is the point forecast
+    dist <- distributional::dist_degenerate(x$mean)
+  } else {
+    if(!is.null(x$lambda)){
+      x$upper <- box_cox(x$upper, x$lambda)
+      x$lower <- box_cox(x$lower, x$lambda)
+    }
+    warn("Assuming intervals are computed from a normal distribution.")
+    level <- colnames(x$upper)[1]
+    level <- as.numeric(gsub("^[^0-9]+|%", "", level))/100
+    mid <- (x$upper[,1] - x$lower[,1])/2
+    mu <- x$lower[,1] + mid
+    sigma <- mid/(stats::qnorm((1+level)/2))
+    dist <- distributional::dist_normal(mu = as.numeric(mu), sigma = as.numeric(sigma))
+    if(!is.null(x$lambda)){
+      dist <- distributional::dist_transformed(
+        dist, 
+        transform = rlang::new_function(exprs(x = ), expr(inv_box_cox(x, !!x$lambda)), env = rlang::pkg_env("fabletools")), 
+        inverse = rlang::new_function(exprs(x = ), expr(inv_box_cox(x, !!x$lambda)), env = rlang::pkg_env("fabletools"))
+      )
+    }
+  }
+  out <- as_tsibble(x$mean)
+  dimnames(dist) <- "value"
+  out[["value"]] <- dist
+  
+  point_fc <- compute_point_forecasts(dist, point_forecast)
+  out[names(point_fc)] <- point_fc
+  
+  build_fable(
+    out,
+    response = "value",
+    distribution = "value"
+  )
+}
+
 build_fable <- function (x, response, distribution) {
   # If the response (from user input) needs converting
   response <- eval_tidy(enquo(response))
@@ -206,7 +247,7 @@ ungroup.grouped_fbl <- group_by.fbl_ts
 
 #' @export
 rbind.fbl_ts <- function(...){
-  .Deprecated("bind_rows()")
+  deprecate_warn("0.2.0", "rbind.fbl_ts()", "bind_rows()")
   fbls <- dots_list(...)
   response <- map(fbls, response_vars)
   dist <- map(fbls, distribution_var)

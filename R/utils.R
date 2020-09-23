@@ -37,25 +37,25 @@ make_future_data <- function(.data, h = NULL){
   }
   if(is.null(h)) n <- n*2
   
-  # tsibble::new_data(.data, round(n))
+  tsibble::new_data(.data, round(n))
   # Re-implemented here using a simpler/faster method
-  n <- round(n)
-  
-  idx <- index_var(.data)
-  itvl <- interval(.data)
-  tunit <- default_time_units(itvl)
-  
-  idx_max <- max(.data[[idx]])
-  if(is.factor(idx_max)){
-    abort("Cannot automatically create `new_data` from a factor/ordered time index. Please provide `new_data` directly.")
-  }
-  
-  .data <- list2(!!idx := seq(idx_max, by = tunit, length.out = n+1)[-1])
-  build_tsibble_meta(
-    new_tibble(.data, nrow = n),
-    key_data = new_tibble(list(.rows = list(seq_len(n))), nrow = 1),
-    index = idx, index2 = idx, ordered = TRUE, interval = itvl
-  )
+  # n <- round(n)
+  # 
+  # idx <- index_var(.data)
+  # itvl <- interval(.data)
+  # tunit <- default_time_units(itvl)
+  # 
+  # idx_max <- max(.data[[idx]])
+  # if(is.factor(idx_max)){
+  #   abort("Cannot automatically create `new_data` from a factor/ordered time index. Please provide `new_data` directly.")
+  # }
+  # 
+  # .data <- list2(!!idx := seq(idx_max, by = tunit, length.out = n+1)[-1])
+  # build_tsibble_meta(
+  #   new_tibble(.data, nrow = n),
+  #   key_data = new_tibble(list(.rows = list(seq_len(n))), nrow = 1),
+  #   index = idx, index2 = idx, ordered = TRUE, interval = itvl
+  # )
 }
 
 bind_new_data <- function(object, new_data){

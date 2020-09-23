@@ -7,6 +7,7 @@
 \alias{as_fable.tbl_df}
 \alias{as_fable.fbl_ts}
 \alias{as_fable.grouped_df}
+\alias{as_fable.forecast}
 \title{Coerce to a fable object}
 \usage{
 as_fable(x, ...)
@@ -20,6 +21,8 @@ as_fable(x, ...)
 \method{as_fable}{fbl_ts}(x, response, distribution, ...)
 
 \method{as_fable}{grouped_df}(x, response, distribution, ...)
+
+\method{as_fable}{forecast}(x, ..., point_forecast = list(.mean = mean))
 }
 \arguments{
 \item{x}{Object to be coerced to a fable (\code{fbl_ts})}
@@ -30,6 +33,11 @@ as_fable(x, ...)
 
 \item{distribution}{The name of the distribution column (can be provided
 using a bare expression).}
+
+\item{point_forecast}{The point forecast measure(s) which should be returned
+in the resulting fable. Specified as a named list of functions which accept
+a distribution and return a vector. To compute forecast medians, you can use
+\code{list(.median = median)}.}
 }
 \description{
 Coerce to a fable object

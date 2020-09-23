@@ -14,22 +14,29 @@
 #' # Forecasting with an ETS(M,Ad,A) model to Australian beer production
 #' aus_production %>%
 #'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) %>% 
-#'   augment(type = "response")
+#'   augment()
 #' }
 #' 
 #' @rdname augment
 #' @export
 augment.mdl_df <- function(x, ...){
-  x <- gather(x, ".model", ".fit", !!!syms(mable_vars(x)))
+  mbl_vars <- mable_vars(x)
   kv <- key_vars(x)
-  x <- transmute(as_tibble(x), !!!syms(kv), !!sym(".model"),
-                 aug = map(!!sym(".fit"), augment, ...))
-  unnest_tsbl(x, "aug", parent_key = kv)
+  x <- mutate(as_tibble(x), 
+              dplyr::across(all_of(mbl_vars), function(x) lapply(x, augment, ...)))
+  x <- pivot_longer(x, mbl_vars, names_to = ".model", values_to = ".aug")
+  unnest_tsbl(x, ".aug", parent_key = c(kv, ".model"))
 }
 
 #' @rdname augment
+#' @param type Deprecated.
 #' @export
-augment.mdl_ts <- function(x, ...){
+augment.mdl_ts <- function(x, type = NULL, ...){
+  if (!is.null(type)) { 
+    lifecycle::deprecate_warn("0.2.1", "fabletools::augment(type = )", 
+                              details = "The type argument is now deprecated for changes to broom v0.7.0.
+Response residuals are now always found in `.resid` and innovation residuals are now found in `.innov`.")
+  }
   tryCatch(augment(x[["fit"]], ...),
            error = function(e){
              idx <- index_var(x$data)
@@ -43,7 +50,12 @@ augment.mdl_ts <- function(x, ...){
                    by = c(".response", idx)
                  ) %>% 
                  left_join(
-                   gather(residuals(x, ...), ".response", ".resid",
+                   gather(residuals(x, type = "response", ...), ".response", ".resid",
+                          !!!resp, factor_key = TRUE),
+                   by = c(".response", idx)
+                 ) %>% 
+                 left_join(
+                   gather(residuals(x, type = "innovation", ...), ".response", ".innov",
                           !!!resp, factor_key = TRUE),
                    by = c(".response", idx)
                  )
@@ -51,7 +63,8 @@ augment.mdl_ts <- function(x, ...){
                mutate(
                  set_names(response(x), c(idx, as_string(resp[[1]]))),
                  .fitted = fitted(x, ...)[[".fitted"]],
-                 .resid = residuals(x, ...)[[".resid"]]
+                 .resid = residuals(x, type = "response", ...)[[".resid"]],
+                 .innov = residuals(x, type = "innovation", ...)[[".resid"]],
                )
              }
              
@@ -80,11 +93,11 @@ augment.mdl_ts <- function(x, ...){
 #' @rdname glance
 #' @export
 glance.mdl_df <- function(x, ...){
-  x <- gather(x, ".model", ".fit", !!!syms(mable_vars(x)))
-  keys <- key(x)
-  x <- transmute(as_tibble(x),
-                 !!!keys, !!sym(".model"), glanced = map(!!sym(".fit"), glance))
-  unnest_tbl(x, "glanced")
+  mbl_vars <- mable_vars(x)
+  x <- mutate(as_tibble(x), 
+              dplyr::across(all_of(mbl_vars), function(x) lapply(x, glance, ...)))
+  x <- pivot_longer(x, mbl_vars, names_to = ".model", values_to = ".glanced")
+  unnest(x, ".glanced")
 }
 
 #' @rdname glance
@@ -114,11 +127,11 @@ glance.mdl_ts <- function(x, ...){
 #' @rdname tidy
 #' @export
 tidy.mdl_df <- function(x, ...){
-  x <- gather(x, ".model", ".fit", !!!syms(mable_vars(x)))
-  keys <- key(x)
-  x <- transmute(as_tibble(x),
-                 !!!keys, !!sym(".model"), tidied = map(!!sym(".fit"), tidy))
-  unnest_tbl(x, "tidied")
+  mbl_vars <- mable_vars(x)
+  x <- mutate(as_tibble(x), 
+         dplyr::across(all_of(mbl_vars), function(x) lapply(x, tidy, ...)))
+  x <- pivot_longer(x, mbl_vars, names_to = ".model", values_to = ".tidied")
+  unnest(x, ".tidied")
 }
 
 #' @rdname tidy

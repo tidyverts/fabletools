@@ -13,14 +13,15 @@ response <- function(object, ...){
 
 #' @export
 response.mdl_df <- function(object, ...){
-  out <- gather(object, ".model", ".fit", !!!syms(mable_vars(object)))
-  kv <- key_vars(out)
-  out <- transmute(as_tibble(out),
+  object <- tidyr::pivot_longer(object, all_of(mable_vars(object)),
+                             names_to = ".model", values_to = ".fit")
+  kv <- c(key_vars(object), ".model")
+  object <- transmute(as_tibble(object),
                    !!!syms(kv),
                    !!sym(".model"),
                    response = map(!!sym(".fit"), response)
   )
-  unnest_tsbl(out, "response", parent_key = kv)
+  unnest_tsbl(object, "response", parent_key = kv)
 }
 
 #' @export

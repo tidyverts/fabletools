@@ -25,24 +25,33 @@ null_model <- function(formula, ...){
 is_null_model <- function(x){
   if(is_model(x)) return(is_null_model(x[["fit"]]))
   if(inherits(x, "lst_mdl")) return(map_lgl(x, is_null_model))
-  inherits(x, "null_mdl")
+  is.null(x) || inherits(x, "null_mdl")
 }
 
 #' @export
 forecast.null_mdl <- function(object, new_data, ...){
   h <- NROW(new_data)
-  construct_fc(rep(NA_real_, h), rep(0, h), dist_unknown(h))
+  vec_cast(rep(NA_real_, h), distributional::new_dist())
 }
+
+#' @export
+forecast.NULL <- forecast.null_mdl
 
 #' @export
 generate.null_mdl <- function(x, new_data, ...){
   mutate(new_data, .sim = NA_real_)
 }
+#' @export
+generate.NULL <- generate.null_mdl
 
 #' @export
 stream.null_mdl <- function(object, new_data, ...){
   object$n <- object$n + NROW(new_data)
   object
+}
+#' @export
+stream.NULL <- function(object, new_data, ...) {
+  NULL
 }
 
 #' @export
@@ -50,17 +59,29 @@ refit.null_mdl <- function(object, new_data, ...){
   object$n <- NROW(new_data)
   object
 }
+#' @export
+refit.NULL <- function(object, new_data, ...) {
+  NULL
+}
 
 #' @export
 residuals.null_mdl <- function(object, ...){
   matrix(NA_real_, nrow = object$n, ncol = length(object$vars), 
          dimnames = list(NULL, object$vars))
 }
+#' @export
+residuals.NULL <- function(object, new_data, ...) {
+  NA_real_
+}
 
 #' @export
 fitted.null_mdl <- function(object, ...){
   matrix(NA_real_, nrow = object$n, ncol = length(object$vars), 
          dimnames = list(NULL, object$vars))
+}
+#' @export
+fitted.NULL <- function(object, new_data, ...) {
+  NA_real_
 }
 
 #' @export
@@ -77,8 +98,12 @@ tidy.null_mdl <- function(x, ...){
 report.null_mdl <- function(object, ...){
   cat("NULL model")
 }
+#' @export
+report.NULL <- report.null_mdl
 
 #' @export
 model_sum.null_mdl <- function(x){
   "NULL model"
 }
+#' @export
+report.NULL <- report.null_mdl

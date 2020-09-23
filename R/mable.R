@@ -45,7 +45,7 @@ as_mable.data.frame <- function(x, key = NULL, model = NULL, ...){
   build_mable(x, key = !!enquo(key), model = !!enquo(model))
 }
 
-build_mable <- function (x, key = NULL, key_data = NULL, model) {
+build_mable <- function (x, key = NULL, key_data = NULL, model = NULL) {
   model <- names(tidyselect::eval_select(enquo(model), data = x))
   
   if(length(unique(map(x[model], function(mdl) mdl[[1]]$response))) > 1){
@@ -119,6 +119,22 @@ gather.mdl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE
   mdls <- names(which(map_lgl(tbl, inherits, "lst_mdl")))
   kv <- c(key_vars(data), key)
   build_mable(tbl, key = !!kv, model = !!mdls)
+}
+
+# Adapted from tsibble:::pivot_longer.tbl_ts
+#' @importFrom tidyr pivot_longer
+#' @export
+pivot_longer.mdl_df <- function (data, ..., names_to = "name") {
+  if (!has_length(names_to)) {
+    abort("`pivot_longer(<mable>)` can't accept zero-length `names_to`.")
+  }
+  if (".value" %in% names_to) {
+    abort("`pivot_longer(<mable>)` can't accept the special \".value\" in `names_to`.")
+  }
+  new_key <- c(key_vars(data), names_to)
+  tbl <- tidyr::pivot_longer(as_tibble(data), ..., names_to = names_to)
+  build_mable(tbl, key = !!new_key,
+              model = !!which(vapply(tbl, inherits, logical(1L), "lst_mdl")))
 }
 
 #' @export

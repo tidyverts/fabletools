@@ -11,7 +11,7 @@
 #' A specific forecast interval can be extracted from the distribution using the
 #' [`hilo()`] function, and multiple intervals can be obtained using [`report()`].
 #' These intervals are stored in a single column using the `hilo` class, to
-#' extract the numerical upper and lower bounds you can use [`tidyr::unnest()`].
+#' extract the numerical upper and lower bounds you can use [`unpack_hilo()`].
 #' 
 #' @param object The time series model used to produce the forecasts
 #' 
@@ -36,10 +36,11 @@ forecast <- function(object, ...){
 #' A fable containing the following columns:
 #' - `.model`: The name of the model used to obtain the forecast. Taken from
 #'   the column names of models in the provided mable.
-#' - The point forecast, which by default is the mean. The name of this column
-#'   will be the same as the dependent variable in the model(s).
-#' - `.distribution`. A column of objects of class `fcdist`, representing the
-#'   statistical distribution of the forecast in the given time period.
+#' - The forecast distribution. The name of this column will be the same as the 
+#'   dependent variable in the model(s). If multiple dependent variables exist,
+#'   it will be named `.distribution`.
+#' - Point forecasts computed from the distribution using the functions in the
+#'   `point_forecast` argument.
 #' - All columns in `new_data`, excluding those whose names conflict with the
 #'   above.
 #' @examples 
@@ -136,7 +137,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
     h <- NULL
   }
   if(!is.null(bias_adjust)){
-    warn("The `bias_adjust` argument for forecast() has been deprecated. Please specify the desired point forecasts using `point_forecast`.\nBias adjusted forecasts are forecast means (`point_forecast = 'mean'`), non-adjusted forecasts are medians (`point_forecast = 'median'`)")
+    deprecate_warn("0.2.0", "forecast(bias_adjust = )", "forecast(point_forecast = )")
     point_forecast <- if(bias_adjust) list(.mean = mean) else list(.median = stats::median)
   }
   if(is.null(new_data)){
@@ -146,7 +147,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
   # Useful variables
   idx <- index_var(new_data)
   mv <- measured_vars(new_data)
-  resp_vars <- map_chr(object$response, expr_name)
+  resp_vars <- vapply(object$response, expr_name, character(1L), USE.NAMES = FALSE)
   dist_col <- if(length(resp_vars) > 1) ".distribution" else resp_vars
   
   # If there's nothing to forecast, return an empty fable.
@@ -173,7 +174,7 @@ Does your model require extra variables to produce forecasts?", e$message))
 
   # Compute forecasts
   fc <- forecast(object$fit, new_data, specials = specials, ...)
-  dimnames(fc) <- vapply(object$response, expr_name, character(1L), USE.NAMES = FALSE)
+  dimnames(fc) <- resp_vars
   
   # Back-transform forecast distributions
   bt <- map(object$transformation, function(x){
@@ -221,8 +222,10 @@ Does your model require extra variables to produce forecasts?", e$message))
 
 #' Construct a new set of forecasts
 #' 
-#' Will be deprecated in the future, forecast objects should be produced with
-#' either `fable` or `as_fable` functions.
+#' \lifecycle{deprecated}
+#' 
+#' This function is deprecated. `forecast()` methods for a model should return
+#' a vector of distributions using the distributional package.
 #' 
 #' Backtransformations are automatically handled, and so no transformations should be specified here.
 #' 
@@ -232,20 +235,8 @@ Does your model require extra variables to produce forecasts?", e$message))
 #' 
 #' @export
 construct_fc <- function(point, sd, dist){
-  stopifnot(inherits(dist, "fcdist"))
-  
-  dist_env <- dist[[1]]$.env
-  if(identical(dist_env, env_dist_normal)){
-    distributional::dist_normal(map_dbl(dist, `[[`, "mean"), map_dbl(dist, `[[`, "sd"))
-  } else if(identical(dist_env, env_dist_sim)){
-    distributional::dist_sample(flatten(map(dist, `[[`, 1)))
-  } else if(identical(dist_env, env_dist_unknown)){
-    distributional::dist_degenerate(point)
-  } else if(identical(dist_env, env_dist_mv_normal)){
-    distributional::dist_multivariate_normal(map(dist, `[[`, "mean"), map(dist, `[[`, "sd"))
-  } else {
-    abort("Unknown forecast distribution type to convert.")
-  }
+  lifecycle::deprecate_stop("0.3.0", what = "fabletools::construct_fc()",
+                            details = "The forecast function should now return a vector of distributions from the 'distributional' package.")
 }
 
 compute_point_forecasts <- function(distribution, measures){

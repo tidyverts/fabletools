@@ -32,13 +32,14 @@ aggregate_key <- function(.data, .spec, ...){
 aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){#, dev = FALSE){
   .spec <- enexpr(.spec)
   if(is.null(.spec)){
+    kv <- syms(key_vars(.data))
     message(
       sprintf("Key structural specification not found, defaulting to `.spec = %s`",
-              paste(key_vars(.data), collapse = "*"))
+              paste(kv, collapse = "*"))
     )
-    .spec <- parse_expr(paste(key_vars(.data), collapse = "*"))
+    .spec <- reduce(kv, call2, .fn = "*")
   }
-  
+
   key_comb <- parse_agg_spec(.spec)
   
   idx <- index2_var(.data)
@@ -88,7 +89,7 @@ parse_agg_spec <- function(expr){
   # Key combinations
   tm <- stats::terms(new_formula(lhs = NULL, rhs = expr), env = empty_env())
   key_comb <- attr(tm, "factors")
-  key_vars <- rownames(key_comb)
+  key_vars <- sub("^`(.*)`$", "\\1", rownames(key_comb))
   key_comb <- map(split(key_comb, col(key_comb)), function(x) key_vars[x!=0])
   if(attr(tm, "intercept")){
     key_comb <- c(list(chr()), key_comb)
@@ -162,9 +163,30 @@ parse_agg_spec <- function(expr){
 #     mutate(!!!set_names(map(kv, function(x) expr(agg_vec(!!sym(x)))), kv))
 # }
 
+#' Create an aggregation vector
+#' 
+#' \lifecycle{maturing}
+#' 
+#' An aggregation vector extends usual vectors by adding <aggregated> values.
+#' These vectors are typically produced via the [`aggregate_key()`] function,
+#' however it can be useful to create them manually to produce more complicated
+#' hierarchies (such as unbalanced hierarchies).
+#' 
+#' @param x The vector of values.
+#' @param aggregated A logical vector to identify which values are <aggregated>.
+#' 
+#' @example 
+#' agg_vec(
+#'   x = c(NA, "A", "B"),
+#'   aggregated = c(TRUE, FALSE, FALSE)
+#' )
+#' 
+#' @export
 agg_vec <- function(x = character(), aggregated = logical(vec_size(x))){
+  is_agg <- is_aggregated(x)
+  x[is_agg] <- NA
   vec_assert(aggregated, ptype = logical())
-  vctrs::new_rcrd(list(x = x, agg = aggregated), class = "agg_vec")
+  vctrs::new_rcrd(list(x = x, agg = is_agg | aggregated), class = "agg_vec")
 }
 
 #' @export
@@ -256,6 +278,34 @@ vec_cast.character.agg_vec <- function(x, to, ...) trimws(format(x))
 #' @export
 vec_proxy_compare.agg_vec <- function(x, ...) {
   vec_proxy(x)[c(2,1)]
+}
+
+#' @export
+`==.agg_vec` <- function(e1, e2){
+  e1_agg <- inherits(e1, "agg_vec")
+  e2_agg <- inherits(e2, "agg_vec")
+  
+  if(!e1_agg || !e2_agg){
+    x <- list(e1,e2)[[which(!c(e1_agg, e2_agg))]]
+    is_agg <- x == "<aggregated>"
+    if(any(is_agg)){
+      warn("<aggregated> character values have been converted to aggregated values.
+Hint: If you're trying to compare aggregated values, use `is_aggregated()`.")
+    }
+    x <- agg_vec(ifelse(is_agg, NA, x), aggregated = is_agg)
+    if(!e1_agg) e1 <- x else e2 <- x
+  }
+  
+  x <- vec_recycle_common(e1, e2)
+  e1 <- vec_proxy(x[[1]])
+  e2 <- vec_proxy(x[[2]])
+  out <- logical(vec_size(e1))
+  (e1$agg & e2$agg) | vec_equal(e1$x, e2$x, na_equal = TRUE)
+}
+
+#' @export
+is.na.agg_vec <- function(x) {
+  is.na(field(x, "x")) & !field(x, "agg")
 }
 
 #' Is the element an aggregation of smaller data

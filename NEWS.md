@@ -1,13 +1,62 @@
 # fabletools (development version)
 
+## Bug fixes
+
+* Data lines in fable `autoplot()` are now always grouped by the data's key.
+* Fixed `bottom_up()` aggregation mismatch for redundant leaf nodes (#266).
+
+# fabletools 0.2.1
+
+## New features
+
+* Added `bottom_up()` forecast reconciliation method.
+* Added the `skill_score()` accuracy measure modifier.
+* Added `agg_vec()` for manually producing aggregation vectors.
+
 ## Improvements
+
+* Fixed some inconsistencies in key ordering of model accessors (such as 
+  `augment()`, `tidy()` and `glance()`) with model methods (such as `forecast()`
+  and `generate()`).
+* Improved equality comparison of `agg_vec` classes, aggregated values will now
+  always match regardless of the value used.
+* Using `summarise()` with a fable will now retain the fable class if the 
+  distribution still exists under the same variable name.
+* Added `as_fable.forecast()` to convert forecast objects from the forecast
+  package to work with fable.
+* Improved `CRPS()` performance when using sampling distributions (#240).
+* Reconciliation now works with hierarchies containing aggregate leaf nodes,
+  allowing unbalanced hierarchies to be reconciled.
+* Produce unique names for unnamed features used with `features()` (#258).
 * Documentation improvements
 * Performance improvements
+
+## Breaking changes
+
+* The residuals obtained from the `augment()` function are no longer controlled
+  by the `type` argument. Response residuals (`y - yhat`) are now always found
+  in the `.resid` column, and innovation residuals (the model's error) are now
+  found in the `.innov` column. Response residuals will differ from innovation
+  residuals when transformations are used, and if the model has non-additive
+  residuals.
+* `dist_*()` functions are now removed, and are completely replaced by the 
+  distributional package. These are removed to prevent masking issues when
+  loading packages.
+* `fortify(<fable>)` will now return a tibble with the same structure as the 
+  fable, which is more useful for plotting forecast distributions with the 
+  ggdist package. It can no longer be used to extract intervals from the 
+  forecasts, this can be done using `hilo()`, and numerical values from a 
+  `<hilo>` can be extracted with `unpack_hilo()` or `interval$lower`.
 
 ## Bug fixes
 
 * Fixed issue with aggregated date vectors (#230).
 * Fixed display of models in `View()` panel.
+* Fixed issue with combination models not inheriting vctrs functionality (#237).
+* `aggregate_key()` can now be used with non-syntactic variable names.
+* Added tsibble cast methods for fable and dable objects, fixing issues with
+  tidyverse functionality between datasets of different column orders (#247).
+* Fixed `refit()` dropping reconciliation attributes (#251).
 
 # fabletools 0.2.0
 

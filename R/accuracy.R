@@ -200,9 +200,10 @@ winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
 }
 
 #' @rdname interval_accuracy_measures
+#' @importFrom stats quantile
 #' @export
 pinball_loss <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
-  q <- quantile(.dist, level/100)
+  q <- stats::quantile(.dist, level/100)
   loss <- ifelse(.actual>=q, level/100 * (.actual-q), (1-level/100) * (q-.actual))
   mean(loss, na.rm = na.rm)
 }
@@ -223,7 +224,7 @@ scaled_pinball_loss <- function(.dist, .actual, .train, level = 95, na.rm = TRUE
   }
   scale <- mean(abs(.train), na.rm = na.rm)
   
-  q <- quantile(.dist, level/100)
+  q <- stats::quantile(.dist, level/100)
   loss <- ifelse(.actual>=q, level/100 * (.actual-q), (1-level/100) * (q-.actual))
   mean(loss/scale, na.rm = na.rm)
 }
@@ -254,6 +255,7 @@ percentile_score <- function(.dist, .actual, na.rm = TRUE, ...){
 #' @export
 CRPS <- function(.dist, .actual, n_quantiles = 1000, na.rm = TRUE, ...){
   is_normal <- map_lgl(.dist, inherits, "dist_normal")
+  is_sample <- map_lgl(.dist, inherits, "dist_sample")
   z <- rep(NA_real_, length(.dist))
   
   if(any(is_normal)){
@@ -263,17 +265,26 @@ CRPS <- function(.dist, .actual, n_quantiles = 1000, na.rm = TRUE, ...){
     zn <- sd*(zn*(2*stats::pnorm(zn)-1)+2*stats::dnorm(zn)-1/sqrt(pi))
     z[is_normal] <- zn
   }
-  
-  if(any(!is_normal)){
+  if(any(is_sample)){
+    z[is_sample] <- map2_dbl(
+      .dist[is_sample], .actual[is_sample], 
+      function(d, y){
+        x <- sort(d$x)
+        m <- length(x)
+        (2/m) * mean((x-y)*(m*(y<x) - seq_len(m) + 0.5))
+      }
+    )
+  }
+  is_default <- is.na(z)
+  if(any(is_default)){
     probs <- seq(0, 1, length.out = n_quantiles + 2)[seq_len(n_quantiles) + 1]
-    percentiles <- map(probs, quantile, x = .dist[!is_normal])
+    percentiles <- map(probs, quantile, x = .dist[is_default])
     if(!is.numeric(percentiles[[1]])) abort("Percentile scores are not supported for multivariate distributions.")
-    za <- map2_dbl(percentiles, probs, function(percentile, prob){
-      L <- ifelse(.actual[!is_normal] < percentile, (1-prob), prob)*abs(percentile-.actual[!is_normal])
-      mean(L, na.rm = na.rm)
-    })
+    za <- transpose_dbl(map2(percentiles, probs, function(percentile, prob){
+      ifelse(.actual[is_default] < percentile, (1-prob), prob)*abs(percentile-.actual[is_default])
+    }))
     
-    z[!is_normal] <- za*2
+    z[is_default] <- vapply(za, mean, numeric(1L), na.rm = na.rm)*2
   }
   
   mean(z, na.rm = na.rm)
@@ -286,6 +297,66 @@ CRPS <- function(.dist, .actual, n_quantiles = 1000, na.rm = TRUE, ...){
 #' 
 #' @export
 distribution_accuracy_measures <- list(percentile = percentile_score, CRPS = CRPS)
+
+
+#' Forecast skill score measure
+#' 
+#' This function converts other error metrics such as `MSE` into a skill score.
+#' The reference or benchmark forecasting method is the Naive method for 
+#' non-seasonal data, and the seasonal naive method for seasonal data.
+#' 
+#' @param measure The accuracy measure to use in computing the skill score.
+#' 
+#' @examples 
+#' 
+#' skill_score(MSE)
+#' 
+#' if (requireNamespace("fable", quietly = TRUE)) {
+#' library(fable)
+#' library(tsibble)
+#' 
+#' lung_deaths <- as_tsibble(cbind(mdeaths, fdeaths))
+#' lung_deaths %>% 
+#'   dplyr::filter(index < yearmonth("1979 Jan")) %>%
+#'   model(
+#'     ets = ETS(value ~ error("M") + trend("A") + season("A")),
+#'     lm = TSLM(value ~ trend() + season())
+#'   ) %>%
+#'   forecast(h = "1 year") %>%
+#'   accuracy(lung_deaths, measures = list(skill = skill_score(MSE)))
+#' }
+#' 
+#' @export
+skill_score <- function(measure) {
+  function(...) {
+    # Compute accuracy measure for forecasts
+    score <- measure(...)
+    
+    # Compute arguments of benchmark method using .train
+    bench <- list(...)
+    lag <- bench$.period
+    n <- length(bench$.train)
+    y <- bench$.train
+    
+    ## Compute point forecast from benchmark
+    bench$.fc <- rep_len(
+      y[c(rep(NA, max(0, lag - n)), seq_len(min(n, lag)) + n - min(n, lag))],
+      length(bench$.fc)
+    )
+    bench$.resid <- bench$.actual - bench$.fc
+    
+    # Compute forecast distribution from benchmark
+    e <- y - c(rep(NA, min(lag, n)), y[seq_len(length(y) - lag)])
+    mse <- mean(e^2, na.rm = TRUE)
+    h <- length(bench$.actual)
+    fullperiods <- (h - 1) / lag + 1
+    steps <- rep(seq_len(fullperiods), rep(lag, fullperiods))[seq_len(h)]
+    bench$.dist <- distributional::dist_normal(bench$.fc, sqrt(mse * steps))
+    ref_score <- do.call(measure, bench)
+    
+    1 - score / ref_score
+  }
+}
 
 #' Evaluate accuracy of a forecast or model
 #' 
@@ -343,6 +414,10 @@ accuracy <- function(object, ...){
 #' 
 #' @export
 accuracy.mdl_df <- function(object, measures = point_accuracy_measures, ...){
+  if(is_tsibble(measures)){
+    abort("The `measures` argument must contain a list of accuracy measures.
+Hint: A tsibble of future values is only required when computing accuracy of a fable. To compute forecast accuracy, you'll need to compute the forecasts first.")
+  }
   as_tibble(object) %>% 
     tidyr::pivot_longer(mable_vars(object), names_to = ".model", values_to = "fit") %>% 
     mutate(fit = map(!!sym("fit"), accuracy, measures = measures, ...)) %>% 
@@ -354,7 +429,7 @@ accuracy.mdl_ts <- function(object, measures = point_accuracy_measures, ...){
   dots <- dots_list(...)
   resp <- if(length(object$response) > 1) sym("value") else object$response[[1]]
   
-  aug <- as_tibble(augment(object, type = "response"))
+  aug <- as_tibble(augment(object))
   
   # Compute inputs for each response variable
   if(length(object$response) > 1){
@@ -432,7 +507,7 @@ accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..
   by <- union(index_var(object), by)
   
   
-  if(!(".model" %in% by)){
+  if(!(".model" %in% by) & ".model" %in% names(object)){
     warn('Accuracy measures should be computed separately for each model, have you forgotten to add ".model" to your `by` argument?')
   }
   

@@ -28,6 +28,6 @@ You can install the **development** version from
 [GitHub](https://github.com/tidyverts/fabletools):
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("tidyverts/fabletools")
+# install.packages("remotes")
+remotes::install_github("tidyverts/fabletools")
 ```

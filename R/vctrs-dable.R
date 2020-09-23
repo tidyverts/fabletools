@@ -102,3 +102,12 @@ vec_cast.tbl_df.dcmp_ts <- function(x, to, ...) {
 vec_cast.data.frame.dcmp_ts <- function(x, to, ...) {
   df_cast(x, to, ...)
 }
+
+#' @export
+vec_cast.tbl_ts.dcmp_ts <- function(x, to, ...) {
+  tbl <- tib_cast(x, to, ...)
+  build_tsibble(
+    tbl, key = key_vars(to), index = index_var(to), index2 = index2_var(to),
+    ordered = TRUE, validate = TRUE, .drop = key_drop_default(to)
+  )
+}

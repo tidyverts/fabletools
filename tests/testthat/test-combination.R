@@ -7,13 +7,13 @@ test_that("Combination modelling", {
     transmute(combination = (ets + ets)/2)
   
   expect_equal(
-    augment(mbl_cmbn, type = "response")[,-1],
-    augment(mbl, type = "response")[,-1]
+    select(augment(mbl_cmbn), -.model, -.innov),
+    select(augment(mbl), -.model, -.innov)
   )
   
   expect_equivalent(
-    unclass(ggplot2::fortify(mbl_cmbn %>% forecast(h = 12))[,-1]),
-    unclass(ggplot2::fortify(fbl)[,-1])
+    forecast(mbl_cmbn, h = 12)[,-1],
+    fbl[,-1]
   )
   
   mbl_cmbn <- us_deaths_tr %>% 
@@ -25,8 +25,8 @@ test_that("Combination modelling", {
   fbl_cmbn <- forecast(mbl_cmbn)
   
   expect_equivalent(
-    unclass(ggplot2::fortify(fbl_cmbn)[1:48, -1]),
-    unclass(ggplot2::fortify(fbl_cmbn)[49:96, -1])
+    fbl_cmbn[1:24, -1],
+    fbl_cmbn[25:48, -1]
   )
   
   mbl_cmbn <- us_deaths_tr %>% 
