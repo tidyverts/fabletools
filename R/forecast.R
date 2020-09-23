@@ -108,7 +108,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
   object <- tidyr::pivot_longer(object, !!mdls, names_to = ".model", values_to = ".mdl")
 
   # Evaluate forecasts
-  if(is_attached("package:future") && is.null(new_data)){
+  if(is_attached("package:future")){
     require_package("future.apply")
     
     if(is.null(new_data)){
@@ -116,7 +116,8 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
         FUN = forecast,
         object[[".mdl"]],
         MoreArgs = list(
-          h = h, point_forecast = point_forecast, ..., key_data = key_data(object)),
+          h = h, point_forecast = point_forecast, ..., 
+          key_data = key_data(object)),
         SIMPLIFY = FALSE,
         future.globals = FALSE
       )
@@ -126,7 +127,8 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
         object[[".mdl"]],
         object[["new_data"]],
         MoreArgs = list(
-          point_forecast = point_forecast, ..., key_data = key_data(object)),
+          point_forecast = point_forecast, ..., 
+          key_data = key_data(object)),
         SIMPLIFY = FALSE,
         future.globals = FALSE
       )
@@ -137,7 +139,8 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
         FUN = forecast,
         object[[".mdl"]],
         MoreArgs = list(
-          h = h, point_forecast = point_forecast, ..., key_data = key_data(object)),
+          h = h, point_forecast = point_forecast, ..., 
+          key_data = key_data(object)),
         SIMPLIFY = FALSE
       )
     }else{
@@ -146,7 +149,8 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
         object[[".mdl"]],
         object[["new_data"]],
         MoreArgs = list(
-          point_forecast = point_forecast, ..., key_data = key_data(object)),
+          point_forecast = point_forecast, ..., 
+          key_data = key_data(object)),
         SIMPLIFY = FALSE
       )
     }
