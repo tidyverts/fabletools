@@ -105,9 +105,8 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
     object <- bind_new_data(object, new_data)
     
   }
-  
   object <- tidyr::pivot_longer(object, !!mdls, names_to = ".model", values_to = ".mdl")
-  
+
   # Evaluate forecasts
   if(is_attached("package:future") && is.null(new_data)){
     require_package("future.apply")
@@ -117,11 +116,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
         FUN = forecast,
         object[[".mdl"]],
         MoreArgs = list(
-          h = h,
-          point_forecast = point_forecast,
-          ...,
-          key_data = key_data(object)
-        ),
+          h = h, point_forecast = point_forecast, ..., key_data = key_data(object)),
         SIMPLIFY = FALSE,
         future.globals = FALSE
       )
@@ -131,10 +126,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
         object[[".mdl"]],
         object[["new_data"]],
         MoreArgs = list(
-          point_forecast = point_forecast,
-          # ...,
-          key_data = key_data(object)
-        ),
+          point_forecast = point_forecast, ..., key_data = key_data(object)),
         SIMPLIFY = FALSE,
         future.globals = FALSE
       )
@@ -145,11 +137,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
         FUN = forecast,
         object[[".mdl"]],
         MoreArgs = list(
-          h = h, 
-          point_forecast = point_forecast,
-          ...,
-          key_data = key_data(object)
-        ),
+          h = h, point_forecast = point_forecast, ..., key_data = key_data(object)),
         SIMPLIFY = FALSE
       )
     }else{
@@ -158,10 +146,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
         object[[".mdl"]],
         object[["new_data"]],
         MoreArgs = list(
-          point_forecast = point_forecast,
-          ...,
-          key_data = key_data(object)
-        ),
+          point_forecast = point_forecast, ..., key_data = key_data(object)),
         SIMPLIFY = FALSE
       )
     }
