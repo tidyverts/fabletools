@@ -103,6 +103,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
   }
   if(!is.null(new_data)){
     object <- bind_new_data(object, new_data)
+    
   }
   
   object <- tidyr::pivot_longer(object, !!mdls, names_to = ".model", values_to = ".mdl")
@@ -116,6 +117,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
         FUN = forecast,
         object[[".mdl"]],
         MoreArgs = list(
+          h = h,
           point_forecast = point_forecast,
           ...,
           key_data = key_data(object)
@@ -129,9 +131,8 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
         object[[".mdl"]],
         object[["new_data"]],
         MoreArgs = list(
-          h = h, 
           point_forecast = point_forecast,
-          ...,
+          # ...,
           key_data = key_data(object)
         ),
         SIMPLIFY = FALSE,
@@ -157,7 +158,6 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
         object[[".mdl"]],
         object[["new_data"]],
         MoreArgs = list(
-          h = h, 
           point_forecast = point_forecast,
           ...,
           key_data = key_data(object)
