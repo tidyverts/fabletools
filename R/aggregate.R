@@ -252,7 +252,7 @@ vec_ptype2.character.agg_vec <- function(x, y, ...) agg_vec()
 #' @rdname aggregation-vctrs
 #' @export
 vec_ptype_abbr.agg_vec <- function(x, ...) {
-  vctrs::vec_ptype_abbr(vec_data(x)[["x"]], ...)
+  paste0(vctrs::vec_ptype_abbr(vec_data(x)[["x"]], ...), "*")
 }
 
 #' @rdname aggregation-vctrs
