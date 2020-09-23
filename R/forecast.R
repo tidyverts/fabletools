@@ -105,38 +105,13 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
     object <- bind_new_data(object, new_data)
   }
   
-  object <- tidyr::pivot_longer(object, !!mdls, names_to = ".model", values_to = ".mdl")
-  
   # Evaluate forecasts
-  if(is_attached("package:future")){
-    require_package("future.apply")
-    
-    object[[".fc"]] <- future.apply::future_mapply(
-      FUN = forecast,
-      object[[".mdl"]],
-      MoreArgs = list(
-        h = h, 
-        point_forecast = point_forecast,
-        ...,
-        key_data = key_data(object)
-      ),
-      SIMPLIFY = FALSE,
-      future.globals = FALSE
-    )
-  }
-  else{
-    object[[".fc"]] <- mapply(
-      FUN = forecast,
-      object[[".mdl"]],
-      MoreArgs = list(
-        h = h, 
-        point_forecast = point_forecast,
-        ...,
-        key_data = key_data(object)
-      ),
-      SIMPLIFY = FALSE
-    )
-  }
+  object <- dplyr::mutate_at(as_tibble(object), vars(!!!mdls),
+                             forecast, object[["new_data"]],
+                             h = h, point_forecast = point_forecast, ...,
+                             key_data = key_data(object))
+  
+  object <- tidyr::pivot_longer(object, !!mdls, names_to = ".model", values_to = ".fc") 
   
   # Combine and re-construct fable
   fbl_attr <- attributes(object$.fc[[1]])
