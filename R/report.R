@@ -17,7 +17,7 @@ report.mdl_df <- function(object, ...){
     return(glance(object))
   }
   else{
-    report(object[[mable_vars(object)[[1]]]][[1]])
+    report(object[[mable_vars(object)[[1]]]][[1]], ...)
   }
   invisible(object)
 }
@@ -30,7 +30,7 @@ report.mdl_ts <- function(object, ...){
     cat(paste("Transformation:", expr_name(body(object$transformation[[1]])), "\n"))
   }
   tryCatch(
-    report(object[["fit"]]),
+    report(object[["fit"]], ...),
     error = function(e){
       cat("\nA model specific report is not available for this model class.")
     }
