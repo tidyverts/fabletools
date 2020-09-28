@@ -115,7 +115,6 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
       object[[".fc"]] <- future.apply::future_mapply(
         FUN = forecast,
         object = object[[".mdl"]],
-        key_data = key_data(object),
         MoreArgs = list(h = h, point_forecast = point_forecast, ...),
         SIMPLIFY = FALSE,
         future.globals = FALSE
@@ -125,7 +124,6 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
         FUN = forecast,
         object = object[[".mdl"]],
         new_data = object[["new_data"]],
-        key_data(object),
         MoreArgs = list(point_forecast = point_forecast, ...),
         SIMPLIFY = FALSE,
         future.globals = FALSE
@@ -136,7 +134,6 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
       object[[".fc"]] <- mapply(
         FUN = forecast,
         object = object[[".mdl"]],
-        key_data = key_data(object),
         MoreArgs = list(h = h, point_forecast = point_forecast, ...),
         SIMPLIFY = FALSE
       )
