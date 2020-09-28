@@ -106,7 +106,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
     
   }
   object <- tidyr::pivot_longer(object, !!mdls, names_to = ".model", values_to = ".mdl")
-
+  
   # Evaluate forecasts
   if(is_attached("package:future")){
     require_package("future.apply")
@@ -114,21 +114,19 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
     if(is.null(new_data)){
       object[[".fc"]] <- future.apply::future_mapply(
         FUN = forecast,
-        object[[".mdl"]],
-        MoreArgs = list(
-          h = h, point_forecast = point_forecast, ..., 
-          key_data = key_data(object)),
+        object = object[[".mdl"]],
+        key_data = key_data(object),
+        MoreArgs = list(h = h, point_forecast = point_forecast, ...),
         SIMPLIFY = FALSE,
         future.globals = FALSE
       )
     }else{
       object[[".fc"]] <- future.apply::future_mapply(
         FUN = forecast,
-        object[[".mdl"]],
-        object[["new_data"]],
-        MoreArgs = list(
-          point_forecast = point_forecast, ..., 
-          key_data = key_data(object)),
+        object = object[[".mdl"]],
+        new_data = object[["new_data"]],
+        key_data(object),
+        MoreArgs = list(point_forecast = point_forecast, ...),
         SIMPLIFY = FALSE,
         future.globals = FALSE
       )
@@ -137,20 +135,17 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
     if(is.null(new_data)){
       object[[".fc"]] <- mapply(
         FUN = forecast,
-        object[[".mdl"]],
-        MoreArgs = list(
-          h = h, point_forecast = point_forecast, ..., 
-          key_data = key_data(object)),
+        object = object[[".mdl"]],
+        key_data = key_data(object),
+        MoreArgs = list(h = h, point_forecast = point_forecast, ...),
         SIMPLIFY = FALSE
       )
     }else{
       object[[".fc"]] <- mapply(
         FUN = forecast,
-        object[[".mdl"]],
-        object[["new_data"]],
-        MoreArgs = list(
-          point_forecast = point_forecast, ..., 
-          key_data = key_data(object)),
+        object = object[[".mdl"]],
+        new_data = object[["new_data"]],
+        MoreArgs = list(point_forecast = point_forecast, ...),
         SIMPLIFY = FALSE
       )
     }
