@@ -242,3 +242,25 @@ flatten_with_names <- function (x, sep = "_") {
   })
   flatten(unname(map(x, flatten_with_names, sep = sep)))
 }
+
+mapply_maybe_parallel <- function (.f, ..., MoreArgs = list(), SIMPLIFY = FALSE) {
+  if(is_attached("package:future")){
+    require_package("future.apply")
+    
+    future.apply::future_mapply(
+      FUN = .f,
+      ...,
+      MoreArgs = MoreArgs,
+      SIMPLIFY = SIMPLIFY,
+      future.globals = FALSE
+    )
+  }
+  else{
+    mapply(
+      FUN = .f,
+      ...,
+      MoreArgs = static_args,
+      SIMPLIFY = SIMPLIFY
+    )
+  }
+}

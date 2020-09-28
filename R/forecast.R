@@ -123,9 +123,12 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
 
 #' @export
 forecast.lst_mdl <- function(object, new_data = NULL, key_data, ...){
-  map2(object, 
-       new_data %||% rep(list(NULL), length.out = length(object)),
-       forecast, ...)
+  mapply_maybe_parallel(
+    .f = forecast,
+    object, 
+    new_data %||% rep(list(NULL), length.out = length(object)),
+    MoreArgs = dots_list(...)
+  )
 }
 
 #' @rdname forecast
