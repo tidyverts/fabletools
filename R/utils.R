@@ -259,7 +259,7 @@ mapply_maybe_parallel <- function (.f, ..., MoreArgs = list(), SIMPLIFY = FALSE)
     mapply(
       FUN = .f,
       ...,
-      MoreArgs = static_args,
+      MoreArgs = MoreArgs,
       SIMPLIFY = SIMPLIFY
     )
   }
