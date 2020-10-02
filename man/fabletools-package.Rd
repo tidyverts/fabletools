@@ -33,6 +33,7 @@ Other contributors:
 \itemize{
   \item Di Cook [contributor]
   \item George Athanasopoulos [contributor]
+  \item David Holt [contributor]
 }
 
 }

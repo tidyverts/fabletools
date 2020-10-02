@@ -24,6 +24,13 @@ forecast <- function(object, ...){
 #' @param new_data A `tsibble` containing future information used to forecast.
 #' @param h The forecast horison (can be used instead of `new_data` for regular
 #' time series with no exogenous regressors).
+#' @param simulate Should forecasts be based on simulated future paths instead
+#' of analytical results.
+#' @param bootstrap Should innovations from simulated forecasts be bootstrapped
+#' from the model's fitted residuals. This allows the forecast distribution to
+#' have a different underlying shape which could better represent the nature
+#' of your data.
+#' @param times The number of future paths for simulations if `simulate = TRUE`.
 #' @param point_forecast The point forecast measure(s) which should be returned 
 #' in the resulting fable. Specified as a named list of functions which accept
 #' a distribution and return a vector. To compute forecast medians, you can use

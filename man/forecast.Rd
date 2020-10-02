@@ -21,6 +21,9 @@ forecast(object, ...)
   new_data = NULL,
   h = NULL,
   bias_adjust = NULL,
+  simulate = FALSE,
+  bootstrap = FALSE,
+  times = 5000,
   point_forecast = list(.mean = mean),
   ...
 )
@@ -42,6 +45,16 @@ a distribution and return a vector. To compute forecast medians, you can use
 
 \item{bias_adjust}{Deprecated. Please use \code{point_forecast} to specify the
 desired point forecast method.}
+
+\item{simulate}{Should forecasts be based on simulated future paths instead
+of analytical results.}
+
+\item{bootstrap}{Should innovations from simulated forecasts be bootstrapped
+from the model's fitted residuals. This allows the forecast distribution to
+have a different underlying shape which could better represent the nature
+of your data.}
+
+\item{times}{The number of future paths for simulations if \code{simulate = TRUE}.}
 }
 \value{
 A fable containing the following columns:
