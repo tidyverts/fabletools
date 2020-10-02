@@ -159,6 +159,9 @@ transformations in the fable framework can be found in
   new_data = <span class='kw'>NULL</span>,
   h = <span class='kw'>NULL</span>,
   bias_adjust = <span class='kw'>NULL</span>,
+  simulate = <span class='fl'>FALSE</span>,
+  bootstrap = <span class='fl'>FALSE</span>,
+  times = <span class='fl'>5000</span>,
   point_forecast = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(.mean = <span class='kw'>mean</span>),
   <span class='kw'>...</span>
 )</pre>
@@ -194,6 +197,22 @@ a distribution and return a vector. To compute forecast medians, you can use
       <th>bias_adjust</th>
       <td><p>Deprecated. Please use <code>point_forecast</code> to specify the
 desired point forecast method.</p></td>
+    </tr>
+    <tr>
+      <th>simulate</th>
+      <td><p>Should forecasts be based on simulated future paths instead
+of analytical results.</p></td>
+    </tr>
+    <tr>
+      <th>bootstrap</th>
+      <td><p>Should innovations from simulated forecasts be bootstrapped
+from the model's fitted residuals. This allows the forecast distribution to
+have a different underlying shape which could better represent the nature
+of your data.</p></td>
+    </tr>
+    <tr>
+      <th>times</th>
+      <td><p>The number of future paths for simulations if <code>simulate = TRUE</code>.</p></td>
     </tr>
     </table>
 
