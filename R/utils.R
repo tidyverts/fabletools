@@ -264,3 +264,40 @@ mapply_maybe_parallel <- function (.f, ..., MoreArgs = list(), SIMPLIFY = FALSE)
     )
   }
 }
+
+mable_apply <- function (.data, .f, ..., names_to = ".model") {
+  mv <- mable_vars(.data)
+  kv <- key_vars(.data)
+  
+  # Compute .f for all models in mable
+  result <- lapply(
+    as_tibble(.data)[mv],
+    mapply_maybe_parallel,
+    .f = .f,
+    .data, 
+    MoreArgs = dots_list(...)
+  )
+  num_rows <- lapply(result, vapply, nrow, integer(1L))
+  # Assume same tsibble structure for all outputs
+  first_result <- result[[1]][[1]]
+  result <- vec_rbind(!!!lapply(result, function(x) vec_rbind(!!!x)))
+  
+  # Compute .model label
+  model <- rep.int(mv, vapply(num_rows, sum, integer(1L)))
+  
+  # Repeat key structure as needed
+  .data <- .data[rep.int(seq_along(num_rows[[1]]), num_rows[[1]]), kv]
+  
+  # Combine into single
+  .data <- bind_cols(.data, !!names_to := model, result)
+  
+  if (is_tsibble(first_result)) {
+    .data <- build_tsibble(
+      .data, key = c(kv, names_to, key_vars(first_result)), 
+      index = index_var(first_result), index2 = !!index2(first_result), 
+      ordered = is_ordered(first_result),
+      interval = interval(first_result))
+  }
+  
+  return(.data)
+}
