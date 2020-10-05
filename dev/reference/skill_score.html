@@ -137,7 +137,7 @@ compute the benchmark forecasts." />
     <p>This function converts other error metrics such as <code>MSE</code> into a skill score.
 The reference or benchmark forecasting method is the Naive method for
 non-seasonal data, and the seasonal naive method for seasonal data.
-When used within <code>accuracy.fbl_ts</code>, it is important that the data
+When used within <code><a href='accuracy.html'>accuracy.fbl_ts</a></code>, it is important that the data
 contains both the training and test data, as the training data is used to
 compute the benchmark forecasts.</p>
     </div>
@@ -177,8 +177,8 @@ compute the benchmark forecasts.</p>
 #&gt;     ref_score &lt;- do.call(measure, bench)
 #&gt;     1 - score/ref_score
 #&gt; }
-#&gt; &lt;bytecode: 0x7fb51262ee10&gt;
-#&gt; &lt;environment: 0x7fb5126335b8&gt;</div><div class='input'>
+#&gt; &lt;bytecode: 0x7f87bcc46bd0&gt;
+#&gt; &lt;environment: 0x7f87bcc49468&gt;</div><div class='input'>
 <span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, quietly = <span class='fl'>TRUE</span>)) {
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://fable.tidyverts.org'>fable</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tsibble.tidyverts.org'>tsibble</a></span>)
