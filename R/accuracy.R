@@ -172,9 +172,15 @@ interval_accuracy_measures <- list(winkler = winkler_score)
 #' @rdname distribution_accuracy_measures
 #' @export
 percentile_score <- function(.dist, .actual, na.rm = TRUE, ...){
-  probs <- seq(0.01, 0.99, 0.01)
+  quantile_score(.dist, .actual, probs = seq(0.01, 0.99, 0.01), na.rm = TRUE, ...)
+}
+
+#' @rdname distribution_accuracy_measures
+#' @export
+quantile_score <- function(.dist, .actual, probs = c(0.05,0.25,0.5,0.75,0.95),
+                           na.rm = TRUE, ...){
   percentiles <- map(probs, quantile, x = .dist)
-  if(!is.numeric(percentiles[[1]])) abort("Percentile scores are not supported for multivariate distributions.")
+  if(!is.numeric(percentiles[[1]])) abort("Quantile scores are not supported for multivariate distributions.")
   map2_dbl(percentiles, probs, function(percentile, prob){
     L <- ifelse(.actual < percentile, (1-prob), prob)*abs(percentile-.actual)
     mean(L, na.rm = na.rm)

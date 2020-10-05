@@ -1,5 +1,10 @@
 # fabletools (development version)
 
+## New features
+
+* Added `quantile_score()`, which is similar to `percentile_score()` except it
+  allows a set of quantile `probs` to be provided (#280).
+
 ## Improvements
 
 * The `pinball_loss()` accuracy measure is now scaled up by 2x for improved
