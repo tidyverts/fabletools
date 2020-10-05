@@ -13,6 +13,9 @@ skill_score(measure)
 This function converts other error metrics such as \code{MSE} into a skill score.
 The reference or benchmark forecasting method is the Naive method for
 non-seasonal data, and the seasonal naive method for seasonal data.
+When used within \link{\code{accuracy.fbl_ts}}, it is important that the data
+contains both the training and test data, as the training data is used to
+compute the benchmark forecasts.
 }
 \examples{
 
@@ -23,7 +26,7 @@ library(fable)
 library(tsibble)
 
 lung_deaths <- as_tsibble(cbind(mdeaths, fdeaths))
-lung_deaths \%>\% 
+lung_deaths \%>\%
   dplyr::filter(index < yearmonth("1979 Jan")) \%>\%
   model(
     ets = ETS(value ~ error("M") + trend("A") + season("A")),
