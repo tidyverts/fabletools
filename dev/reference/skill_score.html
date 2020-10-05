@@ -42,7 +42,10 @@
 <meta property="og:title" content="Forecast skill score measure — skill_score" />
 <meta property="og:description" content="This function converts other error metrics such as MSE into a skill score.
 The reference or benchmark forecasting method is the Naive method for
-non-seasonal data, and the seasonal naive method for seasonal data." />
+non-seasonal data, and the seasonal naive method for seasonal data.
+When used within accuracy.fbl_ts, it is important that the data
+contains both the training and test data, as the training data is used to
+compute the benchmark forecasts." />
 
 
 <meta name="robots" content="noindex">
@@ -133,7 +136,10 @@ non-seasonal data, and the seasonal naive method for seasonal data." />
     <div class="ref-description">
     <p>This function converts other error metrics such as <code>MSE</code> into a skill score.
 The reference or benchmark forecasting method is the Naive method for
-non-seasonal data, and the seasonal naive method for seasonal data.</p>
+non-seasonal data, and the seasonal naive method for seasonal data.
+When used within <code>accuracy.fbl_ts</code>, it is important that the data
+contains both the training and test data, as the training data is used to
+compute the benchmark forecasts.</p>
     </div>
 
     <pre class="usage"><span class='fu'>skill_score</span>(<span class='kw'>measure</span>)</pre>
@@ -171,14 +177,14 @@ non-seasonal data, and the seasonal naive method for seasonal data.</p>
 #&gt;     ref_score &lt;- do.call(measure, bench)
 #&gt;     1 - score/ref_score
 #&gt; }
-#&gt; &lt;bytecode: 0x7fda09ededa0&gt;
-#&gt; &lt;environment: 0x7fda09edf638&gt;</div><div class='input'>
+#&gt; &lt;bytecode: 0x7fb51262ee10&gt;
+#&gt; &lt;environment: 0x7fb5126335b8&gt;</div><div class='input'>
 <span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, quietly = <span class='fl'>TRUE</span>)) {
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://fable.tidyverts.org'>fable</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tsibble.tidyverts.org'>tsibble</a></span>)
 
 <span class='kw'>lung_deaths</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/as-tsibble.html'>as_tsibble</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='kw'>mdeaths</span>, <span class='kw'>fdeaths</span>))
-<span class='kw'>lung_deaths</span> <span class='op'>%&gt;%</span> 
+<span class='kw'>lung_deaths</span> <span class='op'>%&gt;%</span>
   <span class='kw'>dplyr</span>::<span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='kw'>index</span> <span class='op'>&lt;</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/year-month.html'>yearmonth</a></span>(<span class='st'>"1979 Jan"</span>)) <span class='op'>%&gt;%</span>
   <span class='fu'><a href='model.html'>model</a></span>(
     ets = <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='kw'>value</span> <span class='op'>~</span> <span class='fu'>error</span>(<span class='st'>"M"</span>) <span class='op'>+</span> <span class='fu'>trend</span>(<span class='st'>"A"</span>) <span class='op'>+</span> <span class='fu'>season</span>(<span class='st'>"A"</span>)),
