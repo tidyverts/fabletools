@@ -104,10 +104,11 @@ MAAPE <- function(.resid, .actual, na.rm = TRUE, ...){
 #' @param d Should the response model include a first difference?
 #' @param D Should the response model include a seasonal difference?
 #' @param na.action Function to handle missing values.
-#' 
+#'
 #' @export
 point_accuracy_measures <- list(ME = ME, RMSE = RMSE, MAE = MAE,
-                       MPE = MPE, MAPE = MAPE, MASE = MASE, ACF1 = ACF1)
+                       MPE = MPE, MAPE = MAPE, MASE = MASE, RMSSE = RMSSE,
+                       ACF1 = ACF1)
 
 #' @rdname interval_accuracy_measures
 #' @export
