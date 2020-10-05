@@ -136,7 +136,7 @@ winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
 pinball_loss <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
   q <- stats::quantile(.dist, level/100)
   loss <- ifelse(.actual>=q, level/100 * (.actual-q), (1-level/100) * (q-.actual))
-  mean(loss, na.rm = na.rm)
+  2*mean(loss, na.rm = na.rm)
 }
 
 #' @rdname interval_accuracy_measures
