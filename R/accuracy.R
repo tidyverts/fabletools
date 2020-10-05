@@ -181,11 +181,10 @@ quantile_score <- function(.dist, .actual, probs = c(0.05,0.25,0.5,0.75,0.95),
                            na.rm = TRUE, ...){
   percentiles <- map(probs, quantile, x = .dist)
   if(!is.numeric(percentiles[[1]])) abort("Quantile scores are not supported for multivariate distributions.")
-  map2_dbl(percentiles, probs, function(percentile, prob){
+  2*mean(map2_dbl(percentiles, probs, function(percentile, prob){
     L <- ifelse(.actual < percentile, (1-prob), prob)*abs(percentile-.actual)
     mean(L, na.rm = na.rm)
-  }) %>% 
-    mean(na.rm = na.rm)
+  }), na.rm = na.rm)
 }
 
 #' @rdname distribution_accuracy_measures

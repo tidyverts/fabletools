@@ -7,9 +7,9 @@
 
 ## Improvements
 
-* The `pinball_loss()` accuracy measure is now scaled up by 2x for improved
-  meaning. The loss at 50% equals absolute error and the average loss equals 
-  CRPS (#280).
+* The `pinball_loss()` and `percentile_score()` accuracy measures are now scaled
+  up by 2x for improved meaning. The loss at 50% equals absolute error and the
+  average loss equals CRPS (#280).
 
 ## Bug fixes
 
