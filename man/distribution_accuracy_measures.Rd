@@ -3,6 +3,7 @@
 \docType{data}
 \name{percentile_score}
 \alias{percentile_score}
+\alias{quantile_score}
 \alias{CRPS}
 \alias{distribution_accuracy_measures}
 \title{Distribution accuracy measures}
@@ -11,6 +12,14 @@ An object of class \code{list} of length 2.
 }
 \usage{
 percentile_score(.dist, .actual, na.rm = TRUE, ...)
+
+quantile_score(
+  .dist,
+  .actual,
+  probs = c(0.05, 0.25, 0.5, 0.75, 0.95),
+  na.rm = TRUE,
+  ...
+)
 
 CRPS(.dist, .actual, n_quantiles = 1000, na.rm = TRUE, ...)
 
