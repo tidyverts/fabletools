@@ -132,19 +132,19 @@
     <p>Suitable for extension packages to create new models for fable.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>new_model_class</span>(
-  model = <span class='st'>"Unknown model"</span>,
-  train = <span class='fu'>function</span>(<span class='kw'>.data</span>, <span class='kw'>formula</span>, <span class='kw'>specials</span>, <span class='kw'>...</span>)
-    <span class='fu'>abort</span>(<span class='st'>"This model has not defined a training method."</span>),
-  specials = <span class='fu'><a href='new_specials.html'>new_specials</a></span>(),
-  check = <span class='fu'>function</span>(<span class='kw'>.data</span>) { },
-  prepare = <span class='fu'>function</span>(<span class='kw'>...</span>) { },
-  <span class='kw'>...</span>,
-  .env = <span class='fu'>caller_env</span>(),
-  .inherit = <span class='kw'>model_definition</span>
-)
+    <pre class="usage"><span class='fu'>new_model_class</span><span class='op'>(</span>
+  model <span class='op'>=</span> <span class='st'>"Unknown model"</span>,
+  train <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>formula</span>, <span class='va'>specials</span>, <span class='va'>...</span><span class='op'>)</span>
+    <span class='fu'>abort</span><span class='op'>(</span><span class='st'>"This model has not defined a training method."</span><span class='op'>)</span>,
+  specials <span class='op'>=</span> <span class='fu'><a href='new_specials.html'>new_specials</a></span><span class='op'>(</span><span class='op'>)</span>,
+  check <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>.data</span><span class='op'>)</span> <span class='op'>{</span> <span class='op'>}</span>,
+  prepare <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span> <span class='op'>{</span> <span class='op'>}</span>,
+  <span class='va'>...</span>,
+  .env <span class='op'>=</span> <span class='fu'>caller_env</span><span class='op'>(</span><span class='op'>)</span>,
+  .inherit <span class='op'>=</span> <span class='va'>model_definition</span>
+<span class='op'>)</span>
 
-<span class='fu'>new_model_definition</span>(<span class='kw'>.class</span>, <span class='kw'>formula</span>, <span class='kw'>...</span>, .env = <span class='fu'>caller_env</span>(n = <span class='fl'>2</span>))</pre>
+<span class='fu'>new_model_definition</span><span class='op'>(</span><span class='va'>.class</span>, <span class='va'>formula</span>, <span class='va'>...</span>, .env <span class='op'>=</span> <span class='fu'>caller_env</span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -179,7 +179,7 @@ user inputs.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Further arguments to <code><a href='https://rdrr.io/pkg/R6/man/R6Class.html'>R6::R6Class()</a></code>. This can be useful to set up
+      <td><p>Further arguments to <code><a href='https://r6.r-lib.org/reference/R6Class.html'>R6::R6Class()</a></code>. This can be useful to set up
 additional elements used in the other functions. For example, to use
 <code>common_xregs</code>, an <code>origin</code> element in the model is used to store
 the origin for <code>trend()</code> and <code>fourier()</code> specials. To use these specials, you

@@ -132,7 +132,7 @@
     <p><a href='https://www.tidyverse.org/lifecycle/#experimental'><img src='figures/lifecycle-experimental.svg' alt='Experimental lifecycle'></a></p>
     </div>
 
-    <pre class="usage"><span class='fu'>aggregate_index</span>(<span class='kw'>.data</span>, <span class='kw'>.window</span>, <span class='kw'>...</span>, .offset = <span class='st'>"end"</span>, .bin_size = <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>aggregate_index</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>.window</span>, <span class='va'>...</span>, .offset <span class='op'>=</span> <span class='st'>"end"</span>, .bin_size <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -183,13 +183,13 @@ and a space, or followed by "s".</p></li>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tsibble.tidyverts.org'>tsibble</a></span>)
-<span class='kw'>pedestrian</span> <span class='op'>%&gt;%</span>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tsibble.tidyverts.org'>tsibble</a></span><span class='op'>)</span>
+<span class='va'>pedestrian</span> <span class='op'>%&gt;%</span>
   <span class='co'># Currently only supports daily data</span>
-  <span class='fu'><a href='https://tsibble.tidyverts.org/reference/index-by.html'>index_by</a></span>(<span class='kw'>Date</span>) <span class='op'>%&gt;%</span> 
-  <span class='kw'>dplyr</span>::<span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span>(Count = <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='kw'>Count</span>)) <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='https://tsibble.tidyverts.org/reference/index-by.html'>index_by</a></span><span class='op'>(</span><span class='va'>Date</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span><span class='op'>(</span>Count <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>Count</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
   <span class='co'># Compute weekly aggregates</span>
-  <span class='kw'>fabletools</span>:::<span class='fu'>aggregate_index</span>(<span class='st'>"1 week"</span>, Count = <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='kw'>Count</span>))
+  <span class='fu'>fabletools</span><span class='fu'>:::</span><span class='fu'>aggregate_index</span><span class='op'>(</span><span class='st'>"1 week"</span>, Count <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>Count</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span style='color: #555555;'># A tsibble: 104 x 2 [7D]</span><span>
 #&gt;    Date        Count
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>

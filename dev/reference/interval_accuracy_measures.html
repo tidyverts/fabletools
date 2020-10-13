@@ -132,24 +132,24 @@
     <p>Interval estimate accuracy measures</p>
     </div>
 
-    <pre class="usage"><span class='fu'>winkler_score</span>(<span class='kw'>.dist</span>, <span class='kw'>.actual</span>, level = <span class='fl'>95</span>, na.rm = <span class='fl'>TRUE</span>, <span class='kw'>...</span>)
+    <pre class="usage"><span class='fu'>winkler_score</span><span class='op'>(</span><span class='va'>.dist</span>, <span class='va'>.actual</span>, level <span class='op'>=</span> <span class='fl'>95</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>pinball_loss</span>(<span class='kw'>.dist</span>, <span class='kw'>.actual</span>, level = <span class='fl'>95</span>, na.rm = <span class='fl'>TRUE</span>, <span class='kw'>...</span>)
+<span class='fu'>pinball_loss</span><span class='op'>(</span><span class='va'>.dist</span>, <span class='va'>.actual</span>, level <span class='op'>=</span> <span class='fl'>95</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>scaled_pinball_loss</span>(
-  <span class='kw'>.dist</span>,
-  <span class='kw'>.actual</span>,
-  <span class='kw'>.train</span>,
-  level = <span class='fl'>95</span>,
-  na.rm = <span class='fl'>TRUE</span>,
-  demean = <span class='fl'>FALSE</span>,
-  <span class='kw'>.period</span>,
-  d = <span class='kw'>.period</span> <span class='op'>==</span> <span class='fl'>1</span>,
-  D = <span class='kw'>.period</span> <span class='op'>&gt;</span> <span class='fl'>1</span>,
-  <span class='kw'>...</span>
-)
+<span class='fu'>scaled_pinball_loss</span><span class='op'>(</span>
+  <span class='va'>.dist</span>,
+  <span class='va'>.actual</span>,
+  <span class='va'>.train</span>,
+  level <span class='op'>=</span> <span class='fl'>95</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  demean <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  <span class='va'>.period</span>,
+  d <span class='op'>=</span> <span class='va'>.period</span> <span class='op'>==</span> <span class='fl'>1</span>,
+  D <span class='op'>=</span> <span class='va'>.period</span> <span class='op'>&gt;</span> <span class='fl'>1</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
-<span class='kw'>interval_accuracy_measures</span></pre>
+<span class='va'>interval_accuracy_measures</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

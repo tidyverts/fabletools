@@ -132,19 +132,19 @@
     <p>Distribution accuracy measures</p>
     </div>
 
-    <pre class="usage"><span class='fu'>percentile_score</span>(<span class='kw'>.dist</span>, <span class='kw'>.actual</span>, na.rm = <span class='fl'>TRUE</span>, <span class='kw'>...</span>)
+    <pre class="usage"><span class='fu'>percentile_score</span><span class='op'>(</span><span class='va'>.dist</span>, <span class='va'>.actual</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>quantile_score</span>(
-  <span class='kw'>.dist</span>,
-  <span class='kw'>.actual</span>,
-  probs = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.05</span>, <span class='fl'>0.25</span>, <span class='fl'>0.5</span>, <span class='fl'>0.75</span>, <span class='fl'>0.95</span>),
-  na.rm = <span class='fl'>TRUE</span>,
-  <span class='kw'>...</span>
-)
+<span class='fu'>quantile_score</span><span class='op'>(</span>
+  <span class='va'>.dist</span>,
+  <span class='va'>.actual</span>,
+  probs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.05</span>, <span class='fl'>0.25</span>, <span class='fl'>0.5</span>, <span class='fl'>0.75</span>, <span class='fl'>0.95</span><span class='op'>)</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
-<span class='fu'>CRPS</span>(<span class='kw'>.dist</span>, <span class='kw'>.actual</span>, n_quantiles = <span class='fl'>1000</span>, na.rm = <span class='fl'>TRUE</span>, <span class='kw'>...</span>)
+<span class='fu'>CRPS</span><span class='op'>(</span><span class='va'>.dist</span>, <span class='va'>.actual</span>, n_quantiles <span class='op'>=</span> <span class='fl'>1000</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='kw'>distribution_accuracy_measures</span></pre>
+<span class='va'>distribution_accuracy_measures</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

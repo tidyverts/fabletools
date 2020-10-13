@@ -132,43 +132,43 @@
     <p>Point estimate accuracy measures</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ME</span>(<span class='kw'>.resid</span>, na.rm = <span class='fl'>TRUE</span>, <span class='kw'>...</span>)
+    <pre class="usage"><span class='fu'>ME</span><span class='op'>(</span><span class='va'>.resid</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>MSE</span>(<span class='kw'>.resid</span>, na.rm = <span class='fl'>TRUE</span>, <span class='kw'>...</span>)
+<span class='fu'>MSE</span><span class='op'>(</span><span class='va'>.resid</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>RMSE</span>(<span class='kw'>.resid</span>, na.rm = <span class='fl'>TRUE</span>, <span class='kw'>...</span>)
+<span class='fu'>RMSE</span><span class='op'>(</span><span class='va'>.resid</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>MAE</span>(<span class='kw'>.resid</span>, na.rm = <span class='fl'>TRUE</span>, <span class='kw'>...</span>)
+<span class='fu'>MAE</span><span class='op'>(</span><span class='va'>.resid</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>MPE</span>(<span class='kw'>.resid</span>, <span class='kw'>.actual</span>, na.rm = <span class='fl'>TRUE</span>, <span class='kw'>...</span>)
+<span class='fu'>MPE</span><span class='op'>(</span><span class='va'>.resid</span>, <span class='va'>.actual</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>MAPE</span>(<span class='kw'>.resid</span>, <span class='kw'>.actual</span>, na.rm = <span class='fl'>TRUE</span>, <span class='kw'>...</span>)
+<span class='fu'>MAPE</span><span class='op'>(</span><span class='va'>.resid</span>, <span class='va'>.actual</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>MASE</span>(
-  <span class='kw'>.resid</span>,
-  <span class='kw'>.train</span>,
-  demean = <span class='fl'>FALSE</span>,
-  na.rm = <span class='fl'>TRUE</span>,
-  <span class='kw'>.period</span>,
-  d = <span class='kw'>.period</span> <span class='op'>==</span> <span class='fl'>1</span>,
-  D = <span class='kw'>.period</span> <span class='op'>&gt;</span> <span class='fl'>1</span>,
-  <span class='kw'>...</span>
-)
+<span class='fu'>MASE</span><span class='op'>(</span>
+  <span class='va'>.resid</span>,
+  <span class='va'>.train</span>,
+  demean <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>.period</span>,
+  d <span class='op'>=</span> <span class='va'>.period</span> <span class='op'>==</span> <span class='fl'>1</span>,
+  D <span class='op'>=</span> <span class='va'>.period</span> <span class='op'>&gt;</span> <span class='fl'>1</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
-<span class='fu'>RMSSE</span>(
-  <span class='kw'>.resid</span>,
-  <span class='kw'>.train</span>,
-  demean = <span class='fl'>FALSE</span>,
-  na.rm = <span class='fl'>TRUE</span>,
-  <span class='kw'>.period</span>,
-  d = <span class='kw'>.period</span> <span class='op'>==</span> <span class='fl'>1</span>,
-  D = <span class='kw'>.period</span> <span class='op'>&gt;</span> <span class='fl'>1</span>,
-  <span class='kw'>...</span>
-)
+<span class='fu'>RMSSE</span><span class='op'>(</span>
+  <span class='va'>.resid</span>,
+  <span class='va'>.train</span>,
+  demean <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>.period</span>,
+  d <span class='op'>=</span> <span class='va'>.period</span> <span class='op'>==</span> <span class='fl'>1</span>,
+  D <span class='op'>=</span> <span class='va'>.period</span> <span class='op'>&gt;</span> <span class='fl'>1</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
-<span class='fu'>ACF1</span>(<span class='kw'>.resid</span>, na.action = <span class='kw'>stats</span>::<span class='kw'><a href='https://rdrr.io/r/stats/na.fail.html'>na.pass</a></span>, demean = <span class='fl'>TRUE</span>, <span class='kw'>...</span>)
+<span class='fu'>ACF1</span><span class='op'>(</span><span class='va'>.resid</span>, na.action <span class='op'>=</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/r/stats/na.fail.html'>na.pass</a></span>, demean <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='kw'>point_accuracy_measures</span></pre>
+<span class='va'>point_accuracy_measures</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

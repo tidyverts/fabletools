@@ -140,13 +140,13 @@ need to provide a complete dataset that includes the future data and data
 used to train the model.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>accuracy</span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
+    <pre class="usage"><span class='fu'>accuracy</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for mdl_df</span>
-<span class='fu'>accuracy</span>(<span class='kw'>object</span>, measures = <span class='kw'>point_accuracy_measures</span>, <span class='kw'>...</span>)
+<span class='fu'>accuracy</span><span class='op'>(</span><span class='va'>object</span>, measures <span class='op'>=</span> <span class='va'>point_accuracy_measures</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for fbl_ts</span>
-<span class='fu'>accuracy</span>(<span class='kw'>object</span>, <span class='kw'>data</span>, measures = <span class='kw'>point_accuracy_measures</span>, <span class='kw'>...</span>, by = <span class='kw'>NULL</span>)</pre>
+<span class='fu'>accuracy</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>data</span>, measures <span class='op'>=</span> <span class='va'>point_accuracy_measures</span>, <span class='va'>...</span>, by <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -178,35 +178,35 @@ used to train the model.</p>
     <div class='dont-index'><p><a href='https://otexts.com/fpp3/accuracy.html'>Evaluating forecast accuracy</a></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"fable"</span>, quietly = <span class='fl'>TRUE</span>)) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://fable.tidyverts.org'>fable</a></span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tsibble.tidyverts.org'>tsibble</a></span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://tsibbledata.tidyverts.org'>tsibbledata</a></span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://dplyr.tidyverse.org'>dplyr</a></span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"fable"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://fable.tidyverts.org'>fable</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tsibble.tidyverts.org'>tsibble</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://tsibbledata.tidyverts.org/'>tsibbledata</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
 
-<span class='kw'>fit</span> <span class='op'>&lt;-</span> <span class='kw'>aus_production</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='kw'>Quarter</span> <span class='op'>&lt;</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/year-quarter.html'>yearquarter</a></span>(<span class='st'>"2006 Q1"</span>)) <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='model.html'>model</a></span>(ets = <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='kw'>Beer</span>) <span class='op'>~</span> <span class='fu'>error</span>(<span class='st'>"M"</span>) <span class='op'>+</span> <span class='fu'>trend</span>(<span class='st'>"Ad"</span>) <span class='op'>+</span> <span class='fu'>season</span>(<span class='st'>"A"</span>)))
+<span class='va'>fit</span> <span class='op'>&lt;-</span> <span class='va'>aus_production</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>Quarter</span> <span class='op'>&lt;</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/year-quarter.html'>yearquarter</a></span><span class='op'>(</span><span class='st'>"2006 Q1"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='model.html'>model</a></span><span class='op'>(</span>ets <span class='op'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>Beer</span><span class='op'>)</span> <span class='op'>~</span> <span class='fu'>error</span><span class='op'>(</span><span class='st'>"M"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>trend</span><span class='op'>(</span><span class='st'>"Ad"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>season</span><span class='op'>(</span><span class='st'>"A"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># In-sample training accuracy does not require extra data provided.</span>
-<span class='fu'>accuracy</span>(<span class='kw'>fit</span>)
+<span class='fu'>accuracy</span><span class='op'>(</span><span class='va'>fit</span><span class='op'>)</span>
 
 <span class='co'># Out-of-sample forecast accuracy requires the future values to compare with.</span>
 <span class='co'># All available future data will be used, and a warning will be given if some</span>
 <span class='co'># data for the forecast window is unavailable.</span>
-<span class='kw'>fc</span> <span class='op'>&lt;-</span> <span class='kw'>fit</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='forecast.html'>forecast</a></span>(h = <span class='st'>"5 years"</span>)
-<span class='kw'>fc</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'>accuracy</span>(<span class='kw'>aus_production</span>)
+<span class='va'>fc</span> <span class='op'>&lt;-</span> <span class='va'>fit</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='forecast.html'>forecast</a></span><span class='op'>(</span>h <span class='op'>=</span> <span class='st'>"5 years"</span><span class='op'>)</span>
+<span class='va'>fc</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>accuracy</span><span class='op'>(</span><span class='va'>aus_production</span><span class='op'>)</span>
   
 <span class='co'># It is also possible to compute interval and distributional measures of</span>
 <span class='co'># accuracy for models and forecasts which give forecast distributions.</span>
-<span class='kw'>fc</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'>accuracy</span>(
-    <span class='kw'>aus_production</span>,
-    measures = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>interval_accuracy_measures</span>, <span class='kw'>distribution_accuracy_measures</span>)
-  )
-}
+<span class='va'>fc</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>accuracy</span><span class='op'>(</span>
+    <span class='va'>aus_production</span>,
+    measures <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>interval_accuracy_measures</span>, <span class='va'>distribution_accuracy_measures</span><span class='op'>)</span>
+  <span class='op'>)</span>
+<span class='op'>}</span>
 </div><div class='output co'>#&gt; <span class='message'></span>
 #&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
 #&gt; <span class='message'></span>

@@ -132,9 +132,9 @@
     <p>Produces a new transformation for fable modelling functions which will be used to transform, back-transform, and adjust forecasts.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>new_transformation</span>(<span class='kw'>transformation</span>, <span class='kw'>inverse</span>)
+    <pre class="usage"><span class='fu'>new_transformation</span><span class='op'>(</span><span class='va'>transformation</span>, <span class='va'>inverse</span><span class='op'>)</span>
 
-<span class='fu'>invert_transformation</span>(<span class='kw'>x</span>, <span class='kw'>...</span>)</pre>
+<span class='fu'>invert_transformation</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -164,16 +164,16 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='kw'>scaled_logit</span> <span class='op'>&lt;-</span> <span class='fu'>function</span>(<span class='kw'>x</span>, <span class='kw'>lower</span>=<span class='fl'>0</span>, <span class='kw'>upper</span>=<span class='fl'>1</span>){
-  <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>((<span class='kw'>x</span><span class='op'>-</span><span class='kw'>lower</span>)<span class='op'>/</span>(<span class='kw'>upper</span><span class='op'>-</span><span class='kw'>x</span>))
-}
-<span class='kw'>inv_scaled_logit</span> <span class='op'>&lt;-</span> <span class='fu'>function</span>(<span class='kw'>x</span>, <span class='kw'>lower</span>=<span class='fl'>0</span>, <span class='kw'>upper</span>=<span class='fl'>1</span>){
-  (<span class='kw'>upper</span><span class='op'>-</span><span class='kw'>lower</span>)<span class='op'>*</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span>(<span class='kw'>x</span>)<span class='op'>/</span>(<span class='fl'>1</span><span class='op'>+</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span>(<span class='kw'>x</span>)) <span class='op'>+</span> <span class='kw'>lower</span>
-}
-<span class='kw'>my_scaled_logit</span> <span class='op'>&lt;-</span> <span class='fu'>new_transformation</span>(<span class='kw'>scaled_logit</span>, <span class='kw'>inv_scaled_logit</span>)
+<span class='va'>scaled_logit</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>lower</span><span class='op'>=</span><span class='fl'>0</span>, <span class='va'>upper</span><span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>{</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='op'>(</span><span class='va'>x</span><span class='op'>-</span><span class='va'>lower</span><span class='op'>)</span><span class='op'>/</span><span class='op'>(</span><span class='va'>upper</span><span class='op'>-</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>}</span>
+<span class='va'>inv_scaled_logit</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>lower</span><span class='op'>=</span><span class='fl'>0</span>, <span class='va'>upper</span><span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>{</span>
+  <span class='op'>(</span><span class='va'>upper</span><span class='op'>-</span><span class='va'>lower</span><span class='op'>)</span><span class='op'>*</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>/</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>+</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='va'>lower</span>
+<span class='op'>}</span>
+<span class='va'>my_scaled_logit</span> <span class='op'>&lt;-</span> <span class='fu'>new_transformation</span><span class='op'>(</span><span class='va'>scaled_logit</span>, <span class='va'>inv_scaled_logit</span><span class='op'>)</span>
 
-<span class='kw'>t_vals</span> <span class='op'>&lt;-</span> <span class='fu'>my_scaled_logit</span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, <span class='fl'>0</span>, <span class='fl'>100</span>)
-<span class='kw'>t_vals</span>
+<span class='va'>t_vals</span> <span class='op'>&lt;-</span> <span class='fu'>my_scaled_logit</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, <span class='fl'>0</span>, <span class='fl'>100</span><span class='op'>)</span>
+<span class='va'>t_vals</span>
 </div><div class='output co'>#&gt;  [1] -4.595120 -3.891820 -3.476099 -3.178054 -2.944439 -2.751535 -2.586689
 #&gt;  [8] -2.442347 -2.313635 -2.197225</div><div class='input'>
 </div></pre>
