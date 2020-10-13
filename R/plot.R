@@ -317,7 +317,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     interval_data <- as_tibble(hilo(object, level = level)) %>% 
       tidyr::pivot_longer(paste0(level, "%"), names_to = NULL, values_to = "hilo")
     if(length(resp_var) > 1){
-      interval_data <- interval_data[-match(resp_var, names(interval_data))] %>% 
+      interval_data <- interval_data[setdiff(names(interval_data), resp_var)] %>% 
         tidyr::unpack("hilo", names_repair = "minimal") %>% 
         tidyr::pivot_longer(names(interval_data$hilo), names_to = ".response", values_to = "hilo")
     }
@@ -341,7 +341,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   object[names(point_forecast)] <- map(point_forecast, calc, object[[dist_var]])
   object <- tidyr::pivot_longer(object[-match(dist_var, names(object))], names(point_forecast), names_to = "Point forecast", values_to = dist_var)
   if(length(resp_var) > 1){
-    object <- object[-match(resp_var, names(object))] %>% 
+    object <- object[setdiff(names(object), resp_var)] %>% 
       tidyr::unpack(!!dist_var) %>% 
       tidyr::pivot_longer(names(object[[dist_var]]), names_to = ".response", values_to = dist_var)
   }
