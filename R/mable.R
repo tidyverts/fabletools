@@ -48,7 +48,7 @@ as_mable.data.frame <- function(x, key = NULL, model = NULL, ...){
 build_mable <- function (x, key = NULL, key_data = NULL, model = NULL) {
   model <- names(tidyselect::eval_select(enquo(model), data = x))
   
-  if(length(unique(map(x[model], function(mdl) mdl[[1]]$response))) > 1){
+  if(length(resp_var <- unique(map(x[model], function(mdl) response_vars(mdl[[1]])))) > 1){
     abort("A mable can only contain models with the same response variable(s).")
   }
   
@@ -65,11 +65,11 @@ build_mable <- function (x, key = NULL, key_data = NULL, model = NULL) {
     abort("The result is not a valid mable. The key variables must uniquely identify each row.")
   }
   
-  build_mable_meta(x, key_data, model)
+  build_mable_meta(x, key_data, model, response = resp_var[[1]])
 }
 
-build_mable_meta <- function(x, key_data, model){
-  tibble::new_tibble(x, key = key_data, model = model,
+build_mable_meta <- function(x, key_data, model, response){
+  tibble::new_tibble(x, key = key_data, model = model, response = response,
                      nrow = NROW(x), class = "mdl_df", subclass = "mdl_df") 
 }
 
