@@ -46,7 +46,8 @@ Imports:
     vctrs (>= 0.2.2),
     distributional,
     progressr,
-    lifecycle
+    lifecycle,
+    moment
 Suggests:
     covr,
     crayon,
@@ -61,6 +62,8 @@ Suggests:
     tsibbledata (>= 0.2.0),
     lubridate,
     Matrix
+Remotes:
+    mitchelloharawild/moment
 VignetteBuilder: 
     knitr
 RdMacros: 
