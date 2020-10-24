@@ -121,27 +121,41 @@ bin_date <- function(time, breaks, offset){
 #' 
 #' @examples
 #' library(tsibble)
-#' pedestrian %>%
-#'   # Currently only supports daily data
-#'   index_by(Date) %>% 
-#'   dplyr::summarise(Count = sum(Count)) %>% 
-#'   # Compute weekly aggregates
-#'   fabletools:::aggregate_index("1 week", Count = sum(Count))
-aggregate_index <- function(.data, .window, ..., .offset = "end", .bin_size = NULL){
-  idx <- index_var(.data)
-  # Compute temporal bins and bin sizes
-  new_index <- bin_date(.data[[idx]], .window, .offset)
-  if(!is.null(.bin_size)) new_index$complete_size <- vec_recycle(.bin_size, length(new_index$complete_size))
-  as_tibble(.data) %>% 
-    # Compute groups of temporal bins
-    group_by(
-      !!idx := !!{new_index$breaks[new_index$bin]},
-      !!!key(.data)
-    ) %>% 
-    # Keep only complete windows, currently assumes daily base interval
-    filter(dplyr::n() == (!!new_index$complete_size)[match((!!sym(idx))[1], !!new_index$breaks)]) %>%
-    # Compute aggregates
-    summarise(..., .groups = "drop") %>% 
-    # Rebuild tsibble
-    as_tsibble(key = key_vars(.data), index = !!index(.data))
+#' if (requireNamespace("moment", quietly = TRUE)) {
+#' library(moment)
+#' 
+#' tourism %>% 
+#'   aggregate_index(c(tu_year(1), tu_quarter(2), tu_quarter(1)), Trips = sum(Trips))
+#' }
+#' 
+#' @export
+aggregate_index <- function(.data, .spec = NULL, ...) {
+  UseMethod("aggregate_index")
+}
+
+#' @export
+aggregate_index.tbl_ts <- function(.data, .spec = NULL, ...){
+  idx <- index2_var(.data)
+  kd <- key_data(.data)
+  kv <- key_vars(.data)
+  .data <- as_tibble(.data)
+  .data[[idx]] <- moment::as_moment(.data[[idx]])
+  
+  agg_dt <- map(seq_along(.spec), function(x){
+    group_data(group_by(.data, !!idx := set_time_units(!!sym(idx), !!{.spec[x]}), !!!syms(kv)))
+  })
+  agg_dt <- vctrs::vec_rbind(!!!agg_dt)
+  .data <- dplyr::new_grouped_df(.data, groups = agg_dt)
+  .data <- summarise(.data, ...)
+  
+  # # Re-order columns into index, keys, values order
+  # .data <- .data[c(idx, kv, setdiff(colnames(.data), c(idx,kv)))]
+  
+  key_dt <- group_data(group_by(.data, !!!syms(kv)))
+  .data <- ungroup(.data)
+  
+  # Return tsibble
+  build_tsibble_meta(.data, key_data = key_dt, index = idx, 
+                     index2 = idx, ordered = TRUE, 
+                     interval = interval_pull(.data[[idx]]))
 }

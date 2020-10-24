@@ -26,7 +26,7 @@ library(fable)
 library(tsibble)
 
 lung_deaths <- as_tsibble(cbind(mdeaths, fdeaths))
-lung_deaths \%>\%
+lung_deaths \%>\% 
   dplyr::filter(index < yearmonth("1979 Jan")) \%>\%
   model(
     ets = ETS(value ~ error("M") + trend("A") + season("A")),

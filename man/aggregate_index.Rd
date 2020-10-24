@@ -4,14 +4,12 @@
 \alias{aggregate_index}
 \title{Expand a dataset to include temporal aggregates}
 \usage{
-aggregate_index(.data, .window, ..., .offset = "end", .bin_size = NULL)
+aggregate_index(.data, .spec = NULL, ...)
 }
 \arguments{
 \item{.data}{A tsibble.}
 
-\item{.window}{Temporal aggregations to include. The default (NULL) will
-automatically identify appropriate temporal aggregations. This can be
-specified in several ways (see details).}
+\item{.spec}{The specification of aggregation structure.}
 
 \item{...}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}> Name-value pairs of summary
 functions. The name will be the name of the variable in the result.
@@ -22,6 +20,10 @@ The value can be:
 \item A vector of length \code{n}, e.g. \code{quantile()}.
 \item A data frame, to add multiple columns from a single expression.
 }}
+
+\item{.window}{Temporal aggregations to include. The default (NULL) will
+automatically identify appropriate temporal aggregations. This can be
+specified in several ways (see details).}
 
 \item{.offset}{Offset the temporal aggregation windows to align with the start
 or end of the data. If FALSE, no offset will be applied (giving common
@@ -47,10 +49,11 @@ and a space, or followed by "s".
 }
 \examples{
 library(tsibble)
-pedestrian \%>\%
-  # Currently only supports daily data
-  index_by(Date) \%>\% 
-  dplyr::summarise(Count = sum(Count)) \%>\% 
-  # Compute weekly aggregates
-  fabletools:::aggregate_index("1 week", Count = sum(Count))
+if (requireNamespace("moment", quietly = TRUE)) {
+library(moment)
+
+tourism \%>\% 
+  aggregate_index(c(tu_year(1), tu_quarter(2), tu_quarter(1)), Trips = sum(Trips))
+}
+
 }
