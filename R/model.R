@@ -66,12 +66,22 @@ model.tbl_ts <- function(.data, ..., .safely = TRUE){
 Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   }
   
+  kv <- key_vars(.data)
+  idx <- index_var(.data)
+  if(requireNamespace("moment")) {
+    if(moment::is_moment(.data[[idx]])) {
+      cal <- calendar_data(.data[[idx]])
+      kv <- c(kv, ".interval")
+      .data[[".interval"]] <- cal$granularity[field(.data[[idx]], "c")]
+      .data <- update_tsibble(.data, key = kv)
+    }
+  }
+  
   num_key <- n_keys(.data)
   num_mdl <- length(models)
   num_est <- num_mdl * num_key
   p <- progressr::progressor(num_est)
   
-  kv <- key_vars(.data)
   .data <- nest_keys(.data, "lst_data")
   
   if(.safely){
