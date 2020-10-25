@@ -103,6 +103,9 @@ forecast <- function(object, ...){
 forecast.mdl_df <- function(object, new_data = NULL, h = NULL, 
                             point_forecast = list(.mean = mean), ...){
   kv <- c(key_vars(object), ".model")
+  if(inherits(object[[".interval"]], "moment_time_units")) {
+    kv <- setdiff(kv, ".interval")
+  }
   mdls <- mable_vars(object)
   if(!is.null(h) && !is.null(new_data)){
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
