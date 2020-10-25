@@ -126,7 +126,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
   # Combine and re-construct fable
   fbl_attr <- attributes(object$.fc[[1]])
   out <- suppressWarnings(
-    unnest_tsbl(as_tibble(object)[c(kv, ".fc")], ".fc", parent_key = kv)
+    unnest_tsbl(as_tibble(object)[c(kv, ".fc")], ".fc", parent_key = kv, interval = TRUE)
   )
   build_fable(out, response = fbl_attr$response, distribution = fbl_attr$dist)
 }
