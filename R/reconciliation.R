@@ -88,26 +88,9 @@ forecast.lst_mint_mdl <- function(object, key_data,
       (c(1, 4, 12)/times)[times!=0]
     })
     
-    fc <- map2(fc, intra_periods, function(x, p) {
-      map(vec_split(x, vec_seq_along(x)%%p)$val, build_fable, response_vars(x), distribution_var(x))
-    })
-    temporal_key <- set_names(lengths(fc), map_chr(intvl, format))
-    fc <- vec_c(!!!fc)
-    res <- map2(res, intra_periods, function(x, p) {
-      vec_split(x, vec_seq_along(x)%%p)$val
-    })
-    res <- vec_c(!!!res)
-    
-    na_agg <- agg_vec(NA_character_, TRUE)
-    temporal_kv <- map(temporal_key, function(x){
-      as_tibble(map(temporal_key, function(z) {
-        z <- if(z>x) na_agg else as.character(seq_len(z))
-        rep(z, each = x/vec_size(z))
-      }))
-    })
-    key_data <- vec_rbind(!!!temporal_kv)
-    
-    key_data$.rows <- as_list_of(as.list(vec_seq_along(key_data)))
+    fc <- temporal_period_split(fc, intra_periods)
+    res <- temporal_period_split(res, intra_periods)
+    key_data <- temporal_key_data(key_data, intra_periods, intvl)
   }
   
   # Compute weights (sample covariance)
@@ -186,7 +169,7 @@ forecast.lst_mint_mdl <- function(object, key_data,
   }
   
   reconcile_fbl_list(fc, S, P, W, point_forecast = point_method, 
-                     temporal_split = temporal_key)
+                     temporal_split = intra_periods)
 }
 
 #' Bottom up forecast reconciliation
@@ -356,6 +339,39 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL,
     fc[names(point_fc)] <- point_fc
     fc
   })
+}
+
+temporal_period_split <- function(data, period) {
+  data <- map2(data, period, function(x, p) {
+    vec_split(x, vec_seq_along(x)%%p)$val
+  })
+  vec_c(!!!data)
+}
+
+temporal_key_data <- function(key_data, sizes, intervals) {
+  cumulative_sizes <- cumsum(sizes)
+  kv <- setdiff(names(key_data), c(".interval", ".rows"))
+  key_data <- key_data[kv]
+  kv_groups <- vctrs::vec_group_loc(key_data)
+  key_data <- vec_unique(key_data)
+  
+  key_data[[".rows"]] <- map(kv_groups$loc, function(i) {
+    fc_lens <- sizes[i]
+    intvl <- intervals[i]
+    temporal_key <- set_names(fc_lens, map_chr(intvl, format))
+    na_agg <- agg_vec(NA_character_, TRUE)
+    temporal_kv <- map(temporal_key, function(x){
+      as_tibble(map(temporal_key, function(z) {
+        z <- if(z>x) na_agg else as.character(seq_len(z))
+        rep(z, each = x/vec_size(z))
+      }))
+    })
+    kd <- vec_rbind(!!!temporal_kv)
+    kd$.rows <- as_list_of(as.list(vec_seq_along(kd) + cumulative_sizes[i[1]] - 1))
+    kd
+  })
+  
+  unnest_tbl(key_data, ".rows")
 }
 
 build_smat_rows <- function(key_data){
