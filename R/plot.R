@@ -23,6 +23,14 @@
 autoplot.tbl_ts <- function(object, .vars = NULL, ...){
   quo_vars <- enquo(.vars)
   
+  idx <- index_var(object)
+  if(moment::is_moment(object[[idx]])){
+    intvl <- format(calendar_data(object[[idx]])[["granularity"]])
+    object[[".interval"]] <- intvl[field(object[[idx]], "c")]
+    object <- tsibble::update_tsibble(object, key = c(key_vars(object), ".interval"))
+    object[[idx]] <- as.Date(object[[idx]])
+  }
+  
   kv <- key_vars(object)
   nk <- n_keys(object)
   
@@ -79,6 +87,15 @@ autoplot.tbl_ts <- function(object, .vars = NULL, ...){
 #' @export
 autolayer.tbl_ts <- function(object, .vars = NULL, ...){
   quo_vars <- enquo(.vars)
+  
+  idx <- index_var(object)
+  if(moment::is_moment(object[[idx]])){
+    intvl <- format(calendar_data(object[[idx]])[["granularity"]])
+    object[[".interval"]] <- intvl[field(object[[idx]], "c")]
+    object <- tsibble::update_tsibble(object, key = c(key_vars(object), ".interval"))
+    object[[idx]] <- as.Date(object[[idx]])
+  }
+  
   kv <- key_vars(object)
   nk <- n_keys(object)
   
@@ -159,6 +176,20 @@ If you're using it to extract intervals, consider using `hilo()` to compute inte
 #' @export
 autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = TRUE, ...){
   fc_resp <- response_vars(object)
+  
+  # Unpack moment granularities
+  idx <- index_var(object)
+  if(moment::is_moment(object[[idx]])){
+    intvl <- format(calendar_data(object[[idx]])[["granularity"]])
+    object[[".interval"]] <- intvl[field(object[[idx]], "c")]
+    object <- as_fable(object, key = c(key_vars(object), ".interval"))
+    object[[idx]] <- as.Date(object[[idx]])
+    intvl <- format(calendar_data(data[[idx]])[["granularity"]])
+    data[[".interval"]] <- intvl[field(data[[idx]], "c")]
+    data <- tsibble::update_tsibble(data, key = c(key_vars(data), ".interval"))
+    data[[idx]] <- as.Date(data[[idx]])
+  }
+  
   fc_key <- setdiff(key_vars(object), ".model")
   common_models <- duplicated(key_data(object)[[".model"]] %||% rep(TRUE, NROW(key_data(object))))
   
@@ -231,6 +262,14 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = T
 #' @export
 autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95), 
                              point_forecast = list(mean = mean), show_gap = TRUE, ...){
+  # Unpack moment granularities
+  idx <- index_var(object)
+  if(moment::is_moment(object[[idx]])){
+    intvl <- format(calendar_data(object[[idx]])[["granularity"]])
+    object[[".interval"]] <- intvl[field(object[[idx]], "c")]
+    object <- as_fable(object, key = c(key_vars(object), ".interval"))
+    object[[idx]] <- as.Date(object[[idx]])
+  }
   build_fbl_layer(object = object, data = data, level = level, 
                   point_forecast = point_forecast, show_gap = show_gap, ...)
 
