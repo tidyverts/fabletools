@@ -74,22 +74,48 @@ forecast.lst_mint_mdl <- function(object, key_data,
   } else {
     cov2cor <- stats::cov2cor
   }
-  
   point_method <- point_forecast
   point_forecast <- list()
   # Get forecasts
   fc <- NextMethod()
-  if(length(unique(map(fc, interval))) > 1){
-    abort("Reconciliation of temporal hierarchies is not yet supported.")
+  res <- map(object, function(x, ...) residuals(x, ...), type = "response")
+  if(length(unique(intvl <- map(fc, interval))) > 1){
+    if(!any(map_lgl(intvl, identical, new_interval(year=1L)))){
+      abort("Reconciliation of temporal hierarchies must currently contain annual aggregations.")
+    }
+    intra_periods <- map_dbl(intvl, function(x) {
+      times <- c(x$year, x$quarter, x$month)
+      (c(1, 4, 12)/times)[times!=0]
+    })
+    
+    fc <- map2(fc, intra_periods, function(x, p) {
+      map(vec_split(x, vec_seq_along(x)%%p)$val, build_fable, response_vars(x), distribution_var(x))
+    })
+    temporal_key <- set_names(lengths(fc), map_chr(intvl, format))
+    fc <- vec_c(!!!fc)
+    res <- map2(res, intra_periods, function(x, p) {
+      vec_split(x, vec_seq_along(x)%%p)$val
+    })
+    res <- vec_c(!!!res)
+    
+    na_agg <- agg_vec(NA_character_, TRUE)
+    temporal_kv <- map(temporal_key, function(x){
+      as_tibble(map(temporal_key, function(z) {
+        z <- if(z>x) na_agg else as.character(seq_len(z))
+        rep(z, each = x/vec_size(z))
+      }))
+    })
+    key_data <- vec_rbind(!!!temporal_kv)
+    
+    key_data$.rows <- as_list_of(as.list(vec_seq_along(key_data)))
   }
   
   # Compute weights (sample covariance)
-  res <- map(object, function(x, ...) residuals(x, ...), type = "response")
   if(length(unique(map_dbl(res, nrow))) > 1){
     # Join residuals by index #199
     res <- unname(as.matrix(reduce(res, full_join, by = "date")[,-1]))
   } else {
-    res <- matrix(invoke(c, map(res, `[[`, 2)), ncol = length(object))
+    res <- matrix(invoke(c, map(res, `[[`, 2)), ncol = vec_size(key_data))
   }
   
   # Construct S matrix - ??GA: have moved this here as I need it for Structural scaling
@@ -159,7 +185,8 @@ forecast.lst_mint_mdl <- function(object, key_data,
     P <- solve(R%*%S)%*%R
   }
   
-  reconcile_fbl_list(fc, S, P, W, point_forecast = point_method)
+  reconcile_fbl_list(fc, S, P, W, point_forecast = point_method, 
+                     temporal_split = temporal_key)
 }
 
 #' Bottom up forecast reconciliation
@@ -280,10 +307,8 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
                      point_forecast = point_method)
 }
 
-reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
-  if(length(unique(map(fc, interval))) > 1){
-    abort("Reconciliation of temporal hierarchies is not yet supported.")
-  }
+reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL,
+                               temporal_split = NULL) {
   if(!inherits(S, "matrix")) {
     # Use sparse functions
     require_package("Matrix")
@@ -306,7 +331,7 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
   
   # Apply to forecasts
   fc_mean <- as.matrix(SP%*%t(fc_mean))
-  fc_mean <- split(fc_mean, row(fc_mean))
+  fc_mean <- unname(split(fc_mean, row(fc_mean)))
   if(is_normal){
     R1 <- cov2cor(W)
     W_h <- map(fc_var, function(var) diag(sqrt(var))%*%R1%*%t(diag(sqrt(var))))
@@ -315,6 +340,13 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
   } else {
     fc_dist <- map(fc_mean, distributional::dist_degenerate)
   }
+  
+  # Recombine temporal splits
+  temporal_split <- map2(cumsum(temporal_split), temporal_split,
+                         function(x, y) seq(x-y+1, by = 1, length.out = y))
+  fc_len <- vec_size(fc_dist[[1]])
+  fc <- map(temporal_split, function(x) bind_rows(fc[x])[seq(1, fc_len*length(x), fc_len) + rep(seq(0,fc_len-1), each = length(x)),])
+  fc_dist <- map(temporal_split, function(x) vec_c(!!!fc_dist[x])[seq(1, fc_len*length(x), fc_len) + rep(seq(0,fc_len-1), each = length(x))])
   
   # Update fables
   map2(fc, fc_dist, function(fc, dist){
