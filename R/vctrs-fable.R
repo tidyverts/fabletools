@@ -57,6 +57,12 @@ fable_ptype2 <- function(x, y, ...) {
   build_fable(tsbl, response = resp_x, distribution = !!dist_x)
 }
 
+#' @export
+vec_restore.fbl_ts <- function(x, to, ..., n = NULL) {
+  build_fable(NextMethod(), 
+              response = response_vars(to), distribution = distribution_var(to))
+}
+
 #' @rdname fable-vctrs
 #' @export
 vec_cast.fbl_ts <- function(x, to, ...) {
