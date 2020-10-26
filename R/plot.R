@@ -184,6 +184,8 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = T
     object[[".interval"]] <- intvl[field(object[[idx]], "c")]
     object <- as_fable(object, key = c(key_vars(object), ".interval"))
     object[[idx]] <- as.Date(object[[idx]])
+  }
+  if(moment::is_moment(data[[idx]])){
     intvl <- format(calendar_data(data[[idx]])[["granularity"]])
     data[[".interval"]] <- intvl[field(data[[idx]], "c")]
     data <- tsibble::update_tsibble(data, key = c(key_vars(data), ".interval"))
