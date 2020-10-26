@@ -79,6 +79,7 @@ forecast.lst_mint_mdl <- function(object, key_data,
   # Get forecasts
   fc <- NextMethod()
   res <- map(object, function(x, ...) residuals(x, ...), type = "response")
+  
   if(length(unique(intvl <- map(fc, interval))) > 1){
     if(!any(map_lgl(intvl, identical, new_interval(year=1L)))){
       abort("Reconciliation of temporal hierarchies must currently contain annual aggregations.")
@@ -91,6 +92,8 @@ forecast.lst_mint_mdl <- function(object, key_data,
     fc <- temporal_period_split(fc, intra_periods)
     res <- temporal_period_split(res, intra_periods)
     key_data <- temporal_key_data(key_data, intra_periods, intvl)
+  } else {
+    intra_periods <- NULL
   }
   
   # Compute weights (sample covariance)
@@ -325,11 +328,13 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL,
   }
   
   # Recombine temporal splits
-  temporal_split <- map2(cumsum(temporal_split), temporal_split,
-                         function(x, y) seq(x-y+1, by = 1, length.out = y))
-  fc_len <- vec_size(fc_dist[[1]])
-  fc <- map(temporal_split, function(x) bind_rows(fc[x])[seq(1, fc_len*length(x), fc_len) + rep(seq(0,fc_len-1), each = length(x)),])
-  fc_dist <- map(temporal_split, function(x) vec_c(!!!fc_dist[x])[seq(1, fc_len*length(x), fc_len) + rep(seq(0,fc_len-1), each = length(x))])
+  if(!is.null(temporal_split)){
+    temporal_split <- map2(cumsum(temporal_split), temporal_split,
+                           function(x, y) seq(x-y+1, by = 1, length.out = y))
+    fc_len <- vec_size(fc_dist[[1]])
+    fc <- map(temporal_split, function(x) bind_rows(fc[x])[seq(1, fc_len*length(x), fc_len) + rep(seq(0,fc_len-1), each = length(x)),])
+    fc_dist <- map(temporal_split, function(x) vec_c(!!!fc_dist[x])[seq(1, fc_len*length(x), fc_len) + rep(seq(0,fc_len-1), each = length(x))])
+  }
   
   # Update fables
   map2(fc, fc_dist, function(fc, dist){
