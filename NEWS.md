@@ -4,6 +4,9 @@
 
 * Added `quantile_score()`, which is similar to `percentile_score()` except it
   allows a set of quantile `probs` to be provided (#280).
+* Added distribution support for `autoplot(<dable>)`. If the decomposition 
+  provides distributions for its components, then the uncertainty of the 
+  components will be plotted with interval ribbons.
 
 ## Improvements
 
