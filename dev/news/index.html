@@ -135,6 +135,7 @@
 <a href="#new-features" class="anchor"></a>New features</h2>
 <ul>
 <li>Added <code><a href="../reference/percentile_score.html">quantile_score()</a></code>, which is similar to <code><a href="../reference/percentile_score.html">percentile_score()</a></code> except it allows a set of quantile <code>probs</code> to be provided (<a href='https://github.com/tidyverts/fabletools/issues/280'>#280</a>).</li>
+<li>Added distribution support for <code>autoplot(&lt;dable&gt;)</code>. If the decomposition provides distributions for its components, then the uncertainty of the components will be plotted with interval ribbons.</li>
 </ul>
 </div>
 <div id="improvements" class="section level2">
@@ -171,7 +172,7 @@
 <h2 class="hasAnchor">
 <a href="#improvements-1" class="anchor"></a>Improvements</h2>
 <ul>
-<li>Fixed some inconsistencies in key ordering of model accessors (such as <code><a href="https://rdrr.io/pkg/generics/man/augment.html">augment()</a></code>, <code><a href="https://rdrr.io/pkg/generics/man/tidy.html">tidy()</a></code> and <code><a href="https://rdrr.io/pkg/generics/man/glance.html">glance()</a></code>) with model methods (such as <code><a href="../reference/forecast.html">forecast()</a></code> and <code><a href="https://rdrr.io/pkg/generics/man/generate.html">generate()</a></code>).</li>
+<li>Fixed some inconsistencies in key ordering of model accessors (such as <code><a href="https://generics.r-lib.org/reference/augment.html">augment()</a></code>, <code><a href="https://generics.r-lib.org/reference/tidy.html">tidy()</a></code> and <code><a href="https://generics.r-lib.org/reference/glance.html">glance()</a></code>) with model methods (such as <code><a href="../reference/forecast.html">forecast()</a></code> and <code><a href="https://generics.r-lib.org/reference/generate.html">generate()</a></code>).</li>
 <li>Improved equality comparison of <code>agg_vec</code> classes, aggregated values will now always match regardless of the value used.</li>
 <li>Using <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise()</a></code> with a fable will now retain the fable class if the distribution still exists under the same variable name.</li>
 <li>Added <code><a href="../reference/as_fable.html">as_fable.forecast()</a></code> to convert forecast objects from the forecast package to work with fable.</li>
@@ -186,7 +187,7 @@
 <h2 class="hasAnchor">
 <a href="#breaking-changes" class="anchor"></a>Breaking changes</h2>
 <ul>
-<li>The residuals obtained from the <code><a href="https://rdrr.io/pkg/generics/man/augment.html">augment()</a></code> function are no longer controlled by the <code>type</code> argument. Response residuals (<code>y - yhat</code>) are now always found in the <code>.resid</code> column, and innovation residuals (the model’s error) are now found in the <code>.innov</code> column. Response residuals will differ from innovation residuals when transformations are used, and if the model has non-additive residuals.</li>
+<li>The residuals obtained from the <code><a href="https://generics.r-lib.org/reference/augment.html">augment()</a></code> function are no longer controlled by the <code>type</code> argument. Response residuals (<code>y - yhat</code>) are now always found in the <code>.resid</code> column, and innovation residuals (the model’s error) are now found in the <code>.innov</code> column. Response residuals will differ from innovation residuals when transformations are used, and if the model has non-additive residuals.</li>
 <li>
 <code>dist_*()</code> functions are now removed, and are completely replaced by the distributional package. These are removed to prevent masking issues when loading packages.</li>
 <li>
@@ -203,7 +204,7 @@
 <li>
 <code><a href="../reference/aggregate_key.html">aggregate_key()</a></code> can now be used with non-syntactic variable names.</li>
 <li>Added tsibble cast methods for fable and dable objects, fixing issues with tidyverse functionality between datasets of different column orders (<a href='https://github.com/tidyverts/fabletools/issues/247'>#247</a>).</li>
-<li>Fixed <code><a href="https://rdrr.io/pkg/generics/man/refit.html">refit()</a></code> dropping reconciliation attributes (<a href='https://github.com/tidyverts/fabletools/issues/251'>#251</a>).</li>
+<li>Fixed <code><a href="https://generics.r-lib.org/reference/refit.html">refit()</a></code> dropping reconciliation attributes (<a href='https://github.com/tidyverts/fabletools/issues/251'>#251</a>).</li>
 </ul>
 </div>
 </div>
@@ -311,7 +312,7 @@
 <h2 class="hasAnchor">
 <a href="#breaking-changes-2" class="anchor"></a>Breaking changes</h2>
 <ul>
-<li>Decompositions are now treated as models. To access the decomposed values, you will now have to use <code><a href="https://rdrr.io/pkg/generics/man/components.html">components()</a></code>. For example, <code>tourism %&gt;% STL(Trips)</code> is now <code>tourism %&gt;% model(STL(Trips)) %&gt;% components()</code>. This change allows for more flexible decomposition specifications, and better interfaces for decomposition modelling.</li>
+<li>Decompositions are now treated as models. To access the decomposed values, you will now have to use <code><a href="https://generics.r-lib.org/reference/components.html">components()</a></code>. For example, <code>tourism %&gt;% STL(Trips)</code> is now <code>tourism %&gt;% model(STL(Trips)) %&gt;% components()</code>. This change allows for more flexible decomposition specifications, and better interfaces for decomposition modelling.</li>
 </ul>
 </div>
 <div id="bug-fixes-4" class="section level2">
@@ -399,15 +400,15 @@
 <h3 class="hasAnchor">
 <a href="#generics" class="anchor"></a>Generics</h3>
 <ul>
-<li>Added broom package functionality for <code><a href="https://rdrr.io/pkg/generics/man/augment.html">augment()</a></code>, <code><a href="https://rdrr.io/pkg/generics/man/tidy.html">tidy()</a></code>, and <code><a href="https://rdrr.io/pkg/generics/man/glance.html">glance()</a></code>.</li>
-<li>Added <code><a href="https://rdrr.io/pkg/generics/man/components.html">components()</a></code>, which returns a dable (<code>dcmp_ts</code>) that describes how the fitted values of a model were obtained from its components. This is commonly used to visualise the states of a state space model.</li>
-<li>Added <code><a href="https://rdrr.io/pkg/generics/man/equation.html">equation()</a></code>, which returns a formatted display of a fitted model’s equation. This is commonly used to conveniently add model equations to reports, and to better understand the structure of the model.</li>
+<li>Added broom package functionality for <code><a href="https://generics.r-lib.org/reference/augment.html">augment()</a></code>, <code><a href="https://generics.r-lib.org/reference/tidy.html">tidy()</a></code>, and <code><a href="https://generics.r-lib.org/reference/glance.html">glance()</a></code>.</li>
+<li>Added <code><a href="https://generics.r-lib.org/reference/components.html">components()</a></code>, which returns a dable (<code>dcmp_ts</code>) that describes how the fitted values of a model were obtained from its components. This is commonly used to visualise the states of a state space model.</li>
+<li>Added <code><a href="https://generics.r-lib.org/reference/equation.html">equation()</a></code>, which returns a formatted display of a fitted model’s equation. This is commonly used to conveniently add model equations to reports, and to better understand the structure of the model.</li>
 <li>Added accessors to common model data elements: fitted values with <code><a href="https://rdrr.io/r/stats/fitted.values.html">fitted()</a></code>, model residuals with <code><a href="https://rdrr.io/r/stats/residuals.html">residuals()</a></code>, and the response variable with <code><a href="../reference/response.html">response()</a></code>. These functions return a tsibble (<code>tbl_ts</code>) object.</li>
-<li>Added <code><a href="https://rdrr.io/pkg/generics/man/refit.html">refit()</a></code>, which allows an estimated model to be applied to a new dataset.</li>
+<li>Added <code><a href="https://generics.r-lib.org/reference/refit.html">refit()</a></code>, which allows an estimated model to be applied to a new dataset.</li>
 <li>Added <code><a href="../reference/report.html">report()</a></code>, which provides a detailed summary of an estimated model.</li>
-<li>Added <code><a href="https://rdrr.io/pkg/generics/man/generate.html">generate()</a></code> support, which is used to simulate future paths from an estimated model.</li>
+<li>Added <code><a href="https://generics.r-lib.org/reference/generate.html">generate()</a></code> support, which is used to simulate future paths from an estimated model.</li>
 <li>Added <code><a href="../reference/stream.html">stream()</a></code>, which allows an estimated model to be extended using newly available data.</li>
-<li>Added <code><a href="https://rdrr.io/pkg/generics/man/interpolate.html">interpolate()</a></code>, which allows missing values from a dataset to be interpolated using an estimated model (and model appropriate interpolation strategy).</li>
+<li>Added <code><a href="https://generics.r-lib.org/reference/interpolate.html">interpolate()</a></code>, which allows missing values from a dataset to be interpolated using an estimated model (and model appropriate interpolation strategy).</li>
 <li>Added <code><a href="../reference/features.html">features()</a></code>, along with scoped variants <code><a href="../reference/features.html">features_at()</a></code>, <code><a href="../reference/features.html">features_if()</a></code> and <code><a href="../reference/features.html">features_all()</a></code>. These functions make it easy to compute a large collection of features for each time series in the input dataset.</li>
 <li>Added <code><a href="../reference/feature_set.html">feature_set()</a></code>, which allows a collection of registered features from loaded packages to be accessed using a tagging system.</li>
 </ul>

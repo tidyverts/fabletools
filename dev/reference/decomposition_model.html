@@ -155,7 +155,7 @@ method, giving a combination model for the response of the decomposition.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>dcmp</th>
-      <td><p>A model definition which supports extracting decomposed <code><a href='https://rdrr.io/pkg/generics/man/components.html'>components()</a></code>.</p></td>
+      <td><p>A model definition which supports extracting decomposed <code><a href='https://generics.r-lib.org/reference/components.html'>components()</a></code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -180,7 +180,7 @@ method, giving a combination model for the response of the decomposition.</p>
 <span class='co'># Identify an appropriate decomposition</span>
 <span class='va'>vic_food</span> <span class='op'>%&gt;%</span> 
   <span class='fu'><a href='model.html'>model</a></span><span class='op'>(</span><span class='fu'><a href='https://feasts.tidyverts.org/reference/STL.html'>STL</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>Turnover</span><span class='op'>)</span> <span class='op'>~</span> <span class='fu'>season</span><span class='op'>(</span>window <span class='op'>=</span> <span class='cn'>Inf</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/components.html'>components</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='https://generics.r-lib.org/reference/components.html'>components</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span><span class='op'>(</span><span class='op'>)</span>
   
 <span class='co'># Use an ARIMA model to seasonally adjusted data, and SNAIVE to season_year</span>
