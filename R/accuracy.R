@@ -176,6 +176,7 @@ percentile_score <- function(.dist, .actual, na.rm = TRUE, ...){
 }
 
 #' @rdname distribution_accuracy_measures
+#' @param probs A vector of probabilities at which the metric is evaluated.
 #' @export
 quantile_score <- function(.dist, .actual, probs = c(0.05,0.25,0.5,0.75,0.95),
                            na.rm = TRUE, ...){

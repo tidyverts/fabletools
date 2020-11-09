@@ -35,6 +35,8 @@ distribution_accuracy_measures
 
 \item{...}{Additional arguments for each measure.}
 
+\item{probs}{A vector of probabilities at which the metric is evaluated.}
+
 \item{n_quantiles}{The number of quantiles to use in approximating CRPS when an exact solution is not available.}
 }
 \description{
