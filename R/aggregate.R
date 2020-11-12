@@ -314,6 +314,13 @@ is.na.agg_vec <- function(x) {
   is.na(field(x, "x")) & !field(x, "agg")
 }
 
+#' @importFrom dplyr recode
+#' @export
+recode.agg_vec <- function(.x, ...) {
+  field(.x, "x") <- recode(field(.x, "x"), ...)
+  .x
+}
+
 #' Is the element an aggregation of smaller data
 #' 
 #' @param x An object.
