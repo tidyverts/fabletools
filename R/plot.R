@@ -451,7 +451,7 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE,
     ymin <- ymax <- center <- diff <- NULL
     
     min_fn <- if(has_dist) function(x, ...) min(quantile(x, (100-max(level))/200), ...) else min
-    max_fn <- if(has_dist) function(x, ...) max(quantile(x, (100 + max(level))/200), ...) else min
+    max_fn <- if(has_dist) function(x, ...) max(quantile(x, (100 + max(level))/200), ...) else max
     
     range_data <- as_tibble(object) %>%
       group_by(!!sym(".var")) %>% 
