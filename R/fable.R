@@ -246,6 +246,11 @@ ungroup.fbl_ts <- group_by.fbl_ts
 ungroup.grouped_fbl <- group_by.fbl_ts
 
 #' @export
+fill_gaps.fbl_ts <- function(.data, ..., .full = FALSE) {
+  vec_restore(NextMethod(.data), .data)
+}
+
+#' @export
 rbind.fbl_ts <- function(...){
   deprecate_warn("0.2.0", "rbind.fbl_ts()", "bind_rows()")
   fbls <- dots_list(...)
