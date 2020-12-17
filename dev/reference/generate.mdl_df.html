@@ -140,7 +140,16 @@ behaviour to the response. This is a tidy implementation of
 <span class='fu'><a href='https://generics.r-lib.org/reference/generate.html'>generate</a></span><span class='op'>(</span><span class='va'>x</span>, new_data <span class='op'>=</span> <span class='cn'>NULL</span>, h <span class='op'>=</span> <span class='cn'>NULL</span>, times <span class='op'>=</span> <span class='fl'>1</span>, seed <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for mdl_ts</span>
-<span class='fu'><a href='https://generics.r-lib.org/reference/generate.html'>generate</a></span><span class='op'>(</span><span class='va'>x</span>, new_data <span class='op'>=</span> <span class='cn'>NULL</span>, h <span class='op'>=</span> <span class='cn'>NULL</span>, times <span class='op'>=</span> <span class='fl'>1</span>, seed <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'><a href='https://generics.r-lib.org/reference/generate.html'>generate</a></span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  new_data <span class='op'>=</span> <span class='cn'>NULL</span>,
+  h <span class='op'>=</span> <span class='cn'>NULL</span>,
+  times <span class='op'>=</span> <span class='fl'>1</span>,
+  seed <span class='op'>=</span> <span class='cn'>NULL</span>,
+  bootstrap <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  bootstrap_block_size <span class='op'>=</span> <span class='fl'>1</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
