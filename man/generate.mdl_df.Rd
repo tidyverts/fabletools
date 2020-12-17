@@ -7,7 +7,16 @@
 \usage{
 \method{generate}{mdl_df}(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...)
 
-\method{generate}{mdl_ts}(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...)
+\method{generate}{mdl_ts}(
+  x,
+  new_data = NULL,
+  h = NULL,
+  times = 1,
+  seed = NULL,
+  bootstrap = FALSE,
+  bootstrap_block_size = 1,
+  ...
+)
 }
 \arguments{
 \item{x}{A mable.}
