@@ -8,6 +8,7 @@
   provides distributions for its components, then the uncertainty of the 
   components will be plotted with interval ribbons.
 * Added block bootstrap option for bootstrapping innovations in `generate()`.
+* Added multiple step ahead fitted values support via `fitted(<mable>, h > 1)`.
 
 ## Improvements
 

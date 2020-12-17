@@ -2,12 +2,13 @@
 % Please edit documentation in R/fitted.R
 \name{fitted.mdl_df}
 \alias{fitted.mdl_df}
+\alias{hfitted}
 \alias{fitted.mdl_ts}
 \title{Extract fitted values from models}
 \usage{
 \method{fitted}{mdl_df}(object, ...)
 
-\method{fitted}{mdl_ts}(object, ...)
+\method{fitted}{mdl_ts}(object, h = 1, ...)
 }
 \arguments{
 \item{object}{A mable or time series model.}

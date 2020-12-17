@@ -4,6 +4,8 @@
 #' be returned containing these fitted values. Fitted values will be 
 #' automatically back-transformed if a transformation was specified.
 #' 
+#' @aliases  hfitted
+#' 
 #' @param object A mable or time series model.
 #' @param ... Other arguments passed to the model method for `fitted()`
 #' 
@@ -20,10 +22,10 @@ fitted.mdl_df <- function(object, ...){
 
 #' @rdname fitted.mdl_df
 #' @export
-fitted.mdl_ts <- function(object, ...){
+fitted.mdl_ts <- function(object, h = 1, ...){
   bt <- map(object$transformation, invert_transformation)
   
-  fits <- as.matrix(fitted(object$fit, ...))
+  fits <- as.matrix(if(h==1) fitted(object$fit, ...) else hfitted(object$fit, h = h, ...))
   fits <- map2(bt, split(fits, col(fits)), function(bt, fit) bt(fit))
   
   nm <- if(length(fits) == 1) ".fitted" else map_chr(object$response, expr_name)
@@ -31,4 +33,9 @@ fitted.mdl_ts <- function(object, ...){
   out <- object$data[index_var(object$data)]
   out[nm] <- fits
   out
+}
+
+#' @export
+hfitted <- function(object, ...) {
+  UseMethod("hfitted")
 }
