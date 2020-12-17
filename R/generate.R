@@ -45,7 +45,8 @@ generate.mdl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
 
 #' @rdname generate.mdl_df
 #' @export
-generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
+generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, 
+                            bootstrap = FALSE, bootstrap_block_size = 1, ...){
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
     stats::runif(1)
   if (is.null(seed))
@@ -72,6 +73,20 @@ generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
     new_data <- build_tsibble(new_data, index = !!idx, key = !!kv, interval = intvl)
   }
   
+  if(bootstrap) {
+    res <- residuals(x$fit)
+    res <- na.omit(res) - mean(res, na.rm = TRUE)
+    new_data$.innov <- if(bootstrap_block_size == 1) {
+      sample(res, nrow(new_data), replace = TRUE)
+    } else {
+      # Assume residuals are regularly spaced for now
+      kr <- tsibble::key_rows(new_data)
+      idx <- x$data[[index_var(x$data)]]
+      innov <- lapply(kr, function(rows) block_bootstrap(res, bootstrap_block_size)[seq_along(rows)])
+      vec_c(!!!innov)
+    }
+  }
+  
   # Compute specials with new_data
   x$model$stage <- "generate"
   x$model$add_data(new_data)
@@ -92,4 +107,14 @@ Does your model require extra variables to produce simulations?", e$message))
   .sim <- generate(x[["fit"]], new_data = new_data, specials = specials, ...)
   .sim[[".sim"]] <- invert_transformation(x$transformation[[1]])(.sim[[".sim"]])
   .sim
+}
+
+block_bootstrap <- function (x, window_size) {
+  bx <- array(0, (floor(length(x)/window_size) + 2) * window_size)
+  for (i in 1:(floor(length(x)/window_size) + 2)) {
+    c <- sample(1:(length(x) - window_size + 1), 1)
+    bx[((i - 1) * window_size + 1):(i * window_size)] <- x[c:(c + window_size - 1)]
+  }
+  start_from <- sample(0:(window_size - 1), 1) + 1
+  bx[start_from:(start_from + length(x) - 1)]
 }

@@ -7,6 +7,7 @@
 * Added distribution support for `autoplot(<dable>)`. If the decomposition 
   provides distributions for its components, then the uncertainty of the 
   components will be plotted with interval ribbons.
+* Added block bootstrap option for bootstrapping innovations in `generate()`.
 
 ## Improvements
 
