@@ -106,3 +106,13 @@ vec_cast.tbl_df.fbl_ts <- function(x, to, ...) {
 vec_cast.data.frame.fbl_ts <- function(x, to, ...) {
   df_cast(x, to, ...)
 }
+
+#' @export
+vec_restore.fbl_ts <- function(x, to, ..., n = NULL) {
+  if(!is_tsibble(x)){
+    x <- build_tsibble(
+      x, key = key_vars(to), index = index_var(to), index2 = index2_var(to),
+      ordered = TRUE, validate = TRUE, .drop = key_drop_default(to))
+  }
+  build_fable(x, response = response_vars(to), distribution = distribution_var(to))
+}
