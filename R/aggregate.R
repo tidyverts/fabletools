@@ -173,9 +173,9 @@ parse_agg_spec <- function(expr){
 #' hierarchies (such as unbalanced hierarchies).
 #' 
 #' @param x The vector of values.
-#' @param aggregated A logical vector to identify which values are <aggregated>.
+#' @param aggregated A logical vector to identify which values are `<aggregated>`.
 #' 
-#' @example 
+#' @examples
 #' agg_vec(
 #'   x = c(NA, "A", "B"),
 #'   aggregated = c(TRUE, FALSE, FALSE)
