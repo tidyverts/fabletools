@@ -25,8 +25,12 @@ fitted.mdl_df <- function(object, ...){
 fitted.mdl_ts <- function(object, h = 1, ...){
   bt <- map(object$transformation, invert_transformation)
   
-  fits <- as.matrix(if(h==1) fitted(object$fit, ...) else hfitted(object$fit, h = h, ...))
-  fits <- map2(bt, split(fits, col(fits)), function(bt, fit) bt(fit))
+  fits <- if(h==1) fitted(object$fit, ...) else hfitted(object, h = h, ...)
+  if(h == 1){
+    fits <- as.matrix(fits)
+    # Backtransformation is required for fitted, but forecast() handles it already.
+    fits <- map2(bt, split(fits, col(fits)), function(bt, fit) bt(fit))
+  }
   
   nm <- if(length(fits) == 1) ".fitted" else map_chr(object$response, expr_name)
   
@@ -38,4 +42,25 @@ fitted.mdl_ts <- function(object, h = 1, ...){
 #' @export
 hfitted <- function(object, ...) {
   UseMethod("hfitted")
+}
+
+#' @export
+hfitted.mdl_ts <- function(object, h, ...) {
+  fn <- tryCatch(utils::getS3method("hfitted", class(object[["fit"]])),
+                 error = function(e) NULL)
+  if(is.null(fn)) {
+    resp <- response_vars(object)
+    n <- nrow(object$data)
+    fits <- rep(NA_real_, n)
+    
+    for (i in seq_len(n-h)) {
+      mdl <- tryCatch(refit(object, vec_slice(object$data, seq_len(i))),
+                      error = function(e) NULL)
+      if(is.null(mdl)) next
+      fits[i + h] <- mean(forecast(mdl, h = h, point_forecast = NULL)[[resp]][h])
+    }
+    fits
+  } else {
+    fn(object[["fit"]], h=h, ...)
+  }
 }
