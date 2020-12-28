@@ -59,8 +59,11 @@ hfitted.mdl_ts <- function(object, h, ...) {
       if(is.null(mdl)) next
       fits[i + h] <- mean(forecast(mdl, h = h, point_forecast = NULL)[[resp]][h])
     }
-    fits
   } else {
-    fn(object[["fit"]], h=h, ...)
+    fits <- as.matrix(fn(object[["fit"]], h=h, ...))
+    # Backtransform fits from model method
+    bt <- map(object$transformation, invert_transformation)
+    fits <- map2(bt, split(fits, col(fits)), function(bt, fit) bt(fit))
   }
+  fits
 }
