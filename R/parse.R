@@ -238,7 +238,7 @@ Please specify a valid form of your transformation using `new_transformation()`.
   
   list(
     expressions = transform_exprs,
-    response = responses,
+    response = syms(map_chr(responses, as_label)),
     transformation = transformations
   )
 }
