@@ -38,8 +38,8 @@ test_that("Model parsing variety", {
   parse_log1 <- model(us_deaths, specials(log(value)))
   mdl1_trans <- parse_log1[[1]][[1]]$transformation[[1]]
   log_trans <- new_transformation(
-    function(.x) log(.x),
-    function(.x) exp(.x)
+    function(value) log(value),
+    function(value) exp(value)
   )
   expect_identical(capture.output(mdl1_trans), capture.output(log_trans))
   expect_equal(response_vars(parse_log1), "value")
@@ -63,12 +63,12 @@ test_that("Model parsing scope", {
   mdl <- eval({
     model(us_deaths, no_specials())
   }, envir = new_environment(list(no_specials = no_specials)))
-  expect_equal(response_vars(mdl), sym("value"))
+  expect_equal(response_vars(mdl), "value")
   
   mdl <- eval({
     model(us_deaths, no_specials(value))
   }, envir = new_environment(list(no_specials = no_specials)))
-  expect_equal(response_vars(mdl), sym("value"))
+  expect_equal(response_vars(mdl), "value")
   
   expect_error(
     eval({
@@ -83,7 +83,7 @@ test_that("Model parsing scope", {
     model(us_deaths, no_specials(something))
   }, envir = new_environment(list(no_specials = no_specials)))
   
-  expect_equal(response_vars(mdl), sym("something"))
+  expect_equal(response_vars(mdl), "something")
   
   # Transformation from scalar
   mdl <- eval({
@@ -91,7 +91,7 @@ test_that("Model parsing scope", {
     model(us_deaths, no_specials(value/scale))
   }, envir = new_environment(list(no_specials = no_specials)))
   
-  expect_equal(response_vars(mdl), sym("value"))
+  expect_equal(response_vars(mdl), "value")
   
   # Transformation from scalar in function env
   mdl <- eval({
@@ -101,7 +101,7 @@ test_that("Model parsing scope", {
     }} ()
   }, envir = new_environment(list(no_specials = no_specials)))
   
-  expect_equal(response_vars(mdl), sym("value"))
+  expect_equal(response_vars(mdl), "value")
   
   # Specials missing values
   expect_warning(
@@ -145,16 +145,16 @@ test_that("Model response identification", {
   mdl <- model(dt, no_specials(resp(GDP)/CPI))
   mdl_trans <- mdl[[1]][[1]]$transformation[[1]]
   cpi_trans <- new_transformation(
-    function(.x) .x/CPI,
-    function(.x) CPI * .x
+    function(GDP) GDP/CPI,
+    function(GDP) CPI * GDP
   )
   expect_identical(response_vars(mdl), "GDP")
   expect_identical(capture.output(mdl_trans), capture.output(cpi_trans))
   mdl <- model(dt, no_specials(GDP/resp(CPI)))
   mdl_trans <- mdl[[1]][[1]]$transformation[[1]]
   gdp_trans <- new_transformation(
-    function(.x) GDP/.x,
-    function(.x) GDP/.x
+    function(CPI) GDP/CPI,
+    function(CPI) GDP/CPI
   )
   expect_equal(response_vars(mdl), "CPI")
   expect_identical(capture.output(mdl_trans), capture.output(gdp_trans))

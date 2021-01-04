@@ -17,6 +17,8 @@
 * The `pinball_loss()` and `percentile_score()` accuracy measures are now scaled
   up by 2x for improved meaning. The loss at 50% equals absolute error and the
   average loss equals CRPS (#280).
+* Automatic transformation functions formals are now named after the response
+  variable and not converted to `.x`, preventing conflicts with values named `.x`.
 
 ## Bug fixes
 
