@@ -11,6 +11,8 @@
 * Added multiple step ahead fitted values support via `fitted(<mable>, h > 1)`.
 * Added `as_fable(<forecast>)` for converting older `forecast` class objects to
   `fable` data structures.
+* Added `top_down(method = "forecast_proportion")` for reconciliation using the
+  forecast proportions techniques.
 
 ## Improvements
 

@@ -236,7 +236,6 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
   point_method <- point_forecast
   point_forecast <- list()
   
-  # TODO: Add check for grouped hierarchies
   agg_data <- build_key_data_smat(key_data)
   S <- matrix(0L, nrow = length(agg_data$agg), ncol = max(vec_c(!!!agg_data$agg)))
   S[length(agg_data$agg)*(vec_c(!!!agg_data$agg)-1) + rep(seq_along(agg_data$agg), lengths(agg_data$agg))] <- 1L
@@ -245,10 +244,64 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
   top <- which.max(rowSums(S))
   btm <- which(rowSums(S) == 1L)
   
+  kv <- names(key_data)[-ncol(key_data)]
+  agg_shadow <- as_tibble(map(key_data[kv], is_aggregated))
+  agg_struct <- vctrs::vec_unique(agg_shadow)
+  agg_depth <- nrow(agg_struct)
+  if(length(kv) != (agg_depth - 1)) {
+    abort("Top down reconciliation requires strictly hierarchical structures.")
+  }
+  agg_order <- kv[order(vapply(agg_struct, sum, integer(1L)))]
+  
   if(method == "forecast_proportions") {
-    abort("`method = 'forecast_proportions'` is not yet supported")
     fc <- NextMethod()
-    fc_mean <- lapply(fc, function(x) mean(x[[distribution_var(x)]]))
+    fc_dist <- lapply(fc, function(x) x[[distribution_var(x)]])
+    fc_mean <- lapply(fc_dist, mean)
+    fc_mean <- do.call(cbind, fc_mean)
+    fc_prop <- matrix(1, nrow = nrow(fc_mean), ncol = ncol(fc_mean))
+    
+    # Ensure key structure matches order of fc object
+    key_data <- key_data[order(vec_c(!!!key_data$.rows)),]
+    for(i in seq_len(agg_depth - 1)) {
+      agg_layer <- key_data[agg_order[seq_len(i)]]
+      agg_nodes <- vec_group_loc(is_aggregated(agg_layer[[length(agg_layer)]]))
+      # Drop nodes which aren't in this layer
+      if((i+1) < agg_depth) {
+        agg_keep <- which(is_aggregated(key_data[[agg_order[[i+1]]]]))
+        agg_nodes$loc <- lapply(agg_nodes$loc, intersect, agg_keep)
+      }
+      # Identify index position of the layer's nodes and their parents
+      agg_child_loc <- agg_nodes$loc[[which(!agg_nodes$key)]]
+      agg_parent_loc <- agg_nodes$loc[[which(agg_nodes$key)]]
+      agg_parent_key <- agg_layer[,-length(agg_layer)]
+      agg_parent <- vec_match(agg_parent_key[agg_child_loc,,drop=FALSE], agg_parent_key[agg_parent_loc,,drop=FALSE])
+      # Compute forecast proportions for this layer
+      fc_prop[,agg_child_loc] <- fc_prop[,agg_parent_loc,drop=FALSE][,agg_parent,drop=FALSE] * fc_mean[,agg_child_loc,drop=FALSE] / t(rowsum(t(fc_mean[,agg_child_loc,drop=FALSE]), agg_parent))[,agg_parent]
+    }
+    # Code adapted from reconcile_fbl_list to handle changing weights over horizon
+    # This will need to be refactored later so that reconcile_fbl_list is broken up into more sub-problems
+    # As the weight matrix is an identity, this code and computation is much simpler.
+    is_normal <- all(map_lgl(fc_dist, function(x) inherits(x[[1]], "dist_normal")))
+    # Point forecast means can be computed in one step
+    fc_mean <- split(fc_mean[,top]*fc_prop,col(fc_prop))
+    if(is_normal) {
+      fc_var <- map(fc_dist, distributional::variance)
+      fc_var <- fc_prop * fc_var[[top]] * fc_prop
+      fc_var <- split(fc_var, col(fc_var))
+      fc_dist <- map2(fc_mean, map(fc_var, sqrt), distributional::dist_normal)
+    } else {
+      fc_dist <- lapply(fc_mean, distributional::dist_degenerate)
+    }
+    # Update fables
+    fc <- map2(fc, fc_dist, function(fc, dist){
+      dimnames(dist) <- dimnames(fc[[distribution_var(fc)]])
+      fc[[distribution_var(fc)]] <- dist
+      point_fc <- compute_point_forecasts(dist, point_method)
+      fc[names(point_fc)] <- point_fc
+      fc
+    })
+    return(fc)
+    
   } else {
     # Compute dis-aggregation matrix
     history <- lapply(object, function(x) response(x)[[".response"]])
