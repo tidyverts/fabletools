@@ -231,7 +231,7 @@ top_down <- function(models, method = c("forecast_proportions", "average_proport
 
 #' @export
 forecast.lst_topdwn_mdl <- function(object, key_data, 
-                                   point_forecast = list(.mean = mean), ...){
+                                    point_forecast = list(.mean = mean), ...){
   method <- object%@%"method"
   point_method <- point_forecast
   point_forecast <- list()
@@ -331,6 +331,128 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
   
   reconcile_fbl_list(fc, S, P, W = diag(nrow(S)),
                      point_forecast = point_method)
+}
+
+
+#' Middle out forecast reconciliation
+#' 
+#' \lifecycle{experimental}
+#' 
+#' Reconciles a hierarchy using the middle out reconciliation method. The 
+#' response variable of the hierarchy must be aggregated using sums. The 
+#' forecasted time points must match for all series in the hierarchy.
+#' 
+#' @param models A column of models in a mable.
+#' @param split The middle level of the hierarchy from which the bottom-up and
+#' top-down approaches are used above and below respectively.
+#' 
+#' @seealso 
+#' [`reconcile()`], [`aggregate_key()`]
+#' [*Forecasting: Principles and Practice* - Middle-out approach](https://otexts.com/fpp3/middle-out.html)
+#' 
+#' @export
+middle_out <- function(models, split = 1){
+  structure(models, class = c("lst_midout_mdl", "lst_mdl", "list"),
+            split = split)
+}
+
+#' @export
+forecast.lst_midout_mdl <- function(object, key_data, 
+                                    point_forecast = list(.mean = mean), ...){
+  split <- object%@%"split"
+  point_method <- point_forecast
+  point_forecast <- list()
+  
+  agg_data <- build_key_data_smat(key_data)
+  S <- matrix(0L, nrow = length(agg_data$agg), ncol = max(vec_c(!!!agg_data$agg)))
+  S[length(agg_data$agg)*(vec_c(!!!agg_data$agg)-1) + rep(seq_along(agg_data$agg), lengths(agg_data$agg))] <- 1L
+  
+  # Identify top and bottom level
+  top <- which.max(rowSums(S))
+  btm <- which(rowSums(S) == 1L)
+  
+  kv <- names(key_data)[-ncol(key_data)]
+  agg_shadow <- as_tibble(map(key_data[kv], is_aggregated))
+  agg_struct <- vctrs::vec_unique(agg_shadow)
+  agg_depth <- nrow(agg_struct)
+  if(length(kv) != (agg_depth - 1)) {
+    abort("Top down reconciliation requires strictly hierarchical structures.")
+  }
+  agg_order <- kv[order(vapply(agg_struct, sum, integer(1L)))]
+  if(is.character(split)) {
+    split <- match(split, agg_order)
+  }
+  nodes_above <- which(agg_shadow[[split]])
+  object <- object[-nodes_above]
+  fc <- NextMethod()
+  
+  fc_dist <- lapply(fc, function(x) x[[distribution_var(x)]])
+  h <- vec_size(fc_dist[[1]])
+  fc_mean <- matrix(0, h, nrow(key_data))
+  fc_mean[,-nodes_above] <- do.call(cbind, lapply(fc_dist, mean))
+  
+  fc_prop <- key_data[[split]]
+  fc_prop <- matrix(1, nrow = nrow(fc_mean), ncol = vec_unique_count(fc_prop[!is_aggregated(fc_prop)]))
+  
+  # Ensure key structure matches order of fc object
+  mid_root_nodes <- NULL
+  key_data <- key_data[order(vec_c(!!!key_data$.rows)),]
+  for(i in seq(split+1, length.out = agg_depth - 1 - split)) {
+    agg_layer <- key_data[agg_order[seq_len(i)]][-nodes_above,]
+    agg_nodes <- vec_group_loc(is_aggregated(agg_layer[[length(agg_layer)]]))
+    # Drop nodes which aren't in this layer
+    if((i+1) < agg_depth) {
+      agg_keep <- which(is_aggregated(key_data[[agg_order[[i+1]]]]))
+      agg_nodes$loc <- lapply(agg_nodes$loc, intersect, agg_keep)
+    }
+    # Identify index position of the layer's nodes and their parents
+    agg_child_loc <- agg_nodes$loc[[which(!agg_nodes$key)]]
+    agg_parent_loc <- agg_nodes$loc[[which(agg_nodes$key)]]
+    agg_parent_key <- agg_layer[,-length(agg_layer)]
+    agg_parent <- vec_match(agg_parent_key[agg_child_loc,,drop=FALSE], agg_parent_key[agg_parent_loc,,drop=FALSE])
+    
+    # Produce matching replications of middle layer node positions
+    if(is.null(mid_root_nodes)) mid_root_nodes <- agg_parent_loc
+    mid_root_nodes <- mid_root_nodes[agg_parent]
+    # Compute forecast proportions for this layer
+    fc_prop <- fc_prop[,agg_parent,drop=FALSE] * fc_mean[,agg_child_loc,drop=FALSE] / t(rowsum(t(fc_mean[,agg_child_loc,drop=FALSE]), agg_parent))[,agg_parent]
+  }
+  
+  fc_mean <- (fc_prop*fc_mean[,mid_root_nodes])%*%t(S)
+  # Code adapted from reconcile_fbl_list to handle changing weights over horizon
+  # This will need to be refactored later so that reconcile_fbl_list is broken up into more sub-problems
+  # As the weight matrix is an identity, this code and computation is much simpler.
+  is_normal <- all(map_lgl(fc_dist, function(x) inherits(x[[1]], "dist_normal")))
+  # Point forecast means can be computed in one step
+  fc_mean <- split(fc_mean,col(fc_mean))
+  if(is_normal) {
+    fc_var <- vector("list", nrow(key_data))
+    fc_var[-nodes_above] <- map(fc_dist, distributional::variance)
+    fc_var[nodes_above] <- rep_len(list(double(h)), length(nodes_above))
+    
+    P <- matrix(0L, nrow = ncol(S), ncol = nrow(S))
+    
+    # (S%*%P)%*%t(fc_mean)
+    fc_var <- map(seq_len(h), function(i) {
+      # Add top down structure
+      P[seq_along(mid_root_nodes) + (mid_root_nodes-1)*nrow(P)] <- fc_prop[i,]
+      SP <- S%*%P
+      diag(SP%*%diag(map_dbl(fc_var, `[[`, i))%*%t(SP))
+    })
+    fc_dist <- map2(fc_mean, transpose_dbl(map(fc_var, sqrt)), distributional::dist_normal)
+    
+  } else {
+    fc_dist <- lapply(fc_mean, distributional::dist_degenerate)
+  }
+  
+  # Update fables
+  map2(rep(fc[1], nrow(key_data)), fc_dist, function(fc, dist){
+    dimnames(dist) <- dimnames(fc[[distribution_var(fc)]])
+    fc[[distribution_var(fc)]] <- dist
+    point_fc <- compute_point_forecasts(dist, point_method)
+    fc[names(point_fc)] <- point_fc
+    fc
+  })
 }
 
 reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {

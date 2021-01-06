@@ -13,6 +13,7 @@
   `fable` data structures.
 * Added `top_down(method = "forecast_proportion")` for reconciliation using the
   forecast proportions techniques.
+* Added `middle_out()` forecast reconciliation method.
 
 ## Improvements
 
