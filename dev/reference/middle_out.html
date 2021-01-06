@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Extract fitted values from models — fitted.mdl_df • fabletools</title>
+<title>Middle out forecast reconciliation — middle_out • fabletools</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,8 @@
 
 
 
-<meta property="og:title" content="Extract fitted values from models — fitted.mdl_df" />
-<meta property="og:description" content="Extracts the fitted values from each of the models in a mable. A tsibble will
-be returned containing these fitted values. Fitted values will be
-automatically back-transformed if a transformation was specified." />
+<meta property="og:title" content="Middle out forecast reconciliation — middle_out" />
+<meta property="og:description" content="" />
 
 
 <meta name="robots" content="noindex">
@@ -125,40 +123,40 @@ automatically back-transformed if a transformation was specified." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Extract fitted values from models</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/fitted.R'><code>R/fitted.R</code></a></small>
-    <div class="hidden name"><code>fitted.mdl_df.Rd</code></div>
+    <h1>Middle out forecast reconciliation</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/reconciliation.R'><code>R/reconciliation.R</code></a></small>
+    <div class="hidden name"><code>middle_out.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Extracts the fitted values from each of the models in a mable. A tsibble will
-be returned containing these fitted values. Fitted values will be
-automatically back-transformed if a transformation was specified.</p>
+    <p><a href='https://www.tidyverse.org/lifecycle/#experimental'><img src='figures/lifecycle-experimental.svg' alt='Experimental lifecycle'></a></p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for mdl_df</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/fitted.values.html'>fitted</a></span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for mdl_ts</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/fitted.values.html'>fitted</a></span><span class='op'>(</span><span class='va'>object</span>, h <span class='op'>=</span> <span class='fl'>1</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>middle_out</span><span class='op'>(</span><span class='va'>models</span>, split <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>A mable or time series model.</p></td>
+      <th>models</th>
+      <td><p>A column of models in a mable.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Other arguments passed to the model method for <code><a href='https://rdrr.io/r/stats/fitted.values.html'>fitted()</a></code></p></td>
-    </tr>
-    <tr>
-      <th>h</th>
-      <td><p>The number of steps ahead that these fitted values are computed from.</p></td>
+      <th>split</th>
+      <td><p>The middle level of the hierarchy from which the bottom-up and
+top-down approaches are used above and below respectively.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Reconciles a hierarchy using the middle out reconciliation method. The
+response variable of the hierarchy must be aggregated using sums. The
+forecasted time points must match for all series in the hierarchy.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='reconcile.html'>reconcile()</a></code>, <code><a href='aggregate_key.html'>aggregate_key()</a></code>
+<a href='https://otexts.com/fpp3/middle-out.html'><em>Forecasting: Principles and Practice</em> - Middle-out approach</a></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
