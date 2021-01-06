@@ -14,6 +14,8 @@
 \item{object}{A mable or time series model.}
 
 \item{...}{Other arguments passed to the model method for \code{fitted()}}
+
+\item{h}{The number of steps ahead that these fitted values are computed from.}
 }
 \description{
 Extracts the fitted values from each of the models in a mable. A tsibble will

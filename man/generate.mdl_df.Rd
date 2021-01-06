@@ -31,6 +31,10 @@ time series with no exogenous regressors).}
 \item{seed}{The seed for the random generation from distributions.}
 
 \item{...}{Additional arguments for individual simulation methods.}
+
+\item{bootstrap}{If TRUE, then forecast distributions are computed using simulation with resampled errors.}
+
+\item{bootstrap_block_size}{The bootstrap block size specifies the number of contiguous residuals to be taken in each bootstrap sample.}
 }
 \description{
 Use a model's fitted distribution to simulate additional data with similar

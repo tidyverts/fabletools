@@ -44,6 +44,10 @@ generate.mdl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
 }
 
 #' @rdname generate.mdl_df
+#' 
+#' @param bootstrap If TRUE, then forecast distributions are computed using simulation with resampled errors.
+#' @param bootstrap_block_size The bootstrap block size specifies the number of contiguous residuals to be taken in each bootstrap sample. 
+#' 
 #' @export
 generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, 
                             bootstrap = FALSE, bootstrap_block_size = 1, ...){
@@ -75,7 +79,7 @@ generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
   
   if(bootstrap) {
     res <- residuals(x$fit)
-    res <- na.omit(res) - mean(res, na.rm = TRUE)
+    res <- stats::na.omit(res) - mean(res, na.rm = TRUE)
     new_data$.innov <- if(bootstrap_block_size == 1) {
       sample(res, nrow(new_data), replace = TRUE)
     } else {

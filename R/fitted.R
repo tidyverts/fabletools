@@ -21,6 +21,9 @@ fitted.mdl_df <- function(object, ...){
 }
 
 #' @rdname fitted.mdl_df
+#' 
+#' @param h The number of steps ahead that these fitted values are computed from.
+#' 
 #' @export
 fitted.mdl_ts <- function(object, h = 1, ...){
   bt <- map(object$transformation, invert_transformation)
