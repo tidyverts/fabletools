@@ -28,6 +28,7 @@
 * Data lines in fable `autoplot()` are now always grouped by the data's key.
 * Fixed `bottom_up()` aggregation mismatch for redundant leaf nodes (#266).
 * Fixed `min_trace()` reconciliation for degenerate hierarchies (#267).
+* Fixed `select(<mable>)` not keeping required key variables (#297).
 
 # fabletools 0.2.1
 
