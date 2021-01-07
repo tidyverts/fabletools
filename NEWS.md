@@ -22,6 +22,8 @@
   average loss equals CRPS (#280).
 * Automatic transformation functions formals are now named after the response
   variable and not converted to `.x`, preventing conflicts with values named `.x`.
+* `box_cox()` and `inv_box_cox()` are now vectorised over the transformation
+  parameter `lambda`.
 
 ## Bug fixes
 
