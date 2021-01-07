@@ -163,7 +163,6 @@ unnest_tsbl <- function(.data, tsbl_col, parent_key = NULL, interval = NULL){
   
   .data <- unnest_tbl(.data, tsbl_col)
   
-  class(.data[[idx_chr]]) <- class(tsbl[[idx_chr]])
   build_tsibble(.data, key = !!key, index = !!idx,
                 index2 = !!index2(tsbl), ordered = is_ordered(tsbl),
                 interval = interval%||%interval(tsbl))
