@@ -139,6 +139,9 @@ build_fable <- function (x, response, distribution) {
     warn("The dimnames of the fable's distribution are missing and have been set to match the response variables.")
     dimnames(fbl[[distribution]]) <- response
   }
+  if(!identical(response, dimnames(fbl[[distribution]]))) {
+    dimnames(fbl[[distribution]]) <- response
+  }
   validate_fable(fbl)
   fbl
 }
