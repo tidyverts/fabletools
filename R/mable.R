@@ -139,7 +139,22 @@ pivot_longer.mdl_df <- function (data, ..., names_to = "name") {
 
 #' @export
 select.mdl_df <- function (.data, ...){
-  res <- select(as_tibble(.data), ...)
+  res <- NextMethod()
+  
+  loc <- tidyselect::eval_select(expr(c(...)), .data)
+  
+  kv <- key_vars(.data)
+  rm_kv <- intersect(kv, names(.data)[-loc])
+  key_data <- vec_unique(select(key_data(.data), rm_kv))
+  
+  # Drop/keep redundant/necessary key variables
+  if(vec_size(key_data) == 1) {
+    .data%@%"key" <- key_data(.data)[c(setdiff(kv, rm_kv), ".rows")]
+  } else {
+    res <- bind_cols(.data[rm_kv], res)
+  }
+  names(.data)[loc] <- names(loc)
+  
   restore_mable(res, .data)
 }
 #' @export
@@ -164,7 +179,8 @@ transmute.mdl_df <- function (.data, ...){
   colnames(kd) <- c(value[key_pos], ".rows")
   mdl_pos <- match(mable_vars(x), nm)
   res <- NextMethod()
-  build_mable_meta(res, key_data = kd, model = value[mdl_pos])
+  build_mable_meta(res, key_data = kd, model = value[mdl_pos], 
+                   response = response_vars(x))
 }
 
 #' @export
