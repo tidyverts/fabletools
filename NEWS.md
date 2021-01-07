@@ -14,6 +14,8 @@
 * Added `top_down(method = "forecast_proportion")` for reconciliation using the
   forecast proportions techniques.
 * Added `middle_out()` forecast reconciliation method.
+* Added directional accuracy measures, including `MDA()`, `MDV()` and `MDPV()`.
+  (#273, @davidtedfordholt)
 
 ## Improvements
 
