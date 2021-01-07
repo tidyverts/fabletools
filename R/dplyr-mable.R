@@ -22,5 +22,10 @@ dplyr_col_modify.mdl_df <- function(data, cols) {
 dplyr_reconstruct.mdl_df <- function(data, template) {
   res <- NextMethod()
   mbl_vars <- names(which(vapply(data, inherits, logical(1L), "lst_mdl")))
-  build_mable(data, key = !!key_vars(template), model = !!mbl_vars)
+  kv <- key_vars(template)
+  if(all(kv %in% names(res))) {
+    build_mable(data, key = !!kv, model = !!mbl_vars)
+  } else {
+    as_tibble(res)
+  }
 }
