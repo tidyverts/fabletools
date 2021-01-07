@@ -120,11 +120,11 @@ point_accuracy_measures <- list(ME = ME, RMSE = RMSE, MAE = MAE,
 #' 
 #' @export
 MDA <- function(.resid, .actual, na.rm = TRUE, reward = 1, penalty = 0, ...){
-  actual_change <- .actual - dplyr::lag(.actual)
-  actual_direction <- ifelse(actual_change > 0, 1, ifelse(actual_change < 0, -1, 0))
-  predicted_change <- actual_change - .resid
-  predicted_direction <- ifelse(predicted_change > 0, 1, ifelse(predicted_change < 0, -1, 0))
-  directional_error <- ifelse(actual_direction == predicted_direction, 1, 0)
+  actual_change <- diff(.actual)
+  actual_direction <- sign(actual_change)
+  predicted_change <- actual_change - .resid[-1]
+  predicted_direction <- sign(predicted_change)
+  directional_error <- actual_direction == predicted_direction
   
   (reward-penalty) * mean(directional_error, na.rm = na.rm) + penalty
 }
@@ -139,12 +139,11 @@ MDA <- function(.resid, .actual, na.rm = TRUE, reward = 1, penalty = 0, ...){
 #' 
 #' @export
 MDV <- function(.resid, .actual, na.rm = TRUE, ...){
-  actual_change <- .actual - dplyr::lag(.actual)
-  actual_direction <- ifelse(actual_change > 0, 1, ifelse(actual_change < 0, -1, 0))
-  predicted_change <- actual_change - .resid
-  predicted_direction <- ifelse(predicted_change > 0, 1, ifelse(predicted_change < 0, -1, 0))
+  actual_change <- diff(.actual)
+  actual_direction <- sign(actual_change)
+  predicted_change <- actual_change - .resid[-1]
+  predicted_direction <- sign(predicted_change)
   directional_accuracy <- ifelse(actual_direction == predicted_direction, 1, -1)
-  
   mean(abs(actual_change) * directional_accuracy, na.rm = na.rm)
 }
 
@@ -158,13 +157,13 @@ MDV <- function(.resid, .actual, na.rm = TRUE, ...){
 #' 
 #' @export
 MDPV <- function(.resid, .actual, na.rm = TRUE, ...){
-  actual_change <- .actual - dplyr::lag(.actual)
-  actual_direction <- ifelse(actual_change > 0, 1, ifelse(actual_change < 0, -1, 0))
-  predicted_change <- actual_change - .resid
-  predicted_direction <- ifelse(predicted_change > 0, 1, ifelse(predicted_change < 0, -1, 0))
+  actual_change <- diff(.actual)
+  actual_direction <- sign(actual_change)
+  predicted_change <- actual_change - .resid[-1]
+  predicted_direction <- sign(predicted_change)
   directional_accuracy <- ifelse(actual_direction == predicted_direction, 1, -1)
   
-  mean(abs(actual_change / .actual) * directional_accuracy, na.rm = na.rm) * 100
+  mean(abs(actual_change / .actual[-1]) * directional_accuracy, na.rm = na.rm) * 100
 }
 
 #' Directional accuracy measures
