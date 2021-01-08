@@ -20,6 +20,7 @@
 * Added `middle_out()` forecast reconciliation method.
 * Added directional accuracy measures, including `MDA()`, `MDV()` and `MDPV()`
   (#273, @davidtedfordholt).
+* Added `fill_gaps(<fable>)`.
 
 ## Improvements
 
@@ -30,6 +31,11 @@
   variable and not converted to `.x`, preventing conflicts with values named `.x`.
 * `box_cox()` and `inv_box_cox()` are now vectorised over the transformation
   parameter `lambda`.
+* `RMSSE()` accuracy measure is now included in default `accuracy()` measures.
+* Specifying a different `response` variable in `as_fable()` will no longer
+  error, it now sets the provided `response` value as the distribution's new 
+  response.
+* Minor vctrs support improvements.
 
 ## Bug fixes
 
@@ -37,6 +43,7 @@
 * Fixed `bottom_up()` aggregation mismatch for redundant leaf nodes (#266).
 * Fixed `min_trace()` reconciliation for degenerate hierarchies (#267).
 * Fixed `select(<mable>)` not keeping required key variables (#297).
+* Fixed `...` not being passed through in `report()`.
 
 # fabletools 0.2.1
 
