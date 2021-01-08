@@ -134,6 +134,7 @@
 <h2 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New features</h2>
 <ul>
+<li>Added <code><a href="../reference/scenarios.html">scenarios()</a></code> function for providing multiple scenarios to the <code>new_data</code> argument. This allows different sets of future exogenous regressors to be provided to functions like <code><a href="../reference/forecast.html">forecast()</a></code>, <code><a href="https://generics.r-lib.org/reference/generate.html">generate()</a></code>, and <code><a href="https://generics.r-lib.org/reference/interpolate.html">interpolate()</a></code> (<a href='https://github.com/tidyverts/fabletools/issues/110'>#110</a>).</li>
 <li>Added <code><a href="../reference/percentile_score.html">quantile_score()</a></code>, which is similar to <code><a href="../reference/percentile_score.html">percentile_score()</a></code> except it allows a set of quantile <code>probs</code> to be provided (<a href='https://github.com/tidyverts/fabletools/issues/280'>#280</a>).</li>
 <li>Added distribution support for <code>autoplot(&lt;dable&gt;)</code>. If the decomposition provides distributions for its components, then the uncertainty of the components will be plotted with interval ribbons.</li>
 <li>Added block bootstrap option for bootstrapping innovations in <code><a href="https://generics.r-lib.org/reference/generate.html">generate()</a></code>.</li>
@@ -141,7 +142,7 @@
 <li>Added <code>as_fable(&lt;forecast&gt;)</code> for converting older <code>forecast</code> class objects to <code>fable</code> data structures.</li>
 <li>Added <code><a href="../reference/top_down.html">top_down(method = "forecast_proportion")</a></code> for reconciliation using the forecast proportions techniques.</li>
 <li>Added <code><a href="../reference/middle_out.html">middle_out()</a></code> forecast reconciliation method.</li>
-<li>Added directional accuracy measures, including <code><a href="../reference/MDA.html">MDA()</a></code>, <code><a href="../reference/MDV.html">MDV()</a></code> and <code><a href="../reference/MDPV.html">MDPV()</a></code>. (<a href='https://github.com/tidyverts/fabletools/issues/273'>#273</a>, <a href='https://github.com/davidtedfordholt'>@davidtedfordholt</a>)</li>
+<li>Added directional accuracy measures, including <code><a href="../reference/MDA.html">MDA()</a></code>, <code><a href="../reference/MDV.html">MDV()</a></code> and <code><a href="../reference/MDPV.html">MDPV()</a></code> (<a href='https://github.com/tidyverts/fabletools/issues/273'>#273</a>, <a href='https://github.com/davidtedfordholt'>@davidtedfordholt</a>).</li>
 </ul>
 </div>
 <div id="improvements" class="section level2">
