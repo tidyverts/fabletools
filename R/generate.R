@@ -84,10 +84,12 @@ generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
     new_data$.innov <- if(bootstrap_block_size == 1) {
       sample(res, nrow(new_data), replace = TRUE)
     } else {
-      # Assume residuals are regularly spaced for now
+      if(any(has_gaps(x$data)$.gaps)) abort("Residuals must be regularly spaced without gaps to use a block bootstrap method.")
       kr <- tsibble::key_rows(new_data)
-      idx <- x$data[[index_var(x$data)]]
-      innov <- lapply(kr, function(rows) block_bootstrap(res, bootstrap_block_size)[seq_along(rows)])
+      # idx <- x$data[[index_var(x$data)]]
+      # new_idx <- new_data[[index_var(new_data)]]
+      # block_pos <- ((new_idx - min(idx))%%bootstrap_block_size)+1
+      innov <- lapply(lengths(kr), function(n) block_bootstrap(res, bootstrap_block_size, size = n))
       vec_c(!!!innov)
     }
   }
@@ -114,12 +116,13 @@ Does your model require extra variables to produce simulations?", e$message))
   .sim
 }
 
-block_bootstrap <- function (x, window_size) {
-  bx <- array(0, (floor(length(x)/window_size) + 2) * window_size)
-  for (i in 1:(floor(length(x)/window_size) + 2)) {
-    c <- sample(1:(length(x) - window_size + 1), 1)
-    bx[((i - 1) * window_size + 1):(i * window_size)] <- x[c:(c + window_size - 1)]
+block_bootstrap <- function (x, window_size, size = length(x)) {
+  n_blocks <- size%/%window_size + 2
+  bx <- numeric(n_blocks * window_size)
+  for (i in seq_len(n_blocks)) {
+    block_pos <- sample(seq_len(length(x) - window_size + 1), 1)
+    bx[((i - 1) * window_size + 1):(i * window_size)] <- x[block_pos:(block_pos + window_size - 1)]
   }
   start_from <- sample(0:(window_size - 1), 1) + 1
-  bx[start_from:(start_from + length(x) - 1)]
+  bx[seq(start_from, length.out = size)]
 }
