@@ -110,13 +110,10 @@ point_accuracy_measures <- list(ME = ME, RMSE = RMSE, MAE = MAE,
                        MPE = MPE, MAPE = MAPE, MASE = MASE, RMSSE = RMSSE,
                        ACF1 = ACF1)
 
-#' Mean Directional Accuracy
+#' @rdname directional_accuracy_measures
 #' 
-#' @inheritParams directional_accuracy_measures
-#' 
-#' @references 
-#' Blaskowitz and H. Herwartz (2011) "On economic evaluation of directional forecasts". \emph{International Journal of Forecasting},
-#' \bold{27}(4), 1058-1065.
+#' @param reward,penalty The weights given to correct and incorrect predicted
+#'   directions.
 #' 
 #' @export
 MDA <- function(.resid, .actual, na.rm = TRUE, reward = 1, penalty = 0, ...){
@@ -129,14 +126,7 @@ MDA <- function(.resid, .actual, na.rm = TRUE, reward = 1, penalty = 0, ...){
   (reward-penalty) * mean(directional_error, na.rm = na.rm) + penalty
 }
 
-#' Mean Directional Value
-#' 
-#' @inheritParams directional_accuracy_measures
-#' 
-#' @references 
-#' Blaskowitz and H. Herwartz (2011) "On economic evaluation of directional forecasts". \emph{International Journal of Forecasting},
-#' \bold{27}(4), 1058-1065.
-#' 
+#' @rdname directional_accuracy_measures
 #' @export
 MDV <- function(.resid, .actual, na.rm = TRUE, ...){
   actual_change <- diff(.actual)
@@ -147,14 +137,7 @@ MDV <- function(.resid, .actual, na.rm = TRUE, ...){
   mean(abs(actual_change) * directional_accuracy, na.rm = na.rm)
 }
 
-#' Mean Directional Percentage Value
-#' 
-#' @inheritParams directional_accuracy_measures
-#' 
-#' @references 
-#' Blaskowitz and H. Herwartz (2011) "On economic evaluation of directional forecasts". \emph{International Journal of Forecasting},
-#' \bold{27}(4), 1058-1065.
-#' 
+#' @rdname directional_accuracy_measures
 #' @export
 MDPV <- function(.resid, .actual, na.rm = TRUE, ...){
   actual_change <- diff(.actual)
@@ -168,12 +151,18 @@ MDPV <- function(.resid, .actual, na.rm = TRUE, ...){
 
 #' Directional accuracy measures
 #' 
-#' @param .resid A vector of residuals from either the training (model accuracy)
-#'  or test (forecast accuracy) data.
-#' @param .actual A vector of responses matching the fitted values 
-#' (for forecast accuracy, `new_data` must be provided).
-#' @param na.rm Remove the missing values before calculating the accuracy measure
-#' @param ... Additional arguments for each measure.
+#' A collection of accuracy measures based on the accuracy of the prediction's 
+#' direction (say, increasing or decreasing).
+#' 
+#' `MDA()`: Mean Directional Accuracy
+#' `MDV()`: Mean Directional Value
+#' `MDPV()`: Mean Directional Percentage Value
+#' 
+#' @inheritParams point_accuracy_measures
+#' 
+#' @references 
+#' Blaskowitz and H. Herwartz (2011) "On economic evaluation of directional forecasts". \emph{International Journal of Forecasting},
+#' \bold{27}(4), 1058-1065.
 #' 
 #' @export
 directional_accuracy_measures <- list(MDA = MDA, MDV = MDV, MDPV = MDPV)
