@@ -143,6 +143,7 @@
 <li>Added <code><a href="../reference/top_down.html">top_down(method = "forecast_proportion")</a></code> for reconciliation using the forecast proportions techniques.</li>
 <li>Added <code><a href="../reference/middle_out.html">middle_out()</a></code> forecast reconciliation method.</li>
 <li>Added directional accuracy measures, including <code><a href="../reference/MDA.html">MDA()</a></code>, <code><a href="../reference/MDA.html">MDV()</a></code> and <code><a href="../reference/MDA.html">MDPV()</a></code> (<a href='https://github.com/tidyverts/fabletools/issues/273'>#273</a>, <a href='https://github.com/davidtedfordholt'>@davidtedfordholt</a>).</li>
+<li>Added <code>fill_gaps(&lt;fable&gt;)</code>.</li>
 </ul>
 </div>
 <div id="improvements" class="section level2">
@@ -153,6 +154,10 @@
 <li>Automatic transformation functions formals are now named after the response variable and not converted to <code>.x</code>, preventing conflicts with values named <code>.x</code>.</li>
 <li>
 <code><a href="../reference/box_cox.html">box_cox()</a></code> and <code><a href="../reference/box_cox.html">inv_box_cox()</a></code> are now vectorised over the transformation parameter <code>lambda</code>.</li>
+<li>
+<code><a href="../reference/ME.html">RMSSE()</a></code> accuracy measure is now included in default <code><a href="../reference/accuracy.html">accuracy()</a></code> measures.</li>
+<li>Specifying a different <code>response</code> variable in <code><a href="../reference/as_fable.html">as_fable()</a></code> will no longer error, it now sets the provided <code>response</code> value as the distribution’s new response.</li>
+<li>Minor vctrs support improvements.</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
@@ -163,6 +168,7 @@
 <li>Fixed <code><a href="../reference/bottom_up.html">bottom_up()</a></code> aggregation mismatch for redundant leaf nodes (<a href='https://github.com/tidyverts/fabletools/issues/266'>#266</a>).</li>
 <li>Fixed <code><a href="../reference/min_trace.html">min_trace()</a></code> reconciliation for degenerate hierarchies (<a href='https://github.com/tidyverts/fabletools/issues/267'>#267</a>).</li>
 <li>Fixed <code>select(&lt;mable&gt;)</code> not keeping required key variables (<a href='https://github.com/tidyverts/fabletools/issues/297'>#297</a>).</li>
+<li>Fixed <code>...</code> not being passed through in <code><a href="../reference/report.html">report()</a></code>.</li>
 </ul>
 </div>
 </div>
