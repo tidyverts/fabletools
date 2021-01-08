@@ -526,7 +526,7 @@ build_smat_rows <- function(key_data){
     nm_key <- names(x)[seq_len(n_key)]
     agg_vars <- map2_lgl(x[seq_len(n_key)], y[seq_len(n_key)], `<`)
     
-    if(!any(agg_vars)) browser() # Something isn't right
+    if(!any(agg_vars)) abort("Something unexpected happened, please report this bug at https://github.com/tidyverts/fabletools/issues/ with a description of what you're trying to do.")
     
     # Match rows between summation matrices
     not_agg <- names(Filter(`!`, y[seq_len(n_key)]))
