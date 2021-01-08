@@ -27,15 +27,14 @@ interpolate.mdl_df <- function(object, new_data, ...){
 abort("Interpolation can only be done using one model. 
 Please use select() to choose the model to interpolate with.")
   }
+  
+  object <- bind_new_data(object, new_data)
   kv <- key_vars(object)
-  object %>%
-    bind_new_data(new_data) %>% 
-    as_tibble %>% 
-    transmute(
+  object <- transmute(as_tibble(object),
       !!!syms(kv),
       interpolated = map2(!!sym(mable_vars(object)), new_data, interpolate, ...)
-    ) %>% 
-    unnest_tsbl("interpolated", parent_key = kv)
+    )
+  unnest_tsbl(object, "interpolated", parent_key = kv)
 }
 
 #' @rdname interpolate

@@ -51,6 +51,9 @@ build_mable <- function (x, key = NULL, key_data = NULL, model = NULL) {
   if(length(resp_var <- unique(map(x[model], function(mdl) response_vars(mdl[[1]])))) > 1){
     abort("A mable can only contain models with the same response variable(s).")
   }
+  if(length(resp_var) == 0) {
+    abort("A mable must contain at least one model.")
+  }
   
   if (!is_null(key_data)){
     assert_key_data(key_data)

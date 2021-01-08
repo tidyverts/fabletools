@@ -18,10 +18,10 @@ stream <- function(object, ...){
 #' @export
 stream.mdl_df <- function(object, new_data, ...){
   mdls <- mable_vars(object)
-  new_data <- bind_new_data(object, new_data)
-  object %>% 
-    dplyr::mutate_at(vars(!!!mdls),
-                     stream, new_data[["new_data"]], ...)
+  object <- bind_new_data(object, new_data)
+  new_data <- object[["new_data"]]
+  object[["new_data"]] <- NULL
+  dplyr::mutate_at(object, vars(!!!mdls), stream, new_data, ...)
 }
 
 #' @export

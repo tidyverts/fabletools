@@ -102,7 +102,6 @@ forecast <- function(object, ...){
 #' @export
 forecast.mdl_df <- function(object, new_data = NULL, h = NULL, 
                             point_forecast = list(.mean = mean), ...){
-  kv <- c(key_vars(object), ".model")
   mdls <- mable_vars(object)
   if(!is.null(h) && !is.null(new_data)){
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
@@ -111,6 +110,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
   if(!is.null(new_data)){
     object <- bind_new_data(object, new_data)
   }
+  kv <- c(key_vars(object), ".model")
   
   # Evaluate forecasts
   object <- dplyr::mutate_at(as_tibble(object), vars(!!!mdls),
@@ -262,4 +262,16 @@ compute_point_forecasts <- function(distribution, measures){
 #' @export
 forecast.fbl_ts <- function(object, ...){
   abort("Did you try to forecast a fable? Forecasts can only be computed from model objects (such as a mable).")
+}
+
+#' A set of future scenarios for forecasting
+#' 
+#' @param ... Input data for each scenario
+#' @param names_to The column name used to identify each scenario
+#' 
+#' @export
+scenarios <- function(..., names_to = ".scenario"){
+  structure(list2(
+    ...
+  ), names_to = names_to)
 }

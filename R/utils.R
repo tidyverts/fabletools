@@ -59,6 +59,19 @@ make_future_data <- function(.data, h = NULL){
 }
 
 bind_new_data <- function(object, new_data){
+  # Handle multiple scenarios provided to new_data.
+  if(inherits(new_data, "list")) {
+    scenario_nm <- attr(new_data, "names_to") %||% ".scenario"
+    new_data <- vec_rbind(
+      !!!map(new_data, compose(as_tibble, bind_new_data), object = object),
+      .names_to = scenario_nm
+    )
+    return(
+      build_mable(new_data, 
+                  key = c(scenario_nm, key_vars(object)), 
+                  model = mable_vars(object))
+    )
+  }
   if(!is.data.frame(new_data)){
     abort(sprintf("`new_data` requires a data frame. Perhaps you intended to specify the forecast horizon? If so, use `h = %s`.", deparse(new_data)))
   }

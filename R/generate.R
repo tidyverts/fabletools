@@ -30,16 +30,17 @@
 generate.mdl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   mdls <- mable_vars(x)
   if(!is.null(new_data)){
-    new_data <- bind_new_data(x, new_data)[["new_data"]]
+    x <- bind_new_data(x, new_data)
   }
   kv <- c(key_vars(x), ".model")
   x <- tidyr::pivot_longer(as_tibble(x), all_of(mdls),
                            names_to = ".model", values_to = ".sim")
   
   # Evaluate simulations
-  x$.sim <- map2(x[[".sim"]], 
-                 new_data %||% rep(list(NULL), length.out = NROW(x)),
+  x[[".sim"]] <- map2(x[[".sim"]], 
+                 x[["new_data"]] %||% rep(list(NULL), length.out = NROW(x)),
                  generate, h = h, times = times, seed = seed, ...)
+  x[["new_data"]] <- NULL
   unnest_tsbl(x, ".sim", parent_key = kv)
 }
 

@@ -2,6 +2,10 @@
 
 ## New features
 
+* Added `scenarios()` function for providing multiple scenarios to the 
+  `new_data` argument. This allows different sets of future exogenous regressors
+  to be provided to functions like `forecast()`, `generate()`, and 
+  `interpolate()` (#110).
 * Added `quantile_score()`, which is similar to `percentile_score()` except it
   allows a set of quantile `probs` to be provided (#280).
 * Added distribution support for `autoplot(<dable>)`. If the decomposition 
@@ -14,8 +18,8 @@
 * Added `top_down(method = "forecast_proportion")` for reconciliation using the
   forecast proportions techniques.
 * Added `middle_out()` forecast reconciliation method.
-* Added directional accuracy measures, including `MDA()`, `MDV()` and `MDPV()`.
-  (#273, @davidtedfordholt)
+* Added directional accuracy measures, including `MDA()`, `MDV()` and `MDPV()`
+  (#273, @davidtedfordholt).
 
 ## Improvements
 
