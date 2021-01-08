@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a fable object — fable • fabletools</title>
+<title>A set of future scenarios for forecasting — scenarios • fabletools</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,8 @@
 
 
 
-<meta property="og:title" content="Create a fable object — fable" />
-<meta property="og:description" content="A fable (forecast table) data class (fbl_ts) which is a tsibble-like data
-structure for representing forecasts. In extension to the key and index from
-the tsibble (tbl_ts) class, a fable (fbl_ts) must also contain a single
-distribution column that uses values from the distributional package." />
+<meta property="og:title" content="A set of future scenarios for forecasting — scenarios" />
+<meta property="og:description" content="A set of future scenarios for forecasting" />
 
 
 
@@ -126,35 +123,27 @@ distribution column that uses values from the distributional package." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a fable object</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/fable.R'><code>R/fable.R</code></a></small>
-    <div class="hidden name"><code>fable.Rd</code></div>
+    <h1>A set of future scenarios for forecasting</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/forecast.R'><code>R/forecast.R</code></a></small>
+    <div class="hidden name"><code>scenarios.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A fable (forecast table) data class (<code>fbl_ts</code>) which is a tsibble-like data
-structure for representing forecasts. In extension to the key and index from
-the tsibble (<code>tbl_ts</code>) class, a fable (<code>fbl_ts</code>) must also contain a single
-distribution column that uses values from the distributional package.</p>
+    <p>A set of future scenarios for forecasting</p>
     </div>
 
-    <pre class="usage"><span class='fu'>fable</span><span class='op'>(</span><span class='va'>...</span>, <span class='va'>response</span>, <span class='va'>distribution</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>scenarios</span><span class='op'>(</span><span class='va'>...</span>, names_to <span class='op'>=</span> <span class='st'>".scenario"</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>...</th>
-      <td><p>Arguments passed to <code><a href='https://tsibble.tidyverts.org/reference/tsibble.html'>tsibble::tsibble()</a></code>.</p></td>
+      <td><p>Input data for each scenario</p></td>
     </tr>
     <tr>
-      <th>response</th>
-      <td><p>The character vector of response variable(s).</p></td>
-    </tr>
-    <tr>
-      <th>distribution</th>
-      <td><p>The name of the distribution column (can be provided
-using a bare expression).</p></td>
+      <th>names_to</th>
+      <td><p>The column name used to identify each scenario</p></td>
     </tr>
     </table>
 

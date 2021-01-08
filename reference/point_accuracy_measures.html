@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -106,7 +106,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/tidyverts/fabletools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -132,43 +132,43 @@
     <p>Point estimate accuracy measures</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ME</span>(<span class='no'>.resid</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>ME</span><span class='op'>(</span><span class='va'>.resid</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>MSE</span>(<span class='no'>.resid</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+<span class='fu'>MSE</span><span class='op'>(</span><span class='va'>.resid</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>RMSE</span>(<span class='no'>.resid</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+<span class='fu'>RMSE</span><span class='op'>(</span><span class='va'>.resid</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>MAE</span>(<span class='no'>.resid</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+<span class='fu'>MAE</span><span class='op'>(</span><span class='va'>.resid</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>MPE</span>(<span class='no'>.resid</span>, <span class='no'>.actual</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+<span class='fu'>MPE</span><span class='op'>(</span><span class='va'>.resid</span>, <span class='va'>.actual</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>MAPE</span>(<span class='no'>.resid</span>, <span class='no'>.actual</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+<span class='fu'>MAPE</span><span class='op'>(</span><span class='va'>.resid</span>, <span class='va'>.actual</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>MASE</span>(
-  <span class='no'>.resid</span>,
-  <span class='no'>.train</span>,
-  <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>.period</span>,
-  <span class='kw'>d</span> <span class='kw'>=</span> <span class='no'>.period</span> <span class='kw'>==</span> <span class='fl'>1</span>,
-  <span class='kw'>D</span> <span class='kw'>=</span> <span class='no'>.period</span> <span class='kw'>&gt;</span> <span class='fl'>1</span>,
-  <span class='no'>...</span>
-)
+<span class='fu'>MASE</span><span class='op'>(</span>
+  <span class='va'>.resid</span>,
+  <span class='va'>.train</span>,
+  demean <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>.period</span>,
+  d <span class='op'>=</span> <span class='va'>.period</span> <span class='op'>==</span> <span class='fl'>1</span>,
+  D <span class='op'>=</span> <span class='va'>.period</span> <span class='op'>&gt;</span> <span class='fl'>1</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
-<span class='fu'>RMSSE</span>(
-  <span class='no'>.resid</span>,
-  <span class='no'>.train</span>,
-  <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>.period</span>,
-  <span class='kw'>d</span> <span class='kw'>=</span> <span class='no'>.period</span> <span class='kw'>==</span> <span class='fl'>1</span>,
-  <span class='kw'>D</span> <span class='kw'>=</span> <span class='no'>.period</span> <span class='kw'>&gt;</span> <span class='fl'>1</span>,
-  <span class='no'>...</span>
-)
+<span class='fu'>RMSSE</span><span class='op'>(</span>
+  <span class='va'>.resid</span>,
+  <span class='va'>.train</span>,
+  demean <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>.period</span>,
+  d <span class='op'>=</span> <span class='va'>.period</span> <span class='op'>==</span> <span class='fl'>1</span>,
+  D <span class='op'>=</span> <span class='va'>.period</span> <span class='op'>&gt;</span> <span class='fl'>1</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
-<span class='fu'>ACF1</span>(<span class='no'>.resid</span>, <span class='kw'>na.action</span> <span class='kw'>=</span> <span class='kw pkg'>stats</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/r/stats/na.fail.html'>na.pass</a></span>, <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+<span class='fu'>ACF1</span><span class='op'>(</span><span class='va'>.resid</span>, na.action <span class='op'>=</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/r/stats/na.fail.html'>na.pass</a></span>, demean <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='no'>point_accuracy_measures</span></pre>
+<span class='va'>point_accuracy_measures</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -221,7 +221,7 @@ from a model, or forecasted values from the forecast.</p></td>
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>An object of class <code>list</code> of length 7.</p>
+    <p>An object of class <code>list</code> of length 8.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -238,7 +238,7 @@ from a model, or forecasted values from the forecast.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

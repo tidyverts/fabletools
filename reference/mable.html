@@ -76,7 +76,7 @@ list column itself (lst_mdl) describes how these models are related." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -84,7 +84,7 @@ list column itself (lst_mdl) describes how these models are related." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -110,7 +110,7 @@ list column itself (lst_mdl) describes how these models are related." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/tidyverts/fabletools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -140,7 +140,7 @@ must contain at least one column of time series models (<code>mdl_ts</code>), wh
 list column itself (<code>lst_mdl</code>) describes how these models are related.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mable</span>(<span class='no'>...</span>, <span class='kw'>key</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>mable</span><span class='op'>(</span><span class='va'>...</span>, key <span class='op'>=</span> <span class='cn'>NULL</span>, model <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -149,8 +149,8 @@ list column itself (<code>lst_mdl</code>) describes how these models are related
       <th>...</th>
       <td><p>&lt;<code><a href='https://rlang.r-lib.org/reference/dyn-dots.html'>dynamic-dots</a></code>&gt;
 A set of name-value pairs. These arguments are
-processed with <code><a href='https://rlang.r-lib.org/reference/nse-defuse.html'>rlang::quos()</a></code> and support unquote via <code>!!</code> and
-unquote-splice via <code>!!!</code>. Use <code>:=</code> to create columns that start with a dot.</p>
+processed with <code><a href='https://rlang.r-lib.org/reference/nse-defuse.html'>rlang::quos()</a></code> and support unquote via <code><a href='https://rlang.r-lib.org/reference/nse-force.html'>!!</a></code> and
+unquote-splice via <code><a href='https://rlang.r-lib.org/reference/nse-force.html'>!!!</a></code>. Use <code>:=</code> to create columns that start with a dot.</p>
 <p>Arguments are evaluated sequentially.
 You can refer to previously created elements directly or using the .data
 pronoun.
@@ -183,7 +183,7 @@ is not available.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

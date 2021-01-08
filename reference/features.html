@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -106,7 +106,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/tidyverts/fabletools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -132,13 +132,13 @@
     <p>Create scalar valued summary features for a dataset from feature functions.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>features</span>(<span class='no'>.tbl</span>, <span class='no'>.var</span>, <span class='no'>features</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>features</span><span class='op'>(</span><span class='va'>.tbl</span>, <span class='va'>.var</span>, <span class='va'>features</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>features_at</span>(<span class='no'>.tbl</span>, <span class='no'>.vars</span>, <span class='no'>features</span>, <span class='no'>...</span>)
+<span class='fu'>features_at</span><span class='op'>(</span><span class='va'>.tbl</span>, <span class='va'>.vars</span>, <span class='va'>features</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>features_all</span>(<span class='no'>.tbl</span>, <span class='no'>features</span>, <span class='no'>...</span>)
+<span class='fu'>features_all</span><span class='op'>(</span><span class='va'>.tbl</span>, <span class='va'>features</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>features_if</span>(<span class='no'>.tbl</span>, <span class='no'>.predicate</span>, <span class='no'>features</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>features_if</span><span class='op'>(</span><span class='va'>.tbl</span>, <span class='va'>.predicate</span>, <span class='va'>features</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -157,7 +157,7 @@
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional arguments to be passed to each feature. These arguments will only be passed to features which use it in their formal arguments (<code><a href='https://rdrr.io/r/base/formals.html'>base::formals()</a></code>), and not via their <code>...</code>. While passing <code>na.rm = TRUE</code> to <code><a href='https://rdrr.io/r/stats/cor.html'>stats::var()</a></code> will work, it will not for <code><a href='https://rdrr.io/r/base/mean.html'>base::mean()</a></code> as its formals are <code>x</code> and <code>...</code>. To more precisely pass inputs to each function, you can use lambdas in the list of features (<code>~ mean(., na.rm = TRUE)</code>).</p></td>
+      <td><p>Additional arguments to be passed to each feature. These arguments will only be passed to features which use it in their formal arguments (<code><a href='https://rdrr.io/r/base/formals.html'>base::formals()</a></code>), and not via their <code>...</code>. While passing <code>na.rm = TRUE</code> to <code><a href='https://rdrr.io/r/stats/cor.html'>stats::var()</a></code> will work, it will not for <code><a href='https://rdrr.io/r/base/mean.html'>base::mean()</a></code> as its formals are <code>x</code> and <code>...</code>. To more precisely pass inputs to each function, you should use lambdas in the list of features (<code>~ mean(., na.rm = TRUE)</code>).</p></td>
     </tr>
     <tr>
       <th>.predicate</th>
@@ -178,9 +178,10 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Provide a set of functions as a named list to features.</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tsibble</span>)
-<span class='no'>tourism</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>features</span>(<span class='no'>Trips</span>, <span class='kw'>features</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>mean</span> <span class='kw'>=</span> <span class='no'>mean</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='no'>sd</span>))</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 304 x 5</span><span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tsibble.tidyverts.org'>tsibble</a></span><span class='op'>)</span>
+<span class='va'>tourism</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>features</span><span class='op'>(</span><span class='va'>Trips</span>, features <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>mean <span class='op'>=</span> <span class='va'>mean</span>, sd <span class='op'>=</span> <span class='va'>sd</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 304 x 5</span><span>
 #&gt;    Region         State              Purpose    mean    sd
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>              </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span> Adelaide       South Australia    Business 156.   35.6 
@@ -195,9 +196,10 @@
 #&gt; </span><span style='color: #555555;'>10</span><span> Alice Springs  Northern Territory Holiday   31.9  18.1 
 #&gt; </span><span style='color: #555555;'># … with 294 more rows</span><span></div><div class='input'>
 <span class='co'># Search and use useful features with `feature_set()`. </span>
-<span class='kw'>if</span>(<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"feasts"</span>)) <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>feasts</span>)
-<span class='no'>tourism</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>features</span>(<span class='no'>Trips</span>, <span class='kw'>features</span> <span class='kw'>=</span> <span class='fu'><a href='feature_set.html'>feature_set</a></span>(<span class='kw'>tags</span> <span class='kw'>=</span> <span class='st'>"autocorrelation"</span>))</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 304 x 14</span><span>
+<span class='kw'>if</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"feasts"</span><span class='op'>)</span><span class='op'>)</span> <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://feasts.tidyverts.org/'>feasts</a></span><span class='op'>)</span>
+<span class='va'>tourism</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>features</span><span class='op'>(</span><span class='va'>Trips</span>, features <span class='op'>=</span> <span class='fu'><a href='feature_set.html'>feature_set</a></span><span class='op'>(</span>tags <span class='op'>=</span> <span class='st'>"autocorrelation"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 304 x 14</span><span>
 #&gt;    Region State Purpose     acf1 acf10 diff1_acf1 diff1_acf10 diff2_acf1
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span> Adela… Sout… Busine…  0.033</span><span style='text-decoration: underline;'>3</span><span>  0.131     -</span><span style='color: #BB0000;'>0.520</span><span>       0.463     -</span><span style='color: #BB0000;'>0.676</span><span>
@@ -213,6 +215,24 @@
 #&gt; </span><span style='color: #555555;'># … with 294 more rows, and 6 more variables: diff2_acf10 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
 #&gt; </span><span style='color: #555555;'>#   season_acf1 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, pacf5 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, diff1_pacf5 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, diff2_pacf5 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
 #&gt; </span><span style='color: #555555;'>#   season_pacf </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span></div><div class='input'>
+<span class='co'># Best practice is to use anonymous functions for additional arguments</span>
+<span class='va'>tourism</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>features</span><span class='op'>(</span><span class='va'>Trips</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>~</span> <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>.</span>, probs<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>1</span>,by<span class='op'>=</span><span class='fl'>0.2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 304 x 9</span><span>
+#&gt;    Region      State         Purpose    `0%`  `20%`   `40%`  `60%`  `80%` `100%`
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> Adelaide    South Austra… Busine…  68.7   127.   145.    160.   182.   242.  
+#&gt; </span><span style='color: #555555;'> 2</span><span> Adelaide    South Austra… Holiday 108.    133.   148.    160.   181.   224.  
+#&gt; </span><span style='color: #555555;'> 3</span><span> Adelaide    South Austra… Other    25.9    42.3   50.6    55.9   70.4  107.  
+#&gt; </span><span style='color: #555555;'> 4</span><span> Adelaide    South Austra… Visiti… 137.    177.   194.    214.   237.   270.  
+#&gt; </span><span style='color: #555555;'> 5</span><span> Adelaide H… South Austra… Busine…   0       0      0.763   1.79   4.56  28.6 
+#&gt; </span><span style='color: #555555;'> 6</span><span> Adelaide H… South Austra… Holiday   0       5.29   7.51   11.3   15.5   35.8 
+#&gt; </span><span style='color: #555555;'> 7</span><span> Adelaide H… South Austra… Other     0       0      0.685   1.18   2.44   8.95
+#&gt; </span><span style='color: #555555;'> 8</span><span> Adelaide H… South Austra… Visiti…   0.778   8.15  10.2    14.1   19.3   81.1 
+#&gt; </span><span style='color: #555555;'> 9</span><span> Alice Spri… Northern Ter… Busine…   1.01    8.41  11.3    15.8   21.5   34.1 
+#&gt; </span><span style='color: #555555;'>10</span><span> Alice Spri… Northern Ter… Holiday   2.81   14.6   24.1    36.2   46.6   76.5 
+#&gt; </span><span style='color: #555555;'># … with 294 more rows</span><span></div><div class='input'>
+
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -229,7 +249,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

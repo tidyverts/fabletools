@@ -73,6 +73,9 @@
     <loc>https://fabletools.tidyverts.org/reference/decomposition_model.html</loc>
   </url>
   <url>
+    <loc>https://fabletools.tidyverts.org/reference/directional_accuracy_measures.html</loc>
+  </url>
+  <url>
     <loc>https://fabletools.tidyverts.org/reference/distribution_accuracy_measures.html</loc>
   </url>
   <url>
@@ -148,6 +151,9 @@
     <loc>https://fabletools.tidyverts.org/reference/mable_vars.html</loc>
   </url>
   <url>
+    <loc>https://fabletools.tidyverts.org/reference/middle_out.html</loc>
+  </url>
+  <url>
     <loc>https://fabletools.tidyverts.org/reference/min_trace.html</loc>
   </url>
   <url>
@@ -209,6 +215,9 @@
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/response_vars.html</loc>
+  </url>
+  <url>
+    <loc>https://fabletools.tidyverts.org/reference/scenarios.html</loc>
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/skill_score.html</loc>

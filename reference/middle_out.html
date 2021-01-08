@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a fable object — fable • fabletools</title>
+<title>Middle out forecast reconciliation — middle_out • fabletools</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,8 @@
 
 
 
-<meta property="og:title" content="Create a fable object — fable" />
-<meta property="og:description" content="A fable (forecast table) data class (fbl_ts) which is a tsibble-like data
-structure for representing forecasts. In extension to the key and index from
-the tsibble (tbl_ts) class, a fable (fbl_ts) must also contain a single
-distribution column that uses values from the distributional package." />
+<meta property="og:title" content="Middle out forecast reconciliation — middle_out" />
+<meta property="og:description" content="" />
 
 
 
@@ -126,38 +123,40 @@ distribution column that uses values from the distributional package." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a fable object</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/fable.R'><code>R/fable.R</code></a></small>
-    <div class="hidden name"><code>fable.Rd</code></div>
+    <h1>Middle out forecast reconciliation</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/reconciliation.R'><code>R/reconciliation.R</code></a></small>
+    <div class="hidden name"><code>middle_out.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A fable (forecast table) data class (<code>fbl_ts</code>) which is a tsibble-like data
-structure for representing forecasts. In extension to the key and index from
-the tsibble (<code>tbl_ts</code>) class, a fable (<code>fbl_ts</code>) must also contain a single
-distribution column that uses values from the distributional package.</p>
+    <p><a href='https://www.tidyverse.org/lifecycle/#experimental'><img src='figures/lifecycle-experimental.svg' alt='Experimental lifecycle'></a></p>
     </div>
 
-    <pre class="usage"><span class='fu'>fable</span><span class='op'>(</span><span class='va'>...</span>, <span class='va'>response</span>, <span class='va'>distribution</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>middle_out</span><span class='op'>(</span><span class='va'>models</span>, split <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>Arguments passed to <code><a href='https://tsibble.tidyverts.org/reference/tsibble.html'>tsibble::tsibble()</a></code>.</p></td>
+      <th>models</th>
+      <td><p>A column of models in a mable.</p></td>
     </tr>
     <tr>
-      <th>response</th>
-      <td><p>The character vector of response variable(s).</p></td>
-    </tr>
-    <tr>
-      <th>distribution</th>
-      <td><p>The name of the distribution column (can be provided
-using a bare expression).</p></td>
+      <th>split</th>
+      <td><p>The middle level of the hierarchy from which the bottom-up and
+top-down approaches are used above and below respectively.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Reconciles a hierarchy using the middle out reconciliation method. The
+response variable of the hierarchy must be aggregated using sums. The
+forecasted time points must match for all series in the hierarchy.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='reconcile.html'>reconcile()</a></code>, <code><a href='aggregate_key.html'>aggregate_key()</a></code>
+<a href='https://otexts.com/fpp3/middle-out.html'><em>Forecasting: Principles and Practice</em> - Middle-out approach</a></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
