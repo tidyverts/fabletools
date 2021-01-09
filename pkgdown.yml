@@ -3,7 +3,7 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   extension_models: extension_models.html
-last_built: 2021-01-09T02:36Z
+last_built: 2021-01-09T02:39Z
 urls:
   reference: https://fabletools.tidyverts.org/reference
   article: https://fabletools.tidyverts.org/articles
