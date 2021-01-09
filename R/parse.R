@@ -239,8 +239,8 @@ parse_model_lhs <- function(model){
     environment(trans) <- new_environment(dt, get_env(trans))
     inv <- invert_transformation(trans)
     environment(inv) <- new_environment(dt, get_env(inv))
-    
-    valid <- all.equal(dt[[resp]], inv(trans(dt[[resp]])))
+    y <- eval_tidy(rlang::parse_expr(resp), data = dt, env = model$env)
+    valid <- all.equal(y, inv(trans(y)))
     if(!isTRUE(valid)){
       abort(
 "Could not identify a valid back-transformation for this transformation.
