@@ -14,3 +14,7 @@ This submission resolves issues on the CRAN check page.
 ## revdep checks
 
 All revdeps have been checked. No changes to worse were found.
+
+## Resubmission
+
+Fixed undetected reverse dependency issues with the {fable} package.
