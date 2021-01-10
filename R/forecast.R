@@ -187,8 +187,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
                          })
     object$model$remove_data()
     object$model$stage <- NULL
-    fc <- forecast(object$fit, new_data, specials = specials, 
-                   bootstrap = bootstrap, times = times, ...)
+    fc <- forecast(object$fit, new_data, specials = specials, times = times, ...)
   }
   
   # Back-transform forecast distributions

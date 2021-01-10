@@ -17,4 +17,7 @@ All revdeps have been checked. No changes to worse were found.
 
 ## Resubmission
 
-Fixed undetected reverse dependency issues with the {fable} package.
+Fixed undetected reverse dependency issues with the {fable} package. Fixed
+subsequent reverse dependency issues introduced to {fable.prophet} when fixing
+earlier reverse dependency issue. Reverse dependencies have been checked again
+and no changes to worse have been found.
