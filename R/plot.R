@@ -27,14 +27,16 @@ autoplot.tbl_ts <- function(object, .vars = NULL, ...){
   nk <- n_keys(object)
   
   if(quo_is_null(quo_vars)){
-    if(is_empty(measured_vars(object))){
-      abort("There are no variables to plot.")
+    mv <- measured_vars(object)
+    pos <- which(vapply(object[mv], is.numeric, logical(1L)))
+    if(is_empty(pos)) {
+      abort("Could not automatically identify an appropriate plot variable, please specify the variable to plot.")
     }
     inform(sprintf(
       "Plot variable not specified, automatically selected `.vars = %s`",
-      measured_vars(object)[1]
+      mv[pos[1]]
     ))
-    y <- sym(measured_vars(object)[1])
+    y <- sym(mv[pos[1]])
     .vars <- as_quosures(list(y), env = empty_env())
   }
   else if(possibly(compose(is_quosures, eval_tidy), FALSE)(.vars)){
@@ -83,14 +85,16 @@ autolayer.tbl_ts <- function(object, .vars = NULL, ...){
   nk <- n_keys(object)
   
   if(quo_is_null(quo_vars)){
-    if(is_empty(measured_vars(object))){
-      abort("There are no variables to plot.")
+    mv <- measured_vars(object)
+    pos <- which(vapply(object[mv], is.numeric, logical(1L)))
+    if(is_empty(pos)) {
+      abort("Could not automatically identify an appropriate plot variable, please specify the variable to plot.")
     }
     inform(sprintf(
       "Plot variable not specified, automatically selected `.vars = %s`",
-      measured_vars(object)[1]
+      mv[pos[1]]
     ))
-    y <- sym(measured_vars(object)[1])
+    y <- sym(mv[pos[1]])
     .vars <- as_quosures(list(y), env = empty_env())
   }
   else if(possibly(compose(is_quosures, eval_tidy), FALSE)(.vars)){
