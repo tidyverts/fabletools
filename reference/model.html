@@ -176,6 +176,14 @@ same response variable.</p></td>
 <a href='https://cran.r-project.org/package=future'>future</a> package. By specifying a
 <code><a href='https://rdrr.io/pkg/future/man/plan.html'>future::plan()</a></code> before estimating the models, they will be computed
 according to that plan.</p>
+    <h2 class="hasAnchor" id="progress"><a class="anchor" href="#progress"></a>Progress</h2>
+
+    
+
+
+<p>Progress on model estimation can be obtained by wrapping the code with
+<code><a href='https://rdrr.io/pkg/progressr/man/with_progress.html'>progressr::with_progress()</a></code>. Further customisation on how progress is
+reported can be controlled using the <code>progressr</code> package.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"fable"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>&amp;&amp;</span> <span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"tsibbledata"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
@@ -189,6 +197,7 @@ according to that plan.</p>
 <span class='co'># Training a seasonal naive and ETS(A,A,A) model to the monthly </span>
 <span class='co'># "Food retailing" turnover for selected Australian states.</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='fu'>progressr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/progressr/man/with_progress.html'>with_progress</a></span><span class='op'>(</span>
 <span class='va'>aus_retail</span> <span class='op'>%&gt;%</span> 
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span>
     <span class='va'>Industry</span> <span class='op'>==</span> <span class='st'>"Food retailing"</span>,
@@ -198,6 +207,7 @@ according to that plan.</p>
     snaive <span class='op'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/RW.html'>SNAIVE</a></span><span class='op'>(</span><span class='va'>Turnover</span><span class='op'>)</span>,
     ets <span class='op'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>Turnover</span><span class='op'>)</span> <span class='op'>~</span> <span class='fu'>error</span><span class='op'>(</span><span class='st'>"A"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>trend</span><span class='op'>(</span><span class='st'>"A"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>season</span><span class='op'>(</span><span class='st'>"A"</span><span class='op'>)</span><span class='op'>)</span>,
   <span class='op'>)</span>
+<span class='op'>)</span>
 <span class='op'>}</span>
 </div><div class='output co'>#&gt; <span style='color: #555555;'># A mable: 3 x 4</span><span>
 #&gt; </span><span style='color: #555555;'># Key:     State, Industry [3]</span><span>
