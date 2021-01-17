@@ -35,6 +35,14 @@ It is possible to estimate models in parallel using the
 according to that plan.
 }
 
+\section{Progress}{
+
+
+Progress on model estimation can be obtained by wrapping the code with
+\code{progressr::with_progress()}. Further customisation on how progress is
+reported can be controlled using the \code{progressr} package.
+}
+
 \examples{
 if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)) {
 library(fable)
@@ -47,6 +55,7 @@ aus_production \%>\%
 # Training a seasonal naive and ETS(A,A,A) model to the monthly 
 # "Food retailing" turnover for selected Australian states.
 library(dplyr)
+progressr::with_progress(
 aus_retail \%>\% 
   filter(
     Industry == "Food retailing",
@@ -56,6 +65,7 @@ aus_retail \%>\%
     snaive = SNAIVE(Turnover),
     ets = ETS(log(Turnover) ~ error("A") + trend("A") + season("A")),
   )
+)
 }
 
 }
