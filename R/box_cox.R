@@ -25,26 +25,22 @@
 #'
 #' @export
 box_cox <- function(x, lambda) {
-  if (lambda < 0) {
-    x[x < 0] <- NA
-  }
-  if (lambda == 0) {
-    log(x)
-  } else {
-    (sign(x) * abs(x) ^ lambda - 1) / lambda
-  }
+  lambda <- vec_recycle(lambda, vec_size(x))
+  x[lambda < 0 & x < 0] <- NA
+  lambda_0 <- lambda == 0
+  x[lambda_0] <- log(x[lambda_0])
+  x[!lambda_0] <- (sign(x[!lambda_0]) * abs(x[!lambda_0]) ^ lambda[!lambda_0] - 1) / lambda[!lambda_0]
+  x
 }
 
 #' @rdname box_cox
 #' @export
 inv_box_cox <- function(x, lambda) {
-  if (lambda < 0) {
-    x[x > -1 / lambda] <- NA
-  }
-  if (lambda == 0) {
-    exp(x)
-  } else {
-    x <- x * lambda + 1
-    sign(x) * abs(x) ^ (1 / lambda)
-  }
+  lambda <- vec_recycle(lambda, vec_size(x))
+  x[lambda < 0 & (x > -1 / lambda)] <- NA
+  lambda_0 <- lambda == 0
+  x[lambda_0] <- exp(x[lambda_0])
+  z <- x[!lambda_0] * lambda[!lambda_0] + 1
+  x[!lambda_0] <- sign(z) * abs(z) ^ (1 / lambda[!lambda_0])
+  x
 }

@@ -35,8 +35,8 @@ vec_ptype2.mdl_df.tbl_df <- vec_ptype2.mdl_df.mdl_df
 mable_ptype2 <- function(x, y, ...) {
   key_x <- key_vars(x)
   mdl_x <- mable_vars(x)
+  resp_x <- response_vars(x)
   if (is_mable(y)) {
-    resp_x <- response_vars(x)
     if (!identical(resp_x, response_vars(y))) {
       abort("Objects with different response variables cannot be combined.")
     }
@@ -44,7 +44,7 @@ mable_ptype2 <- function(x, y, ...) {
     mdl_x <- union(mdl_x, mable_vars(y))
   }
   out <- df_ptype2(x, y, ...)
-  build_mable_meta(out, key_data = key_x, model = mdl_x)
+  build_mable_meta(out, key_data = key_x, model = mdl_x, response = resp_x)
 }
 
 #' @rdname mable-vctrs

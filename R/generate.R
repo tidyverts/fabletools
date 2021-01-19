@@ -30,22 +30,28 @@
 generate.mdl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   mdls <- mable_vars(x)
   if(!is.null(new_data)){
-    new_data <- bind_new_data(x, new_data)[["new_data"]]
+    x <- bind_new_data(x, new_data)
   }
   kv <- c(key_vars(x), ".model")
   x <- tidyr::pivot_longer(as_tibble(x), all_of(mdls),
                            names_to = ".model", values_to = ".sim")
   
   # Evaluate simulations
-  x$.sim <- map2(x[[".sim"]], 
-                 new_data %||% rep(list(NULL), length.out = NROW(x)),
+  x[[".sim"]] <- map2(x[[".sim"]], 
+                 x[["new_data"]] %||% rep(list(NULL), length.out = NROW(x)),
                  generate, h = h, times = times, seed = seed, ...)
+  x[["new_data"]] <- NULL
   unnest_tsbl(x, ".sim", parent_key = kv)
 }
 
 #' @rdname generate.mdl_df
+#' 
+#' @param bootstrap If TRUE, then forecast distributions are computed using simulation with resampled errors.
+#' @param bootstrap_block_size The bootstrap block size specifies the number of contiguous residuals to be taken in each bootstrap sample. 
+#' 
 #' @export
-generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
+generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, 
+                            bootstrap = FALSE, bootstrap_block_size = 1, ...){
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
     stats::runif(1)
   if (is.null(seed))
@@ -72,6 +78,22 @@ generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
     new_data <- build_tsibble(new_data, index = !!idx, key = !!kv, interval = intvl)
   }
   
+  if(bootstrap) {
+    res <- residuals(x$fit)
+    res <- stats::na.omit(res) - mean(res, na.rm = TRUE)
+    new_data$.innov <- if(bootstrap_block_size == 1) {
+      sample(res, nrow(new_data), replace = TRUE)
+    } else {
+      if(any(has_gaps(x$data)$.gaps)) abort("Residuals must be regularly spaced without gaps to use a block bootstrap method.")
+      kr <- tsibble::key_rows(new_data)
+      # idx <- x$data[[index_var(x$data)]]
+      # new_idx <- new_data[[index_var(new_data)]]
+      # block_pos <- ((new_idx - min(idx))%%bootstrap_block_size)+1
+      innov <- lapply(lengths(kr), function(n) block_bootstrap(res, bootstrap_block_size, size = n))
+      vec_c(!!!innov)
+    }
+  }
+  
   # Compute specials with new_data
   x$model$stage <- "generate"
   x$model$add_data(new_data)
@@ -92,4 +114,15 @@ Does your model require extra variables to produce simulations?", e$message))
   .sim <- generate(x[["fit"]], new_data = new_data, specials = specials, ...)
   .sim[[".sim"]] <- invert_transformation(x$transformation[[1]])(.sim[[".sim"]])
   .sim
+}
+
+block_bootstrap <- function (x, window_size, size = length(x)) {
+  n_blocks <- size%/%window_size + 2
+  bx <- numeric(n_blocks * window_size)
+  for (i in seq_len(n_blocks)) {
+    block_pos <- sample(seq_len(length(x) - window_size + 1), 1)
+    bx[((i - 1) * window_size + 1):(i * window_size)] <- x[block_pos:(block_pos + window_size - 1)]
+  }
+  start_from <- sample(0:(window_size - 1), 1) + 1
+  bx[seq(start_from, length.out = size)]
 }

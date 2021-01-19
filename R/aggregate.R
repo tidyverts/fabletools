@@ -173,9 +173,9 @@ parse_agg_spec <- function(expr){
 #' hierarchies (such as unbalanced hierarchies).
 #' 
 #' @param x The vector of values.
-#' @param aggregated A logical vector to identify which values are <aggregated>.
+#' @param aggregated A logical vector to identify which values are `<aggregated>`.
 #' 
-#' @example 
+#' @examples
 #' agg_vec(
 #'   x = c(NA, "A", "B"),
 #'   aggregated = c(TRUE, FALSE, FALSE)
@@ -312,6 +312,13 @@ Hint: If you're trying to compare aggregated values, use `is_aggregated()`.")
 #' @export
 is.na.agg_vec <- function(x) {
   is.na(field(x, "x")) & !field(x, "agg")
+}
+
+#' @importFrom dplyr recode
+#' @export
+recode.agg_vec <- function(.x, ...) {
+  field(.x, "x") <- recode(field(.x, "x"), ...)
+  .x
 }
 
 #' Is the element an aggregation of smaller data

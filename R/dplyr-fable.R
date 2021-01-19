@@ -19,7 +19,12 @@ dplyr_col_modify.grouped_fbl <- dplyr_col_modify.fbl_ts
 #' @export
 dplyr_reconstruct.fbl_ts <- function(data, template) {
   res <- NextMethod()
-  build_fable(res, response = response_vars(template), distribution = distribution_var(template))
+  dist <- distribution_var(template)
+  if(dist %in% names(res)) {
+    build_fable(res, response = response_vars(template), distribution = dist)
+  } else {
+    res
+  }
 }
 
 #' @export

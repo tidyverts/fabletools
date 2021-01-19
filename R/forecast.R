@@ -173,7 +173,8 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
   # Compute forecasts
   if(simulate || bootstrap) {
     fc <- generate(object, new_data, bootstrap = bootstrap, times = times, ...)
-    fc <- distributional::dist_sample(unname(split(fc[[".sim"]], fc[[index_var(fc)]])))
+    fc <- unname(split(object$transformation[[1]](fc[[".sim"]]), fc[[index_var(fc)]]))
+    fc <- distributional::dist_sample(fc)
   } else {
     # Compute specials with new_data
     object$model$stage <- "forecast"
@@ -189,35 +190,37 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
                          })
     object$model$remove_data()
     object$model$stage <- NULL
-    fc <- forecast(object$fit, new_data, specials = specials, ...)
-    # Back-transform forecast distributions
-    bt <- map(object$transformation, function(x){
-      bt <- invert_transformation(x)
-      env <- new_environment(new_data, get_env(bt))
-      req_vars <- setdiff(all.vars(body(bt)), names(formals(bt)))
-      exists_vars <- map_lgl(req_vars, exists, env)
-  #     if(any(!exists_vars)){
-  #       bt <- custom_error(bt, sprintf(
-  # "Unable to find all required variables to back-transform the forecasts (missing %s).
-  # These required variables can be provided by specifying `new_data`.",
-  #         paste0("`", req_vars[!exists_vars], "`", collapse = ", ")
-  #       ))
-  #     }
-      set_env(bt, env)
-    })
-    
-    is_transformed <- vapply(bt, function(x) !is_symbol(body(x)), logical(1L))
-    if(length(bt) > 1) {
-      if(any(is_transformed)){
-        abort("Transformations of multivariate forecasts are not yet supported")
-      }
-    } else {
-      if(is_transformed){
-        bt <- bt[[1]]
-        fc <- distributional::dist_transformed(fc, bt, bt%@%"inverse")
-      }
+    fc <- forecast(object$fit, new_data, specials = specials, times = times, ...)
+  }
+  
+  # Back-transform forecast distributions
+  bt <- map(object$transformation, function(x){
+    bt <- invert_transformation(x)
+    env <- new_environment(new_data, get_env(bt))
+    req_vars <- setdiff(all.vars(body(bt)), names(formals(bt)))
+    exists_vars <- map_lgl(req_vars, exists, env)
+#     if(any(!exists_vars)){
+#       bt <- custom_error(bt, sprintf(
+# "Unable to find all required variables to back-transform the forecasts (missing %s).
+# These required variables can be provided by specifying `new_data`.",
+#         paste0("`", req_vars[!exists_vars], "`", collapse = ", ")
+#       ))
+#     }
+    set_env(bt, env)
+  })
+  
+  is_transformed <- vapply(bt, function(x) !is_symbol(body(x)), logical(1L))
+  if(length(bt) > 1) {
+    if(any(is_transformed)){
+      abort("Transformations of multivariate forecasts are not yet supported")
+    }
+  } else {
+    if(is_transformed){
+      bt <- bt[[1]]
+      fc <- distributional::dist_transformed(fc, bt, bt%@%"inverse")
     }
   }
+  
   dimnames(fc) <- resp_vars
   
   new_data[[dist_col]] <- fc
@@ -265,4 +268,16 @@ compute_point_forecasts <- function(distribution, measures){
 #' @export
 forecast.fbl_ts <- function(object, ...){
   abort("Did you try to forecast a fable? Forecasts can only be computed from model objects (such as a mable).")
+}
+
+#' A set of future scenarios for forecasting
+#' 
+#' @param ... Input data for each scenario
+#' @param names_to The column name used to identify each scenario
+#' 
+#' @export
+scenarios <- function(..., names_to = ".scenario"){
+  structure(list2(
+    ...
+  ), names_to = names_to)
 }

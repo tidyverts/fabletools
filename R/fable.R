@@ -139,6 +139,9 @@ build_fable <- function (x, response, distribution) {
     warn("The dimnames of the fable's distribution are missing and have been set to match the response variables.")
     dimnames(fbl[[distribution]]) <- response
   }
+  if(!identical(response, dimnames(fbl[[distribution]]))) {
+    dimnames(fbl[[distribution]]) <- response
+  }
   validate_fable(fbl)
   fbl
 }
@@ -244,6 +247,11 @@ ungroup.fbl_ts <- group_by.fbl_ts
 
 #' @export
 ungroup.grouped_fbl <- group_by.fbl_ts
+
+#' @export
+fill_gaps.fbl_ts <- function(.data, ..., .full = FALSE) {
+  vec_restore(NextMethod(.data), .data)
+}
 
 #' @export
 rbind.fbl_ts <- function(...){

@@ -29,6 +29,11 @@ model <- function(.data, ...){
 #' [`future::plan()`] before estimating the models, they will be computed 
 #' according to that plan.
 #' 
+#' @section Progress:
+#' 
+#' Progress on model estimation can be obtained by wrapping the code with 
+#' `progressr::with_progress()`. Further customisation on how progress is 
+#' reported can be controlled using the `progressr` package.
 #' 
 #' @examples 
 #' if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)) {
@@ -42,6 +47,7 @@ model <- function(.data, ...){
 #' # Training a seasonal naive and ETS(A,A,A) model to the monthly 
 #' # "Food retailing" turnover for selected Australian states.
 #' library(dplyr)
+#' progressr::with_progress(
 #' aus_retail %>% 
 #'   filter(
 #'     Industry == "Food retailing",
@@ -51,6 +57,7 @@ model <- function(.data, ...){
 #'     snaive = SNAIVE(Turnover),
 #'     ets = ETS(log(Turnover) ~ error("A") + trend("A") + season("A")),
 #'   )
+#' )
 #' }
 #' 
 #' @export

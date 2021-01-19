@@ -2,17 +2,20 @@
 % Please edit documentation in R/fitted.R
 \name{fitted.mdl_df}
 \alias{fitted.mdl_df}
+\alias{hfitted}
 \alias{fitted.mdl_ts}
 \title{Extract fitted values from models}
 \usage{
 \method{fitted}{mdl_df}(object, ...)
 
-\method{fitted}{mdl_ts}(object, ...)
+\method{fitted}{mdl_ts}(object, h = 1, ...)
 }
 \arguments{
 \item{object}{A mable or time series model.}
 
 \item{...}{Other arguments passed to the model method for \code{fitted()}}
+
+\item{h}{The number of steps ahead that these fitted values are computed from.}
 }
 \description{
 Extracts the fitted values from each of the models in a mable. A tsibble will

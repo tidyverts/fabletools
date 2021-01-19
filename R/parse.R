@@ -122,8 +122,7 @@ parse_model_rhs <- function(model){
 #' @export
 parse_model_lhs <- function(model){
   model_lhs <- model_lhs(model)
-  
-  if(is_call(model_lhs) && model_lhs[[1]] == sym("vars")){
+  if(is_call(model_lhs) && call_name(model_lhs) == "vars"){
     model_lhs[[1]] <- sym("exprs")
     model_lhs <- eval(model_lhs)
   }
@@ -132,6 +131,18 @@ parse_model_lhs <- function(model){
   }
   is_resp <- function(x) is_call(x) && x[[1]] == sym("resp")
   
+  # Traverse call removing all resp() usage
+  # This is used to evaluate the response from the input data
+  response_exprs <- lapply(model_lhs, traverse,
+                           .f = function(x, y) {
+                             if(is_resp(y)) x[[1]] else call2(call_name(y), !!!x)
+                           },
+                           .g = function(x) x[-1],
+                           # .h = function(x) if(is_resp(x)) x[[length(x)]] else x,
+                           base = function(x) is_syntactic_literal(x) || is_symbol(x)
+  )
+  
+  # Traverse call to parse out AST for transformations
   traversed_lhs <- lapply(model_lhs, traverse,
      .f = function(x, y) {
        if(any(resp_pos <- map_lgl(x, function(x) any(names(x) %in% "response")))){
@@ -158,7 +169,9 @@ parse_model_lhs <- function(model){
       # Capture parent expression of base case
       cl <- NULL
       if(length(x) == 0){
-        x <- list(attr(y, "call") %||% y[[1]])
+        # Multiple length `n` variables found and cannot disambiguate response
+        # Start with most disaggregated result of computation as response.
+        x <- if(is.null(attr(y, "call"))) list(y[[1]]) else syms(as_label(attr(y, "call")))
       }
       else{
         if(is.null(attr(y, "call"))){
@@ -167,6 +180,7 @@ parse_model_lhs <- function(model){
           }
         }
         else{
+          # Remove resp() from call
           cl <- attr(y,"call")
           if(any(names(y) == "response")){
             cl[[which(names(y) == "response")+1]] <- x[[1]][[length(x[[1]])]]
@@ -188,10 +202,14 @@ parse_model_lhs <- function(model){
     base = function(x) !is.list(x)
   )
   
+  # Obtain parsed out response variable
   responses <- map(traversed_lhs, function(x) x[[1]])
+  responses <- map_chr(responses, as_label)
   
+  # Obtain transformation expression applied to response variable
   transform_exprs <- lapply(traversed_lhs, function(x) x[[length(x)]])
   
+  # Invert transformation applied to response variable
   inverse_exprs <- lapply(traversed_lhs, function(x){
     x <- rev(x)
     result <- x[[length(x)]]
@@ -201,18 +219,12 @@ parse_model_lhs <- function(model){
     result
   })
   
+  # Produce transformation class functions for bt() usage
   make_transforms <- function(exprs, responses){
     map2(exprs, responses, function(x, response){
-      x <- traverse(x,
-               .f = function(x, y) as.call(c(y[[1]], x)),
-               .g = function(x) x[-1],
-               .h = function(x) {if(identical(x, response)) sym(".x") else x},
-               base = function(x) is_syntactic_literal(x) || is_symbol(x) || x == response
-      )
-      new_function(args = alist(.x = ), x, env = model$env)
+      new_function(args = set_names(list(missing_arg()), response), x, env = model$env)
     })
   }
-  
   transformations <- map2(
     make_transforms(transform_exprs, responses),
     make_transforms(inverse_exprs, responses),
@@ -227,8 +239,8 @@ parse_model_lhs <- function(model){
     environment(trans) <- new_environment(dt, get_env(trans))
     inv <- invert_transformation(trans)
     environment(inv) <- new_environment(dt, get_env(inv))
-    
-    valid <- all.equal(dt[[expr_name(resp)]], inv(trans(dt[[expr_name(resp)]])))
+    y <- eval_tidy(rlang::parse_expr(resp), data = dt, env = model$env)
+    valid <- all.equal(y, inv(trans(y)))
     if(!isTRUE(valid)){
       abort(
 "Could not identify a valid back-transformation for this transformation.
@@ -237,8 +249,8 @@ Please specify a valid form of your transformation using `new_transformation()`.
   })
   
   list(
-    expressions = transform_exprs,
-    response = responses,
+    expressions = response_exprs,
+    response = syms(responses),
     transformation = transformations
   )
 }

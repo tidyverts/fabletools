@@ -110,6 +110,63 @@ point_accuracy_measures <- list(ME = ME, RMSE = RMSE, MAE = MAE,
                        MPE = MPE, MAPE = MAPE, MASE = MASE, RMSSE = RMSSE,
                        ACF1 = ACF1)
 
+#' @rdname directional_accuracy_measures
+#' 
+#' @param reward,penalty The weights given to correct and incorrect predicted
+#'   directions.
+#' 
+#' @export
+MDA <- function(.resid, .actual, na.rm = TRUE, reward = 1, penalty = 0, ...){
+  actual_change <- diff(.actual)
+  actual_direction <- sign(actual_change)
+  predicted_change <- actual_change - .resid[-1]
+  predicted_direction <- sign(predicted_change)
+  directional_error <- actual_direction == predicted_direction
+  
+  (reward-penalty) * mean(directional_error, na.rm = na.rm) + penalty
+}
+
+#' @rdname directional_accuracy_measures
+#' @export
+MDV <- function(.resid, .actual, na.rm = TRUE, ...){
+  actual_change <- diff(.actual)
+  actual_direction <- sign(actual_change)
+  predicted_change <- actual_change - .resid[-1]
+  predicted_direction <- sign(predicted_change)
+  directional_accuracy <- ifelse(actual_direction == predicted_direction, 1, -1)
+  mean(abs(actual_change) * directional_accuracy, na.rm = na.rm)
+}
+
+#' @rdname directional_accuracy_measures
+#' @export
+MDPV <- function(.resid, .actual, na.rm = TRUE, ...){
+  actual_change <- diff(.actual)
+  actual_direction <- sign(actual_change)
+  predicted_change <- actual_change - .resid[-1]
+  predicted_direction <- sign(predicted_change)
+  directional_accuracy <- ifelse(actual_direction == predicted_direction, 1, -1)
+  
+  mean(abs(actual_change / .actual[-1]) * directional_accuracy, na.rm = na.rm) * 100
+}
+
+#' Directional accuracy measures
+#' 
+#' A collection of accuracy measures based on the accuracy of the prediction's 
+#' direction (say, increasing or decreasing).
+#' 
+#' `MDA()`: Mean Directional Accuracy
+#' `MDV()`: Mean Directional Value
+#' `MDPV()`: Mean Directional Percentage Value
+#' 
+#' @inheritParams point_accuracy_measures
+#' 
+#' @references 
+#' Blaskowitz and H. Herwartz (2011) "On economic evaluation of directional forecasts". \emph{International Journal of Forecasting},
+#' \bold{27}(4), 1058-1065.
+#' 
+#' @export
+directional_accuracy_measures <- list(MDA = MDA, MDV = MDV, MDPV = MDPV)
+
 #' @rdname interval_accuracy_measures
 #' @export
 winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
@@ -176,6 +233,7 @@ percentile_score <- function(.dist, .actual, na.rm = TRUE, ...){
 }
 
 #' @rdname distribution_accuracy_measures
+#' @param probs A vector of probabilities at which the metric is evaluated.
 #' @export
 quantile_score <- function(.dist, .actual, probs = c(0.05,0.25,0.5,0.75,0.95),
                            na.rm = TRUE, ...){
