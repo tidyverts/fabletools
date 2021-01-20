@@ -52,12 +52,20 @@ hfitted.mdl_ts <- function(object, h, ...) {
   fn <- tryCatch(utils::getS3method("hfitted", class(object[["fit"]])),
                  error = function(e) NULL)
   if(is.null(fn)) {
+    dt <- object$data
     resp <- response_vars(object)
-    n <- nrow(object$data)
+    
+    # Undo transformations
+    bt <- lapply(object$transformation, invert_transformation)
+    mv <- match(measured_vars(dt), names(dt))
+    dt[mv] <- mapply(calc, bt, dt[measured_vars(dt)], SIMPLIFY = FALSE)
+    names(dt)[mv] <- resp
+    
+    n <- nrow(dt)
     fits <- rep(NA_real_, n)
     
     for (i in seq_len(n-h)) {
-      mdl <- tryCatch(refit(object, vec_slice(object$data, seq_len(i))),
+      mdl <- tryCatch(refit(object, vec_slice(dt, seq_len(i))),
                       error = function(e) NULL)
       if(is.null(mdl)) next
       fits[i + h] <- mean(forecast(mdl, h = h, point_forecast = NULL)[[resp]][h])

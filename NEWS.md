@@ -1,5 +1,9 @@
 # fabletools (development version)
 
+## Improvements
+
+* Added transformation support for fallback `fitted(h > 1)` method (#302).
+
 # fabletools 0.3.0
 
 ## New features
