@@ -41,7 +41,9 @@
 
 <meta property="og:title" content="Augment a mable — augment.mdl_df" />
 <meta property="og:description" content="Uses a fitted model to augment the response variable with fitted values and
-residuals." />
+residuals. Response residuals (backtransformed) are stored in the .resid
+column, while innovation residuals (transformed) are stored in the .innov
+column." />
 
 
 <meta name="robots" content="noindex">
@@ -131,7 +133,9 @@ residuals." />
 
     <div class="ref-description">
     <p>Uses a fitted model to augment the response variable with fitted values and
-residuals.</p>
+residuals. Response residuals (backtransformed) are stored in the <code>.resid</code>
+column, while innovation residuals (transformed) are stored in the <code>.innov</code>
+column.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for mdl_df</span>
