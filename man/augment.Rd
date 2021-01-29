@@ -18,7 +18,9 @@
 }
 \description{
 Uses a fitted model to augment the response variable with fitted values and
-residuals.
+residuals. Response residuals (backtransformed) are stored in the \code{.resid}
+column, while innovation residuals (transformed) are stored in the \code{.innov}
+column.
 }
 \examples{
 if (requireNamespace("fable", quietly = TRUE)) {
