@@ -25,5 +25,5 @@ outliers.mdl_df <- function(object, ...){
 #' @rdname outliers
 #' @export
 outliers.mdl_ts <- function(object, ...){
-  outliers(object$fit, ...)
+  object$data[outliers(object$fit, ...),]
 }
