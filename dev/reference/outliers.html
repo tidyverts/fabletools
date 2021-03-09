@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Construct a new set of forecasts — construct_fc • fabletools</title>
+<title>Identify outliers — outliers • fabletools</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Construct a new set of forecasts — construct_fc" />
-<meta property="og:description" content="" />
+<meta property="og:title" content="Identify outliers — outliers" />
+<meta property="og:description" content="Return a table of outlying observations using a fitted model." />
 
 
 <meta name="robots" content="noindex">
@@ -123,39 +123,36 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Construct a new set of forecasts</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/forecast.R'><code>R/forecast.R</code></a></small>
-    <div class="hidden name"><code>construct_fc.Rd</code></div>
+    <h1>Identify outliers</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/outliers.R'><code>R/outliers.R</code></a></small>
+    <div class="hidden name"><code>outliers.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#deprecated'><img src='figures/lifecycle-deprecated.svg' alt='[Deprecated]' /></a></p>
+    <p>Return a table of outlying observations using a fitted model.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>construct_fc</span><span class='op'>(</span><span class='va'>point</span>, <span class='va'>sd</span>, <span class='va'>dist</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>outliers</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for mdl_df</span>
+<span class='fu'>outliers</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for mdl_ts</span>
+<span class='fu'>outliers</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>point</th>
-      <td><p>The transformed point forecasts</p></td>
+      <th>object</th>
+      <td><p>An object which can identify outliers.</p></td>
     </tr>
     <tr>
-      <th>sd</th>
-      <td><p>The standard deviation of the transformed forecasts</p></td>
-    </tr>
-    <tr>
-      <th>dist</th>
-      <td><p>The forecast distribution (typically produced using <code>new_fcdist</code>)</p></td>
+      <th>...</th>
+      <td><p>Arguments for further methods.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>This function is deprecated. <code><a href='forecast.html'>forecast()</a></code> methods for a model should return
-a vector of distributions using the distributional package.</p>
-<p>Backtransformations are automatically handled, and so no transformations should be specified here.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -177,8 +177,8 @@ compute the benchmark forecasts.</p>
 #&gt;     ref_score &lt;- do.call(measure, bench)
 #&gt;     1 - score/ref_score
 #&gt; }
-#&gt; &lt;bytecode: 0x7fd4bc75f648&gt;
-#&gt; &lt;environment: 0x7fd4bc731920&gt;</div><div class='input'>
+#&gt; &lt;bytecode: 0x7f97fc41ab58&gt;
+#&gt; &lt;environment: 0x7f97fc41b3b8&gt;</div><div class='input'>
 <span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"fable"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://fable.tidyverts.org'>fable</a></span><span class='op'>)</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tsibble.tidyverts.org'>tsibble</a></span><span class='op'>)</span>
@@ -193,13 +193,13 @@ compute the benchmark forecasts.</p>
   <span class='fu'><a href='forecast.html'>forecast</a></span><span class='op'>(</span>h <span class='op'>=</span> <span class='st'>"1 year"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='accuracy.html'>accuracy</a></span><span class='op'>(</span><span class='va'>lung_deaths</span>, measures <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>skill <span class='op'>=</span> <span class='fu'>skill_score</span><span class='op'>(</span><span class='va'>MSE</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 <span class='op'>}</span>
-</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 4 x 4</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 4 x 4</span><span>
 #&gt;   .model key     .type skill
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> ets    fdeaths Test  0.223
-#&gt; </span><span style='color: #555555;'>2</span><span> ets    mdeaths Test  0.446
-#&gt; </span><span style='color: #555555;'>3</span><span> lm     fdeaths Test  0.303
-#&gt; </span><span style='color: #555555;'>4</span><span> lm     mdeaths Test  0.494</div><div class='input'>
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span> ets    fdeaths Test  0.223
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span> ets    mdeaths Test  0.446
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span> lm     fdeaths Test  0.303
+#&gt; </span><span style='color: #BCBCBC;'>4</span><span> lm     mdeaths Test  0.494</div><div class='input'>
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
