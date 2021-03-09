@@ -8,9 +8,9 @@
 \usage{
 outliers(object, ...)
 
-\method{outliers}{mdl_df}(x, ...)
+\method{outliers}{mdl_df}(object, ...)
 
-\method{outliers}{mdl_ts}(x, ...)
+\method{outliers}{mdl_ts}(object, ...)
 }
 \arguments{
 \item{object}{An object which can identify outliers.}
