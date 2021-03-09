@@ -89,8 +89,11 @@ tbl_sum.dcmp_ts <- function(x){
   method <- expr_text((x%@%"aliases")[[response]])
   out <- NextMethod()
   names(out)[1] <- "A dable"
-  append(out, set_names(paste(response, method, sep = " = "),
-                        paste(x%@%"method", "Decomposition")))
+  if(!is.null(method)) {
+    out[[length(out) + 1]] <- set_names(paste(response, method, sep = " = "),
+                                        paste(x%@%"method", "Decomposition"))
+  }
+  out
 }
 
 #' @export
