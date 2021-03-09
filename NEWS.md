@@ -1,5 +1,9 @@
 # fabletools (development version)
 
+## New features
+
+* Added `outliers()` generic for identifying the outliers of a fitted model.
+
 ## Improvements
 
 * Added transformation support for fallback `fitted(h > 1)` method (#302).
