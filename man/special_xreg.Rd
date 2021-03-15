@@ -4,10 +4,10 @@
 \alias{special_xreg}
 \title{Special for producing a model matrix of exogenous regressors}
 \usage{
-special_xreg(...)
+special_xreg(default_intercept = TRUE)
 }
 \arguments{
-\item{...}{Bare expressions to be used as regressors in the model}
+\item{default_intercept}{Should an intercept be included if not specified in the model?}
 }
 \description{
 Special for producing a model matrix of exogenous regressors

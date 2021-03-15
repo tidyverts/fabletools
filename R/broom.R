@@ -1,7 +1,7 @@
 #' Augment a mable
 #' 
 #' Uses a fitted model to augment the response variable with fitted values and
-#' residuals. Response residuals (backtransformed) are stored in the `.resid`
+#' residuals. Response residuals (back-transformed) are stored in the `.resid`
 #' column, while innovation residuals (transformed) are stored in the `.innov`
 #' column.
 #' 

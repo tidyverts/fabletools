@@ -22,7 +22,7 @@ new_specials <- function(..., .required_specials = NULL, .xreg_specials = NULL){
 #' 
 #' @param default_intercept Should an intercept be included if not specified in the model?
 #' 
-#' @importFrom stats model.frame
+#' @importFrom stats model.frame model.matrix terms
 #' @export
 special_xreg <- function(default_intercept = TRUE) {
   out <- function(...) {

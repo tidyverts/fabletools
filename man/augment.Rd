@@ -18,7 +18,7 @@
 }
 \description{
 Uses a fitted model to augment the response variable with fitted values and
-residuals. Response residuals (backtransformed) are stored in the \code{.resid}
+residuals. Response residuals (back-transformed) are stored in the \code{.resid}
 column, while innovation residuals (transformed) are stored in the \code{.innov}
 column.
 }
