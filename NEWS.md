@@ -1,12 +1,20 @@
-# fabletools (development version)
+# fabletools 0.3.1
 
 ## New features
 
 * Added `outliers()` generic for identifying the outliers of a fitted model.
+* Added `special_xreg()` special generator, for producing a model matrix of
+  exogenous regressors. It supports an argument for controlling the default 
+  inclusion of an intercept.
+* Migrated `common_xregs` helper from fable to fabletools for providing a
+  common and consistent interface for common time series exogenous regressors.
+* Added experimental support for passing the tsibble index to `features()`
+  functions if the `.index` argument is used in the function.
 
 ## Improvements
 
 * Added transformation support for fallback `fitted(h > 1)` method (#302).
+* Documentation improvements.
 
 # fabletools 0.3.0
 
