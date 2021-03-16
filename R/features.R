@@ -12,6 +12,7 @@ features_impl <- function(.tbl, .var, features, ...){
   
   # Compute response
   key_dt <- key_data(.tbl)
+  idx <- index_var(.tbl)
   .tbl <- as_tibble(.tbl)
   if(NCOL(key_dt) > 1){
     .tbl <- dplyr::new_grouped_df(.tbl, key_dt)
@@ -26,6 +27,9 @@ features_impl <- function(.tbl, .var, features, ...){
       fmls <- formals(fn)[-1]
       fn_safe <- safely(fn, tibble(.rows = 1))
       res <- transpose(map(key_dt[[".rows"]], function(i){
+        # Add index to inputs
+        dots$.index <- .tbl[[idx]][i]
+        # Evaluate feature
         out <- do.call(fn_safe, c(list(x[i]), dots[intersect(names(fmls), names(dots))]))
         if(is.null(names(out[["result"]]))) 
           names(out[["result"]]) <- paste0("..?", seq_along(out[["result"]]))
