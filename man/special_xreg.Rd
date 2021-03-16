@@ -4,11 +4,18 @@
 \alias{special_xreg}
 \title{Special for producing a model matrix of exogenous regressors}
 \usage{
-special_xreg(default_intercept = TRUE)
+special_xreg(...)
 }
 \arguments{
-\item{default_intercept}{Should an intercept be included if not specified in the model?}
+\item{...}{Arguments for fable_xreg_matrix (see Details)}
 }
 \description{
 Special for producing a model matrix of exogenous regressors
+}
+\details{
+Currently the fable_xreg_matrix helper supports a single argument named
+\code{default_intercept}. If this argument is TRUE (passed via \code{...} above), then
+the intercept will be returned in the matrix if not specified (much like the
+behaviour of \code{lm()}). If FALSE, then the intercept will only be included if
+explicitly requested via \code{1} in the formula.
 }
