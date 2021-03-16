@@ -7,13 +7,13 @@
 special_xreg(...)
 }
 \arguments{
-\item{...}{Arguments for fable_xreg_matrix (see Details)}
+\item{...}{Arguments for \code{fable_xreg_matrix} (see Details)}
 }
 \description{
 Special for producing a model matrix of exogenous regressors
 }
 \details{
-Currently the fable_xreg_matrix helper supports a single argument named
+Currently the \code{fable_xreg_matrix} helper supports a single argument named
 \code{default_intercept}. If this argument is TRUE (passed via \code{...} above), then
 the intercept will be returned in the matrix if not specified (much like the
 behaviour of \code{lm()}). If FALSE, then the intercept will only be included if

@@ -20,11 +20,11 @@ new_specials <- function(..., .required_specials = NULL, .xreg_specials = NULL){
 
 #' Special for producing a model matrix of exogenous regressors
 #' 
-#' @param ... Arguments for fable_xreg_matrix (see Details)
+#' @param ... Arguments for `fable_xreg_matrix` (see Details)
 #' 
 #' @details 
 #' 
-#' Currently the fable_xreg_matrix helper supports a single argument named
+#' Currently the `fable_xreg_matrix` helper supports a single argument named
 #' `default_intercept`. If this argument is TRUE (passed via `...` above), then
 #' the intercept will be returned in the matrix if not specified (much like the
 #' behaviour of `lm()`). If FALSE, then the intercept will only be included if
