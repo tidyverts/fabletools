@@ -4,6 +4,7 @@ model_definition <- R6::R6Class(NULL,
     specials = list(),
     formula = NULL,
     extra = NULL,
+    origin = NULL,
     env = global_env(),
     check = function(.data){
     },
@@ -28,7 +29,6 @@ model_definition <- R6::R6Class(NULL,
       xreg_env <- get_env(self$specials$xreg)
       xreg_env$lag <- self$recall_lag
       
-      
       self$prepare(formula, ...)
       
       self$extra <- list2(...)
@@ -49,6 +49,10 @@ model_definition <- R6::R6Class(NULL,
     data = NULL,
     add_data = function(.data){
       self$check(.data)
+      # Add data origin if not yet known (fitting model)
+      if(is.null(self$origin)) {
+        self$origin <- .data[[index_var(.data)]][[1]]
+      }
       self$data <- .data
     },
     remove_data = function(){
