@@ -58,6 +58,9 @@
     <loc>https://fabletools.tidyverts.org/reference/combination_model.html</loc>
   </url>
   <url>
+    <loc>https://fabletools.tidyverts.org/reference/common_xregs.html</loc>
+  </url>
+  <url>
     <loc>https://fabletools.tidyverts.org/reference/components.html</loc>
   </url>
   <url>
@@ -181,6 +184,9 @@
     <loc>https://fabletools.tidyverts.org/reference/null_model.html</loc>
   </url>
   <url>
+    <loc>https://fabletools.tidyverts.org/reference/outliers.html</loc>
+  </url>
+  <url>
     <loc>https://fabletools.tidyverts.org/reference/parse_model.html</loc>
   </url>
   <url>
@@ -221,6 +227,9 @@
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/skill_score.html</loc>
+  </url>
+  <url>
+    <loc>https://fabletools.tidyverts.org/reference/special_xreg.html</loc>
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/stream.html</loc>

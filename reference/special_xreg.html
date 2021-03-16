@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Decomposition plots — autoplot.dcmp_ts • fabletools</title>
+<title>Special for producing a model matrix of exogenous regressors — special_xreg • fabletools</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,8 @@
 
 
 
-<meta property="og:title" content="Decomposition plots — autoplot.dcmp_ts" />
-<meta property="og:description" content="Produces a faceted plot of the components used to build the response
-variable of the dable. Useful for visualising how the components contribute
-in a decomposition or model." />
+<meta property="og:title" content="Special for producing a model matrix of exogenous regressors — special_xreg" />
+<meta property="og:description" content="Special for producing a model matrix of exogenous regressors" />
 
 
 
@@ -125,57 +123,34 @@ in a decomposition or model." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Decomposition plots</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/plot.R'><code>R/plot.R</code></a></small>
-    <div class="hidden name"><code>autoplot.dcmp_ts.Rd</code></div>
+    <h1>Special for producing a model matrix of exogenous regressors</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/specials.R'><code>R/specials.R</code></a></small>
+    <div class="hidden name"><code>special_xreg.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Produces a faceted plot of the components used to build the response
-variable of the dable. Useful for visualising how the components contribute
-in a decomposition or model.</p>
+    <p>Special for producing a model matrix of exogenous regressors</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for dcmp_ts</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span><span class='op'>(</span><span class='va'>object</span>, .vars <span class='op'>=</span> <span class='cn'>NULL</span>, scale_bars <span class='op'>=</span> <span class='cn'>TRUE</span>, level <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>80</span>, <span class='fl'>95</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>special_xreg</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>A dable.</p></td>
-    </tr>
-    <tr>
-      <th>.vars</th>
-      <td><p>The column of the dable used to plot. By default, this will be the response variable of the decomposition.</p></td>
-    </tr>
-    <tr>
-      <th>scale_bars</th>
-      <td><p>If <code>TRUE</code>, each facet will include a scale bar which represents the same units across each facet.</p></td>
-    </tr>
-    <tr>
-      <th>level</th>
-      <td><p>If the decomposition contains distributions, which levels should be used to display intervals?</p></td>
-    </tr>
-    <tr>
       <th>...</th>
-      <td><p>Further arguments passed to <code><a href='https://ggplot2.tidyverse.org/reference/geom_path.html'>ggplot2::geom_line()</a></code>, which can be used to specify fixed aesthetics such as <code>colour = "red"</code> or <code>size = 3</code>.</p></td>
+      <td><p>Arguments for <code>fable_xreg_matrix</code> (see Details)</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"feasts"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://feasts.tidyverts.org/'>feasts</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://tsibbledata.tidyverts.org/'>tsibbledata</a></span><span class='op'>)</span>
-<span class='va'>aus_production</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='model.html'>model</a></span><span class='op'>(</span><span class='fu'><a href='https://feasts.tidyverts.org/reference/STL.html'>STL</a></span><span class='op'>(</span><span class='va'>Beer</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://generics.r-lib.org/reference/components.html'>components</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>  
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span><span class='op'>(</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div><div class='img'><img src='autoplot.dcmp_ts-1.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+    <p>Currently the <code>fable_xreg_matrix</code> helper supports a single argument named
+<code>default_intercept</code>. If this argument is TRUE (passed via <code>...</code> above), then
+the intercept will be returned in the matrix if not specified (much like the
+behaviour of <code><a href='https://rdrr.io/r/stats/lm.html'>lm()</a></code>). If FALSE, then the intercept will only be included if
+explicitly requested via <code>1</code> in the formula.</p>
+
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -126,13 +126,36 @@
       <small>Source: <a href='https://github.com/tidyverts/fabletools/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="fabletools-030" class="section level1">
-<h1 class="page-header" data-toc-text="0.3.0">
-<a href="#fabletools-030" class="anchor"></a>fabletools 0.3.0<small> Unreleased </small>
+    <div id="fabletools-031" class="section level1">
+<h1 class="page-header" data-toc-text="0.3.1">
+<a href="#fabletools-031" class="anchor"></a>fabletools 0.3.1<small> Unreleased </small>
 </h1>
 <div id="new-features" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New features</h2>
+<ul>
+<li>Added <code><a href="../reference/outliers.html">outliers()</a></code> generic for identifying the outliers of a fitted model.</li>
+<li>Added <code><a href="../reference/special_xreg.html">special_xreg()</a></code> special generator, for producing a model matrix of exogenous regressors. It supports an argument for controlling the default inclusion of an intercept.</li>
+<li>Migrated <code>common_xregs</code> helper from fable to fabletools for providing a common and consistent interface for common time series exogenous regressors.</li>
+<li>Added experimental support for passing the tsibble index to <code><a href="../reference/features.html">features()</a></code> functions if the <code>.index</code> argument is used in the function.</li>
+</ul>
+</div>
+<div id="improvements" class="section level2">
+<h2 class="hasAnchor">
+<a href="#improvements" class="anchor"></a>Improvements</h2>
+<ul>
+<li>Added transformation support for fallback <code><a href="https://rdrr.io/r/stats/fitted.values.html">fitted(h &gt; 1)</a></code> method (<a href='https://github.com/tidyverts/fabletools/issues/302'>#302</a>).</li>
+<li>Documentation improvements.</li>
+</ul>
+</div>
+</div>
+    <div id="fabletools-030" class="section level1">
+<h1 class="page-header" data-toc-text="0.3.0">
+<a href="#fabletools-030" class="anchor"></a>fabletools 0.3.0<small> 2021-01-19 </small>
+</h1>
+<div id="new-features-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features-1" class="anchor"></a>New features</h2>
 <ul>
 <li>Added <code><a href="../reference/scenarios.html">scenarios()</a></code> function for providing multiple scenarios to the <code>new_data</code> argument. This allows different sets of future exogenous regressors to be provided to functions like <code><a href="../reference/forecast.html">forecast()</a></code>, <code><a href="https://generics.r-lib.org/reference/generate.html">generate()</a></code>, and <code><a href="https://generics.r-lib.org/reference/interpolate.html">interpolate()</a></code> (<a href='https://github.com/tidyverts/fabletools/issues/110'>#110</a>).</li>
 <li>Added <code><a href="../reference/percentile_score.html">quantile_score()</a></code>, which is similar to <code><a href="../reference/percentile_score.html">percentile_score()</a></code> except it allows a set of quantile <code>probs</code> to be provided (<a href='https://github.com/tidyverts/fabletools/issues/280'>#280</a>).</li>
@@ -146,9 +169,9 @@
 <li>Added <code>fill_gaps(&lt;fable&gt;)</code>.</li>
 </ul>
 </div>
-<div id="improvements" class="section level2">
+<div id="improvements-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements" class="anchor"></a>Improvements</h2>
+<a href="#improvements-1" class="anchor"></a>Improvements</h2>
 <ul>
 <li>The <code><a href="../reference/winkler_score.html">pinball_loss()</a></code> and <code><a href="../reference/percentile_score.html">percentile_score()</a></code> accuracy measures are now scaled up by 2x for improved meaning. The loss at 50% equals absolute error and the average loss equals CRPS (<a href='https://github.com/tidyverts/fabletools/issues/280'>#280</a>).</li>
 <li>Automatic transformation functions formals are now named after the response variable and not converted to <code>.x</code>, preventing conflicts with values named <code>.x</code>.</li>
@@ -176,18 +199,18 @@
 <h1 class="page-header" data-toc-text="0.2.1">
 <a href="#fabletools-021" class="anchor"></a>fabletools 0.2.1<small> 2020-09-03 </small>
 </h1>
-<div id="new-features-1" class="section level2">
+<div id="new-features-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features-1" class="anchor"></a>New features</h2>
+<a href="#new-features-2" class="anchor"></a>New features</h2>
 <ul>
 <li>Added <code><a href="../reference/bottom_up.html">bottom_up()</a></code> forecast reconciliation method.</li>
 <li>Added the <code><a href="../reference/skill_score.html">skill_score()</a></code> accuracy measure modifier.</li>
 <li>Added <code><a href="../reference/agg_vec.html">agg_vec()</a></code> for manually producing aggregation vectors.</li>
 </ul>
 </div>
-<div id="improvements-1" class="section level2">
+<div id="improvements-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements-1" class="anchor"></a>Improvements</h2>
+<a href="#improvements-2" class="anchor"></a>Improvements</h2>
 <ul>
 <li>Fixed some inconsistencies in key ordering of model accessors (such as <code><a href="https://generics.r-lib.org/reference/augment.html">augment()</a></code>, <code><a href="https://generics.r-lib.org/reference/tidy.html">tidy()</a></code> and <code><a href="https://generics.r-lib.org/reference/glance.html">glance()</a></code>) with model methods (such as <code><a href="../reference/forecast.html">forecast()</a></code> and <code><a href="https://generics.r-lib.org/reference/generate.html">generate()</a></code>).</li>
 <li>Improved equality comparison of <code>agg_vec</code> classes, aggregated values will now always match regardless of the value used.</li>
@@ -229,9 +252,9 @@
 <h1 class="page-header" data-toc-text="0.2.0">
 <a href="#fabletools-020" class="anchor"></a>fabletools 0.2.0<small> 2020-06-15 </small>
 </h1>
-<div id="new-features-2" class="section level2">
+<div id="new-features-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features-2" class="anchor"></a>New features</h2>
+<a href="#new-features-3" class="anchor"></a>New features</h2>
 <ul>
 <li>Distributions are now provided by the distributional package, which is more space efficient and allows calculation of distributional statistics including the <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>, <code><a href="https://rdrr.io/r/stats/median.html">median()</a></code>, <code>variance()</code>, <code><a href="https://rdrr.io/r/stats/quantile.html">quantile()</a></code>, <code>cdf()</code> and <code><a href="https://rdrr.io/r/stats/density.html">density()</a></code>.</li>
 <li>
@@ -242,9 +265,9 @@
 <li>Added support for reconciling non-normal forecasts, which produces reconciled point forecasts only.</li>
 </ul>
 </div>
-<div id="improvements-2" class="section level2">
+<div id="improvements-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements-2" class="anchor"></a>Improvements</h2>
+<a href="#improvements-3" class="anchor"></a>Improvements</h2>
 <ul>
 <li>Improved dplyr support. You can now use <code>bind_*()</code> and <code>*_join()</code> operations on mables, dables, and fables. More verbs are supported by these extension data classes, and so behaviour should work closer to what is expected.</li>
 <li>Progress reporting is now handled by the progressr package. This allows you to decide if, when, and how progress is reported. To show progress, wrap your code in the <code><a href="https://rdrr.io/pkg/progressr/man/with_progress.html">progressr::with_progress()</a></code> function. Progress will no longer be displayed automatically during lengthy calculations.</li>
@@ -293,9 +316,9 @@
 <h1 class="page-header" data-toc-text="0.1.3">
 <a href="#fabletools-013" class="anchor"></a>fabletools 0.1.3<small> 2020-03-24 </small>
 </h1>
-<div id="improvements-3" class="section level2">
+<div id="improvements-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements-3" class="anchor"></a>Improvements</h2>
+<a href="#improvements-4" class="anchor"></a>Improvements</h2>
 <ul>
 <li>Better support for tidyverse packages using vctrs.</li>
 <li>Performance improvements for reconciliation and parsing.</li>
@@ -315,9 +338,9 @@
 <h1 class="page-header" data-toc-text="0.1.2">
 <a href="#fabletools-012" class="anchor"></a>fabletools 0.1.2<small> 2020-01-29 </small>
 </h1>
-<div id="improvements-4" class="section level2">
+<div id="improvements-5" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements-4" class="anchor"></a>Improvements</h2>
+<a href="#improvements-5" class="anchor"></a>Improvements</h2>
 <ul>
 <li>Added MAAPE accuracy measure.</li>
 <li>Added support for exogenous regressors in decomposition models.</li>
@@ -354,9 +377,9 @@
 <li>Updated method names available for <code><a href="../reference/min_trace.html">min_trace()</a></code> reconciliation (<a href='https://github.com/GeorgeAthana'>@GeorgeAthana</a>).</li>
 </ul>
 </div>
-<div id="improvements-5" class="section level2">
+<div id="improvements-6" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements-5" class="anchor"></a>Improvements</h2>
+<a href="#improvements-6" class="anchor"></a>Improvements</h2>
 <ul>
 <li>Improved error messaging for failing features.</li>
 <li>Added Continuous Ranked Probability Score (<code><a href="../reference/percentile_score.html">CRPS()</a></code>) accuracy measure.</li>
@@ -381,9 +404,9 @@
 <ul>
 <li>First release.</li>
 </ul>
-<div id="new-features-3" class="section level2">
+<div id="new-features-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features-3" class="anchor"></a>New features</h2>
+<a href="#new-features-4" class="anchor"></a>New features</h2>
 <div id="data-structures" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data-structures" class="anchor"></a>Data structures</h3>
