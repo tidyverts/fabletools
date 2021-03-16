@@ -194,31 +194,18 @@ hilo.fbl_ts <- function(x, level = c(80, 95), ...){
 }
 
 restore_fable <- function(data, template){
-  data <- as_tibble(data)
   data_cols <- names(data)
   
-  # key_vars <- setdiff(key_vars(template), data_cols)
-  # key_data <- select(key_data(template), key_vars)
-  # if (vec_size(key_data) == 1) {
-  #   template <- remove_key(template, setdiff(key_vars(template), key_vars))
-  # }
-  
   # Variables to keep
-  tsbl_vars <- setdiff(c(index_var(template), key_vars(template)), data_cols)
   fbl_vars <- setdiff(distribution_var(template), data_cols)
-  res <- bind_cols(template[tsbl_vars], data, template[fbl_vars])
+  res <- bind_cols(data, template[fbl_vars])
   
-  tsbl <- build_tsibble(res, !!key_vars(template), 
-                        index = !!index(template), index2 = !!index2(template),
-                        ordered = is_ordered(template), interval = interval(template),
-                        validate = FALSE)
-  
-  build_fable(tsbl, response = response_vars(template), distribution = !!distribution_var(template))
+  build_fable(data, response = response_vars(template), distribution = !!distribution_var(template))
 }
 
 #' @export
 select.fbl_ts <- function (.data, ...){
-  res <- select(as_tibble(.data), ...)
+  res <- select(as_tsibble(.data), ...)
   restore_fable(res, .data)
 }
 
