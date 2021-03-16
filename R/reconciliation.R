@@ -348,7 +348,7 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
 #' 
 #' @seealso 
 #' [`reconcile()`], [`aggregate_key()`]
-#' [*Forecasting: Principles and Practice* - Middle-out approach](https://otexts.com/fpp3/middle-out.html)
+#' [*Forecasting: Principles and Practice* - Middle-out approach](https://otexts.com/fpp3/single-level.html#middle-out-approach)
 #' 
 #' @export
 middle_out <- function(models, split = 1){
