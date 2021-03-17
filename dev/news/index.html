@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.1.9000</span>
       </span>
     </div>
 
@@ -130,11 +130,19 @@
 <h1 class="page-header" data-toc-text="development version">
 <a href="#fabletools-development-version" class="anchor"></a>fabletools (development version)<small> Unreleased </small>
 </h1>
+</div>
+    <div id="fabletools-031" class="section level1">
+<h1 class="page-header" data-toc-text="0.3.1">
+<a href="#fabletools-031" class="anchor"></a>fabletools 0.3.1<small> 2021-03-16 </small>
+</h1>
 <div id="new-features" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New features</h2>
 <ul>
 <li>Added <code><a href="../reference/outliers.html">outliers()</a></code> generic for identifying the outliers of a fitted model.</li>
+<li>Added <code><a href="../reference/special_xreg.html">special_xreg()</a></code> special generator, for producing a model matrix of exogenous regressors. It supports an argument for controlling the default inclusion of an intercept.</li>
+<li>Migrated <code>common_xregs</code> helper from fable to fabletools for providing a common and consistent interface for common time series exogenous regressors.</li>
+<li>Added experimental support for passing the tsibble index to <code><a href="../reference/features.html">features()</a></code> functions if the <code>.index</code> argument is used in the function.</li>
 </ul>
 </div>
 <div id="improvements" class="section level2">
@@ -142,6 +150,7 @@
 <a href="#improvements" class="anchor"></a>Improvements</h2>
 <ul>
 <li>Added transformation support for fallback <code><a href="https://rdrr.io/r/stats/fitted.values.html">fitted(h &gt; 1)</a></code> method (<a href='https://github.com/tidyverts/fabletools/issues/302'>#302</a>).</li>
+<li>Documentation improvements.</li>
 </ul>
 </div>
 </div>
