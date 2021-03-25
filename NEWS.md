@@ -1,5 +1,10 @@
 # fabletools (development version)
 
+## Improvements
+
+* The fallback residuals() method now handles transformations when 
+  `type = "innovation"`.
+
 # fabletools 0.3.1
 
 ## New features
