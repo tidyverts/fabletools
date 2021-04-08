@@ -28,6 +28,12 @@ hypothesize.mdl_df <- function(x, ...){
 
 #' @rdname tidy
 #' @export
-hypothesize.mdl_ts <- function(x, ...){
-  hypothesize(x$fit, ...)
+hypothesize.mdl_ts <- function(x, tests = list(), ...){
+  if(is_function(tests)){
+    tests <- list(tests)
+  }
+  vctrs::vec_rbind(
+    !!!map(tests, calc, x$fit, ...),
+    .names_to = ".test"
+  )
 }

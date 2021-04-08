@@ -16,7 +16,7 @@
 
 \method{coef}{mdl_ts}(object, ...)
 
-\method{hypothesize}{mdl_ts}(x, ...)
+\method{hypothesize}{mdl_ts}(x, tests = list(), ...)
 }
 \arguments{
 \item{x, object}{A mable.}
