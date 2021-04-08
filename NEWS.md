@@ -1,5 +1,9 @@
 # fabletools (development version)
 
+## New features
+
+* Added `hypothesize()` generic for running statistical tests on a trained model.
+
 ## Improvements
 
 * The fallback residuals() method now handles transformations when 

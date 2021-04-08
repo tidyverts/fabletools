@@ -41,6 +41,10 @@ generics::glance
 #' @export
 generics::tidy
 
+#' @importFrom generics hypothesize
+#' @export
+generics::hypothesize
+
 #' @importFrom generics generate
 #' @export
 generics::generate
