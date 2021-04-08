@@ -67,7 +67,7 @@ fable_xreg_matrix <- function(..., .data, default_intercept = TRUE) {
   xreg <- model.frame(model_formula, data = env, na.action = stats::na.pass)
   mm <- model.matrix(terms(xreg), xreg)
   if (NROW(mm) == 0 && identical(colnames(mm), "(Intercept)")) {
-    return(matrix(data = 1, nrow = NROW(self$data), dimnames = list(NULL, "(Intercept)")))
+    return(matrix(data = 1, nrow = NROW(.data), dimnames = list(NULL, "(Intercept)")))
   }
   mm
 }
