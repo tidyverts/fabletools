@@ -53,6 +53,9 @@ reference:
     - ACF1
     - winkler_score
     - percentile_score
+    - MDA, 
+    - MDV
+    - MDPV
 - title: Methods
   desc: >
     The fabletools package facilitates the handling of key structures for these generics.
