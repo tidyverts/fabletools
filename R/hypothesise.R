@@ -3,7 +3,7 @@
 #' This function will return the results of a hypothesis test for each model in 
 #' the mable.
 #' 
-#' @param x,object A mable.
+#' @param x A mable.
 #' @param ... Arguments for model methods.
 #' 
 #' @examples 
@@ -26,7 +26,7 @@ hypothesize.mdl_df <- function(x, ...){
   unnest(x, ".hypothesis")
 }
 
-#' @rdname tidy
+#' @rdname hypothesize
 #' @export
 hypothesize.mdl_ts <- function(x, tests = list(), ...){
   if(is_function(tests)){

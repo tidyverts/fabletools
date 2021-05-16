@@ -7,7 +7,7 @@
 \method{hypothesize}{mdl_df}(x, ...)
 }
 \arguments{
-\item{x, object}{A mable.}
+\item{x}{A mable.}
 
 \item{...}{Arguments for model methods.}
 }
