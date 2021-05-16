@@ -88,7 +88,9 @@ get_frequencies.NULL <- function(period, data, ...,
 #' @export
 get_frequencies.character <- function(period, data, ...){
   require_package("lubridate")
-  get_frequencies(lubridate::as.period(period), data, ...)
+  m <- lubridate::as.period(period)
+  if(is.na(m)) abort(paste("Unknown period:", period))
+  get_frequencies(m, data, ...)
 }
 
 #' @rdname freq_tools
