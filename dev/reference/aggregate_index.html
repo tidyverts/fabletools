@@ -190,20 +190,20 @@ and a space, or followed by "s".</p></li>
   <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span><span class='op'>(</span>Count <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>Count</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
   <span class='co'># Compute weekly aggregates</span>
   <span class='fu'>fabletools</span><span class='fu'>:::</span><span class='fu'>aggregate_index</span><span class='op'>(</span><span class='st'>"1 week"</span>, Count <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>Count</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tsibble: 104 x 2 [7D]</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tsibble: 104 x 2 [7D]</span>
 #&gt;    Date        Count
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;date&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> 2015-01-03 </span><span style='text-decoration: underline;'>182</span><span>896
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> 2015-01-10 </span><span style='text-decoration: underline;'>231</span><span>513
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> 2015-01-17 </span><span style='text-decoration: underline;'>348</span><span>879
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> 2015-01-24 </span><span style='text-decoration: underline;'>313</span><span>666
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> 2015-01-31 </span><span style='text-decoration: underline;'>238</span><span>603
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> 2015-02-07 </span><span style='text-decoration: underline;'>219</span><span>104
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> 2015-02-14 </span><span style='text-decoration: underline;'>377</span><span>340
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> 2015-02-21 </span><span style='text-decoration: underline;'>530</span><span>409
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> 2015-02-28 </span><span style='text-decoration: underline;'>444</span><span>666
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> 2015-03-07 </span><span style='text-decoration: underline;'>614</span><span>122
-#&gt; </span><span style='color: #949494;'># … with 94 more rows</span><span></div></span></pre>
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;date&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span> 2015-01-03 <span style='text-decoration: underline;'>182</span>896
+#&gt; <span style='color: #BCBCBC;'> 2</span> 2015-01-10 <span style='text-decoration: underline;'>231</span>513
+#&gt; <span style='color: #BCBCBC;'> 3</span> 2015-01-17 <span style='text-decoration: underline;'>348</span>879
+#&gt; <span style='color: #BCBCBC;'> 4</span> 2015-01-24 <span style='text-decoration: underline;'>313</span>666
+#&gt; <span style='color: #BCBCBC;'> 5</span> 2015-01-31 <span style='text-decoration: underline;'>238</span>603
+#&gt; <span style='color: #BCBCBC;'> 6</span> 2015-02-07 <span style='text-decoration: underline;'>219</span>104
+#&gt; <span style='color: #BCBCBC;'> 7</span> 2015-02-14 <span style='text-decoration: underline;'>377</span>340
+#&gt; <span style='color: #BCBCBC;'> 8</span> 2015-02-21 <span style='text-decoration: underline;'>530</span>409
+#&gt; <span style='color: #BCBCBC;'> 9</span> 2015-02-28 <span style='text-decoration: underline;'>444</span>666
+#&gt; <span style='color: #BCBCBC;'>10</span> 2015-03-07 <span style='text-decoration: underline;'>614</span>122
+#&gt; <span style='color: #949494;'># … with 94 more rows</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
