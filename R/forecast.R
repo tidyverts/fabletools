@@ -114,7 +114,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
   
   # Evaluate forecasts
   object <- dplyr::mutate_at(as_tibble(object), vars(!!!mdls),
-                             forecast, object[["new_data"]],
+                             forecast, new_data = object[["new_data"]],
                              h = h, point_forecast = point_forecast, ...,
                              key_data = key_data(object))
   

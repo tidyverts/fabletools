@@ -9,6 +9,10 @@
 * The fallback residuals() method now handles transformations when 
   `type = "innovation"`.
 
+## Bug fixes
+
+* Fixed xreg issue in reconciliation methods that partially forecast hierarchy.
+
 # fabletools 0.3.1
 
 ## New features

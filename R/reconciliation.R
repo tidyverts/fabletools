@@ -181,7 +181,8 @@ bottom_up <- function(models){
 
 #' @export
 forecast.lst_btmup_mdl <- function(object, key_data, 
-                                   point_forecast = list(.mean = mean), ...){
+                                   point_forecast = list(.mean = mean),
+                                   new_data = NULL, ...){
   # Keep only bottom layer
   agg_data <- build_key_data_smat(key_data)
   
@@ -190,6 +191,9 @@ forecast.lst_btmup_mdl <- function(object, key_data,
   
   btm <- agg_data$leaf
   object <- object[btm]
+  if(!is.null(new_data)){
+    new_data <- new_data[btm]
+  }
   
   point_method <- point_forecast
   point_forecast <- list()
@@ -358,7 +362,8 @@ middle_out <- function(models, split = 1){
 
 #' @export
 forecast.lst_midout_mdl <- function(object, key_data, 
-                                    point_forecast = list(.mean = mean), ...){
+                                    point_forecast = list(.mean = mean),
+                                    new_data = NULL, ...){
   split <- object%@%"split"
   point_method <- point_forecast
   point_forecast <- list()
@@ -384,6 +389,9 @@ forecast.lst_midout_mdl <- function(object, key_data,
   }
   nodes_above <- which(agg_shadow[[split]])
   object <- object[-nodes_above]
+  if(!is.null(new_data)){
+    new_data <- new_data[-nodes_above]
+  }
   fc <- NextMethod()
   
   fc_dist <- lapply(fc, function(x) x[[distribution_var(x)]])
