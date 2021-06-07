@@ -8,6 +8,7 @@
 
 * The fallback residuals() method now handles transformations when 
   `type = "innovation"`.
+* Documentation improvements.
 
 ## Bug fixes
 
