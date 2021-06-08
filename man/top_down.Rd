@@ -18,8 +18,12 @@ top_down(
 \lifecycle{experimental}
 }
 \details{
-Reconciles a hierarchy using the top down reconciliation method. The
-response variable of the hierarchy must be aggregated using sums. The
+Reconciles a hierarchy using the top down reconciliation method. This method
+generates forecasts for the highest level, then disaggregates these
+forecasts to lower levels using the disaggregation specified in the \code{method}
+argument.
+
+The response variable of the hierarchy must be aggregated using sums. The
 forecasted time points must match for all series in the hierarchy.
 }
 \seealso{
