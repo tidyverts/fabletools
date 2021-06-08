@@ -15,8 +15,18 @@ reconcile(.data, ...)
 \item{...}{Reconciliation methods applied to model columns within \code{.data}.}
 }
 \description{
-This function allows you to specify the method used to reconcile forecasts
-in accordance with its key structure.
+This function allows you to specify the method for reconciling forecasts for
+heirarchical or grouped time series. \code{aggregate_key()} specifies the
+relationships between the series. After an aggregated \code{tsibble} is modeled,
+\code{reconcile()} defines the reconciliation algorithm, which is applied to the
+individual and aggregated forecasts for each forecast horizon.
+}
+\details{
+Forecast reconciliation ensures that the relationships between time series
+(e.g. that a national forecast equals the sum of regional forecasts within
+that nation) are maintained in the forecasts. Specific reconciliation methods
+may have different constraints. For example, some only work with aggregations
+that are summations.
 }
 \examples{
 if (requireNamespace("fable", quietly = TRUE)) {
