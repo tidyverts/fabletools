@@ -27,5 +27,6 @@ The response variable of the hierarchy must be aggregated using sums. The
 forecasted time points must match for all series in the hierarchy.
 }
 \seealso{
-\code{\link[=reconcile]{reconcile()}}, \code{\link[=aggregate_key]{aggregate_key()}}
+\code{\link[=reconcile]{reconcile()}}, \code{\link[=aggregate_key]{aggregate_key()}},
+\url{https://otexts.com/fpp2/top-down.html}
 }

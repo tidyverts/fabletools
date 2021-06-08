@@ -55,7 +55,8 @@ reconcile.mdl_df <- function(.data, ...){
 #' package is installed.
 #' 
 #' @seealso 
-#' [`reconcile()`], [`aggregate_key()`]
+#' [`reconcile()`], [`aggregate_key()`],
+#' \url{https://otexts.com/fpp2/reconciliation.html}
 #' 
 #' @references 
 #' Wickramasuriya, S. L., Athanasopoulos, G., & Hyndman, R. J. (2019). Optimal forecast reconciliation for hierarchical and grouped time series through trace minimization. Journal of the American Statistical Association, 1-45. https://doi.org/10.1080/01621459.2018.1448825 
@@ -189,7 +190,8 @@ forecast.lst_mint_mdl <- function(object, key_data,
 #' @param models A column of models in a mable.
 #' 
 #' @seealso 
-#' [`reconcile()`], [`aggregate_key()`]
+#' [`reconcile()`], [`aggregate_key()`],
+#' \url{https://otexts.com/fpp2/bottom-up.html}
 #' @export
 bottom_up <- function(models){
   structure(models, class = c("lst_btmup_mdl", "lst_mdl", "list"))
@@ -241,7 +243,8 @@ forecast.lst_btmup_mdl <- function(object, key_data,
 #' @param method The reconciliation method to use.
 #' 
 #' @seealso 
-#' [`reconcile()`], [`aggregate_key()`]
+#' [`reconcile()`], [`aggregate_key()`],
+#' \url{https://otexts.com/fpp2/top-down.html}
 #' 
 #' @export
 top_down <- function(models, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
