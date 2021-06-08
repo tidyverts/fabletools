@@ -16,7 +16,7 @@ reconcile(.data, ...)
 }
 \description{
 This function allows you to specify the method for reconciling forecasts for
-heirarchical or grouped time series. \code{aggregate_key()} specifies the
+hierarchical or grouped time series. \code{aggregate_key()} specifies the
 relationships between the series. After an aggregated \code{tsibble} is modeled,
 \code{reconcile()} defines the reconciliation algorithm, which is applied to the
 individual and aggregated forecasts for each forecast horizon.

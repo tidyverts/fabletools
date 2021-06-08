@@ -1,7 +1,7 @@
 #' Forecast reconciliation 
 #' 
 #' This function allows you to specify the method for reconciling forecasts for
-#' heirarchical or grouped time series. `aggregate_key()` specifies the 
+#' hierarchical or grouped time series. `aggregate_key()` specifies the 
 #' relationships between the series. After an aggregated `tsibble` is modeled, 
 #' `reconcile()` defines the reconciliation algorithm, which is applied to the 
 #' individual and aggregated forecasts for each forecast horizon.
@@ -40,8 +40,11 @@ reconcile.mdl_df <- function(.data, ...){
 
 #' Minimum trace forecast reconciliation
 #' 
-#' Reconciles a hierarchy using the minimum trace combination method. The 
-#' response variable of the hierarchy must be aggregated using sums. The 
+#' Reconciles a hierarchy using the minimum trace combination method. This 
+#' approach minimizes the mean squared error of the coherent forecasts across 
+#' the entire collection of time series under the assumption of unbiasedness.
+#' 
+#' The response variable of the hierarchy must be aggregated using sums. The 
 #' forecasted time points must match for all series in the hierarchy (caution:
 #' this is not yet tested for beyond the series length).
 #' 

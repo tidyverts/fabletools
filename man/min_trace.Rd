@@ -20,8 +20,12 @@ matrix algebra? By default, sparse matrices will be used if the MatrixM
 package is installed.}
 }
 \description{
-Reconciles a hierarchy using the minimum trace combination method. The
-response variable of the hierarchy must be aggregated using sums. The
+Reconciles a hierarchy using the minimum trace combination method. This
+approach minimizes the mean squared error of the coherent forecasts across
+the entire collection of time series under the assumption of unbiasedness.
+}
+\details{
+The response variable of the hierarchy must be aggregated using sums. The
 forecasted time points must match for all series in the hierarchy (caution:
 this is not yet tested for beyond the series length).
 }
