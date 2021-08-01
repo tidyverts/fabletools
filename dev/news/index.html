@@ -142,6 +142,7 @@
 <a href="#improvements" class="anchor"></a>Improvements</h2>
 <ul>
 <li>The fallback residuals() method now handles transformations when <code>type = "innovation"</code>.</li>
+<li>Improved supported expressions for producing combination models. The appropriate response variable is now simplified for all functions that produce that original response variable. This notably includes <code>0.7*mdl1 + 0.3*mdl2</code> - if <code>mdl1</code> and <code>mdl2</code> are models with the same response variables, then the resulting combination model will also have the same response variable.</li>
 <li>Documentation improvements.</li>
 </ul>
 </div>
