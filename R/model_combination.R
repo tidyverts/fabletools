@@ -97,6 +97,31 @@ combination_ensemble <- function(..., weights = c("equal", "inv_var")){
   out
 }
 
+#' Weighted combination
+#' 
+#' @param ... Estimated models used in the ensemble.
+#' @param weights The numeric weights applied to each model in `...`
+#' 
+#' @export
+combination_weighted <- function(..., weights = NULL){
+  mdls <- dots_list(...)
+  resp_var <- mdls[[1]]$response
+  
+  if(all(map_lgl(mdls, inherits, "mdl_defn"))){
+    return(combination_model(..., cmbn_fn = combination_weighted,
+                             cmbn_args = list(weights = weights)))
+  }
+  vctrs::vec_assert(weights, numeric(), length(mdls))
+  
+  # Standardise weights to sum 1
+  weights <- weights/sum(weights)
+  
+  mdls <- map2(mdls, weights, `*`)
+  out <- reduce(mdls, `+`)
+  out$response <- resp_var
+  out
+}
+
 new_model_combination <- function(x, combination){
   mdls <- map_lgl(x, is_model)
   

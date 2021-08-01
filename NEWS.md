@@ -3,6 +3,8 @@
 ## New features
 
 * Added `hypothesize()` generic for running statistical tests on a trained model.
+* Added `combination_weighted()` function for producing a combination model with
+  arbitrary weights.
 
 ## Improvements
 

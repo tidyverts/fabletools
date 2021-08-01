@@ -14,3 +14,6 @@ combination_ensemble(..., weights = c("equal", "inv_var"))
 \description{
 Ensemble combination
 }
+\seealso{
+\code{\link[=combination_weighted]{combination_weighted()}}
+}
