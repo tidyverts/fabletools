@@ -19,7 +19,7 @@ response_vars.mdl_df <- function(x){
 }
 #' @export
 response_vars.mdl_ts <- function(x){
-  vapply(x$response, rlang::as_string, FUN.VALUE = character(1L))
+  vapply(x$response, rlang::as_label, FUN.VALUE = character(1L))
 }
 #' @export
 response_vars.dcmp_ts <- function(x){
