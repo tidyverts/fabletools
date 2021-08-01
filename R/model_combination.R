@@ -104,8 +104,14 @@ new_model_combination <- function(x, combination){
   comb_response <- map(transpose(mdls_response),
                        function(x) eval(expr(substitute(!!combination, x))))
   
-  # Try to simplify the response
+  if(length(comb_response) > 1) abort("Combining multivariate models is not yet supported.")
+  
+  # Compute new response data
+  resp <- map2(x, mdls, function(x, is_mdl) if(is_mdl) response(x)[[".response"]] else x)
+  resp <- eval_tidy(combination, resp)
+  
   if(any(!mdls)){
+    # Simplify the response with a f(numeric, model)
     op <- deparse(combination[[1]])
     if(op == "*" || (op == "/" && mdls[1])){
       num <- x[[which(!mdls)]]
@@ -117,13 +123,23 @@ new_model_combination <- function(x, combination){
         }
       }
     }
+  } else {
+    # Simplify the response with f(model, model)
+    
+    # Assume both models come from the same root variable, find the data of the
+    # mable's response variable.
+    root_var <- traverse(
+      x$e1, 
+      .f = function(x, y) x[[1]][c("data", "response")],
+      .g = function(mdl) Filter(function(x) inherits(x, "mdl_ts"), mdl$fit),
+      base = function(mdl) !inherits(mdl$fit, "model_combination")
+    )
+    root_resp <- root_var[["response"]]
+    root_resp_var <- rlang::as_label(root_resp[[1]])
+    if(isTRUE(all.equal(resp, root_var$data[[root_resp_var]]))) {
+      comb_response <- root_resp
+    }
   }
-  
-  if(length(comb_response) > 1) abort("Combining multivariate models is not yet supported.")
-  
-  # Compute new response data
-  resp <- map2(x, mdls, function(x, is_mdl) if(is_mdl) response(x)[[".response"]] else x)
-  resp <- eval_tidy(combination, resp)
   
   new_model(
     structure(x, combination = combination, class = c("model_combination")),

@@ -8,6 +8,11 @@
 
 * The fallback residuals() method now handles transformations when 
   `type = "innovation"`.
+* Improved supported expressions for producing combination models. The 
+  appropriate response variable is now simplified for all functions that produce
+  that original response variable. This notably includes `0.7*mdl1 + 0.3*mdl2` -
+  if `mdl1` and `mdl2` are models with the same response variables, then the 
+  resulting combination model will also have the same response variable.
 * Documentation improvements.
 
 ## Bug fixes
