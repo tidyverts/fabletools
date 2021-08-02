@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Ensemble combination — combination_ensemble • fabletools</title>
+<title>Weighted combination — combination_weighted • fabletools</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Ensemble combination — combination_ensemble" />
-<meta property="og:description" content="Ensemble combination" />
+<meta property="og:title" content="Weighted combination — combination_weighted" />
+<meta property="og:description" content="Weighted combination" />
 
 
 <meta name="robots" content="noindex">
@@ -123,16 +123,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Ensemble combination</h1>
+    <h1>Weighted combination</h1>
     <small class="dont-index">Source: <a href='https://github.com/tidyverts/fabletools/blob/master/R/model_combination.R'><code>R/model_combination.R</code></a></small>
-    <div class="hidden name"><code>combination_ensemble.Rd</code></div>
+    <div class="hidden name"><code>combination_weighted.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Ensemble combination</p>
+    <p>Weighted combination</p>
     </div>
 
-    <pre class="usage"><span class='fu'>combination_ensemble</span><span class='op'>(</span><span class='va'>...</span>, weights <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"equal"</span>, <span class='st'>"inv_var"</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>combination_weighted</span><span class='op'>(</span><span class='va'>...</span>, weights <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -143,13 +143,13 @@
     </tr>
     <tr>
       <th>weights</th>
-      <td><p>The method used to weight each model in the ensemble.</p></td>
+      <td><p>The numeric weights applied to each model in <code>...</code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='combination_weighted.html'>combination_weighted()</a></code></p></div>
+    <div class='dont-index'><p><code><a href='combination_ensemble.html'>combination_ensemble()</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
