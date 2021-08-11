@@ -123,10 +123,6 @@ autolayer.tbl_ts <- function(object, .vars = NULL, ...){
 #' @importFrom ggplot2 fortify
 #' @export
 fortify.fbl_ts <- function(model, data = NULL, level = c(80, 95), ...){
-  if(deparse(match.call()) != "fortify.fbl_ts(object = data)"){
-    warn("The output of `fortify(<fable>)` has changed to better suit usage with the ggdist package.
-If you're using it to extract intervals, consider using `hilo()` to compute intervals, and `unpack_hilo()` to obtain values.")
-  }
   return(as_tibble(model))
 }
 
@@ -224,7 +220,6 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = T
 #'   autoplot(Beer) + 
 #'   autolayer(fc)
 #' 
-#' @importFrom distributional scale_level_continuous guide_level
 #' @export
 autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95), 
                              point_forecast = list(mean = mean), show_gap = TRUE, ...){
@@ -246,7 +241,8 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   dist_var <- distribution_var(object)
   idx <- index(object)
   common_models <- duplicated(key_data[[mdl_key]] %||% rep(TRUE, NROW(key_data(object))))
-  colour <- colour %||% color %||% fill %||% "blue"
+  colour <- colour %||% color %||% fill %||% "#446ffc"
+  without <- function(x, el) x[setdiff(names(x), el)]
   
   if(isFALSE(level)){
     warn("Plot argument `level` should be a numeric vector of levels to display. Setting `level = NULL` will remove the intervals from the plot.")
@@ -306,62 +302,107 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     mapping$group <- expr(interaction(!!!map(grp, function(x) expr(format(!!x))), sep = "/"))
   }
   
-  single_row <- filter(key_data(object), lengths(!!sym(".rows")) == 1)
+  # Single time point forecasts
+  kd <- key_data(object)
+  single_row <- lapply(split(kd$.rows, lengths(kd$.rows) == 1), unlist)
   
   out <- list()
   object <- object %>% 
-    dplyr::mutate_if(~inherits(., "agg_vec"), compose(trimws, format))
-  if(!is.null(level)){
-    interval_data <- as_tibble(hilo(object, level = level)) %>% 
-      tidyr::pivot_longer(paste0(level, "%"), names_to = NULL, values_to = "hilo")
-    if(length(resp_var) > 1){
-      interval_data <- interval_data[setdiff(names(interval_data), resp_var)] %>% 
-        tidyr::unpack("hilo", names_repair = "minimal") %>% 
-        tidyr::pivot_longer(names(interval_data$hilo), names_to = ".response", values_to = "hilo")
+    dplyr::mutate_if(~inherits(., "agg_vec"), compose(trimws, format)) |> 
+    mutate(.model = factor(.model))
+  
+  key_glyph_rect <- function (data, params, size) {
+    data$alpha <- data$alpha %||% NA
+    ggdist:::draw_key_lineribbon(
+      list(default_key_aes = list(fill = "gray65", colour = "black", linewidth = 1.25)),
+      data, params, size
+    )
+  }
+  # Adapted from ggdist:::draw_key_lineribbon
+  draw_key_ribbon <- function (self, data, params, size) 
+  {
+    data$alpha <- data$alpha %||% NA
+    if (is.null(data[["fill"]]) && (!is.null(data[["fill_ramp"]]) || !all(is.na(data[["alpha"]])))) {
+      data$fill = "gray65"
     }
+    # Apply ramped fill
+    if (!is.null(data[["fill_ramp"]])) {
+      data$fill = mapply(function(color, amount){
+        (scales::seq_gradient_pal(attr(amount, "from") %||% "white", color))(amount %||% NA)
+      }, data$fill, data$fill_ramp)
+    }
+    draw_key_rect(data, params, size)
+  }
+  
+  # Add forecast interval ribbons to plot
+  if(!is.null(level)){
     intvl_mapping <- mapping
-    intvl_mapping$hilo <- sym("hilo")
+    intvl_mapping$dist <- sym(response_vars(object))
+    intvl_mapping$fill_ramp <- intvl_mapping$colour_ramp <- expr(stat(level))
+    intvl_mapping$fill <- intvl_mapping$colour <- col
     
     if(!is.null(col)){
-      intvl_mapping$fill <- col
-      out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = dplyr::anti_join(interval_data, single_row, by = key_vars), ..., inherit.aes = FALSE)
-      intvl_mapping$colour <- col
-      intvl_mapping$fill <- NULL
-      out[[2]] <- distributional::geom_hilo_linerange(intvl_mapping, data = dplyr::semi_join(interval_data, single_row, by = key_vars), ..., inherit.aes = FALSE)
-      out[[3]] <- ggplot2::labs(fill = col_nm)
+      if(length(single_row[["FALSE"]]) > 0) {
+        out[[length(out) + 1L]] <- ggdist::stat_ribbon(without(intvl_mapping, "colour_ramp"), data = object[single_row[["FALSE"]],], .width = level/100, ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
+      }
+      if(length(single_row[["TRUE"]]) > 0) {
+        out[[length(out) + 1L]] <- ggdist::stat_interval(intvl_mapping, data = object[single_row[["TRUE"]],], .width = level/100, ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
+      }
+      out[[length(out) + 1]] <- ggplot2::labs(fill = col_nm)
     } else {
-      out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = dplyr::anti_join(interval_data, single_row, by = key_vars), fill = colour, ..., inherit.aes = FALSE)
-      out[[2]] <- distributional::geom_hilo_linerange(intvl_mapping, data = dplyr::semi_join(interval_data, single_row, by = key_vars), colour = colour, ..., inherit.aes = FALSE)
+      if(length(single_row[["FALSE"]]) > 0) {
+        out[[length(out) + 1L]] <- ggdist::stat_ribbon(without(intvl_mapping, "colour_ramp"), data = object[single_row[["FALSE"]],], .width = level/100, fill = colour, ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
+      }
+      if(length(single_row[["TRUE"]]) > 0) {
+        out[[length(out) + 1L]] <- ggdist::stat_interval(intvl_mapping, data = object[single_row[["TRUE"]],], .width = level/100, colour = colour, ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
+      }
     }
   }
   
+  # Calculate point forecasts
   object <- as_tibble(object)
   object[names(point_forecast)] <- map(point_forecast, calc, object[[dist_var]])
-  object <- tidyr::pivot_longer(object[-match(dist_var, names(object))], names(point_forecast), names_to = "Point forecast", values_to = dist_var)
-  if(length(resp_var) > 1){
-    object[[dist_var]] <- as_tibble(object[[dist_var]])
-    object <- object[setdiff(names(object), resp_var)] %>% 
-      tidyr::unpack(!!dist_var) %>% 
-      tidyr::pivot_longer(names(object[[dist_var]]), names_to = ".response", values_to = dist_var)
+  
+  unpack_data <- function(x) {
+    x <- tidyr::pivot_longer(x[-match(dist_var, names(x))], names(point_forecast), names_to = "Point forecast", values_to = dist_var)
+    if(length(resp_var) > 1){
+      x[[dist_var]] <- as_tibble(x[[dist_var]])
+      x <- x[setdiff(names(x), resp_var)] %>% 
+        tidyr::unpack(!!dist_var) %>% 
+        tidyr::pivot_longer(names(x[[dist_var]]), names_to = ".response", values_to = dist_var)
+    }
+    x
   }
   
+  # Add point forecasts to plot
   mapping$y <- sym(dist_var)
   if(length(point_forecast) > 1){
     mapping$linetype <- mapping$shape <- sym("Point forecast")
     grp <- c(grp, mapping$linetype)
     mapping$group <- expr(interaction(!!!map(grp, function(x) expr(format(!!x))), sep = "/"))
   }
-  without <- function(x, el) x[setdiff(names(x), el)]
   object <- as_tibble(object)
   if(!is.null(col)){
     mapping$colour <- col
-    out[[length(out) + 1]] <- geom_line(mapping = without(mapping, "shape"), data = dplyr::anti_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
-    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = without(mapping, "linetype"), data = dplyr::semi_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
+    
+    if(length(single_row[["FALSE"]]) > 0) {
+      out[[length(out) + 1]] <- geom_line(mapping = without(mapping, "shape"), data = unpack_data(object[single_row[["FALSE"]],]), ..., inherit.aes = FALSE)#, key_glyph = ggplot2::draw_key_timeseries)
+    }
+    if(length(single_row[["TRUE"]]) > 0) {
+      out[[length(out) + 1]] <- ggplot2::geom_point(mapping = without(mapping, "linetype"), data = unpack_data(object[single_row[["TRUE"]],]), size = 3, ..., inherit.aes = FALSE)
+    }
     out[[length(out) + 1]] <- ggplot2::labs(colour = col_nm)
   } else {
-    out[[length(out) + 1]] <- geom_line(mapping = without(mapping, "shape"), data = dplyr::anti_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
-    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = without(mapping, "linetype"), data = dplyr::semi_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
+    if(length(single_row[["FALSE"]]) > 0) {
+      out[[length(out) + 1]] <- geom_line(mapping = without(mapping, "shape"), data = unpack_data(object[single_row[["FALSE"]],]), color = colour, ..., inherit.aes = FALSE)#, key_glyph = ggplot2::draw_key_timeseries)
+    }
+    if(length(single_row[["TRUE"]]) > 0) {
+      out[[length(out) + 1]] <- ggplot2::geom_point(mapping = without(mapping, "linetype"), data = unpack_data(object[single_row[["TRUE"]],]), color = colour, size = 3, ..., inherit.aes = FALSE)
+    }
   }
+  # Add scale for confidence level ramp
+  out[[length(out) + 1]] <- ggdist::scale_fill_ramp_discrete(from = "white", range = c(0.3, 0.7), labels = function(x) scales::percent(as.numeric(x)))
+  out[[length(out) + 1]] <- ggdist::scale_colour_ramp_discrete(from = "white", range = c(0.3, 0.7), labels = function(x) scales::percent(as.numeric(x)))
   out
 }
 

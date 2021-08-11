@@ -20,7 +20,6 @@
 \alias{refit}
 \alias{forecast}
 \alias{hilo}
-\alias{guide_level}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -28,7 +27,7 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{distributional}{\code{\link[distributional]{guide_level}}, \code{\link[distributional]{hilo}}}
+  \item{distributional}{\code{\link[distributional]{hilo}}}
 
   \item{dplyr}{\code{\link[dplyr:reexports]{\%>\%}}, \code{\link[dplyr]{vars}}}
 
