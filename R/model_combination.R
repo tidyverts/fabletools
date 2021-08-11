@@ -63,6 +63,8 @@ combination_model <- function(..., cmbn_fn = combination_ensemble,
 #' @param ... Estimated models used in the ensemble.
 #' @param weights The method used to weight each model in the ensemble.
 #' 
+#' @seealso [`combination_weighted()`]
+#' 
 #' @export
 combination_ensemble <- function(..., weights = c("equal", "inv_var")){
   mdls <- dots_list(...)
@@ -101,6 +103,8 @@ combination_ensemble <- function(..., weights = c("equal", "inv_var")){
 #' 
 #' @param ... Estimated models used in the ensemble.
 #' @param weights The numeric weights applied to each model in `...`
+#' 
+#' @seealso [`combination_ensemble()`]
 #' 
 #' @export
 combination_weighted <- function(..., weights = NULL){
