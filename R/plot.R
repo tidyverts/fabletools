@@ -252,8 +252,8 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   dist_var <- distribution_var(object)
   idx <- index(object)
   common_models <- duplicated(key_data[[mdl_key]] %||% rep(TRUE, NROW(key_data(object))))
-  colour <- colour %||% color %||% fill %||% "blue"
-  
+  colour <- colour %||% color %||% fill %||% "#446ffc"
+
   if(isFALSE(level)){
     warn("Plot argument `level` should be a numeric vector of levels to display. Setting `level = NULL` will remove the intervals from the plot.")
     level <- NULL
@@ -318,26 +318,25 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   object <- object %>% 
     dplyr::mutate_if(~inherits(., "agg_vec"), compose(trimws, format))
   if(!is.null(level)){
-    interval_data <- as_tibble(hilo(object, level = level)) %>% 
-      tidyr::pivot_longer(paste0(level, "%"), names_to = NULL, values_to = "hilo")
     if(length(resp_var) > 1){
       interval_data <- interval_data[setdiff(names(interval_data), resp_var)] %>% 
         tidyr::unpack("hilo", names_repair = "minimal") %>% 
         tidyr::pivot_longer(names(interval_data$hilo), names_to = ".response", values_to = "hilo")
     }
     intvl_mapping <- mapping
-    intvl_mapping$hilo <- sym("hilo")
-    
+    intvl_mapping$dist <- sym(response_vars(object))
+    intvl_mapping$fill_ramp <- intvl_mapping$colour_ramp <- expr(stat(level))
+        
     if(!is.null(col)){
       intvl_mapping$fill <- col
-      out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = dplyr::anti_join(interval_data, single_row, by = key_vars), ..., inherit.aes = FALSE)
+      out[[1]] <- ggdist::stat_dist_lineribbon(intvl_mapping, data = dplyr::anti_join(object, single_row, by = key_vars), size = 0, .width = level/100, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_rect)
       intvl_mapping$colour <- col
       intvl_mapping$fill <- NULL
-      out[[2]] <- distributional::geom_hilo_linerange(intvl_mapping, data = dplyr::semi_join(interval_data, single_row, by = key_vars), ..., inherit.aes = FALSE)
+      out[[2]] <- ggdist::stat_dist_interval(intvl_mapping, data = dplyr::semi_join(object, single_row, by = key_vars), .width = level/100, ..., inherit.aes = FALSE)
       out[[3]] <- ggplot2::labs(fill = col_nm)
     } else {
-      out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = dplyr::anti_join(interval_data, single_row, by = key_vars), fill = colour, ..., inherit.aes = FALSE)
-      out[[2]] <- distributional::geom_hilo_linerange(intvl_mapping, data = dplyr::semi_join(interval_data, single_row, by = key_vars), colour = colour, ..., inherit.aes = FALSE)
+      out[[1]] <- ggdist::stat_dist_lineribbon(intvl_mapping, data = dplyr::anti_join(object, single_row, by = key_vars), fill = colour, size = 0, .width = level/100, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_rect)
+      out[[2]] <- ggdist::stat_dist_interval(intvl_mapping, data = dplyr::semi_join(object, single_row, by = key_vars), colour = colour, .width = level/100, ..., inherit.aes = FALSE)
     }
   }
   
@@ -360,12 +359,15 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   if(!is.null(col)){
     mapping$colour <- col
     out[[length(out) + 1]] <- geom_line(mapping = mapping, data = dplyr::anti_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
-    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = mapping, data = dplyr::semi_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
+    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = mapping, data = dplyr::semi_join(object, single_row, by = key_vars), size = 3, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
     out[[length(out) + 1]] <- ggplot2::labs(colour = col_nm)
   } else {
     out[[length(out) + 1]] <- geom_line(mapping = mapping, data = dplyr::anti_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
-    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = mapping, data = dplyr::semi_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
+    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = mapping, data = dplyr::semi_join(object, single_row, by = key_vars), color = colour, size = 3, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
   }
+  # Add scale for confidence level ramp
+  out[[length(out) + 1]] <- ggdist::scale_fill_ramp_discrete(from = "white", range = c(0.3, 0.7))
+  out[[length(out) + 1]] <- ggdist::scale_colour_ramp_discrete(from = "white", range = c(0.3, 0.7))
   out
 }
 

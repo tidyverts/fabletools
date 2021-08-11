@@ -46,7 +46,8 @@ Imports:
     vctrs (>= 0.2.2),
     distributional,
     progressr,
-    lifecycle
+    lifecycle,
+    ggdist
 Suggests:
     covr,
     crayon,
