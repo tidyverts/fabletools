@@ -6,15 +6,13 @@
 #' @param x A mable.
 #' @param ... Arguments for model methods.
 #' 
-#' @examples 
-#' if (requireNamespace("fable", quietly = TRUE)) {
+#' @examplesIf requireNamespace("fable", quietly = TRUE)
 #' library(fable)
 #' library(tsibbledata)
 #' 
 #' olympic_running %>%
 #'   model(lm = TSLM(log(Time) ~ trend())) %>% 
 #'   hypothesize()
-#' }
 #' 
 #' @importFrom generics hypothesize
 #' @export

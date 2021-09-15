@@ -86,7 +86,7 @@ These intervals are stored in a single column using the \code{hilo} class, to
 extract the numerical upper and lower bounds you can use \code{\link[=unpack_hilo]{unpack_hilo()}}.
 }
 \examples{
-if (requireNamespace("fable", quietly = TRUE)) {
+\dontshow{if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(fable)
 library(tsibble)
 library(tsibbledata)
@@ -131,6 +131,5 @@ future_aus <- new_data(aus_economy, n = 10) \%>\%
 fit \%>\% 
   forecast(new_data = future_aus) \%>\% 
   autoplot(aus_economy)
-}
-
+\dontshow{\}) # examplesIf}
 }

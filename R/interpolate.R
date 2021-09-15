@@ -6,8 +6,7 @@
 #' @param new_data A dataset with the same structure as the data used to fit the model.
 #' @param ... Other arguments passed to interpolate methods.
 #' 
-#' @examples 
-#' if (requireNamespace("fable", quietly = TRUE)) {
+#' @examplesIf requireNamespace("fable", quietly = TRUE)
 #' library(fable)
 #' library(tsibbledata)
 #' 
@@ -18,7 +17,6 @@
 #' olympic_running %>% 
 #'   model(TSLM(Time ~ trend())) %>% 
 #'   interpolate(olympic_running)
-#' }
 #' 
 #' @rdname interpolate
 #' @export

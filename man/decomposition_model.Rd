@@ -23,7 +23,7 @@ These component models will be combined according to the decomposition
 method, giving a combination model for the response of the decomposition.
 }
 \examples{
-if (requireNamespace("fable", quietly = TRUE) && requireNamespace("feasts", quietly = TRUE)) {
+\dontshow{if (requireNamespace("fable", quietly = TRUE) && requireNamespace("feasts", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(fable)
 library(feasts)
 library(tsibble)
@@ -49,8 +49,7 @@ vic_food \%>\%
   model(my_dcmp_spec) \%>\% 
   forecast(h="5 years") \%>\% 
   autoplot(vic_food)
-}
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \href{https://otexts.com/fpp3/forecasting-decomposition.html}{\emph{Forecasting: Principles and Practice} - Forecasting Decomposition}

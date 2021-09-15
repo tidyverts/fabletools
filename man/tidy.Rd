@@ -25,13 +25,12 @@ This function will obtain the coefficients (and associated statistics) for
 each model in the mable.
 }
 \examples{
-if (requireNamespace("fable", quietly = TRUE)) {
+\dontshow{if (requireNamespace("fable", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(fable)
 library(tsibbledata)
 
 olympic_running \%>\%
   model(lm = TSLM(log(Time) ~ trend())) \%>\% 
   tidy()
-}
-
+\dontshow{\}) # examplesIf}
 }

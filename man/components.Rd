@@ -23,8 +23,7 @@ A dable will be returned, which will allow you to easily plot the components
 and see the way in which components are combined to give forecasts.
 }
 \examples{
-\dontrun{
-if (requireNamespace("fable", quietly = TRUE)) {
+\dontshow{if (requireNamespace("fable", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(fable)
 library(tsibbledata)
 
@@ -33,7 +32,5 @@ aus_production \%>\%
   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) \%>\% 
   components() \%>\% 
   autoplot()
-}
-}
-
+\dontshow{\}) # examplesIf}
 }

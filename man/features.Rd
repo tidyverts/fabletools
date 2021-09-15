@@ -43,7 +43,10 @@ tourism \%>\%
   features(Trips, features = list(mean = mean, sd = sd))
 
 # Search and use useful features with `feature_set()`. 
-if(requireNamespace("feasts")) library(feasts)
+
+\dontshow{if (requireNamespace("feasts", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+library(feasts)
+\dontshow{\}) # examplesIf}
 tourism \%>\% 
   features(Trips, features = feature_set(tags = "autocorrelation"))
 

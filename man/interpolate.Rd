@@ -20,7 +20,7 @@
 Uses a fitted model to interpolate missing values from a dataset.
 }
 \examples{
-if (requireNamespace("fable", quietly = TRUE)) {
+\dontshow{if (requireNamespace("fable", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(fable)
 library(tsibbledata)
 
@@ -31,6 +31,5 @@ olympic_running
 olympic_running \%>\% 
   model(TSLM(Time ~ trend())) \%>\% 
   interpolate(olympic_running)
-}
-
+\dontshow{\}) # examplesIf}
 }

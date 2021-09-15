@@ -35,8 +35,7 @@ model <- function(.data, ...){
 #' `progressr::with_progress()`. Further customisation on how progress is 
 #' reported can be controlled using the `progressr` package.
 #' 
-#' @examples 
-#' if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)) {
+#' @examplesIf requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)
 #' library(fable)
 #' library(tsibbledata)
 #' 
@@ -58,7 +57,6 @@ model <- function(.data, ...){
 #'     ets = ETS(log(Turnover) ~ error("A") + trend("A") + season("A")),
 #'   )
 #' )
-#' }
 #' 
 #' @export
 model.tbl_ts <- function(.data, ..., .safely = TRUE){

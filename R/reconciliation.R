@@ -6,8 +6,7 @@
 #' @param .data A mable.
 #' @param ... Reconciliation methods applied to model columns within `.data`.
 #' 
-#' @examples 
-#' if (requireNamespace("fable", quietly = TRUE)) {
+#' @examplesIf requireNamespace("fable", quietly = TRUE)
 #' library(fable)
 #' lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) %>%
 #'   aggregate_key(key, value = sum(value))
@@ -16,7 +15,6 @@
 #'   model(lm = TSLM(value ~ trend() + season())) %>%
 #'   reconcile(lm = min_trace(lm)) %>% 
 #'   forecast()
-#' }
 #' 
 #' @export
 reconcile <- function(.data, ...){

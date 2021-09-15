@@ -48,12 +48,12 @@ residuals. If \code{new_data} contains the \code{.innov} column, those values wi
 treated as innovations for the simulated paths..
 }
 \examples{
-if (requireNamespace("fable", quietly = TRUE)) {
+\dontshow{if (requireNamespace("fable", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(fable)
 library(dplyr)
 UKLungDeaths <- as_tsibble(cbind(mdeaths, fdeaths), pivot_longer = FALSE)
 UKLungDeaths \%>\% 
   model(lm = TSLM(mdeaths ~ fourier("year", K = 4) + fdeaths)) \%>\% 
   generate(UKLungDeaths, times = 5)
-}
+\dontshow{\}) # examplesIf}
 }

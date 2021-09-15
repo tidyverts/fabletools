@@ -8,7 +8,7 @@
 #' @param .vars A bare expression containing data you wish to plot. Multiple variables can be plotted using [`ggplot2::vars()`].
 #' @param ... Further arguments passed to [`ggplot2::geom_line()`], which can be used to specify fixed aesthetics such as `colour = "red"` or `size = 3`. 
 #' 
-#' @examples 
+#' @examplesIf requireNamespace("fable", quietly = TRUE)
 #' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(fable)
 #' library(tsibbledata)
@@ -16,7 +16,6 @@
 #' 
 #' tsibbledata::gafa_stock %>%
 #'  autoplot(vars(Close, log(Close)))
-#' }
 #' 
 #' @importFrom ggplot2 ggplot aes geom_line guides guide_legend xlab
 #' @export
@@ -147,9 +146,9 @@ If you're using it to extract intervals, consider using `hilo()` to compute inte
 #' @param point_forecast The point forecast measure to be displayed in the plot.
 #' 
 #' @examples 
-#' library(tsibbledata)
-#' if (requireNamespace("fable", quietly = TRUE)) {
+#' @examplesIf requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)
 #' library(fable)
+#' library(tsibbledata)
 #' 
 #' fc <- aus_production %>%
 #'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) %>% 
@@ -157,7 +156,6 @@ If you're using it to extract intervals, consider using `hilo()` to compute inte
 #' 
 #' fc %>% 
 #'   autoplot(aus_production)
-#' }
 #' 
 #' @importFrom ggplot2 facet_wrap
 #' @export
@@ -223,13 +221,10 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = T
 }
 
 #' @rdname autoplot.fbl_ts
-#' @examples 
-#' 
-#' if (requireNamespace("fable", quietly = TRUE)) {
+#' @examplesIf requireNamespace("fable", quietly = TRUE)
 #' aus_production %>% 
 #'   autoplot(Beer) + 
 #'   autolayer(fc)
-#' }
 #' 
 #' @importFrom distributional scale_level_continuous guide_level
 #' @export
@@ -383,15 +378,13 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
 #' @param level If the decomposition contains distributions, which levels should be used to display intervals?
 #' @inheritParams autoplot.tbl_ts
 #' 
-#' @examples 
-#' if (requireNamespace("feasts", quietly = TRUE)) {
+#' @examplesIf requireNamespace("feasts", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)
 #' library(feasts)
 #' library(tsibbledata)
 #' aus_production %>% 
 #'   model(STL(Beer)) %>%
 #'   components() %>%  
 #'   autoplot()
-#' }
 #' 
 #' @importFrom ggplot2 ggplot geom_line geom_rect facet_grid vars ylab labs
 #' @export

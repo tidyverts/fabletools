@@ -23,7 +23,7 @@ column, while innovation residuals (transformed) are stored in the \code{.innov}
 column.
 }
 \examples{
-if (requireNamespace("fable", quietly = TRUE)) {
+\dontshow{if (requireNamespace("fable", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(fable)
 library(tsibbledata)
 
@@ -31,6 +31,5 @@ library(tsibbledata)
 aus_production \%>\%
   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) \%>\% 
   augment()
-}
-
+\dontshow{\}) # examplesIf}
 }

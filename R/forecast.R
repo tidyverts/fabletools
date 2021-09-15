@@ -50,8 +50,8 @@ forecast <- function(object, ...){
 #'   `point_forecast` argument.
 #' - All columns in `new_data`, excluding those whose names conflict with the
 #'   above.
-#' @examples 
-#' if (requireNamespace("fable", quietly = TRUE)) {
+#'   
+#' @examplesIf requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)
 #' library(fable)
 #' library(tsibble)
 #' library(tsibbledata)
@@ -96,7 +96,6 @@ forecast <- function(object, ...){
 #' fit %>% 
 #'   forecast(new_data = future_aus) %>% 
 #'   autoplot(aus_economy)
-#' }
 #' 
 #' @rdname forecast
 #' @export

@@ -23,7 +23,7 @@ distributed forecasts.
 A combination model can also be produced using mathematical operations.
 }
 \examples{
-if (requireNamespace("fable", quietly = TRUE)) {
+\dontshow{if (requireNamespace("fable", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(fable)
 library(tsibble)
 library(tsibbledata)
@@ -43,5 +43,5 @@ aus_production \%>\%
       cmbn_args = list(weights = "inv_var")
     )
   )
-}
+\dontshow{\}) # examplesIf}
 }

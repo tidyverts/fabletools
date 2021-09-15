@@ -36,9 +36,9 @@ The \code{data} argument can be used to specify a shorter period of data, which 
 useful to focus on the more recent observations.
 }
 \examples{
-library(tsibbledata)
-if (requireNamespace("fable", quietly = TRUE)) {
+\dontshow{if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(fable)
+library(tsibbledata)
 
 fc <- aus_production \%>\%
   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) \%>\% 
@@ -46,13 +46,10 @@ fc <- aus_production \%>\%
 
 fc \%>\% 
   autoplot(aus_production)
-}
-
-
-if (requireNamespace("fable", quietly = TRUE)) {
+\dontshow{\}) # examplesIf}
+\dontshow{if (requireNamespace("fable", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 aus_production \%>\% 
   autoplot(Beer) + 
   autolayer(fc)
-}
-
+\dontshow{\}) # examplesIf}
 }

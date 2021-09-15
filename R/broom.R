@@ -8,8 +8,7 @@
 #' @param x A mable.
 #' @param ... Arguments for model methods.
 #' 
-#' @examples 
-#' if (requireNamespace("fable", quietly = TRUE)) {
+#' @examplesIf requireNamespace("fable", quietly = TRUE)
 #' library(fable)
 #' library(tsibbledata)
 #' 
@@ -17,7 +16,6 @@
 #' aus_production %>%
 #'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) %>% 
 #'   augment()
-#' }
 #' 
 #' @rdname augment
 #' @export
@@ -83,15 +81,13 @@ Response residuals are now always found in `.resid` and innovation residuals are
 #' @param x A mable.
 #' @param ... Arguments for model methods.
 #' 
-#' @examples 
-#' if (requireNamespace("fable", quietly = TRUE)) {
+#' @examplesIf requireNamespace("fable", quietly = TRUE)
 #' library(fable)
 #' library(tsibbledata)
 #' 
 #' olympic_running %>%
 #'   model(lm = TSLM(log(Time) ~ trend())) %>% 
 #'   glance()
-#' }
 #' @rdname glance
 #' @export
 glance.mdl_df <- function(x, ...){
@@ -116,15 +112,13 @@ glance.mdl_ts <- function(x, ...){
 #' @param x,object A mable.
 #' @param ... Arguments for model methods.
 #' 
-#' @examples 
-#' if (requireNamespace("fable", quietly = TRUE)) {
+#' @examplesIf requireNamespace("fable", quietly = TRUE)
 #' library(fable)
 #' library(tsibbledata)
 #' 
 #' olympic_running %>%
 #'   model(lm = TSLM(log(Time) ~ trend())) %>% 
 #'   tidy()
-#' }
 #' 
 #' @rdname tidy
 #' @export

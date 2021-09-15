@@ -21,7 +21,7 @@ compute the benchmark forecasts.
 
 skill_score(MSE)
 
-if (requireNamespace("fable", quietly = TRUE)) {
+\dontshow{if (requireNamespace("fable", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(fable)
 library(tsibble)
 
@@ -34,6 +34,5 @@ lung_deaths \%>\%
   ) \%>\%
   forecast(h = "1 year") \%>\%
   accuracy(lung_deaths, measures = list(skill = skill_score(MSE)))
-}
-
+\dontshow{\}) # examplesIf}
 }

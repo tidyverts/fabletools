@@ -92,8 +92,7 @@ Please check that you have specified the decomposition models appropriately.")
 #' @param dcmp A model definition which supports extracting decomposed [`components()`].
 #' @param ... Model definitions used to model the components
 #' 
-#' @examples 
-#' if (requireNamespace("fable", quietly = TRUE) && requireNamespace("feasts", quietly = TRUE)) {
+#' @examplesIf requireNamespace("fable", quietly = TRUE) && requireNamespace("feasts", quietly = TRUE)
 #' library(fable)
 #' library(feasts)
 #' library(tsibble)
@@ -119,7 +118,6 @@ Please check that you have specified the decomposition models appropriately.")
 #'   model(my_dcmp_spec) %>% 
 #'   forecast(h="5 years") %>% 
 #'   autoplot(vic_food)
-#' }
 #' 
 #' @seealso 
 #' [*Forecasting: Principles and Practice* - Forecasting Decomposition](https://otexts.com/fpp3/forecasting-decomposition.html)

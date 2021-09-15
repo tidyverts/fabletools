@@ -31,7 +31,7 @@ need to provide a complete dataset that includes the future data and data
 used to train the model.
 }
 \examples{
-if (requireNamespace("fable", quietly = TRUE)) {
+\dontshow{if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(fable)
 library(tsibble)
 library(tsibbledata)
@@ -59,8 +59,7 @@ fc \%>\%
     aus_production,
     measures = list(interval_accuracy_measures, distribution_accuracy_measures)
   )
-}
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \href{https://otexts.com/fpp3/accuracy.html}{Evaluating forecast accuracy}

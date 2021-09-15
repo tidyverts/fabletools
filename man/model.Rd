@@ -44,7 +44,7 @@ reported can be controlled using the \code{progressr} package.
 }
 
 \examples{
-if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)) {
+\dontshow{if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(fable)
 library(tsibbledata)
 
@@ -66,6 +66,5 @@ aus_retail \%>\%
     ets = ETS(log(Turnover) ~ error("A") + trend("A") + season("A")),
   )
 )
-}
-
+\dontshow{\}) # examplesIf}
 }

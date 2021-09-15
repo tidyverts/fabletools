@@ -105,7 +105,10 @@ features_impl <- function(.tbl, .var, features, ...){
 #'   features(Trips, features = list(mean = mean, sd = sd))
 #'
 #' # Search and use useful features with `feature_set()`. 
-#' if(requireNamespace("feasts")) library(feasts)
+#' 
+#' @examplesIf requireNamespace("feasts", quietly = TRUE)
+#' library(feasts)
+#' @examples
 #' tourism %>% 
 #'   features(Trips, features = feature_set(tags = "autocorrelation"))
 #' 
