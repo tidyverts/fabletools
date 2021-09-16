@@ -570,7 +570,7 @@ accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..
   
   if(mv <- length(resp) > 1){
     aug <- object <- tidyr::pivot_longer(
-      transmute(object, mean(!!dist), .dist = !!dist, !!!syms(intersect(by, colnames(object)))),
+      transmute(object, as_tibble(mean(!!dist)), .dist = !!dist, !!!syms(intersect(by, colnames(object)))),
       !!resp, names_to = ".response", values_to = ".fc")
     aug_dt <- data <- tidyr::pivot_longer(
       transmute(data, !!index(data), !!!syms(resp)),
