@@ -21,3 +21,13 @@ Produces a time series plot of one or more variables from a tsibble. If the
 tsibble contains a multiple keys, separate time series will be identified by
 colour.
 }
+\examples{
+\dontshow{if (requireNamespace("fable", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+library(fable)
+library(tsibbledata)
+library(tsibble)
+
+tsibbledata::gafa_stock \%>\%
+ autoplot(vars(Close, log(Close)))
+\dontshow{\}) # examplesIf}
+}

@@ -167,7 +167,7 @@ parse_agg_spec <- function(expr){
 #' 
 #' \lifecycle{maturing}
 #' 
-#' An aggregation vector extends usual vectors by adding <aggregated> values.
+#' An aggregation vector extends usual vectors by adding `<aggregated>` values.
 #' These vectors are typically produced via the [`aggregate_key()`] function,
 #' however it can be useful to create them manually to produce more complicated
 #' hierarchies (such as unbalanced hierarchies).

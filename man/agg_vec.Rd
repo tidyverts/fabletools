@@ -15,7 +15,7 @@ agg_vec(x = character(), aggregated = logical(vec_size(x)))
 \lifecycle{maturing}
 }
 \details{
-An aggregation vector extends usual vectors by adding <aggregated> values.
+An aggregation vector extends usual vectors by adding \verb{<aggregated>} values.
 These vectors are typically produced via the \code{\link[=aggregate_key]{aggregate_key()}} function,
 however it can be useful to create them manually to produce more complicated
 hierarchies (such as unbalanced hierarchies).

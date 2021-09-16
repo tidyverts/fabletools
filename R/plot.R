@@ -9,7 +9,6 @@
 #' @param ... Further arguments passed to [`ggplot2::geom_line()`], which can be used to specify fixed aesthetics such as `colour = "red"` or `size = 3`. 
 #' 
 #' @examplesIf requireNamespace("fable", quietly = TRUE)
-#' if (requireNamespace("fable", quietly = TRUE)) {
 #' library(fable)
 #' library(tsibbledata)
 #' library(tsibble)
@@ -145,7 +144,6 @@ If you're using it to extract intervals, consider using `hilo()` to compute inte
 #' @param ... Further arguments passed used to specify fixed aesthetics for the forecasts such as `colour = "red"` or `size = 3`.
 #' @param point_forecast The point forecast measure to be displayed in the plot.
 #' 
-#' @examples 
 #' @examplesIf requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)
 #' library(fable)
 #' library(tsibbledata)
