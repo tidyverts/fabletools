@@ -318,7 +318,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     }
     intvl_mapping <- mapping
     intvl_mapping$dist <- sym(response_vars(object))
-    intvl_mapping$fill_ramp <- intvl_mapping$colour_ramp <- expr(stat(level))
+    intvl_mapping$fill_ramp <- intvl_mapping$colour_ramp <- rlang::call2("stat", sym("level"))
         
     if(!is.null(col)){
       intvl_mapping$fill <- col
