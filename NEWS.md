@@ -19,7 +19,8 @@
 
 ## Bug fixes
 
-* Fixed xreg issue in reconciliation methods that partially forecast hierarchy.
+* Fixed issue with exogenous regressors (`xreg`) in reconciliation methods that 
+  partially forecast the hierarchy.
 
 # fabletools 0.3.1
 
