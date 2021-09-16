@@ -255,10 +255,7 @@ construct_fc <- function(point, sd, dist){
 }
 
 compute_point_forecasts <- function(distribution, measures){
-  measures <- map(measures, calc, distribution)
-  resp <- dimnames(distribution)
-  if(length(resp) > 1) measures <- map(measures, set_names, resp)
-  flatten_with_names(measures)
+  map(measures, calc, distribution)
 }
 
 #' @export
