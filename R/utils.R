@@ -313,3 +313,7 @@ mable_apply <- function (.data, .f, ..., names_to = ".model") {
   
   return(.data)
 }
+
+dist_types <- function(dist) {
+  map_chr(vec_data(dist), function(x) class(x)[1])
+}

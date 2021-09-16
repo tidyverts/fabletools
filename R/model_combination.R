@@ -300,7 +300,7 @@ forecast.model_combination <- function(object, new_data, specials, ...){
     fc_cov <- map_dbl(fc_sd, function(sigma) (diag(sigma)%*%fc_cov%*%t(diag(sigma)))[1,2])
   }
   
-  is_normal <- map_lgl(object[mdls], function(x) inherits(x[[1]], "dist_normal"))
+  is_normal <- map_lgl(object[mdls], function(x) all(dist_types(x) == "dist_normal"))
   if(all(is_normal)){ # Improve check to ensure all distributions are normal
     .dist <- eval_tidy(expr, object)
     # var(x) + var(y) + 2*cov(x,y)

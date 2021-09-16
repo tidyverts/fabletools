@@ -283,7 +283,7 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
     # Code adapted from reconcile_fbl_list to handle changing weights over horizon
     # This will need to be refactored later so that reconcile_fbl_list is broken up into more sub-problems
     # As the weight matrix is an identity, this code and computation is much simpler.
-    is_normal <- all(map_lgl(fc_dist, function(x) inherits(x[[1]], "dist_normal")))
+    is_normal <- all(map_lgl(fc_dist, function(x) all(dist_types(x) == "dist_normal")))
     # Point forecast means can be computed in one step
     fc_mean <- split(fc_mean[,top]*fc_prop,col(fc_prop))
     if(is_normal) {
@@ -428,7 +428,7 @@ forecast.lst_midout_mdl <- function(object, key_data,
   # Code adapted from reconcile_fbl_list to handle changing weights over horizon
   # This will need to be refactored later so that reconcile_fbl_list is broken up into more sub-problems
   # As the weight matrix is an identity, this code and computation is much simpler.
-  is_normal <- all(map_lgl(fc_dist, function(x) inherits(x[[1]], "dist_normal")))
+  is_normal <- all(map_lgl(fc_dist, function(x) all(dist_types(x) == "dist_normal")))
   # Point forecast means can be computed in one step
   fc_mean <- split(fc_mean,col(fc_mean))
   if(is_normal) {
@@ -480,7 +480,7 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
   }
   
   fc_dist <- map(fc, function(x) x[[distribution_var(x)]])
-  is_normal <- all(map_lgl(fc_dist, function(x) inherits(x[[1]], "dist_normal")))
+  is_normal <- all(map_lgl(fc_dist, function(x) all(dist_types(x) == "dist_normal")))
   
   fc_mean <- as.matrix(invoke(cbind, map(fc_dist, mean)))
   fc_var <- transpose_dbl(map(fc_dist, distributional::variance))

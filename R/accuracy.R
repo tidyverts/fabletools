@@ -248,8 +248,9 @@ quantile_score <- function(.dist, .actual, probs = c(0.05,0.25,0.5,0.75,0.95),
 #' @rdname distribution_accuracy_measures
 #' @export
 CRPS <- function(.dist, .actual, n_quantiles = 1000, na.rm = TRUE, ...){
-  is_normal <- map_lgl(.dist, inherits, "dist_normal")
-  is_sample <- map_lgl(.dist, inherits, "dist_sample")
+  dist_type <- dist_types(.dist)
+  is_normal <- dist_type == "dist_normal"
+  is_sample <- dist_type == "dist_sample"
   z <- rep(NA_real_, length(.dist))
   
   if(any(is_normal)){
