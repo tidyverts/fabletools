@@ -476,6 +476,7 @@
 <span class="co">#&gt;  8618.4   8974.2   8434.0   8616.8  </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; sigma^2: 251827.8712</span>
+
 <span class="co"># Update the model with new data</span>
 <span class="va">us_acc_deaths_new</span> <span class="op">&lt;-</span> <span class="va">us_acc_deaths</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">61</span><span class="op">:</span><span class="fl">72</span><span class="op">)</span>
 <span class="va">fit_stream</span> <span class="op">&lt;-</span> <span class="va">fit_stream</span> <span class="op">%&gt;%</span> 
@@ -493,6 +494,7 @@
 <span class="co">#&gt;  9749.167   8700.333   8990.167   8467.167   8720.667  </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; sigma^2: 222480.9038</span>
+
 <span class="co"># Check that it matches a model of the full data</span>
 <span class="va">us_acc_deaths</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../reference/model.html">model</a></span><span class="op">(</span><span class="fu">SMEAN</span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
