@@ -188,20 +188,21 @@ forecast.lst_btmup_mdl <- function(object, key_data,
   S[length(agg_data$agg)*(vec_c(!!!agg_data$agg)-1) + rep(seq_along(agg_data$agg), lengths(agg_data$agg))] <- 1L
   
   btm <- agg_data$leaf
-  object <- object[btm]
-  if(!is.null(new_data)){
-    new_data <- new_data[btm]
-  }
+  # object <- object[btm]
+  # if(!is.null(new_data)){
+  #   new_data <- new_data[btm]
+  # }
   
   point_method <- point_forecast
   point_forecast <- list()
   
   # Get base forecasts
-  fc <- vector("list", nrow(S))
-  fc[btm] <- NextMethod()
+  # fc <- vector("list", nrow(S))
+  # fc[btm] <- NextMethod()
+  fc <- NextMethod()
   
   # Add dummy forecasts to unused levels
-  fc[seq_along(fc)[-btm]] <- fc[btm[1]]
+  # fc[seq_along(fc)[-btm]] <- fc[btm[1]]
   
   P <- matrix(0L, nrow = ncol(S), ncol = nrow(S))
   P[(btm-1L)*nrow(P) + seq_len(nrow(P))] <- 1L
