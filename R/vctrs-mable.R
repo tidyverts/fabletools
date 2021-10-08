@@ -44,7 +44,8 @@ mable_ptype2 <- function(x, y, ...) {
     mdl_x <- union(mdl_x, mable_vars(y))
   }
   out <- df_ptype2(x, y, ...)
-  build_mable_meta(out, key_data = key_x, model = mdl_x, response = resp_x)
+  build_mable_meta(out, key = group_data(group_by(out, !!!syms(key_x))),
+                   model = mdl_x, response = resp_x)
 }
 
 #' @rdname mable-vctrs

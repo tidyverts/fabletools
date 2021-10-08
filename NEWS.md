@@ -21,6 +21,8 @@
 
 * Fixed issue with exogenous regressors (`xreg`) in reconciliation methods that 
   partially forecast the hierarchy.
+* Fixed issue with keys being dropped when several `mdl_df` (mable) objects were
+  combined.
 
 # fabletools 0.3.1
 
