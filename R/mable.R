@@ -189,16 +189,25 @@ transmute.mdl_df <- function (.data, ...){
 #' @export
 `[.mdl_df` <- function (x, i, j, drop = FALSE){
   out <- as_tibble(NextMethod())
-  cn <- colnames(out)
-  kv <- intersect(key_vars(x), cn)
+  cn <- names(out)
+  new_kv <- intersect(old_kv <- key_vars(x), cn)
   mv <- intersect(mable_vars(x), cn)
   
-  # If keys have been dropped, return a tibble
-  if(n_keys(x) != length(kv)){
+  # If keys have changed, return a tibble if mable is invalid
+  if(!identical(old_kv, new_kv)){
     return(out)
+    key_data <- group_data(group_by(x, !!!syms(key)))
+    if(any(lengths(key_data[[length(key_data)]]) > 1))
+      return(out)
+    else
+      return(build_mable(out, key_data = key_data, model = !!mv))
   }
   
-  build_mable(out, key = !!kv, model = !!mv)
+  # If all models are removed, return a tibble
+  if(length(mv) == 0)
+    return(out)
+  
+  build_mable(out, key = !!old_kv, model = !!mv)
 }
 
 #' @export
