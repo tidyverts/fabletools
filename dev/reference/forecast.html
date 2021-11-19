@@ -191,7 +191,7 @@ time series with no exogenous regressors).</p></td>
       <td><p>The point forecast measure(s) which should be returned
 in the resulting fable. Specified as a named list of functions which accept
 a distribution and return a vector. To compute forecast medians, you can use
-<code><a href='https://rdrr.io/r/base/list.html'>list(.median = median)</a></code>.</p></td>
+<code>list(.median = median)</code>.</p></td>
     </tr>
     <tr>
       <th>bias_adjust</th>
@@ -239,68 +239,76 @@ These intervals are stored in a single column using the <code>hilo</code> class,
 extract the numerical upper and lower bounds you can use <code><a href='unpack_hilo.html'>unpack_hilo()</a></code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://fable.tidyverts.org'>fable</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tsibble.tidyverts.org'>tsibble</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tsibbledata.tidyverts.org/'>tsibbledata</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyr.tidyverse.org'>tidyr</a></span><span class='op'>)</span>
-
-<span class='co'># Forecasting with an ETS(M,Ad,A) model to Australian beer production</span>
-<span class='va'>beer_fc</span> <span class='op'>&lt;-</span> <span class='va'>aus_production</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='model.html'>model</a></span><span class='op'>(</span>ets <span class='op'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>Beer</span><span class='op'>)</span> <span class='op'>~</span> <span class='fu'>error</span><span class='op'>(</span><span class='st'>"M"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>trend</span><span class='op'>(</span><span class='st'>"Ad"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>season</span><span class='op'>(</span><span class='st'>"A"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'>forecast</span><span class='op'>(</span>h <span class='op'>=</span> <span class='st'>"3 years"</span><span class='op'>)</span>
-
-<span class='co'># Compute 80% and 95% forecast intervals</span>
-<span class='va'>beer_fc</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='https://pkg.mitchelloharawild.com/distributional/reference/hilo.html'>hilo</a></span><span class='op'>(</span>level <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>80</span>, <span class='fl'>95</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tsibble: 12 x 6 [1Q]</span>
-#&gt; <span style='color: #949494;'># Key:       .model [1]</span>
-#&gt;    .model Quarter              Beer .mean                  `80%`
-#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;qtr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;dist&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>                 <span style='color: #949494; font-style: italic;'>&lt;hilo&gt;</span>
-#&gt; <span style='color: #BCBCBC;'> 1</span> ets    2010 Q3   t(N(6, 0.0013))  407. [388.3086, 425.8337]80
-#&gt; <span style='color: #BCBCBC;'> 2</span> ets    2010 Q4 t(N(6.2, 0.0014))  483. [459.8714, 506.5468]80
-#&gt; <span style='color: #BCBCBC;'> 3</span> ets    2011 Q1   t(N(6, 0.0014))  419. [398.6325, 439.3894]80
-#&gt; <span style='color: #BCBCBC;'> 4</span> ets    2011 Q2   t(N(6, 0.0015))  384. [365.3574, 403.7254]80
-#&gt; <span style='color: #BCBCBC;'> 5</span> ets    2011 Q3   t(N(6, 0.0019))  405. [382.4128, 427.7091]80
-#&gt; <span style='color: #BCBCBC;'> 6</span> ets    2011 Q4 t(N(6.2, 0.0022))  481. [452.3059, 509.7606]80
-#&gt; <span style='color: #BCBCBC;'> 7</span> ets    2012 Q1   t(N(6, 0.0023))  417. [391.5386, 443.0498]80
-#&gt; <span style='color: #BCBCBC;'> 8</span> ets    2012 Q2 t(N(5.9, 0.0025))  383. [358.4021, 407.8355]80
-#&gt; <span style='color: #BCBCBC;'> 9</span> ets    2012 Q3   t(N(6, 0.0032))  403. [374.7091, 432.7834]80
-#&gt; <span style='color: #BCBCBC;'>10</span> ets    2012 Q4 t(N(6.2, 0.0036))  479. [442.8408, 516.4800]80
-#&gt; <span style='color: #BCBCBC;'>11</span> ets    2013 Q1   t(N(6, 0.0039))  416. [383.0362, 449.4648]80
-#&gt; <span style='color: #BCBCBC;'>12</span> ets    2013 Q2 t(N(5.9, 0.0043))  382. [350.3968, 414.1880]80
-#&gt; <span style='color: #949494;'># … with 1 more variable: 95% &lt;hilo&gt;</span></div><div class='input'>
-<span class='va'>beer_fc</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span><span class='op'>(</span><span class='va'>aus_production</span><span class='op'>)</span>
-</div><div class='img'><img src='forecast-1.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'># Forecasting with a seasonal naive and linear model to the monthly </span>
-<span class='co'># "Food retailing" turnover for each Australian state/territory.</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
-<span class='va'>aus_retail</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>Industry</span> <span class='op'>==</span> <span class='st'>"Food retailing"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='model.html'>model</a></span><span class='op'>(</span>
-    snaive <span class='op'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/RW.html'>SNAIVE</a></span><span class='op'>(</span><span class='va'>Turnover</span><span class='op'>)</span>,
-    ets <span class='op'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>Turnover</span><span class='op'>)</span> <span class='op'>~</span> <span class='fu'>trend</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>season</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>,
-  <span class='op'>)</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'>forecast</span><span class='op'>(</span>h <span class='op'>=</span> <span class='st'>"2 years 6 months"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span><span class='op'>(</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>aus_retail</span>, <span class='va'>Month</span> <span class='op'>&gt;=</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/year-month.html'>yearmonth</a></span><span class='op'>(</span><span class='st'>"2000 Jan"</span><span class='op'>)</span><span class='op'>)</span>, level <span class='op'>=</span> <span class='fl'>90</span><span class='op'>)</span>
-</div><div class='img'><img src='forecast-2.png' alt='' width='700' height='433' /></div><div class='input'>  
-<span class='co'># Forecast GDP with a dynamic regression model on log(GDP) using population and</span>
-<span class='co'># an automatically chosen ARIMA error structure. Assume that population is fixed</span>
-<span class='co'># in the future.</span>
-<span class='va'>aus_economy</span> <span class='op'>&lt;-</span> <span class='va'>global_economy</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>Country</span> <span class='op'>==</span> <span class='st'>"Australia"</span><span class='op'>)</span>
-<span class='va'>fit</span> <span class='op'>&lt;-</span> <span class='va'>aus_economy</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='model.html'>model</a></span><span class='op'>(</span>lm <span class='op'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ARIMA.html'>ARIMA</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>GDP</span><span class='op'>)</span> <span class='op'>~</span> <span class='va'>Population</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: 1 error encountered for lm</span>
-#&gt; <span class='warning'>[1] The `urca` package must be installed to use this functionality. It can be installed with install.packages("urca")</span></div><div class='input'>
-<span class='va'>future_aus</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/new-data.html'>new_data</a></span><span class='op'>(</span><span class='va'>aus_economy</span>, n <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>Population <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/nth.html'>last</a></span><span class='op'>(</span><span class='va'>aus_economy</span><span class='op'>$</span><span class='va'>Population</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>fit</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'>forecast</span><span class='op'>(</span>new_data <span class='op'>=</span> <span class='va'>future_aus</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span><span class='op'>(</span><span class='va'>aus_economy</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 10 row(s) containing missing values (geom_path).</span></div><div class='img'><img src='forecast-3.png' alt='' width='700' height='433' /></div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://fable.tidyverts.org'>fable</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tsibble.tidyverts.org'>tsibble</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tsibbledata.tidyverts.org/'>tsibbledata</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyr.tidyverse.org'>tidyr</a></span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Forecasting with an ETS(M,Ad,A) model to Australian beer production</span></span>
+<span class='r-in'><span class='va'>beer_fc</span> <span class='op'>&lt;-</span> <span class='va'>aus_production</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='model.html'>model</a></span><span class='op'>(</span>ets <span class='op'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>Beer</span><span class='op'>)</span> <span class='op'>~</span> <span class='fu'>error</span><span class='op'>(</span><span class='st'>"M"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>trend</span><span class='op'>(</span><span class='st'>"Ad"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>season</span><span class='op'>(</span><span class='st'>"A"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span class='r-in'>  <span class='fu'>forecast</span><span class='op'>(</span>h <span class='op'>=</span> <span class='st'>"3 years"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Compute 80% and 95% forecast intervals</span></span>
+<span class='r-in'><span class='va'>beer_fc</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span class='r-in'>  <span class='fu'><a href='https://pkg.mitchelloharawild.com/distributional/reference/hilo.html'>hilo</a></span><span class='op'>(</span>level <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>80</span>, <span class='fl'>95</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tsibble: 12 x 6 [1Q]</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># Key:       .model [1]</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    .model Quarter              Beer .mean                  `80%`</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;qtr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;dist&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>                 <span style='color: #949494; font-style: italic;'>&lt;hilo&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span> ets    2010 Q3   t(N(6, 0.0013))  407. [388.3086, 425.8337]80</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span> ets    2010 Q4 t(N(6.2, 0.0014))  483. [459.8714, 506.5468]80</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span> ets    2011 Q1   t(N(6, 0.0014))  419. [398.6325, 439.3894]80</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span> ets    2011 Q2   t(N(6, 0.0015))  384. [365.3574, 403.7254]80</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span> ets    2011 Q3   t(N(6, 0.0019))  405. [382.4128, 427.7091]80</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span> ets    2011 Q4 t(N(6.2, 0.0022))  481. [452.3059, 509.7606]80</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span> ets    2012 Q1   t(N(6, 0.0023))  417. [391.5386, 443.0498]80</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span> ets    2012 Q2 t(N(5.9, 0.0025))  383. [358.4021, 407.8355]80</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span> ets    2012 Q3   t(N(6, 0.0032))  403. [374.7091, 432.7834]80</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span> ets    2012 Q4 t(N(6.2, 0.0036))  479. [442.8408, 516.4800]80</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>11</span> ets    2013 Q1   t(N(6, 0.0039))  416. [383.0362, 449.4648]80</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>12</span> ets    2013 Q2 t(N(5.9, 0.0043))  382. [350.3968, 414.1880]80</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># … with 1 more variable: 95% &lt;hilo&gt;</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>beer_fc</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span class='r-in'>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span><span class='op'>(</span><span class='va'>aus_production</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='forecast-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Forecasting with a seasonal naive and linear model to the monthly </span></span>
+<span class='r-in'><span class='co'># "Food retailing" turnover for each Australian state/territory.</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>aus_retail</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span class='r-in'>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>Industry</span> <span class='op'>==</span> <span class='st'>"Food retailing"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span class='r-in'>  <span class='fu'><a href='model.html'>model</a></span><span class='op'>(</span></span>
+<span class='r-in'>    snaive <span class='op'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/RW.html'>SNAIVE</a></span><span class='op'>(</span><span class='va'>Turnover</span><span class='op'>)</span>,</span>
+<span class='r-in'>    ets <span class='op'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/TSLM.html'>TSLM</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>Turnover</span><span class='op'>)</span> <span class='op'>~</span> <span class='fu'>trend</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>season</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>  <span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span class='r-in'>  <span class='fu'>forecast</span><span class='op'>(</span>h <span class='op'>=</span> <span class='st'>"2 years 6 months"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span class='r-in'>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span><span class='op'>(</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>aus_retail</span>, <span class='va'>Month</span> <span class='op'>&gt;=</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/year-month.html'>yearmonth</a></span><span class='op'>(</span><span class='st'>"2000 Jan"</span><span class='op'>)</span><span class='op'>)</span>, level <span class='op'>=</span> <span class='fl'>90</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='forecast-2.png' alt='' width='700' height='433' /></span>
+<span class='r-in'>  </span>
+<span class='r-in'><span class='co'># Forecast GDP with a dynamic regression model on log(GDP) using population and</span></span>
+<span class='r-in'><span class='co'># an automatically chosen ARIMA error structure. Assume that population is fixed</span></span>
+<span class='r-in'><span class='co'># in the future.</span></span>
+<span class='r-in'><span class='va'>aus_economy</span> <span class='op'>&lt;-</span> <span class='va'>global_economy</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span class='r-in'>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>Country</span> <span class='op'>==</span> <span class='st'>"Australia"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>fit</span> <span class='op'>&lt;-</span> <span class='va'>aus_economy</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span class='r-in'>  <span class='fu'><a href='model.html'>model</a></span><span class='op'>(</span>lm <span class='op'>=</span> <span class='fu'><a href='https://fable.tidyverts.org/reference/ARIMA.html'>ARIMA</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>GDP</span><span class='op'>)</span> <span class='op'>~</span> <span class='va'>Population</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>1 error encountered for lm</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> [1] The `urca` package must be installed to use this functionality. It can be installed with install.packages("urca")</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>future_aus</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/new-data.html'>new_data</a></span><span class='op'>(</span><span class='va'>aus_economy</span>, n <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span class='r-in'>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>Population <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/nth.html'>last</a></span><span class='op'>(</span><span class='va'>aus_economy</span><span class='op'>$</span><span class='va'>Population</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>fit</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span class='r-in'>  <span class='fu'>forecast</span><span class='op'>(</span>new_data <span class='op'>=</span> <span class='va'>future_aus</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span class='r-in'>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span><span class='op'>(</span><span class='va'>aus_economy</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Removed 10 row(s) containing missing values (geom_path).</span>
+<span class='r-plt img'><img src='forecast-3.png' alt='' width='700' height='433' /></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

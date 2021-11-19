@@ -152,7 +152,7 @@ specified in several ways (see details).</p></td>
       <td><p>&lt;<code><a href='https://dplyr.tidyverse.org/reference/dplyr_data_masking.html'>data-masking</a></code>&gt; Name-value pairs of summary
 functions. The name will be the name of the variable in the result.</p>
 <p>The value can be:</p><ul>
-<li><p>A vector of length 1, e.g. <code><a href='https://rdrr.io/r/base/Extremes.html'>min(x)</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/context.html'>n()</a></code>, or <code><a href='https://rdrr.io/r/base/sum.html'>sum(is.na(y))</a></code>.</p></li>
+<li><p>A vector of length 1, e.g. <code>min(x)</code>, <code><a href='https://dplyr.tidyverse.org/reference/context.html'>n()</a></code>, or <code>sum(is.na(y))</code>.</p></li>
 <li><p>A vector of length <code>n</code>, e.g. <code><a href='https://rdrr.io/r/stats/quantile.html'>quantile()</a></code>.</p></li>
 <li><p>A data frame, to add multiple columns from a single expression.</p></li>
 </ul></td>
@@ -183,27 +183,28 @@ and a space, or followed by "s".</p></li>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tsibble.tidyverts.org'>tsibble</a></span><span class='op'>)</span>
-<span class='va'>pedestrian</span> <span class='op'>%&gt;%</span>
-  <span class='co'># Currently only supports daily data</span>
-  <span class='fu'><a href='https://tsibble.tidyverts.org/reference/index-by.html'>index_by</a></span><span class='op'>(</span><span class='va'>Date</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span><span class='op'>(</span>Count <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>Count</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
-  <span class='co'># Compute weekly aggregates</span>
-  <span class='fu'>fabletools</span><span class='fu'>:::</span><span class='fu'>aggregate_index</span><span class='op'>(</span><span class='st'>"1 week"</span>, Count <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>Count</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tsibble: 104 x 2 [7D]</span>
-#&gt;    Date        Count
-#&gt;    <span style='color: #949494; font-style: italic;'>&lt;date&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
-#&gt; <span style='color: #BCBCBC;'> 1</span> 2015-01-03 <span style='text-decoration: underline;'>182</span>896
-#&gt; <span style='color: #BCBCBC;'> 2</span> 2015-01-10 <span style='text-decoration: underline;'>231</span>513
-#&gt; <span style='color: #BCBCBC;'> 3</span> 2015-01-17 <span style='text-decoration: underline;'>348</span>879
-#&gt; <span style='color: #BCBCBC;'> 4</span> 2015-01-24 <span style='text-decoration: underline;'>313</span>666
-#&gt; <span style='color: #BCBCBC;'> 5</span> 2015-01-31 <span style='text-decoration: underline;'>238</span>603
-#&gt; <span style='color: #BCBCBC;'> 6</span> 2015-02-07 <span style='text-decoration: underline;'>219</span>104
-#&gt; <span style='color: #BCBCBC;'> 7</span> 2015-02-14 <span style='text-decoration: underline;'>377</span>340
-#&gt; <span style='color: #BCBCBC;'> 8</span> 2015-02-21 <span style='text-decoration: underline;'>530</span>409
-#&gt; <span style='color: #BCBCBC;'> 9</span> 2015-02-28 <span style='text-decoration: underline;'>444</span>666
-#&gt; <span style='color: #BCBCBC;'>10</span> 2015-03-07 <span style='text-decoration: underline;'>614</span>122
-#&gt; <span style='color: #949494;'># … with 94 more rows</span></div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tsibble.tidyverts.org'>tsibble</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>pedestrian</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='co'># Currently only supports daily data</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://tsibble.tidyverts.org/reference/index-by.html'>index_by</a></span><span class='op'>(</span><span class='va'>Date</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span class='r-in'>  <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span><span class='op'>(</span>Count <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>Count</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span class='r-in'>  <span class='co'># Compute weekly aggregates</span></span>
+<span class='r-in'>  <span class='fu'>fabletools</span><span class='fu'>:::</span><span class='fu'>aggregate_index</span><span class='op'>(</span><span class='st'>"1 week"</span>, Count <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>Count</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tsibble: 104 x 2 [7D]</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    Date        Count</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;date&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span> 2015-01-03 <span style='text-decoration: underline;'>182</span>896</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span> 2015-01-10 <span style='text-decoration: underline;'>231</span>513</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span> 2015-01-17 <span style='text-decoration: underline;'>348</span>879</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span> 2015-01-24 <span style='text-decoration: underline;'>313</span>666</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span> 2015-01-31 <span style='text-decoration: underline;'>238</span>603</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span> 2015-02-07 <span style='text-decoration: underline;'>219</span>104</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span> 2015-02-14 <span style='text-decoration: underline;'>377</span>340</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span> 2015-02-21 <span style='text-decoration: underline;'>530</span>409</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span> 2015-02-28 <span style='text-decoration: underline;'>444</span>666</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span> 2015-03-07 <span style='text-decoration: underline;'>614</span>122</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># … with 94 more rows</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -174,7 +174,7 @@
 <h2 class="hasAnchor">
 <a href="#improvements-1" class="anchor"></a>Improvements</h2>
 <ul>
-<li>Added transformation support for fallback <code><a href="https://rdrr.io/r/stats/fitted.values.html">fitted(h &gt; 1)</a></code> method (<a href='https://github.com/tidyverts/fabletools/issues/302'>#302</a>).</li>
+<li>Added transformation support for fallback <code>fitted(h &gt; 1)</code> method (<a href='https://github.com/tidyverts/fabletools/issues/302'>#302</a>).</li>
 <li>Documentation improvements.</li>
 </ul>
 </div>
@@ -193,7 +193,7 @@
 <li>Added block bootstrap option for bootstrapping innovations in <code><a href="https://generics.r-lib.org/reference/generate.html">generate()</a></code>.</li>
 <li>Added multiple step ahead fitted values support via <code>fitted(&lt;mable&gt;, h &gt; 1)</code>.</li>
 <li>Added <code>as_fable(&lt;forecast&gt;)</code> for converting older <code>forecast</code> class objects to <code>fable</code> data structures.</li>
-<li>Added <code><a href="../reference/top_down.html">top_down(method = "forecast_proportion")</a></code> for reconciliation using the forecast proportions techniques.</li>
+<li>Added <code>top_down(method = "forecast_proportion")</code> for reconciliation using the forecast proportions techniques.</li>
 <li>Added <code><a href="../reference/middle_out.html">middle_out()</a></code> forecast reconciliation method.</li>
 <li>Added directional accuracy measures, including <code><a href="../reference/MDA.html">MDA()</a></code>, <code><a href="../reference/MDA.html">MDV()</a></code> and <code><a href="../reference/MDA.html">MDPV()</a></code> (<a href='https://github.com/tidyverts/fabletools/issues/273'>#273</a>, <a href='https://github.com/davidtedfordholt'>@davidtedfordholt</a>).</li>
 <li>Added <code>fill_gaps(&lt;fable&gt;)</code>.</li>
@@ -413,8 +413,8 @@
 <ul>
 <li>Improved error messaging for failing features.</li>
 <li>Added Continuous Ranked Probability Score (<code><a href="../reference/percentile_score.html">CRPS()</a></code>) accuracy measure.</li>
-<li>Transformations of features are now computed for separately for each key, allowing transformations such as <code><a href="https://rdrr.io/r/base/scale.html">scale(value)</a></code> to be used.</li>
-<li>Added structural scaling method for MinT (<code><a href="../reference/min_trace.html">min_trace(method = "wls_struct")</a></code>) forecast reconciliation (<a href='https://github.com/GeorgeAthana'>@GeorgeAthana</a>).</li>
+<li>Transformations of features are now computed for separately for each key, allowing transformations such as <code>scale(value)</code> to be used.</li>
+<li>Added structural scaling method for MinT (<code>min_trace(method = "wls_struct")</code>) forecast reconciliation (<a href='https://github.com/GeorgeAthana'>@GeorgeAthana</a>).</li>
 <li>Performance improvements.</li>
 <li>Documentation improvements.</li>
 </ul>
@@ -451,7 +451,7 @@
 <a href="#modelling" class="anchor"></a>Modelling</h3>
 <ul>
 <li>Support for model (<code><a href="../reference/new_model_class.html">new_model_class()</a></code>, <code><a href="../reference/new_model_class.html">new_model_definition()</a></code>) and decomposition definitions (<code>new_decomposition_class()</code>, <code>new_decomposition_definition()</code>).</li>
-<li>Added parsing tools to compactly specify models using a formula interface. Transformations specified on left hand side, where the response variable is determined by object length. In case of a conflict in object length, such as <code>GDP/CPI</code>, the response will be the ratio of the pair. To transform a variable by some other data variable, the response can be specified using <code>resp()</code>, giving <code>resp(GDP)/CPI</code>. Multiple variables (and separate transformations for each), can be specified using <code><a href="https://dplyr.tidyverse.org/reference/vars.html">vars()</a></code>: <code><a href="https://dplyr.tidyverse.org/reference/vars.html">vars(log(GDP), CPI)</a></code>. The inputs to the model are specified on the right hand side, and are handled using model defined specials (<code><a href="../reference/new_specials.html">new_specials()</a></code>).</li>
+<li>Added parsing tools to compactly specify models using a formula interface. Transformations specified on left hand side, where the response variable is determined by object length. In case of a conflict in object length, such as <code>GDP/CPI</code>, the response will be the ratio of the pair. To transform a variable by some other data variable, the response can be specified using <code>resp()</code>, giving <code>resp(GDP)/CPI</code>. Multiple variables (and separate transformations for each), can be specified using <code><a href="https://dplyr.tidyverse.org/reference/vars.html">vars()</a></code>: <code>vars(log(GDP), CPI)</code>. The inputs to the model are specified on the right hand side, and are handled using model defined specials (<code><a href="../reference/new_specials.html">new_specials()</a></code>).</li>
 <li>Added methods to train a model definition to a dataset. <code><a href="../reference/model.html">model()</a></code> is the recommended interface, which can fit many model definitions to each time series in the input dataset returning a mable (<code>mdl_df</code>). The lower level interface for model estimation is accessible using <code><a href="../reference/estimate.html">estimate()</a></code> which will return a time series model (<code>mdl_ts</code>), however using this interface is discouraged.</li>
 </ul>
 </div>
