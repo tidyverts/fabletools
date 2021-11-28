@@ -61,8 +61,6 @@ Suggests:
     tsibbledata (>= 0.2.0),
     lubridate,
     Matrix
-Remotes:
-    mitchelloharawild/distributional
 VignetteBuilder: 
     knitr
 RdMacros: 
