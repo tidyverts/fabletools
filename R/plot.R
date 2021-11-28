@@ -338,6 +338,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   object[names(point_forecast)] <- map(point_forecast, calc, object[[dist_var]])
   object <- tidyr::pivot_longer(object[-match(dist_var, names(object))], names(point_forecast), names_to = "Point forecast", values_to = dist_var)
   if(length(resp_var) > 1){
+    object[[dist_var]] <- as_tibble(object[[dist_var]])
     object <- object[setdiff(names(object), resp_var)] %>% 
       tidyr::unpack(!!dist_var) %>% 
       tidyr::pivot_longer(names(object[[dist_var]]), names_to = ".response", values_to = dist_var)

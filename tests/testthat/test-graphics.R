@@ -248,7 +248,7 @@ test_that("autoplot.fbl_ts()", {
   
   expect_equal(
     ggplot2::layer_data(p, 3)$y,
-    c(fbl_mv$.mean_fdeaths, fbl_mv$.mean_mdeaths)
+    c(fbl_mv[[".mean_fdeaths"]]%||%fbl_mv$.mean[,"fdeaths"], fbl_mv[[".mean_mdeaths"]]%||%fbl_mv$.mean[,"mdeaths"])
   )
   expect_equivalent(
     as.numeric(table(ggplot2::layer_data(p)$PANEL)),
@@ -305,7 +305,7 @@ test_that("autolayer.fbl_ts()", {
   
   expect_equal(
     ggplot2::layer_data(p,4)$y,
-    c(fbl_mv$.mean_fdeaths, fbl_mv$.mean_mdeaths)
+    c(fbl_mv[[".mean_fdeaths"]]%||%fbl_mv$.mean[,"fdeaths"], fbl_mv[[".mean_mdeaths"]]%||%fbl_mv$.mean[,"mdeaths"])
   )
   expect_equivalent(
     as.numeric(table(ggplot2::layer_data(p,2)$PANEL)),

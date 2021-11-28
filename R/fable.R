@@ -186,11 +186,10 @@ tbl_sum.fbl_ts <- function(x){
 #' @importFrom distributional hilo
 #' @export
 hilo.fbl_ts <- function(x, level = c(80, 95), ...){
+  hilo_exprs <- map(level,function(.x) expr(hilo(!!sym(distribution_var(x)), !!.x)))
+  names(hilo_exprs) <- paste0(level, "%")
   as_tsibble(x) %>%
-    mutate(
-      !!!set_names(map(level,function(.x) expr(hilo(!!sym(distribution_var(x)), !!.x))),
-                   paste0(level, "%"))
-    )
+    mutate(!!!hilo_exprs)
 }
 
 restore_fable <- function(data, template){

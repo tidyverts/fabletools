@@ -44,7 +44,7 @@ Imports:
     R6,
     utils,
     vctrs (>= 0.2.2),
-    distributional (>= 0.2.2.9000),
+    distributional (>= 0.2.2),
     progressr,
     lifecycle
 Suggests:
