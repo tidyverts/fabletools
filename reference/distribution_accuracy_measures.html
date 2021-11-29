@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Distribution accuracy measures — percentile_score" />
-<meta property="og:description" content="Distribution accuracy measures" />
+<meta property="og:description" content="These accuracy measures can be used to evaluate how accurately a forecast
+distribution predicts a given actual value." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -129,7 +130,8 @@
     </div>
 
     <div class="ref-description">
-    <p>Distribution accuracy measures</p>
+    <p>These accuracy measures can be used to evaluate how accurately a forecast
+distribution predicts a given actual value.</p>
     </div>
 
     <pre class="usage"><span class='fu'>percentile_score</span><span class='op'>(</span><span class='va'>.dist</span>, <span class='va'>.actual</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -179,6 +181,44 @@
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
     <p>An object of class <code>list</code> of length 2.</p>
+    <h2 class="hasAnchor" id="quantile-percentile-score-pinball-loss-"><a class="anchor" href="#quantile-percentile-score-pinball-loss-"></a>Quantile/percentile score (pinball loss)</h2>
+
+    
+
+
+<p>A quantile (or percentile) score evaluates how accurately a set of quantiles
+(or percentiles) from the distribution match the given actual value. This
+score uses a pinball loss function, and can be calculated via the average of
+the score function given below:</p>
+<p>The score function \(s_p(q_p,y)\) is given by \((1-p)(q_p-y)\) if
+\(y &lt; q_p\), and \(p(y-q_p)\) if \(y \ge q_p\). Where \(p\) is the
+quantile probability, \(q_p = F^{-1}(p)\) is the quantile with probability
+\(p\), and \(y\) is the actual value.</p>
+<p>The resulting accuracy measure will average this score over all predicted
+points at all desired quantiles (defined via the <code>probs</code> argument).</p>
+<p>The percentile score is uses the same method with <code>probs</code> set to all
+percentiles <code>probs = seq(0.01, 0.99, 0.01)</code>.</p>
+    <h2 class="hasAnchor" id="continuous-ranked-probability-score-crps-"><a class="anchor" href="#continuous-ranked-probability-score-crps-"></a>Continuous ranked probability score (CRPS)</h2>
+
+    
+
+
+<p>The continuous ranked probability score (CRPS) is the continuous analogue of
+the pinball loss quantile score defined above. Its value is twice the
+integral of the quantile score over all possible quantiles:</p>
+<p>$$
+  CRPS(F,y) = 2 \int_0^1 s_p(q_p,y) dp
+$$</p>
+<p>It can be computed directly from the distribution via:</p>
+<p>$$
+  CRPS(F,y) = \int_{-\infty}^\infty (F(x) - 1{y\leq x})^2 dx
+$$</p>
+<p>For some forecast distribution \(F\) and actual value \(y\).</p>
+<p>Calculating the CRPS accuracy measure is computationally difficult for many
+distributions, however it can be computed quickly and exactly for Normal and
+emperical (sample) distributions. For other distributions the CRPS is
+approximated using the quantile score of many quantiles (using the number of
+quantiles specified in the <code>n_quantiles</code> argument).</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

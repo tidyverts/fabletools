@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -174,7 +174,7 @@
 <div id="the-training-function" class="section level3">
 <h3 class="hasAnchor">
 <a href="#the-training-function" class="anchor"></a>The training function</h3>
-<p>This function is used to apply the model definition created by the model function (<code>SMEAN()</code>) to users data when they use <code><a href="../reference/model.html">model(data, SMEAN())</a></code>.</p>
+<p>This function is used to apply the model definition created by the model function (<code>SMEAN()</code>) to users data when they use <code>model(data, SMEAN())</code>.</p>
 <p>The <code>.data</code> argument is a single series tsibble (no keys), representing the parsed left side of the formula. The index of <code>.data</code> is the time of the measurement, and the measured variables are the transformed response variable(s).</p>
 <p>The <code>specials</code> argument is a list of results from parsing the specials used in the right side of the formula. The result from the <code>season()</code> special in <code>SMEAN(y ~ season("year"))</code> would be accessible from <code>specials$season[[1]]</code>. As specials can be used more than once, the nth usage of special <code>xyz()</code> can be accessed with <code>specials$xyz[[n]]</code>.</p>
 <p>As mentioned earlier, <code>...</code> will contain additional parameters passed <code>...</code> of <code><a href="../reference/new_model_class.html">new_model_definition()</a></code>.</p>
@@ -191,7 +191,7 @@
   <span class="va">m</span> <span class="op">&lt;-</span> <span class="va">specials</span><span class="op">$</span><span class="va">season</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
   
   <span class="co"># Compute the seasonal averages</span>
-  <span class="va">season_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%%</span> <span class="va">m</span>
+  <span class="va">season_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">m</span>
   <span class="va">season_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html">split</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">season_id</span><span class="op">)</span>
   <span class="va">season_avg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">vapply</a></span><span class="op">(</span><span class="va">season_y</span>, FUN <span class="op">=</span> <span class="va">mean</span>, FUN.VALUE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span>, 
                        USE.NAMES <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
@@ -216,7 +216,7 @@
 <span class="op">}</span></code></pre></div>
 <p>Great, that’s the bare minimum for a model complete with interface and training method. Let’s try it out.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">tsibbledata</span><span class="fu">::</span><span class="va"><a href="https://tsibbledata.tidyverts.org/reference/aus_production.html">aus_production</a></span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">tsibbledata</span><span class="fu">::</span><span class="va"><a href="https://tsibbledata.tidyverts.org/reference/aus_production.html">aus_production</a></span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/model.html">model</a></span><span class="op">(</span><span class="fu">SMEAN</span><span class="op">(</span><span class="va">Beer</span><span class="op">)</span><span class="op">)</span>
 <span class="va">fit</span>
 <span class="co">#&gt; # A mable: 1 x 1</span>
@@ -243,7 +243,7 @@
 <tbody>
 <tr class="odd">
 <td align="left"><code><a href="../reference/model_sum.html">model_sum()</a></code></td>
-<td align="left"><code><a href="https://rdrr.io/r/base/character.html">character(1L)</a></code></td>
+<td align="left"><code>character(1L)</code></td>
 <td align="left">A short summary of the model to display in the mable</td>
 </tr>
 <tr class="even">
@@ -366,7 +366,7 @@
 <span class="op">}</span>
 
 <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 4 x 3</span>
+<span class="co">#&gt; # A tibble: 4 × 3</span>
 <span class="co">#&gt;   .model      term     estimate</span>
 <span class="co">#&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;dbl&gt;</span>
 <span class="co">#&gt; 1 SMEAN(Beer) season_1     417.</span>
@@ -383,7 +383,7 @@
 <span class="op">}</span>
 
 <span class="fu"><a href="https://generics.r-lib.org/reference/glance.html">glance</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 1 x 2</span>
+<span class="co">#&gt; # A tibble: 1 × 2</span>
 <span class="co">#&gt;   .model      sigma2</span>
 <span class="co">#&gt;   &lt;chr&gt;        &lt;dbl&gt;</span>
 <span class="co">#&gt; 1 SMEAN(Beer)  5495.</span></code></pre></div>
@@ -398,13 +398,13 @@
   <span class="va">coef</span> <span class="op">&lt;-</span> <span class="va">object</span><span class="op">$</span><span class="va">coef</span>
   
   <span class="co"># Compute forecast variance</span>
-  <span class="va">season_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%%</span> <span class="va">m</span>
+  <span class="va">season_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">m</span>
   <span class="va">season_e</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html">split</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">residuals</span>, <span class="va">season_id</span><span class="op">)</span>
   <span class="va">season_sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">vapply</a></span><span class="op">(</span><span class="va">season_e</span>, FUN <span class="op">=</span> <span class="va">sd</span>, FUN.VALUE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span>, 
                        USE.NAMES <span class="op">=</span> <span class="cn">FALSE</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
   
   <span class="co"># Create forecast distributions</span>
-  <span class="va">fc_id</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">h</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="va">n</span> <span class="op">%%</span> <span class="va">m</span><span class="op">)</span> <span class="op">%%</span> <span class="va">m</span> <span class="op">+</span> <span class="fl">1</span>
+  <span class="va">fc_id</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">h</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="va">n</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">m</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">m</span> <span class="op">+</span> <span class="fl">1</span>
   <span class="va">mu</span> <span class="op">&lt;-</span> <span class="va">coef</span><span class="op">[</span><span class="va">fc_id</span><span class="op">]</span>
   <span class="va">sigma</span> <span class="op">&lt;-</span> <span class="va">season_sd</span><span class="op">[</span><span class="va">fc_id</span><span class="op">]</span>
   <span class="fu">distributional</span><span class="fu">::</span><span class="fu"><a href="https://pkg.mitchelloharawild.com/distributional/reference/dist_normal.html">dist_normal</a></span><span class="op">(</span><span class="va">mu</span>, <span class="va">sigma</span><span class="op">)</span>
@@ -433,7 +433,7 @@
   
   <span class="co"># Compute the new seasonal averages</span>
   <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">coef</span><span class="op">)</span>
-  <span class="va">season_id</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op">%%</span> <span class="va">m</span><span class="op">)</span> <span class="op">%%</span> <span class="va">m</span>
+  <span class="va">season_id</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">m</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">m</span>
   <span class="va">season_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html">split</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">season_id</span><span class="op">)</span>
   <span class="va">season_avg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">vapply</a></span><span class="op">(</span><span class="va">season_y</span>, FUN <span class="op">=</span> <span class="va">mean</span>, FUN.VALUE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span>, 
                        USE.NAMES <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
@@ -441,7 +441,7 @@
                        USE.NAMES <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
   
   <span class="co"># Update coefficients to include new estimates</span>
-  <span class="va">weight_orig</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op">%/%</span> <span class="va">m</span>, <span class="va">m</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op">%%</span> <span class="va">m</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">m</span> <span class="op">-</span> <span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op">%%</span> <span class="va">m</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">weight_orig</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%/%</a></span> <span class="va">m</span>, <span class="va">m</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">m</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">m</span> <span class="op">-</span> <span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">m</span><span class="op">)</span><span class="op">)</span>
   <span class="va">new_coef</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">coef</span> <span class="op">*</span> <span class="va">weight_orig</span> <span class="op">+</span> <span class="va">season_avg</span> <span class="op">*</span> <span class="va">weight_new</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">weight_orig</span> <span class="op">+</span> <span class="va">weight_new</span><span class="op">)</span>
   <span class="va">coef_change</span> <span class="op">&lt;-</span> <span class="va">new_coef</span> <span class="op">-</span> <span class="va">object</span><span class="op">$</span><span class="va">coef</span>
   
@@ -459,8 +459,8 @@
 <span class="op">}</span>
 
 <span class="va">us_acc_deaths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tsibble.tidyverts.org/reference/as-tsibble.html">as_tsibble</a></span><span class="op">(</span><span class="va">USAccDeaths</span><span class="op">)</span>
-<span class="va">fit_stream</span> <span class="op">&lt;-</span> <span class="va">us_acc_deaths</span> <span class="op">%&gt;%</span> 
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">60</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+<span class="va">fit_stream</span> <span class="op">&lt;-</span> <span class="va">us_acc_deaths</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">60</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/model.html">model</a></span><span class="op">(</span><span class="fu">SMEAN</span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="../reference/report.html">report</a></span><span class="op">(</span><span class="va">fit_stream</span><span class="op">)</span>
 <span class="co">#&gt; Series: value </span>
@@ -477,8 +477,8 @@
 <span class="co">#&gt; sigma^2: 251827.8712</span>
 
 <span class="co"># Update the model with new data</span>
-<span class="va">us_acc_deaths_new</span> <span class="op">&lt;-</span> <span class="va">us_acc_deaths</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">61</span><span class="op">:</span><span class="fl">72</span><span class="op">)</span>
-<span class="va">fit_stream</span> <span class="op">&lt;-</span> <span class="va">fit_stream</span> <span class="op">%&gt;%</span> 
+<span class="va">us_acc_deaths_new</span> <span class="op">&lt;-</span> <span class="va">us_acc_deaths</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">61</span><span class="op">:</span><span class="fl">72</span><span class="op">)</span>
+<span class="va">fit_stream</span> <span class="op">&lt;-</span> <span class="va">fit_stream</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/stream.html">stream</a></span><span class="op">(</span><span class="va">us_acc_deaths_new</span><span class="op">)</span>
 <span class="fu"><a href="../reference/report.html">report</a></span><span class="op">(</span><span class="va">fit_stream</span><span class="op">)</span>
 <span class="co">#&gt; Series: value </span>
@@ -495,8 +495,8 @@
 <span class="co">#&gt; sigma^2: 222480.9038</span>
 
 <span class="co"># Check that it matches a model of the full data</span>
-<span class="va">us_acc_deaths</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/model.html">model</a></span><span class="op">(</span><span class="fu">SMEAN</span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+<span class="va">us_acc_deaths</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/model.html">model</a></span><span class="op">(</span><span class="fu">SMEAN</span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/report.html">report</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; Series: value </span>
 <span class="co">#&gt; Model: SMEAN[12] </span>

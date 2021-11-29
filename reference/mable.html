@@ -76,7 +76,7 @@ list column itself (lst_mdl) describes how these models are related." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -149,13 +149,14 @@ list column itself (<code>lst_mdl</code>) describes how these models are related
       <th>...</th>
       <td><p>&lt;<code><a href='https://rlang.r-lib.org/reference/dyn-dots.html'>dynamic-dots</a></code>&gt;
 A set of name-value pairs. These arguments are
-processed with <code><a href='https://rlang.r-lib.org/reference/nse-defuse.html'>rlang::quos()</a></code> and support unquote via <code><a href='https://rlang.r-lib.org/reference/nse-force.html'>!!</a></code> and
-unquote-splice via <code><a href='https://rlang.r-lib.org/reference/nse-force.html'>!!!</a></code>. Use <code>:=</code> to create columns that start with a dot.</p>
+processed with <code><a href='https://rlang.r-lib.org/reference/nse-defuse.html'>rlang::quos()</a></code> and support unquote via <code>!!</code> and
+unquote-splice via <code>!!!</code>. Use <code>:=</code> to create columns that start with a dot.</p>
 <p>Arguments are evaluated sequentially.
 You can refer to previously created elements directly or using the .data
 pronoun.
-An existing <code>.data</code> pronoun, provided e.g. inside <code><a href='https://dplyr.tidyverse.org/reference/mutate.html'>dplyr::mutate()</a></code>,
-is not available.</p></td>
+To refer explicitly to objects in the calling environment, use <code>!!</code> or
+.env, e.g. <code>!!.data</code> or <code>.env$.data</code> for the special case of an object
+named <code>.data</code>.</p></td>
     </tr>
     <tr>
       <th>key</th>

@@ -73,7 +73,7 @@ with or without re-estimation of the parameters." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -159,52 +159,50 @@ with or without re-estimation of the parameters.</p>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"fable"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://fable.tidyverts.org'>fable</a></span><span class='op'>)</span>
-
-<span class='va'>fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/as-tsibble.html'>as_tsibble</a></span><span class='op'>(</span><span class='va'>mdeaths</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='model.html'>model</a></span><span class='op'>(</span><span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span><span class='op'>(</span><span class='va'>value</span> <span class='op'>~</span> <span class='fu'>error</span><span class='op'>(</span><span class='st'>"M"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>trend</span><span class='op'>(</span><span class='st'>"A"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>season</span><span class='op'>(</span><span class='st'>"A"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>fit</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='report.html'>report</a></span><span class='op'>(</span><span class='op'>)</span>
-
-<span class='va'>fit</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='https://generics.r-lib.org/reference/refit.html'>refit</a></span><span class='op'>(</span><span class='fu'><a href='https://tsibble.tidyverts.org/reference/as-tsibble.html'>as_tsibble</a></span><span class='op'>(</span><span class='va'>fdeaths</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='report.html'>report</a></span><span class='op'>(</span>reinitialise <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div><div class='output co'>#&gt; Series: value 
-#&gt; Model: ETS(M,A,A) 
-#&gt;   Smoothing parameters:
-#&gt;     alpha = 0.0002065548 
-#&gt;     beta  = 0.0001865257 
-#&gt;     gamma = 0.000118306 
-#&gt; 
-#&gt;   Initial states:
-#&gt;         l         b       s1        s2        s3        s4        s5        s6
-#&gt;  1671.676 -4.334248 373.1746 -121.3157 -246.1697 -484.8581 -476.2192 -370.1939
-#&gt;         s7       s8       s9      s10      s11      s12
-#&gt;  -303.5806 -207.384 122.0022 483.3319 620.3601 610.8525
-#&gt; 
-#&gt;   sigma^2:  0.009
-#&gt; 
-#&gt;      AIC     AICc      BIC 
-#&gt; 1033.474 1044.807 1072.177 
-#&gt; Series: value 
-#&gt; Model: ETS(M,A,A) 
-#&gt;   Smoothing parameters:
-#&gt;     alpha = 0.0002065548 
-#&gt;     beta  = 0.0001865257 
-#&gt;     gamma = 0.000118306 
-#&gt; 
-#&gt;   Initial states:
-#&gt;         l          b       s1      s2        s3       s4        s5        s6
-#&gt;  586.8764 -0.7008449 129.4235 -60.401 -108.8126 -185.465 -189.2346 -149.2135
-#&gt;         s7        s8       s9      s10      s11      s12
-#&gt;  -134.8698 -70.64105 45.28081 204.0216 279.4489 240.4628
-#&gt; 
-#&gt;   sigma^2:  0.0118
-#&gt; 
-#&gt;      AIC     AICc      BIC 
-#&gt; 903.5169 910.8854 935.3903 </div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://fable.tidyverts.org'>fable</a></span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://tsibble.tidyverts.org/reference/as-tsibble.html'>as_tsibble</a></span><span class='op'>(</span><span class='va'>mdeaths</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span class='r-in'>  <span class='fu'><a href='model.html'>model</a></span><span class='op'>(</span><span class='fu'><a href='https://fable.tidyverts.org/reference/ETS.html'>ETS</a></span><span class='op'>(</span><span class='va'>value</span> <span class='op'>~</span> <span class='fu'>error</span><span class='op'>(</span><span class='st'>"M"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>trend</span><span class='op'>(</span><span class='st'>"A"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>season</span><span class='op'>(</span><span class='st'>"A"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>fit</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='report.html'>report</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: value </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Model: ETS(M,A,A) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Smoothing parameters:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     alpha = 0.0002065548 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     beta  = 0.0001865257 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     gamma = 0.000118306 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Initial states:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      l[0]      b[0]     s[0]     s[-1]     s[-2]     s[-3]     s[-4]     s[-5]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  1671.676 -4.334248 373.1746 -121.3157 -246.1697 -484.8581 -476.2192 -370.1939</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      s[-6]    s[-7]    s[-8]    s[-9]   s[-10]   s[-11]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  -303.5806 -207.384 122.0022 483.3319 620.3601 610.8525</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   sigma^2:  0.009</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      AIC     AICc      BIC </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1033.474 1044.807 1072.177 </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>fit</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span class='r-in'>  <span class='fu'><a href='https://generics.r-lib.org/reference/refit.html'>refit</a></span><span class='op'>(</span><span class='fu'><a href='https://tsibble.tidyverts.org/reference/as-tsibble.html'>as_tsibble</a></span><span class='op'>(</span><span class='va'>fdeaths</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span class='r-in'>  <span class='fu'><a href='report.html'>report</a></span><span class='op'>(</span>reinitialise <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: value </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Model: ETS(M,A,A) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Smoothing parameters:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     alpha = 0.0002065548 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     beta  = 0.0001865257 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     gamma = 0.000118306 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Initial states:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      l[0]       b[0]     s[0]   s[-1]     s[-2]    s[-3]     s[-4]     s[-5]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  586.8764 -0.7008449 129.4235 -60.401 -108.8126 -185.465 -189.2346 -149.2135</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      s[-6]     s[-7]    s[-8]    s[-9]   s[-10]   s[-11]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  -134.8698 -70.64105 45.28081 204.0216 279.4489 240.4628</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   sigma^2:  0.0118</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      AIC     AICc      BIC </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 903.5169 910.8854 935.3903 </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

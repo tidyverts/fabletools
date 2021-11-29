@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -149,19 +149,20 @@
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>An aggregation vector extends usual vectors by adding &lt;aggregated&gt; values.
+    <p>An aggregation vector extends usual vectors by adding <code>&lt;aggregated&gt;</code> values.
 These vectors are typically produced via the <code><a href='aggregate_key.html'>aggregate_key()</a></code> function,
 however it can be useful to create them manually to produce more complicated
 hierarchies (such as unbalanced hierarchies).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>agg_vec</span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='st'>"A"</span>, <span class='st'>"B"</span><span class='op'>)</span>,
-  aggregated <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>TRUE</span>, <span class='cn'>FALSE</span>, <span class='cn'>FALSE</span><span class='op'>)</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; &lt;agg_vec[3]&gt;
-#&gt; [1] &lt;aggregated&gt; A            B           </div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'>agg_vec</span><span class='op'>(</span></span>
+<span class='r-in'>  x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='st'>"A"</span>, <span class='st'>"B"</span><span class='op'>)</span>,</span>
+<span class='r-in'>  aggregated <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>TRUE</span>, <span class='cn'>FALSE</span>, <span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;agg_vec[3]&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] &lt;aggregated&gt; A            B           </span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
