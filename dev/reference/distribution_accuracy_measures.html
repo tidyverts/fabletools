@@ -73,7 +73,7 @@ distribution predicts a given actual value." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.1.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.2.9000</span>
       </span>
     </div>
 
@@ -207,11 +207,11 @@ percentiles <code>probs = seq(0.01, 0.99, 0.01)</code>.</p>
 the pinball loss quantile score defined above. Its value is twice the
 integral of the quantile score over all possible quantiles:</p>
 <p>$$
- \text{CRPS}(F,y) = 2 \int_0^1 s_p(q_p,y) dp
+  CRPS(F,y) = 2 \int_0^1 s_p(q_p,y) dp
 $$</p>
 <p>It can be computed directly from the distribution via:</p>
 <p>$$
-  \text{CRPS}(F,y) = \int_{-\infty}^\infty (F(x) - 1{y\leq x})^2 dx
+  CRPS(F,y) = \int_{-\infty}^\infty (F(x) - 1{y\leq x})^2 dx
 $$</p>
 <p>For some forecast distribution \(F\) and actual value \(y\).</p>
 <p>Calculating the CRPS accuracy measure is computationally difficult for many
