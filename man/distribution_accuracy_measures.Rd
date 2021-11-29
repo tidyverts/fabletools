@@ -71,7 +71,7 @@ the pinball loss quantile score defined above. Its value is twice the
 integral of the quantile score over all possible quantiles:
 
 \deqn{
- \text{CRPS}(F,y) = 2 \int_0^1 s_p(q_p,y) dp
+  CRPS(F,y) = 2 \int_0^1 s_p(q_p,y) dp
 }{
   CRPS(F,y) = 2 integral_0^1 s_p(q_p,y) dp
 }
@@ -79,7 +79,7 @@ integral of the quantile score over all possible quantiles:
 It can be computed directly from the distribution via:
 
 \deqn{
-  \text{CRPS}(F,y) = \int_{-\infty}^\infty (F(x) - 1{y\leq x})^2 dx
+  CRPS(F,y) = \int_{-\infty}^\infty (F(x) - 1{y\leq x})^2 dx
 }{
   CRPS(F,y) = integral_{-\infty}^\infty (F(x) - 1{y\leq x})^2 dx
 }

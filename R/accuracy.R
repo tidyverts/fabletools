@@ -315,7 +315,7 @@ CRPS <- function(.dist, .actual, n_quantiles = 1000, na.rm = TRUE, ...){
 #' integral of the quantile score over all possible quantiles:
 #' 
 #' \deqn{
-#'  \text{CRPS}(F,y) = 2 \int_0^1 s_p(q_p,y) dp
+#'   CRPS(F,y) = 2 \int_0^1 s_p(q_p,y) dp
 #' }{
 #'   CRPS(F,y) = 2 integral_0^1 s_p(q_p,y) dp
 #' }
@@ -323,7 +323,7 @@ CRPS <- function(.dist, .actual, n_quantiles = 1000, na.rm = TRUE, ...){
 #' It can be computed directly from the distribution via:
 #' 
 #' \deqn{
-#'   \text{CRPS}(F,y) = \int_{-\infty}^\infty (F(x) - 1{y\leq x})^2 dx
+#'   CRPS(F,y) = \int_{-\infty}^\infty (F(x) - 1{y\leq x})^2 dx
 #' }{
 #'   CRPS(F,y) = integral_{-\infty}^\infty (F(x) - 1{y\leq x})^2 dx
 #' }
