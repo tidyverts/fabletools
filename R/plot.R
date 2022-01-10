@@ -236,6 +236,7 @@ autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95),
 build_fbl_layer <- function(object, data = NULL, level = c(80, 95), 
                             colour = NULL, color = NULL, fill = NULL,
                             point_forecast = list(mean = mean), show_gap = TRUE, 
+                            linetype = 1,
                             ..., facet_vars = NULL){
   mdl_key <- object%@%"model_cn"
   fc_key <- setdiff(key_vars(object), mdl_key)
@@ -353,11 +354,11 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   object <- as_tibble(object)
   if(!is.null(col)){
     mapping$colour <- col
-    out[[length(out) + 1]] <- geom_line(mapping = mapping, data = dplyr::anti_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
+    out[[length(out) + 1]] <- geom_line(mapping = mapping, data = dplyr::anti_join(object, single_row, by = key_vars), linetype = linetype, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
     out[[length(out) + 1]] <- ggplot2::geom_point(mapping = mapping, data = dplyr::semi_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
     out[[length(out) + 1]] <- ggplot2::labs(colour = col_nm)
   } else {
-    out[[length(out) + 1]] <- geom_line(mapping = mapping, data = dplyr::anti_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
+    out[[length(out) + 1]] <- geom_line(mapping = mapping, data = dplyr::anti_join(object, single_row, by = key_vars), color = colour, linetype = linetype, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
     out[[length(out) + 1]] <- ggplot2::geom_point(mapping = mapping, data = dplyr::semi_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
   }
   out
