@@ -7,6 +7,9 @@
 * Added `hypothesize()` generic for running statistical tests on a trained model.
 * Added `combination_weighted()` function for producing a combination model with
   arbitrary weights.
+* `accuracy(<fbl_ts>)` can now summarise accuracy over key variables. This is
+  done by specifying the accuracy `by` argument and not including some (or all)
+  of the fable's key variables (#341).
 
 ## Improvements
 

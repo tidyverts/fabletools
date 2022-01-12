@@ -581,11 +581,11 @@ accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..
     aug <- transmute(object, .fc = mean(!!dist), .dist = !!dist, !!!syms(by))
     aug_dt <- transmute(data, !!index(data), .actual = !!sym(resp))
   }
-  aug <- left_join(aug, aug_dt,
+  aug <- left_join(as_tibble(aug), as_tibble(aug_dt),
       by = intersect(colnames(aug_dt), by),
       suffix = c("", ".y")
     )
-  aug <- summarise(group_by(as_tibble(aug), !!!grp),
+  aug <- summarise(group_by(aug, !!!grp),
                    .resid = list(!!sym(".actual") - !!sym(".fc")),
                    .fc = list(!!sym(".fc")), .dist = list(!!sym(".dist")), 
                    .actual = list(!!sym(".actual")))
