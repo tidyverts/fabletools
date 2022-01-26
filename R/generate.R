@@ -109,9 +109,18 @@ Does your model require extra variables to produce simulations?", e$message))
   x$model$stage <- NULL
   
   if(length(x$response) > 1) abort("Generating paths from multivariate models is not yet supported.")
-  .sim <- generate(x[["fit"]], new_data = new_data, specials = specials, ...)
-  .sim[[".sim"]] <- invert_transformation(x$transformation[[1]])(.sim[[".sim"]])
-  .sim
+  .sim <- generate(x[["fit"]], new_data = new_data, specials = specials, ...)[[".sim"]]
+  
+  
+  # Back-transform forecast distributions
+  bt <- map(x$transformation, function(x){
+    bt <- invert_transformation(x)
+    env <- new_environment(new_data, get_env(bt))
+    set_env(bt, env)
+  })
+  
+  new_data[[".sim"]] <- bt[[1]](.sim)
+  new_data
 }
 
 block_bootstrap <- function (x, window_size, size = length(x)) {
