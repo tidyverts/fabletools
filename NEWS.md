@@ -1,5 +1,10 @@
 # fabletools (development version)
 
+## Improvements
+
+* Fixed handling of transformed distributions which accept a parameter from the
+  dataset.
+
 # fabletools 0.3.2
 
 ## New features

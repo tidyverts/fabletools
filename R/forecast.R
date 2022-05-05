@@ -191,10 +191,27 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
   
   # Back-transform forecast distributions
   bt <- map(object$transformation, function(x){
-    bt <- invert_transformation(x)
-    env <- new_environment(new_data, get_env(bt))
-    req_vars <- setdiff(all.vars(body(bt)), names(formals(bt)))
-    exists_vars <- map_lgl(req_vars, exists, env)
+    trans <- x%@%"inverse"
+    inv_trans <- `attributes<-`(x, NULL)
+    req_vars <- setdiff(all.vars(body(trans)), names(formals(trans)))
+    if(any(req_vars %in% names(new_data))) {
+      trans <- lapply(
+        vec_chop(new_data[req_vars]),
+        function(transform_data) {
+          set_env(trans, new_environment(transform_data, get_env(trans)))
+        }
+      )
+      attr(trans, "inverse") <- lapply(
+        vec_chop(new_data[req_vars]),
+        function(transform_data) {
+          set_env(inv_trans, new_environment(transform_data, get_env(inv_trans)))
+        }
+      )
+      trans
+    } else {
+      structure(trans, inverse = inv_trans)
+    }
+#     exists_vars <- map_lgl(req_vars, exists, env)
 #     if(any(!exists_vars)){
 #       bt <- custom_error(bt, sprintf(
 # "Unable to find all required variables to back-transform the forecasts (missing %s).
@@ -202,7 +219,6 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
 #         paste0("`", req_vars[!exists_vars], "`", collapse = ", ")
 #       ))
 #     }
-    set_env(bt, env)
   })
   
   is_transformed <- vapply(bt, function(x) !is_symbol(body(x)), logical(1L))
@@ -213,7 +229,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
   } else {
     if(is_transformed){
       bt <- bt[[1]]
-      fc <- distributional::dist_transformed(fc, bt, bt%@%"inverse")
+      fc <- distributional::dist_transformed(fc, `attributes<-`(bt, NULL), bt%@%"inverse")
     }
   }
   
