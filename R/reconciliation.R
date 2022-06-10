@@ -481,6 +481,8 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
   }
   
   fc_dist <- map(fc, function(x) x[[distribution_var(x)]])
+  dist_type <- lapply(fc_dist, function(x) unique(dist_types(x)))
+  dist_type <- unique(unlist(dist_type))
   is_normal <- all(map_lgl(fc_dist, function(x) all(dist_types(x) == "dist_normal")))
   
   fc_mean <- as.matrix(invoke(cbind, map(fc_dist, mean)))
@@ -489,11 +491,29 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
   # Apply to forecasts
   fc_mean <- as.matrix(SP%*%t(fc_mean))
   fc_mean <- split(fc_mean, row(fc_mean))
-  if(is_normal){
+  if(identical(dist_type, "dist_normal")){
     R1 <- cov2cor(W)
     W_h <- map(fc_var, function(var) diag(sqrt(var))%*%R1%*%t(diag(sqrt(var))))
     fc_var <- map(W_h, function(W) diag(SP%*%W%*%t(SP)))
     fc_dist <- map2(fc_mean, transpose_dbl(map(fc_var, sqrt)), distributional::dist_normal)
+  } else if (identical(dist_type, "dist_sample")) {
+    sample_size <- unique(unlist(lapply(fc_dist, function(x) unique(lengths(distributional::parameters(x)$x)))))
+    if(length(sample_size) != 1L) stop("Cannot reconcile sample paths with different replication sizes.")
+    sample_horizon <- unique(lengths(fc_dist))
+    if(length(sample_horizon) != 1L) stop("Cannot reconcile sample paths with different forecast horizon lengths.")
+    # Extract sample paths
+    samples <- lapply(fc_dist, function(x) distributional::parameters(x)$x)
+    # Convert to array [samples,horizon,nodes]
+    samples <- array(unlist(samples, use.names = FALSE), dim = c(sample_size, sample_horizon, length(fc_dist)))
+    # Reconcile
+    samples <- apply(samples, 1, function(x) as.matrix(SP%*%t(x)), simplify = FALSE)
+    # Convert to array [nodes, horizon, samples]
+    samples <- array(unlist(samples), dim = c(length(fc_dist), sample_horizon, sample_size))
+    # Convert to distributions
+    fc_dist <- apply(
+      samples, 1L, simplify = FALSE,
+      function(x) unname(distributional::dist_sample(split(x, row(x))))
+    )
   } else {
     fc_dist <- map(fc_mean, distributional::dist_degenerate)
   }
