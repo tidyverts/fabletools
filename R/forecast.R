@@ -209,7 +209,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
       )
       trans
     } else {
-      structure(trans, inverse = inv_trans)
+      structure(list(trans), inverse = list(inv_trans))
     }
 #     exists_vars <- map_lgl(req_vars, exists, env)
 #     if(any(!exists_vars)){
@@ -221,7 +221,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
 #     }
   })
   
-  is_transformed <- vapply(bt, function(x) !is_symbol(body(x)), logical(1L))
+  is_transformed <- vapply(bt, function(x) !is_symbol(body(x[[1]])), logical(1L))
   if(length(bt) > 1) {
     if(any(is_transformed)){
       abort("Transformations of multivariate forecasts are not yet supported")
