@@ -226,10 +226,11 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
     if(any(is_transformed)){
       abort("Transformations of multivariate forecasts are not yet supported")
     }
-  } else {
+  }
+  if(is_transformed) {
     if (identical(unique(dist_types(fc)), "dist_sample")) {
       fc <- vec_c(!!!mapply(exec, bt[[1]], fc))
-    } else if (is_transformed){
+    } else {
       bt <- bt[[1]]
       fc <- distributional::dist_transformed(fc, `attributes<-`(bt, NULL), bt%@%"inverse")
     }
