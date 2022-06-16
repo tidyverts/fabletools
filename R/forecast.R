@@ -220,14 +220,13 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
 #       ))
 #     }
   })
-  
   is_transformed <- vapply(bt, function(x) !is_symbol(body(x[[1]])), logical(1L))
   if(length(bt) > 1) {
     if(any(is_transformed)){
       abort("Transformations of multivariate forecasts are not yet supported")
     }
   }
-  if(is_transformed) {
+  if(all(is_transformed)) {
     if (identical(unique(dist_types(fc)), "dist_sample")) {
       fc <- vec_c(!!!mapply(exec, bt[[1]], fc))
     } else {
