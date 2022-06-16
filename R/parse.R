@@ -261,6 +261,8 @@ Please specify a valid form of your transformation using `new_transformation()`.
 }
 
 parse_tidyselect <- function(lhs, data){
+  data <- as_tibble(data) %>% 
+    select(-sym(index_var(data)))
   pos <- try(tidyselect::eval_select(lhs, data), silent = TRUE)
   if(class(pos) == "try-error"){
     if(is_call_name(lhs, "c")) {
