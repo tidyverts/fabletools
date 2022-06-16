@@ -2,6 +2,10 @@ names_no_null <- function(x){
   names(x) %||% rep_along(x, "")
 }
 
+is_call_name <- function(x, name){
+  is.call(x) && call_name(x) %in% name
+}
+
 # Small function to combine named lists
 merge_named_list <- function(...){
   flat <- flatten(list(...))
