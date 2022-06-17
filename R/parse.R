@@ -264,7 +264,7 @@ parse_tidyselect <- function(lhs, data){
   data <- as_tibble(data) %>% 
     select(-sym(index_var(data)))
   pos <- try(tidyselect::eval_select(lhs, data), silent = TRUE)
-  if(class(pos) == "try-error"){
+  if(class(pos) == "try-error" || length(pos) == 0){
     if(is_call_name(lhs, "c")) {
       warning(sprintf("Fail to parse %s. Check that the formula are specified correctly", deparse(lhs)))
     }
@@ -277,9 +277,14 @@ parse_across <- function(lhs, data){
   if(!is_call_name(lhs, "across")) 
     return(lhs)
   
-  unname_args <- lhs[names(lhs) == ""] %||% lhs
-  .cols <- lhs[[".cols"]] %||% unname_args[[2]]
-  .fns <- lhs[[".fns"]] %||% if(is.null(lhs[[".cols"]])) unname_args[[3]] else unname_args[[2]]
+  across <- function(.cols, .fns = `(`){}
+  lhs <- rlang::call_match(lhs, across, defaults = TRUE)
+  
+  .cols <- lhs[[".cols"]] 
+  .fns <- lhs[[".fns"]]
+  if(deparse(.cols) == "") {
+    abort("No variable selected in `across`.")
+  }
   
   .cols <- parse_tidyselect(.cols, data)
   
@@ -291,4 +296,5 @@ parse_across <- function(lhs, data){
   
   c(outer(.cols, .fns,FUN = function(cols, fns)
     map2(cols, fns, function(col, fn) eval(expr( call2(fn, col))))))
+  
 }
