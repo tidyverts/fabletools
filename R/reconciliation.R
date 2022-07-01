@@ -373,14 +373,14 @@ forecast.lst_midout_mdl <- function(object, key_data,
   
   # Identify top and bottom level
   top <- which.max(rowSums(S))
-  btm <- which(rowSums(S) == 1L)
+  btm <- agg_data$leaf
   
   kv <- names(key_data)[-ncol(key_data)]
   agg_shadow <- as_tibble(map(key_data[kv], is_aggregated))
   agg_struct <- vctrs::vec_unique(agg_shadow)
   agg_depth <- nrow(agg_struct)
   if(length(kv) != (agg_depth - 1)) {
-    abort("Top down reconciliation requires strictly hierarchical structures.")
+    abort("Middle out reconciliation requires strictly hierarchical structures.")
   }
   agg_order <- kv[order(vapply(agg_struct, sum, integer(1L)))]
   if(is.character(split)) {
