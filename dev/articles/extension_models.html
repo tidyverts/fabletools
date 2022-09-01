@@ -20,6 +20,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -39,16 +41,10 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -65,7 +61,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/tidyverts/fabletools/">
+  <a href="https://github.com/tidyverts/fabletools/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -86,7 +82,7 @@
       <h1 data-toc-skip>Extending fabletools: Models</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/tidyverts/fabletools/blob/master/vignettes/extension_models.Rmd"><code>vignettes/extension_models.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/tidyverts/fabletools/blob/HEAD/vignettes/extension_models.Rmd" class="external-link"><code>vignettes/extension_models.Rmd</code></a></small>
       <div class="hidden name"><code>extension_models.Rmd</code></div>
 
     </div>
@@ -94,7 +90,7 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://fabletools.tidyverts.org/">fabletools</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://fabletools.tidyverts.org/">fabletools</a></span><span class="op">)</span></span></code></pre></div>
 <p>Writing a time series model using fabletools provides your model with many additional features without extra effort. Features that aren’t model specific are handled by fabletools, allowing you to spend more time writing methods for your model. Some functionality handled by fabletools includes:</p>
 <ul>
 <li>Seamless integration with data manipulation and visualisation tools from the tidyverse.</li>
@@ -107,129 +103,129 @@
 <li>Hierarchical, grouped, and temporal reconciliation of forecasts.</li>
 </ul>
 <p>The fabletools package promotes consistent interfaces and output structures that allow various time series models to work well together. This vignette will guide you through creating a fabletools model, and provide a glimpse into the steps used to convert user data to modelling inputs, and modelling outputs to user data.</p>
-<p>As an example, we’ll create a fabletools model that uses seasonal averages: <code>SMEAN()</code>. It can be thought of as a seasonal version of <code><a href="https://fable.tidyverts.org/reference/MEAN.html">fable::MEAN()</a></code>, which instead of averaging the entire series, it averages values from each season.</p>
-<div id="the-model-interface" class="section level2">
-<h2 class="hasAnchor">
-<a href="#the-model-interface" class="anchor"></a>The model interface</h2>
-<p>Much like cross-sectional models (such as <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code>), tidy time-series models use a formula based interface. Of course not all arguments need to be specified from within the formula (much like <code>na.action</code> in <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code>). The model formula is a familiar and user friendly interface for specifying key model concepts (like <code>pdq()</code> in <code><a href="https://fable.tidyverts.org/reference/ARIMA.html">ARIMA()</a></code>), and data-varying inputs (such as holidays and exogenous regressors). Model specific formula functions (like <code>pdq()</code>) are known as specials (much like <code>specials</code> from <code><a href="https://rdrr.io/r/stats/terms.formula.html">stats::terms.formula()</a></code>).</p>
+<p>As an example, we’ll create a fabletools model that uses seasonal averages: <code>SMEAN()</code>. It can be thought of as a seasonal version of <code><a href="https://fable.tidyverts.org/reference/MEAN.html" class="external-link">fable::MEAN()</a></code>, which instead of averaging the entire series, it averages values from each season.</p>
+<div class="section level2">
+<h2 id="the-model-interface">The model interface<a class="anchor" aria-label="anchor" href="#the-model-interface"></a>
+</h2>
+<p>Much like cross-sectional models (such as <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>), tidy time-series models use a formula based interface. Of course not all arguments need to be specified from within the formula (much like <code>na.action</code> in <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>). The model formula is a familiar and user friendly interface for specifying key model concepts (like <code>pdq()</code> in <code><a href="https://fable.tidyverts.org/reference/ARIMA.html" class="external-link">ARIMA()</a></code>), and data-varying inputs (such as holidays and exogenous regressors). Model specific formula functions (like <code>pdq()</code>) are known as specials (much like <code>specials</code> from <code><a href="https://rdrr.io/r/stats/terms.formula.html" class="external-link">stats::terms.formula()</a></code>).</p>
 <p>Before writing code, it is a good idea to think about what interface best suits your model. This is often model specific, however you may find it useful to look at existing interfaces to see how yours could be written consistently. A good example of this is with seasonality: fourier terms are specified with the <code>fourier(period, K)</code> special, and seasonal dummy variables use <code>season(period)</code>.</p>
 <p>A potential interface for the <code>SMEAN()</code> model could be:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">SMEAN</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu">season</span><span class="op">(</span><span class="va">period</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">SMEAN</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu">season</span><span class="op">(</span><span class="va">period</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="minimum-implementation-of-a-model" class="section level2">
-<h2 class="hasAnchor">
-<a href="#minimum-implementation-of-a-model" class="anchor"></a>Minimum implementation of a model</h2>
+<div class="section level2">
+<h2 id="minimum-implementation-of-a-model">Minimum implementation of a model<a class="anchor" aria-label="anchor" href="#minimum-implementation-of-a-model"></a>
+</h2>
 <p>At minimum, a model consists of a model function (something that returns a model definition), a set of specials, and a training function.</p>
-<div id="the-model-function" class="section level3">
-<h3 class="hasAnchor">
-<a href="#the-model-function" class="anchor"></a>The model function</h3>
-<p>Model functions typically consist of two function calls. A model class (defining the training method, the specials, and data checks) with <code><a href="../reference/new_model_class.html">new_model_class()</a></code>, and <code>new_model_definition</code> to return the model definition:</p>
+<div class="section level3">
+<h3 id="the-model-function">The model function<a class="anchor" aria-label="anchor" href="#the-model-function"></a>
+</h3>
+<p>Model functions typically consist of two function calls. A model class (defining the training method, the specials, and data checks) with <code><a href="../reference/new-model-class.html">new_model_class()</a></code>, and <code>new_model_definition</code> to return the model definition:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#' Seasonal mean models</span>
-<span class="co">#' </span>
-<span class="co">#' Add the rest of your documentation here.</span>
-<span class="co">#' Typically this includes a "Specials" section</span>
-<span class="co">#' </span>
-<span class="co">#' @export</span>
-<span class="va">SMEAN</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">formula</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span>
-  <span class="co"># Create a model class which combines the training method, specials, and data checks</span>
-  <span class="va">model_smean</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_model_class.html">new_model_class</a></span><span class="op">(</span><span class="st">"smean"</span>,
-    <span class="co"># The training method (more on this later)</span>
-    train <span class="op">=</span> <span class="va">train_smean</span>,
-    <span class="co"># The formula specials (the next section)</span>
-    specials <span class="op">=</span> <span class="va">specials_smean</span>,
-    <span class="co"># Any checks of the unprocessed data, like gaps, ordered, regular, etc.</span>
-    check <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.data</span><span class="op">)</span> <span class="op">{</span> 
-      <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu">tsibble</span><span class="fu">::</span><span class="fu"><a href="https://tsibble.tidyverts.org/reference/regular.html">is_regular</a></span><span class="op">(</span><span class="va">.data</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span><span class="op">(</span><span class="st">"Data must be regular"</span><span class="op">)</span> 
-    <span class="op">}</span>
-  <span class="op">)</span>
-  
-  <span class="co"># Return a model definition which stores the user's model specification</span>
-  <span class="fu"><a href="../reference/new_model_class.html">new_model_definition</a></span><span class="op">(</span><span class="va">model_smean</span>, <span class="op">{</span><span class="op">{</span><span class="va">formula</span><span class="op">}</span><span class="op">}</span>, <span class="va">...</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
-<p>Anything passed to <code>...</code> of <code><a href="../reference/new_model_class.html">new_model_definition()</a></code> will be passed onward to the model training function. Note that the formula needs to be embraced with <code>{{formula}}</code> in order to allow for non-formula inputs like <code>SMEAN(y)</code>.</p>
+<code class="sourceCode R"><span><span class="co">#' Seasonal mean models</span></span>
+<span><span class="co">#' </span></span>
+<span><span class="co">#' Add the rest of your documentation here.</span></span>
+<span><span class="co">#' Typically this includes a "Specials" section</span></span>
+<span><span class="co">#' </span></span>
+<span><span class="co">#' @export</span></span>
+<span><span class="va">SMEAN</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">formula</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># Create a model class which combines the training method, specials, and data checks</span></span>
+<span>  <span class="va">model_smean</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new-model-class.html">new_model_class</a></span><span class="op">(</span><span class="st">"smean"</span>,</span>
+<span>    <span class="co"># The training method (more on this later)</span></span>
+<span>    train <span class="op">=</span> <span class="va">train_smean</span>,</span>
+<span>    <span class="co"># The formula specials (the next section)</span></span>
+<span>    specials <span class="op">=</span> <span class="va">specials_smean</span>,</span>
+<span>    <span class="co"># Any checks of the unprocessed data, like gaps, ordered, regular, etc.</span></span>
+<span>    check <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.data</span><span class="op">)</span> <span class="op">{</span> </span>
+<span>      <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu">tsibble</span><span class="fu">::</span><span class="fu"><a href="https://tsibble.tidyverts.org/reference/regular.html" class="external-link">is_regular</a></span><span class="op">(</span><span class="va">.data</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"Data must be regular"</span><span class="op">)</span> </span>
+<span>    <span class="op">}</span></span>
+<span>  <span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Return a model definition which stores the user's model specification</span></span>
+<span>  <span class="fu"><a href="../reference/new-model-class.html">new_model_definition</a></span><span class="op">(</span><span class="va">model_smean</span>, <span class="op">{</span><span class="op">{</span><span class="va">formula</span><span class="op">}</span><span class="op">}</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>Anything passed to <code>...</code> of <code><a href="../reference/new-model-class.html">new_model_definition()</a></code> will be passed onward to the model training function. Note that the formula needs to be embraced with <code>{{formula}}</code> in order to allow for non-formula inputs like <code>SMEAN(y)</code>.</p>
 </div>
-<div id="the-specials" class="section level3">
-<h3 class="hasAnchor">
-<a href="#the-specials" class="anchor"></a>The specials</h3>
+<div class="section level3">
+<h3 id="the-specials">The specials<a class="anchor" aria-label="anchor" href="#the-specials"></a>
+</h3>
 <p>The specials for a model are created using <code><a href="../reference/new_specials.html">new_specials()</a></code>. The functions specified here will be used to compute specials each time the model is provided with new data (model training, forecasting, refitting, etc.). The results of these functions will be passed to the subsequent method via the <code>specials</code> argument (more on this later).</p>
-<p>To enable automatic model specification (with <code>SMEAN(y)</code>), the <code>.required_specials</code> argument will ensure that the special is called at least once. By setting <code>season()</code> as a required special, <code>SMEAN(y)</code> will be parsed as <code>SMEAN(y ~ season())</code>. As no arguments will be provided for omitted required specials, make sure they have good defaults. The <code><a href="../reference/common_periods.html">fabletools::get_frequencies()</a></code> function is a useful helper for handling seasonal periods, as automatically chooses appropriate seasonalities when <code>period = NULL</code>, and is able to handle inputs like <code>period = "week"</code>.</p>
+<p>To enable automatic model specification (with <code>SMEAN(y)</code>), the <code>.required_specials</code> argument will ensure that the special is called at least once. By setting <code>season()</code> as a required special, <code>SMEAN(y)</code> will be parsed as <code>SMEAN(y ~ season())</code>. As no arguments will be provided for omitted required specials, make sure they have good defaults. The <code><a href="../reference/freq_tools.html">fabletools::get_frequencies()</a></code> function is a useful helper for handling seasonal periods, as automatically chooses appropriate seasonalities when <code>period = NULL</code>, and is able to handle inputs like <code>period = "week"</code>.</p>
 <p>Anything not handled by defined specials will be treated as exogenous regressors and passed to the <code>xreg()</code> special. That is to say <code>SMEAN(y ~ season("year") + x)</code> will be parsed as <code>SMEAN(y ~ season("year") + xreg(x))</code>. The <code>xreg()</code> special should be defined by all models, even if your model doesn’t support it.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">specials_smean</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_specials.html">new_specials</a></span><span class="op">(</span>
-  season <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">period</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span>
-    <span class="co"># Your input handling code here.</span>
-    <span class="fu"><a href="../reference/common_periods.html">get_frequencies</a></span><span class="op">(</span><span class="va">period</span>, <span class="va">self</span><span class="op">$</span><span class="va">data</span>, .auto <span class="op">=</span> <span class="st">"smallest"</span><span class="op">)</span>
-  <span class="op">}</span>,
-  xreg <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span>
-    <span class="co"># This model doesn't support exogenous regressors, time to error.</span>
-    <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span><span class="op">(</span><span class="st">"Exogenous regressors aren't supported by `SMEAN()`"</span><span class="op">)</span>
-  <span class="op">}</span>,
-  <span class="co"># This model requires `season()`</span>
-  <span class="co"># Adding this allows `SMEAN(y)` to automatically include the `season()` special</span>
-  .required_specials <span class="op">=</span> <span class="st">"season"</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">specials_smean</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_specials.html">new_specials</a></span><span class="op">(</span></span>
+<span>  season <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">period</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="co"># Your input handling code here.</span></span>
+<span>    <span class="fu"><a href="../reference/freq_tools.html">get_frequencies</a></span><span class="op">(</span><span class="va">period</span>, <span class="va">self</span><span class="op">$</span><span class="va">data</span>, .auto <span class="op">=</span> <span class="st">"smallest"</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  xreg <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="co"># This model doesn't support exogenous regressors, time to error.</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"Exogenous regressors aren't supported by `SMEAN()`"</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  <span class="co"># This model requires `season()`</span></span>
+<span>  <span class="co"># Adding this allows `SMEAN(y)` to automatically include the `season()` special</span></span>
+<span>  .required_specials <span class="op">=</span> <span class="st">"season"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>The specials are the only thing needed for the formula to work, as the fabletools handles the transformations and response variables specified in the formula’s left side.</p>
 </div>
-<div id="the-training-function" class="section level3">
-<h3 class="hasAnchor">
-<a href="#the-training-function" class="anchor"></a>The training function</h3>
+<div class="section level3">
+<h3 id="the-training-function">The training function<a class="anchor" aria-label="anchor" href="#the-training-function"></a>
+</h3>
 <p>This function is used to apply the model definition created by the model function (<code>SMEAN()</code>) to users data when they use <code>model(data, SMEAN())</code>.</p>
 <p>The <code>.data</code> argument is a single series tsibble (no keys), representing the parsed left side of the formula. The index of <code>.data</code> is the time of the measurement, and the measured variables are the transformed response variable(s).</p>
 <p>The <code>specials</code> argument is a list of results from parsing the specials used in the right side of the formula. The result from the <code>season()</code> special in <code>SMEAN(y ~ season("year"))</code> would be accessible from <code>specials$season[[1]]</code>. As specials can be used more than once, the nth usage of special <code>xyz()</code> can be accessed with <code>specials$xyz[[n]]</code>.</p>
-<p>As mentioned earlier, <code>...</code> will contain additional parameters passed <code>...</code> of <code><a href="../reference/new_model_class.html">new_model_definition()</a></code>.</p>
+<p>As mentioned earlier, <code>...</code> will contain additional parameters passed <code>...</code> of <code><a href="../reference/new-model-class.html">new_model_definition()</a></code>.</p>
 <p>The function should return an S3 object that contains everything you need for your future methods (such as forecasting, getting fitted values, refitting, etc.).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">train_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">.data</span>, <span class="va">specials</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span>
-  <span class="co"># Extract a vector of response data</span>
-  <span class="va">mv</span> <span class="op">&lt;-</span> <span class="fu">tsibble</span><span class="fu">::</span><span class="fu"><a href="https://tsibble.tidyverts.org/reference/measured-vars.html">measured_vars</a></span><span class="op">(</span><span class="va">.data</span><span class="op">)</span>
-  <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">mv</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span><span class="op">(</span><span class="st">"SMEAN() is a univariate model."</span><span class="op">)</span>
-  <span class="va">y</span> <span class="op">&lt;-</span> <span class="va">.data</span><span class="op">[[</span><span class="va">mv</span><span class="op">]</span><span class="op">]</span>
-  
-  <span class="co"># Pull out inputs from the specials</span>
-  <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">specials</span><span class="op">$</span><span class="va">season</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span><span class="op">(</span><span class="st">"The `season()` special of `SMEAN()` should only be used once."</span><span class="op">)</span>
-  <span class="va">m</span> <span class="op">&lt;-</span> <span class="va">specials</span><span class="op">$</span><span class="va">season</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
-  
-  <span class="co"># Compute the seasonal averages</span>
-  <span class="va">season_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">m</span>
-  <span class="va">season_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html">split</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">season_id</span><span class="op">)</span>
-  <span class="va">season_avg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">vapply</a></span><span class="op">(</span><span class="va">season_y</span>, FUN <span class="op">=</span> <span class="va">mean</span>, FUN.VALUE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span>, 
-                       USE.NAMES <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-  
-  <span class="co"># Compute fitted values and residuals</span>
-  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="va">season_avg</span><span class="op">[</span><span class="va">season_id</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>
-  <span class="va">e</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">-</span> <span class="va">fit</span>
-  
-  <span class="co"># Create S3 model object</span>
-  <span class="co"># It should be small, but contain everything needed for methods below</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/structure.html">structure</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-      coef <span class="op">=</span> <span class="va">season_avg</span>,
-      n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>,
-      y_name <span class="op">=</span> <span class="va">mv</span>,
-      fitted <span class="op">=</span> <span class="va">fit</span>,
-      residuals <span class="op">=</span> <span class="va">e</span>,
-      sigma2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">e</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-    <span class="op">)</span>,
-    class <span class="op">=</span> <span class="st">"model_smean"</span>
-  <span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">train_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">.data</span>, <span class="va">specials</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="co"># Extract a vector of response data</span></span>
+<span>  <span class="va">mv</span> <span class="op">&lt;-</span> <span class="fu">tsibble</span><span class="fu">::</span><span class="fu"><a href="https://tsibble.tidyverts.org/reference/measured-vars.html" class="external-link">measured_vars</a></span><span class="op">(</span><span class="va">.data</span><span class="op">)</span></span>
+<span>  <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mv</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"SMEAN() is a univariate model."</span><span class="op">)</span></span>
+<span>  <span class="va">y</span> <span class="op">&lt;-</span> <span class="va">.data</span><span class="op">[[</span><span class="va">mv</span><span class="op">]</span><span class="op">]</span></span>
+<span>  </span>
+<span>  <span class="co"># Pull out inputs from the specials</span></span>
+<span>  <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">specials</span><span class="op">$</span><span class="va">season</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"The `season()` special of `SMEAN()` should only be used once."</span><span class="op">)</span></span>
+<span>  <span class="va">m</span> <span class="op">&lt;-</span> <span class="va">specials</span><span class="op">$</span><span class="va">season</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span>  </span>
+<span>  <span class="co"># Compute the seasonal averages</span></span>
+<span>  <span class="va">season_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="va">m</span></span>
+<span>  <span class="va">season_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">season_id</span><span class="op">)</span></span>
+<span>  <span class="va">season_avg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">season_y</span>, FUN <span class="op">=</span> <span class="va">mean</span>, FUN.VALUE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span>, </span>
+<span>                       USE.NAMES <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Compute fitted values and residuals</span></span>
+<span>  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="va">season_avg</span><span class="op">[</span><span class="va">season_id</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span></span>
+<span>  <span class="va">e</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">-</span> <span class="va">fit</span></span>
+<span>  </span>
+<span>  <span class="co"># Create S3 model object</span></span>
+<span>  <span class="co"># It should be small, but contain everything needed for methods below</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/structure.html" class="external-link">structure</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      coef <span class="op">=</span> <span class="va">season_avg</span>,</span>
+<span>      n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>,</span>
+<span>      y_name <span class="op">=</span> <span class="va">mv</span>,</span>
+<span>      fitted <span class="op">=</span> <span class="va">fit</span>,</span>
+<span>      residuals <span class="op">=</span> <span class="va">e</span>,</span>
+<span>      sigma2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">e</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    class <span class="op">=</span> <span class="st">"model_smean"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>Great, that’s the bare minimum for a model complete with interface and training method. Let’s try it out.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">tsibbledata</span><span class="fu">::</span><span class="va"><a href="https://tsibbledata.tidyverts.org/reference/aus_production.html">aus_production</a></span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/model.html">model</a></span><span class="op">(</span><span class="fu">SMEAN</span><span class="op">(</span><span class="va">Beer</span><span class="op">)</span><span class="op">)</span>
-<span class="va">fit</span>
-<span class="co">#&gt; # A mable: 1 x 1</span>
-<span class="co">#&gt;   `SMEAN(Beer)`</span>
-<span class="co">#&gt;         &lt;model&gt;</span>
-<span class="co">#&gt; 1    &lt;modl_smn&gt;</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">tsibbledata</span><span class="fu">::</span><span class="va"><a href="https://tsibbledata.tidyverts.org/reference/aus_production.html" class="external-link">aus_production</a></span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/model.html">model</a></span><span class="op">(</span><span class="fu">SMEAN</span><span class="op">(</span><span class="va">Beer</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">fit</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A mable: 1 x 1</span></span></span>
+<span><span class="co">#&gt;   `SMEAN(Beer)`</span></span>
+<span><span class="co">#&gt;         <span style="color: #949494; font-style: italic;">&lt;model&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>    &lt;modl_smn&gt;</span></span></code></pre></div>
 <p>It doesn’t look like much, but it has used the above specials and training method to compute the seasonal average and store it in the object. However we can’t see any details about the model yet. To make the model useful, we’ll need to define some methods.</p>
 </div>
 </div>
-<div id="methods-for-models" class="section level2">
-<h2 class="hasAnchor">
-<a href="#methods-for-models" class="anchor"></a>Methods for models</h2>
+<div class="section level2">
+<h2 id="methods-for-models">Methods for models<a class="anchor" aria-label="anchor" href="#methods-for-models"></a>
+</h2>
 <table class="table">
 <colgroup>
 <col width="15%">
@@ -250,11 +246,11 @@
 <tr class="even">
 <td align="left"><code><a href="../reference/report.html">report()</a></code></td>
 <td align="left">console output</td>
-<td align="left">A detailed summary of the model, similar to <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code>
+<td align="left">A detailed summary of the model, similar to <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>
 </td>
 </tr>
 <tr class="odd">
-<td align="left"><code><a href="https://generics.r-lib.org/reference/equation.html">equation()</a></code></td>
+<td align="left"><code><a href="https://generics.r-lib.org/reference/equation.html" class="external-link">equation()</a></code></td>
 <td align="left">character(1L)</td>
 <td align="left">The mathematical equation for the fitted model</td>
 </tr>
@@ -269,322 +265,322 @@
 <td align="left">Extend the fit of the model with additional data</td>
 </tr>
 <tr class="even">
-<td align="left"><code><a href="https://generics.r-lib.org/reference/generate.html">generate()</a></code></td>
+<td align="left"><code><a href="https://generics.r-lib.org/reference/generate.html" class="external-link">generate()</a></code></td>
 <td align="left">tsibble</td>
 <td align="left">Generate potential reponse values at certain times from the model</td>
 </tr>
 <tr class="odd">
-<td align="left"><code><a href="https://generics.r-lib.org/reference/interpolate.html">interpolate()</a></code></td>
+<td align="left"><code><a href="https://generics.r-lib.org/reference/interpolate.html" class="external-link">interpolate()</a></code></td>
 <td align="left">tsibble</td>
 <td align="left">Interpolate missing values using the model</td>
 </tr>
 <tr class="even">
-<td align="left"><code><a href="https://generics.r-lib.org/reference/refit.html">refit()</a></code></td>
+<td align="left"><code><a href="https://generics.r-lib.org/reference/refit.html" class="external-link">refit()</a></code></td>
 <td align="left">refitted model</td>
 <td align="left">Apply the model to a new dataset</td>
 </tr>
 <tr class="odd">
-<td align="left"><code><a href="https://generics.r-lib.org/reference/tidy.html">tidy()</a></code></td>
+<td align="left"><code><a href="https://generics.r-lib.org/reference/tidy.html" class="external-link">tidy()</a></code></td>
 <td align="left">tibble of coefficients</td>
 <td align="left">Extract coefficients from the model</td>
 </tr>
 <tr class="even">
-<td align="left"><code><a href="https://generics.r-lib.org/reference/glance.html">glance()</a></code></td>
+<td align="left"><code><a href="https://generics.r-lib.org/reference/glance.html" class="external-link">glance()</a></code></td>
 <td align="left">tibble of statistics</td>
 <td align="left">Extract summary statistics from the model</td>
 </tr>
 <tr class="odd">
-<td align="left"><code><a href="https://generics.r-lib.org/reference/augment.html">augment()</a></code></td>
+<td align="left"><code><a href="https://generics.r-lib.org/reference/augment.html" class="external-link">augment()</a></code></td>
 <td align="left">tibble of data</td>
 <td align="left">Augment a dataset with information from the model</td>
 </tr>
 <tr class="even">
-<td align="left"><code><a href="https://generics.r-lib.org/reference/components.html">components()</a></code></td>
+<td align="left"><code><a href="https://generics.r-lib.org/reference/components.html" class="external-link">components()</a></code></td>
 <td align="left">dable of components</td>
 <td align="left">Extract decomposed elements from the model</td>
 </tr>
 <tr class="odd">
-<td align="left"><code><a href="https://rdrr.io/r/stats/fitted.values.html">fitted()</a></code></td>
+<td align="left"><code><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted()</a></code></td>
 <td align="left">numeric</td>
 <td align="left">Extract fitted values from the model</td>
 </tr>
 <tr class="even">
-<td align="left"><code><a href="https://rdrr.io/r/stats/residuals.html">residuals()</a></code></td>
+<td align="left"><code><a href="https://rdrr.io/r/stats/residuals.html" class="external-link">residuals()</a></code></td>
 <td align="left">numeric</td>
 <td align="left">Extract residuals from the model</td>
 </tr>
 </tbody>
 </table>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#' @importFrom fabletools model_sum</span>
-<span class="co">#' @export</span>
-<span class="va">model_sum.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"SMEAN[%i]"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">coef</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span>
-
-<span class="va">fit</span>
-<span class="co">#&gt; # A mable: 1 x 1</span>
-<span class="co">#&gt;   `SMEAN(Beer)`</span>
-<span class="co">#&gt;         &lt;model&gt;</span>
-<span class="co">#&gt; 1    &lt;SMEAN[4]&gt;</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">#' @importFrom fabletools model_sum</span></span>
+<span><span class="co">#' @export</span></span>
+<span><span class="va">model_sum.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"SMEAN[%i]"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">coef</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">fit</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A mable: 1 x 1</span></span></span>
+<span><span class="co">#&gt;   `SMEAN(Beer)`</span></span>
+<span><span class="co">#&gt;         <span style="color: #949494; font-style: italic;">&lt;model&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>    &lt;SMEAN[4]&gt;</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#' @importFrom fabletools report</span>
-<span class="co">#' @export</span>
-<span class="va">report.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span>
-  <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">coef</span><span class="op">)</span>
-  
-  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"\n"</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"Seasonal period:"</span>, <span class="va">m</span><span class="op">)</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"\n\n"</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Seasonal averages:\n"</span><span class="op">)</span>
-  
-  <span class="fu"><a href="https://rdrr.io/r/base/print.default.html">print.default</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">coef</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"s"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
-    print.gap <span class="op">=</span> <span class="fl">2</span>
-  <span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"\nsigma^2:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">sigma2</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span>
-
-<span class="fu"><a href="../reference/report.html">report</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>
-<span class="co">#&gt; Series: Beer </span>
-<span class="co">#&gt; Model: SMEAN[4] </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Seasonal period: 4</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Seasonal averages:</span>
-<span class="co">#&gt;       s1        s2        s3        s4  </span>
-<span class="co">#&gt; 416.8182  372.6182  387.3704  485.4444  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; sigma^2: 5494.6686</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">#' @importFrom fabletools report</span></span>
+<span><span class="co">#' @export</span></span>
+<span><span class="va">report.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">coef</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Seasonal period:"</span>, <span class="va">m</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\n"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Seasonal averages:\n"</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.default.html" class="external-link">print.default</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">coef</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"s"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    print.gap <span class="op">=</span> <span class="fl">2</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"\nsigma^2:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">sigma2</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/report.html">report</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Series: Beer </span></span>
+<span><span class="co">#&gt; Model: SMEAN[4] </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Seasonal period: 4</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Seasonal averages:</span></span>
+<span><span class="co">#&gt;       s1        s2        s3        s4  </span></span>
+<span><span class="co">#&gt; 416.8182  372.6182  387.3704  485.4444  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; sigma^2: 5494.6686</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#' @importFrom fabletools tidy</span>
-<span class="co">#' @export</span>
-<span class="va">tidy.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span>
-  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>
-    term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"season_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_along</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">coef</span><span class="op">)</span><span class="op">)</span>, 
-    estimate <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">coef</span>
-  <span class="op">)</span>
-<span class="op">}</span>
-
-<span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 4 × 3</span>
-<span class="co">#&gt;   .model      term     estimate</span>
-<span class="co">#&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 SMEAN(Beer) season_1     417.</span>
-<span class="co">#&gt; 2 SMEAN(Beer) season_2     373.</span>
-<span class="co">#&gt; 3 SMEAN(Beer) season_3     387.</span>
-<span class="co">#&gt; 4 SMEAN(Beer) season_4     485.</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">#' @importFrom fabletools tidy</span></span>
+<span><span class="co">#' @export</span></span>
+<span><span class="va">tidy.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>    term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"season_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">coef</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>    estimate <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">coef</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html" class="external-link">tidy</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 3</span></span></span>
+<span><span class="co">#&gt;   .model      term     estimate</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> SMEAN(Beer) season_1     417.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> SMEAN(Beer) season_2     373.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> SMEAN(Beer) season_3     387.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> SMEAN(Beer) season_4     485.</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#' @importFrom fabletools glance</span>
-<span class="co">#' @export</span>
-<span class="va">glance.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span>
-  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>
-    sigma2 <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">sigma2</span>
-  <span class="op">)</span>
-<span class="op">}</span>
-
-<span class="fu"><a href="https://generics.r-lib.org/reference/glance.html">glance</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 1 × 2</span>
-<span class="co">#&gt;   .model      sigma2</span>
-<span class="co">#&gt;   &lt;chr&gt;        &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 SMEAN(Beer)  5495.</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">#' @importFrom fabletools glance</span></span>
+<span><span class="co">#' @export</span></span>
+<span><span class="va">glance.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>    sigma2 <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">sigma2</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://generics.r-lib.org/reference/glance.html" class="external-link">glance</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 2</span></span></span>
+<span><span class="co">#&gt;   .model      sigma2</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> SMEAN(Beer)  <span style="text-decoration: underline;">5</span>495.</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#' @importFrom fabletools forecast</span>
-<span class="co">#' @export</span>
-<span class="va">forecast.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">new_data</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span>
-  <span class="co"># Extract required parameters</span>
-  <span class="va">h</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">NROW</a></span><span class="op">(</span><span class="va">new_data</span><span class="op">)</span>
-  <span class="va">n</span> <span class="op">&lt;-</span> <span class="va">object</span><span class="op">$</span><span class="va">n</span>
-  <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">coef</span><span class="op">)</span>
-  <span class="va">coef</span> <span class="op">&lt;-</span> <span class="va">object</span><span class="op">$</span><span class="va">coef</span>
-  
-  <span class="co"># Compute forecast variance</span>
-  <span class="va">season_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">m</span>
-  <span class="va">season_e</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html">split</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">residuals</span>, <span class="va">season_id</span><span class="op">)</span>
-  <span class="va">season_sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">vapply</a></span><span class="op">(</span><span class="va">season_e</span>, FUN <span class="op">=</span> <span class="va">sd</span>, FUN.VALUE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span>, 
-                       USE.NAMES <span class="op">=</span> <span class="cn">FALSE</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  
-  <span class="co"># Create forecast distributions</span>
-  <span class="va">fc_id</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">h</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="va">n</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">m</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">m</span> <span class="op">+</span> <span class="fl">1</span>
-  <span class="va">mu</span> <span class="op">&lt;-</span> <span class="va">coef</span><span class="op">[</span><span class="va">fc_id</span><span class="op">]</span>
-  <span class="va">sigma</span> <span class="op">&lt;-</span> <span class="va">season_sd</span><span class="op">[</span><span class="va">fc_id</span><span class="op">]</span>
-  <span class="fu">distributional</span><span class="fu">::</span><span class="fu"><a href="https://pkg.mitchelloharawild.com/distributional/reference/dist_normal.html">dist_normal</a></span><span class="op">(</span><span class="va">mu</span>, <span class="va">sigma</span><span class="op">)</span>
-<span class="op">}</span>
-
-<span class="fu"><a href="../reference/forecast.html">forecast</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>
-<span class="co">#&gt; # A fable: 8 x 4 [1Q]</span>
-<span class="co">#&gt; # Key:     .model [1]</span>
-<span class="co">#&gt;   .model      Quarter         Beer .mean</span>
-<span class="co">#&gt;   &lt;chr&gt;         &lt;qtr&gt;       &lt;dist&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 SMEAN(Beer) 2010 Q3 N(387, 4808)  387.</span>
-<span class="co">#&gt; 2 SMEAN(Beer) 2010 Q4 N(485, 7057)  485.</span>
-<span class="co">#&gt; 3 SMEAN(Beer) 2011 Q1 N(417, 5352)  417.</span>
-<span class="co">#&gt; 4 SMEAN(Beer) 2011 Q2 N(373, 5083)  373.</span>
-<span class="co">#&gt; 5 SMEAN(Beer) 2011 Q3 N(387, 4808)  387.</span>
-<span class="co">#&gt; 6 SMEAN(Beer) 2011 Q4 N(485, 7057)  485.</span>
-<span class="co">#&gt; 7 SMEAN(Beer) 2012 Q1 N(417, 5352)  417.</span>
-<span class="co">#&gt; 8 SMEAN(Beer) 2012 Q2 N(373, 5083)  373.</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">#' @importFrom fabletools forecast</span></span>
+<span><span class="co">#' @export</span></span>
+<span><span class="va">forecast.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">new_data</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="co"># Extract required parameters</span></span>
+<span>  <span class="va">h</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">NROW</a></span><span class="op">(</span><span class="va">new_data</span><span class="op">)</span></span>
+<span>  <span class="va">n</span> <span class="op">&lt;-</span> <span class="va">object</span><span class="op">$</span><span class="va">n</span></span>
+<span>  <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">coef</span><span class="op">)</span></span>
+<span>  <span class="va">coef</span> <span class="op">&lt;-</span> <span class="va">object</span><span class="op">$</span><span class="va">coef</span></span>
+<span>  </span>
+<span>  <span class="co"># Compute forecast variance</span></span>
+<span>  <span class="va">season_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="va">m</span></span>
+<span>  <span class="va">season_e</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">residuals</span>, <span class="va">season_id</span><span class="op">)</span></span>
+<span>  <span class="va">season_sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">season_e</span>, FUN <span class="op">=</span> <span class="va">sd</span>, FUN.VALUE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span>, </span>
+<span>                       USE.NAMES <span class="op">=</span> <span class="cn">FALSE</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Create forecast distributions</span></span>
+<span>  <span class="va">fc_id</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">h</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="va">n</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="va">m</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="va">m</span> <span class="op">+</span> <span class="fl">1</span></span>
+<span>  <span class="va">mu</span> <span class="op">&lt;-</span> <span class="va">coef</span><span class="op">[</span><span class="va">fc_id</span><span class="op">]</span></span>
+<span>  <span class="va">sigma</span> <span class="op">&lt;-</span> <span class="va">season_sd</span><span class="op">[</span><span class="va">fc_id</span><span class="op">]</span></span>
+<span>  <span class="fu">distributional</span><span class="fu">::</span><span class="fu"><a href="https://pkg.mitchelloharawild.com/distributional/reference/dist_normal.html" class="external-link">dist_normal</a></span><span class="op">(</span><span class="va">mu</span>, <span class="va">sigma</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/forecast.html">forecast</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A fable: 8 x 4 [1Q]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Key:     .model [1]</span></span></span>
+<span><span class="co">#&gt;   .model      Quarter         Beer .mean</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;qtr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dist&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> SMEAN(Beer) 2010 Q3 N(387, 4808)  387.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> SMEAN(Beer) 2010 Q4 N(485, 7057)  485.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> SMEAN(Beer) 2011 Q1 N(417, 5352)  417.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> SMEAN(Beer) 2011 Q2 N(373, 5083)  373.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> SMEAN(Beer) 2011 Q3 N(387, 4808)  387.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> SMEAN(Beer) 2011 Q4 N(485, 7057)  485.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> SMEAN(Beer) 2012 Q1 N(417, 5352)  417.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> SMEAN(Beer) 2012 Q2 N(373, 5083)  373.</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#' @importFrom fabletools stream</span>
-<span class="co">#' @export</span>
-<span class="va">stream.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">new_data</span>, <span class="va">specials</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span>
-  <span class="co"># Extract a vector of response data</span>
-  <span class="va">mv</span> <span class="op">&lt;-</span> <span class="fu">tsibble</span><span class="fu">::</span><span class="fu"><a href="https://tsibble.tidyverts.org/reference/measured-vars.html">measured_vars</a></span><span class="op">(</span><span class="va">new_data</span><span class="op">)</span>
-  <span class="va">y</span> <span class="op">&lt;-</span> <span class="va">new_data</span><span class="op">[[</span><span class="va">mv</span><span class="op">]</span><span class="op">]</span>
-  
-  <span class="co"># Compute the new seasonal averages</span>
-  <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">coef</span><span class="op">)</span>
-  <span class="va">season_id</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">m</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">m</span>
-  <span class="va">season_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html">split</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">season_id</span><span class="op">)</span>
-  <span class="va">season_avg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">vapply</a></span><span class="op">(</span><span class="va">season_y</span>, FUN <span class="op">=</span> <span class="va">mean</span>, FUN.VALUE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span>, 
-                       USE.NAMES <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-  <span class="va">weight_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">vapply</a></span><span class="op">(</span><span class="va">season_y</span>, FUN <span class="op">=</span> <span class="va">length</span>, FUN.VALUE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">integer</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span>,
-                       USE.NAMES <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-  
-  <span class="co"># Update coefficients to include new estimates</span>
-  <span class="va">weight_orig</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%/%</a></span> <span class="va">m</span>, <span class="va">m</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">m</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">m</span> <span class="op">-</span> <span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">m</span><span class="op">)</span><span class="op">)</span>
-  <span class="va">new_coef</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">coef</span> <span class="op">*</span> <span class="va">weight_orig</span> <span class="op">+</span> <span class="va">season_avg</span> <span class="op">*</span> <span class="va">weight_new</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">weight_orig</span> <span class="op">+</span> <span class="va">weight_new</span><span class="op">)</span>
-  <span class="va">coef_change</span> <span class="op">&lt;-</span> <span class="va">new_coef</span> <span class="op">-</span> <span class="va">object</span><span class="op">$</span><span class="va">coef</span>
-  
-  <span class="co"># Update model</span>
-  <span class="va">new_fits</span> <span class="op">&lt;-</span> <span class="va">new_coef</span><span class="op">[</span><span class="va">season_id</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>
-  <span class="va">new_e</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">-</span> <span class="va">new_fits</span>
-  <span class="va">object</span><span class="op">$</span><span class="va">coef</span> <span class="op">&lt;-</span> <span class="va">new_coef</span>
-  <span class="va">object</span><span class="op">$</span><span class="va">fitted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">fitted</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep_len</a></span><span class="op">(</span><span class="va">coef_change</span>, <span class="va">object</span><span class="op">$</span><span class="va">n</span><span class="op">)</span>, <span class="va">new_fits</span><span class="op">)</span>
-  <span class="va">object</span><span class="op">$</span><span class="va">residuals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">residuals</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep_len</a></span><span class="op">(</span><span class="va">coef_change</span>, <span class="va">object</span><span class="op">$</span><span class="va">n</span><span class="op">)</span>, <span class="va">new_e</span><span class="op">)</span>
-  <span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op">&lt;-</span> <span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>
-  <span class="va">object</span><span class="op">$</span><span class="va">sigma2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">residuals</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  
-  <span class="co"># Return updated model object</span>
-  <span class="va">object</span>
-<span class="op">}</span>
-
-<span class="va">us_acc_deaths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tsibble.tidyverts.org/reference/as-tsibble.html">as_tsibble</a></span><span class="op">(</span><span class="va">USAccDeaths</span><span class="op">)</span>
-<span class="va">fit_stream</span> <span class="op">&lt;-</span> <span class="va">us_acc_deaths</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">60</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/model.html">model</a></span><span class="op">(</span><span class="fu">SMEAN</span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="../reference/report.html">report</a></span><span class="op">(</span><span class="va">fit_stream</span><span class="op">)</span>
-<span class="co">#&gt; Series: value </span>
-<span class="co">#&gt; Model: SMEAN[12] </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Seasonal period: 12</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Seasonal averages:</span>
-<span class="co">#&gt;      s1       s2       s3       s4       s5       s6       s7       s8  </span>
-<span class="co">#&gt;  8085.6   7362.2   8116.6   8292.0   9126.2   9627.6  10446.6   9733.6  </span>
-<span class="co">#&gt;      s9      s10      s11      s12  </span>
-<span class="co">#&gt;  8618.4   8974.2   8434.0   8616.8  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; sigma^2: 251827.8712</span>
-
-<span class="co"># Update the model with new data</span>
-<span class="va">us_acc_deaths_new</span> <span class="op">&lt;-</span> <span class="va">us_acc_deaths</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">61</span><span class="op">:</span><span class="fl">72</span><span class="op">)</span>
-<span class="va">fit_stream</span> <span class="op">&lt;-</span> <span class="va">fit_stream</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/stream.html">stream</a></span><span class="op">(</span><span class="va">us_acc_deaths_new</span><span class="op">)</span>
-<span class="fu"><a href="../reference/report.html">report</a></span><span class="op">(</span><span class="va">fit_stream</span><span class="op">)</span>
-<span class="co">#&gt; Series: value </span>
-<span class="co">#&gt; Model: SMEAN[12] </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Seasonal period: 12</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Seasonal averages:</span>
-<span class="co">#&gt;        s1         s2         s3         s4         s5         s6         s7  </span>
-<span class="co">#&gt;  8044.000   7283.833   8062.333   8275.333   9124.333   9595.333  10452.833  </span>
-<span class="co">#&gt;        s8         s9        s10        s11        s12  </span>
-<span class="co">#&gt;  9749.167   8700.333   8990.167   8467.167   8720.667  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; sigma^2: 222480.9038</span>
-
-<span class="co"># Check that it matches a model of the full data</span>
-<span class="va">us_acc_deaths</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/model.html">model</a></span><span class="op">(</span><span class="fu">SMEAN</span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/report.html">report</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; Series: value </span>
-<span class="co">#&gt; Model: SMEAN[12] </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Seasonal period: 12</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Seasonal averages:</span>
-<span class="co">#&gt;        s1         s2         s3         s4         s5         s6         s7  </span>
-<span class="co">#&gt;  8044.000   7283.833   8062.333   8275.333   9124.333   9595.333  10452.833  </span>
-<span class="co">#&gt;        s8         s9        s10        s11        s12  </span>
-<span class="co">#&gt;  9749.167   8700.333   8990.167   8467.167   8720.667  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; sigma^2: 222480.9038</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">#' @importFrom fabletools stream</span></span>
+<span><span class="co">#' @export</span></span>
+<span><span class="va">stream.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">new_data</span>, <span class="va">specials</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="co"># Extract a vector of response data</span></span>
+<span>  <span class="va">mv</span> <span class="op">&lt;-</span> <span class="fu">tsibble</span><span class="fu">::</span><span class="fu"><a href="https://tsibble.tidyverts.org/reference/measured-vars.html" class="external-link">measured_vars</a></span><span class="op">(</span><span class="va">new_data</span><span class="op">)</span></span>
+<span>  <span class="va">y</span> <span class="op">&lt;-</span> <span class="va">new_data</span><span class="op">[[</span><span class="va">mv</span><span class="op">]</span><span class="op">]</span></span>
+<span>  </span>
+<span>  <span class="co"># Compute the new seasonal averages</span></span>
+<span>  <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">coef</span><span class="op">)</span></span>
+<span>  <span class="va">season_id</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="va">m</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="va">m</span></span>
+<span>  <span class="va">season_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">season_id</span><span class="op">)</span></span>
+<span>  <span class="va">season_avg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">season_y</span>, FUN <span class="op">=</span> <span class="va">mean</span>, FUN.VALUE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span>, </span>
+<span>                       USE.NAMES <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="va">weight_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">season_y</span>, FUN <span class="op">=</span> <span class="va">length</span>, FUN.VALUE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span>,</span>
+<span>                       USE.NAMES <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Update coefficients to include new estimates</span></span>
+<span>  <span class="va">weight_orig</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%/%</a></span> <span class="va">m</span>, <span class="va">m</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="va">m</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">m</span> <span class="op">-</span> <span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="va">m</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">new_coef</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">coef</span> <span class="op">*</span> <span class="va">weight_orig</span> <span class="op">+</span> <span class="va">season_avg</span> <span class="op">*</span> <span class="va">weight_new</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">weight_orig</span> <span class="op">+</span> <span class="va">weight_new</span><span class="op">)</span></span>
+<span>  <span class="va">coef_change</span> <span class="op">&lt;-</span> <span class="va">new_coef</span> <span class="op">-</span> <span class="va">object</span><span class="op">$</span><span class="va">coef</span></span>
+<span>  </span>
+<span>  <span class="co"># Update model</span></span>
+<span>  <span class="va">new_fits</span> <span class="op">&lt;-</span> <span class="va">new_coef</span><span class="op">[</span><span class="va">season_id</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span></span>
+<span>  <span class="va">new_e</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">-</span> <span class="va">new_fits</span></span>
+<span>  <span class="va">object</span><span class="op">$</span><span class="va">coef</span> <span class="op">&lt;-</span> <span class="va">new_coef</span></span>
+<span>  <span class="va">object</span><span class="op">$</span><span class="va">fitted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">fitted</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep_len</a></span><span class="op">(</span><span class="va">coef_change</span>, <span class="va">object</span><span class="op">$</span><span class="va">n</span><span class="op">)</span>, <span class="va">new_fits</span><span class="op">)</span></span>
+<span>  <span class="va">object</span><span class="op">$</span><span class="va">residuals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">residuals</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep_len</a></span><span class="op">(</span><span class="va">coef_change</span>, <span class="va">object</span><span class="op">$</span><span class="va">n</span><span class="op">)</span>, <span class="va">new_e</span><span class="op">)</span></span>
+<span>  <span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op">&lt;-</span> <span class="va">object</span><span class="op">$</span><span class="va">n</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
+<span>  <span class="va">object</span><span class="op">$</span><span class="va">sigma2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">residuals</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Return updated model object</span></span>
+<span>  <span class="va">object</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">us_acc_deaths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tsibble.tidyverts.org/reference/as-tsibble.html" class="external-link">as_tsibble</a></span><span class="op">(</span><span class="va">USAccDeaths</span><span class="op">)</span></span>
+<span><span class="va">fit_stream</span> <span class="op">&lt;-</span> <span class="va">us_acc_deaths</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">60</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/model.html">model</a></span><span class="op">(</span><span class="fu">SMEAN</span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/report.html">report</a></span><span class="op">(</span><span class="va">fit_stream</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Series: value </span></span>
+<span><span class="co">#&gt; Model: SMEAN[12] </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Seasonal period: 12</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Seasonal averages:</span></span>
+<span><span class="co">#&gt;      s1       s2       s3       s4       s5       s6       s7       s8  </span></span>
+<span><span class="co">#&gt;  8085.6   7362.2   8116.6   8292.0   9126.2   9627.6  10446.6   9733.6  </span></span>
+<span><span class="co">#&gt;      s9      s10      s11      s12  </span></span>
+<span><span class="co">#&gt;  8618.4   8974.2   8434.0   8616.8  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; sigma^2: 251827.8712</span></span>
+<span></span>
+<span><span class="co"># Update the model with new data</span></span>
+<span><span class="va">us_acc_deaths_new</span> <span class="op">&lt;-</span> <span class="va">us_acc_deaths</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">61</span><span class="op">:</span><span class="fl">72</span><span class="op">)</span></span>
+<span><span class="va">fit_stream</span> <span class="op">&lt;-</span> <span class="va">fit_stream</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/stream.html">stream</a></span><span class="op">(</span><span class="va">us_acc_deaths_new</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/report.html">report</a></span><span class="op">(</span><span class="va">fit_stream</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Series: value </span></span>
+<span><span class="co">#&gt; Model: SMEAN[12] </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Seasonal period: 12</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Seasonal averages:</span></span>
+<span><span class="co">#&gt;        s1         s2         s3         s4         s5         s6         s7  </span></span>
+<span><span class="co">#&gt;  8044.000   7283.833   8062.333   8275.333   9124.333   9595.333  10452.833  </span></span>
+<span><span class="co">#&gt;        s8         s9        s10        s11        s12  </span></span>
+<span><span class="co">#&gt;  9749.167   8700.333   8990.167   8467.167   8720.667  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; sigma^2: 222480.9038</span></span>
+<span></span>
+<span><span class="co"># Check that it matches a model of the full data</span></span>
+<span><span class="va">us_acc_deaths</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/model.html">model</a></span><span class="op">(</span><span class="fu">SMEAN</span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/report.html">report</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Series: value </span></span>
+<span><span class="co">#&gt; Model: SMEAN[12] </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Seasonal period: 12</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Seasonal averages:</span></span>
+<span><span class="co">#&gt;        s1         s2         s3         s4         s5         s6         s7  </span></span>
+<span><span class="co">#&gt;  8044.000   7283.833   8062.333   8275.333   9124.333   9595.333  10452.833  </span></span>
+<span><span class="co">#&gt;        s8         s9        s10        s11        s12  </span></span>
+<span><span class="co">#&gt;  9749.167   8700.333   8990.167   8467.167   8720.667  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; sigma^2: 222480.9038</span></span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#' @importFrom fabletools fitted</span>
-<span class="co">#' @export</span>
-<span class="va">fitted.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span>
-  <span class="va">object</span><span class="op">$</span><span class="va">fitted</span>
-<span class="op">}</span>
-
-<span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>
-<span class="co">#&gt; # A tsibble: 218 x 3 [1Q]</span>
-<span class="co">#&gt; # Key:       .model [1]</span>
-<span class="co">#&gt;    .model      Quarter .fitted</span>
-<span class="co">#&gt;    &lt;chr&gt;         &lt;qtr&gt;   &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 SMEAN(Beer) 1956 Q1    417.</span>
-<span class="co">#&gt;  2 SMEAN(Beer) 1956 Q2    373.</span>
-<span class="co">#&gt;  3 SMEAN(Beer) 1956 Q3    387.</span>
-<span class="co">#&gt;  4 SMEAN(Beer) 1956 Q4    485.</span>
-<span class="co">#&gt;  5 SMEAN(Beer) 1957 Q1    417.</span>
-<span class="co">#&gt;  6 SMEAN(Beer) 1957 Q2    373.</span>
-<span class="co">#&gt;  7 SMEAN(Beer) 1957 Q3    387.</span>
-<span class="co">#&gt;  8 SMEAN(Beer) 1957 Q4    485.</span>
-<span class="co">#&gt;  9 SMEAN(Beer) 1958 Q1    417.</span>
-<span class="co">#&gt; 10 SMEAN(Beer) 1958 Q2    373.</span>
-<span class="co">#&gt; # … with 208 more rows</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">#' @importFrom fabletools fitted</span></span>
+<span><span class="co">#' @export</span></span>
+<span><span class="va">fitted.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">object</span><span class="op">$</span><span class="va">fitted</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tsibble: 218 x 3 [1Q]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Key:       .model [1]</span></span></span>
+<span><span class="co">#&gt;    .model      Quarter .fitted</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;qtr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> SMEAN(Beer) 1956 Q1    417.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> SMEAN(Beer) 1956 Q2    373.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> SMEAN(Beer) 1956 Q3    387.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> SMEAN(Beer) 1956 Q4    485.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> SMEAN(Beer) 1957 Q1    417.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> SMEAN(Beer) 1957 Q2    373.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> SMEAN(Beer) 1957 Q3    387.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> SMEAN(Beer) 1957 Q4    485.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> SMEAN(Beer) 1958 Q1    417.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> SMEAN(Beer) 1958 Q2    373.</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># … with 208 more rows</span></span></span></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#' @importFrom fabletools residuals</span>
-<span class="co">#' @export</span>
-<span class="va">residuals.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span>
-  <span class="va">object</span><span class="op">$</span><span class="va">residuals</span>
-<span class="op">}</span>
-
-<span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">residuals</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>
-<span class="co">#&gt; # A tsibble: 218 x 3 [1Q]</span>
-<span class="co">#&gt; # Key:       .model [1]</span>
-<span class="co">#&gt;    .model      Quarter .resid</span>
-<span class="co">#&gt;    &lt;chr&gt;         &lt;qtr&gt;  &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 SMEAN(Beer) 1956 Q1  -133.</span>
-<span class="co">#&gt;  2 SMEAN(Beer) 1956 Q2  -160.</span>
-<span class="co">#&gt;  3 SMEAN(Beer) 1956 Q3  -160.</span>
-<span class="co">#&gt;  4 SMEAN(Beer) 1956 Q4  -177.</span>
-<span class="co">#&gt;  5 SMEAN(Beer) 1957 Q1  -155.</span>
-<span class="co">#&gt;  6 SMEAN(Beer) 1957 Q2  -145.</span>
-<span class="co">#&gt;  7 SMEAN(Beer) 1957 Q3  -151.</span>
-<span class="co">#&gt;  8 SMEAN(Beer) 1957 Q4  -165.</span>
-<span class="co">#&gt;  9 SMEAN(Beer) 1958 Q1  -145.</span>
-<span class="co">#&gt; 10 SMEAN(Beer) 1958 Q2  -140.</span>
-<span class="co">#&gt; # … with 208 more rows</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">#' @importFrom fabletools residuals</span></span>
+<span><span class="co">#' @export</span></span>
+<span><span class="va">residuals.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">object</span><span class="op">$</span><span class="va">residuals</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html" class="external-link">residuals</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tsibble: 218 x 3 [1Q]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Key:       .model [1]</span></span></span>
+<span><span class="co">#&gt;    .model      Quarter .resid</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;qtr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> SMEAN(Beer) 1956 Q1  -<span style="color: #BB0000;">133.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> SMEAN(Beer) 1956 Q2  -<span style="color: #BB0000;">160.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> SMEAN(Beer) 1956 Q3  -<span style="color: #BB0000;">160.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> SMEAN(Beer) 1956 Q4  -<span style="color: #BB0000;">177.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> SMEAN(Beer) 1957 Q1  -<span style="color: #BB0000;">155.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> SMEAN(Beer) 1957 Q2  -<span style="color: #BB0000;">145.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> SMEAN(Beer) 1957 Q3  -<span style="color: #BB0000;">151.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> SMEAN(Beer) 1957 Q4  -<span style="color: #BB0000;">165.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> SMEAN(Beer) 1958 Q1  -<span style="color: #BB0000;">145.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> SMEAN(Beer) 1958 Q2  -<span style="color: #BB0000;">140.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># … with 208 more rows</span></span></span></code></pre></div>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#' @importFrom fabletools components</span>
-<span class="co">#' @export</span>
-<span class="va">components.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span>
-  <span class="co"># Create a tsibble of the components</span>
-  <span class="va">dcmp</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>
-    <span class="op">!</span><span class="op">!</span><span class="va">object</span><span class="op">$</span><span class="va">y_name</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">residuals</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span>,
-    season <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span>,
-    remainder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">residuals</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span>
-  <span class="op">)</span>
-  
-  <span class="co"># Describe how the components combine into other columns</span>
-  <span class="va">aliases</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/lst.html">lst</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="va">object</span><span class="op">$</span><span class="va">y_name</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">quote</a></span><span class="op">(</span><span class="va">season</span> <span class="op">+</span> <span class="va">remainder</span><span class="op">)</span><span class="op">)</span>
-  
-  <span class="co"># Define the behaviour of seasonal components</span>
-  <span class="co"># This is used for automatic modelling of seasonal components in `decomposition_model()`</span>
-  <span class="co"># It may also be used for plotting in the future.</span>
-  <span class="va">seasonalities</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>season <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>period <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">coef</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-  
-  <span class="co"># Return a dable</span>
-  <span class="fu"><a href="../reference/as_dable.html">as_dable</a></span><span class="op">(</span>
-    <span class="va">dcmp</span>,
-    resp <span class="op">=</span> <span class="op">!</span><span class="op">!</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/tidyeval-compat.html">sym</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">y_name</span><span class="op">)</span>, method <span class="op">=</span> <span class="fu"><a href="../reference/model_sum.html">model_sum</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span>,
-    seasons <span class="op">=</span> <span class="va">seasonalities</span>, aliases <span class="op">=</span> <span class="va">aliases</span>
-  <span class="op">)</span>
-<span class="op">}</span>
-
-<span class="fu"><a href="https://generics.r-lib.org/reference/components.html">components</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span> <span class="co"># Need to store index somewhere. This workflow should improve.</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">#' @importFrom fabletools components</span></span>
+<span><span class="co">#' @export</span></span>
+<span><span class="va">components.model_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="co"># Create a tsibble of the components</span></span>
+<span>  <span class="va">dcmp</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>    <span class="op">!</span><span class="op">!</span><span class="va">object</span><span class="op">$</span><span class="va">y_name</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html" class="external-link">residuals</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span>,</span>
+<span>    season <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span>,</span>
+<span>    remainder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html" class="external-link">residuals</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Describe how the components combine into other columns</span></span>
+<span>  <span class="va">aliases</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/lst.html" class="external-link">lst</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="va">object</span><span class="op">$</span><span class="va">y_name</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="va">season</span> <span class="op">+</span> <span class="va">remainder</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Define the behaviour of seasonal components</span></span>
+<span>  <span class="co"># This is used for automatic modelling of seasonal components in `decomposition_model()`</span></span>
+<span>  <span class="co"># It may also be used for plotting in the future.</span></span>
+<span>  <span class="va">seasonalities</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>season <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>period <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">coef</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Return a dable</span></span>
+<span>  <span class="fu"><a href="../reference/as-dable.html">as_dable</a></span><span class="op">(</span></span>
+<span>    <span class="va">dcmp</span>,</span>
+<span>    resp <span class="op">=</span> <span class="op">!</span><span class="op">!</span><span class="fu"><a href="https://rlang.r-lib.org/reference/sym.html" class="external-link">sym</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">y_name</span><span class="op">)</span>, method <span class="op">=</span> <span class="fu"><a href="../reference/model_sum.html">model_sum</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span>,</span>
+<span>    seasons <span class="op">=</span> <span class="va">seasonalities</span>, aliases <span class="op">=</span> <span class="va">aliases</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://generics.r-lib.org/reference/components.html" class="external-link">components</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span> <span class="co"># Need to store index somewhere. This workflow should improve.</span></span></code></pre></div>
 </div>
   </div>
 
@@ -599,11 +595,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="https://mitchelloharawild.com">Mitchell O'Hara-Wild</a>, <a href="http://robjhyndman.com">Rob Hyndman</a>, <a href="https://earo.me">Earo Wang</a>.</p>
+  <p></p>
+<p>Developed by <a href="https://mitchelloharawild.com" class="external-link">Mitchell O’Hara-Wild</a>, <a href="http://robjhyndman.com" class="external-link">Rob Hyndman</a>, <a href="https://earo.me" class="external-link">Earo Wang</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -611,6 +609,8 @@
 
   
 
+
+  
 
   </body>
 </html>

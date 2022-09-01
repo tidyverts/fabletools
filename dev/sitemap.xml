@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://fabletools.tidyverts.org/articles/extension_models.html</loc>
+  </url>
+  <url>
+    <loc>https://fabletools.tidyverts.org/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://fabletools.tidyverts.org/authors.html</loc>
+  </url>
+  <url>
     <loc>https://fabletools.tidyverts.org/index.html</loc>
+  </url>
+  <url>
+    <loc>https://fabletools.tidyverts.org/news/index.html</loc>
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/MAAPE.html</loc>
@@ -130,6 +142,9 @@
     <loc>https://fabletools.tidyverts.org/reference/hypothesize.mdl_df.html</loc>
   </url>
   <url>
+    <loc>https://fabletools.tidyverts.org/reference/index.html</loc>
+  </url>
+  <url>
     <loc>https://fabletools.tidyverts.org/reference/interpolate.html</loc>
   </url>
   <url>
@@ -254,8 +269,5 @@
   </url>
   <url>
     <loc>https://fabletools.tidyverts.org/reference/validate_formula.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/articles/extension_models.html</loc>
   </url>
 </urlset>
