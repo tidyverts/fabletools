@@ -13,3 +13,4 @@ a useful reference for making a \code{\link[=feature_set]{feature_set()}} from p
 \seealso{
 \link{features_by_tag}
 }
+\keyword{internal}

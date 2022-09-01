@@ -6,7 +6,7 @@
 #' @param .h A function applied to the base case
 #' @param base The base case for the recursion
 #' 
-#' @export
+#' @keywords internal
 traverse <- function(x, .f = list, .g = identity, .h = identity, base = function(.x) is_syntactic_literal(.x) || is_symbol(.x)){
   # base case
   if(base(x))

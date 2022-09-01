@@ -325,6 +325,7 @@ rd_features_tag <- function(){
 #' 
 #' @seealso [features_by_tag]
 #' 
+#' @keywords internal
 #' @name features_by_pkg
 NULL
 
@@ -337,5 +338,6 @@ NULL
 #' 
 #' @seealso [features_by_pkg]
 #' 
+#' @keywords internal
 #' @name features_by_tag
 NULL

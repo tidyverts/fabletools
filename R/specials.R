@@ -18,7 +18,7 @@ new_specials <- function(..., .required_specials = NULL, .xreg_specials = NULL){
             class="fable_specials")
 }
 
-#' Special for producing a model matrix of exogenous regressors
+#' Helper special for producing a model matrix of exogenous regressors
 #' 
 #' @param ... Arguments for `fable_xreg_matrix` (see Details)
 #' 

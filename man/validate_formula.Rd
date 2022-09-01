@@ -15,3 +15,4 @@ validate_formula(model, data = NULL)
 Appropriately format the user's model for evaluation. Typically ran as one of the first steps
 in a model function.
 }
+\keyword{internal}

@@ -15,12 +15,12 @@ unpack_hilo(data, cols, names_sep = "_", names_repair = "check_unique")
 as is. In \code{pack()}, inner names will come from the former outer names;
 in \code{unpack()}, the new outer names will come from the inner names.
 
-If a string, the inner and outer names will be used together. In \code{pack()},
-the names of the new outer columns will be formed by pasting together the
-outer and the inner column names, separated by \code{names_sep}. In \code{unpack()},
-the new inner names will have the outer names (+ \code{names_sep}) automatically
-stripped. This makes \code{names_sep} roughly symmetric between packing
-and unpacking.}
+If a string, the inner and outer names will be used together. In
+\code{unpack()}, the names of the new outer columns will be formed by pasting
+together the outer and the inner column names, separated by \code{names_sep}. In
+\code{pack()}, the new inner names will have the outer names + \code{names_sep}
+automatically stripped. This makes \code{names_sep} roughly symmetric between
+packing and unpacking.}
 
 \item{names_repair}{Used to check that output data frame has valid
 names. Must be one of the following options:
@@ -38,9 +38,17 @@ See \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}} for more details on 
 strategies used to enforce them.}
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}
+
+This function is superceded. It is recommended that you use the functionality
+from the \href{https://pkg.mitchelloharawild.com/distributional/}{distributional}
+package to extract elements from a <hilo> object. For example, you can access
+the lower bound with \verb{<hilo>$lower}.
+
 Allows a hilo column to be unpacked into its component columns: "lower",
 "upper", and "level".
 }
 \seealso{
 \code{\link[tidyr:pack]{tidyr::unpack()}}
 }
+\keyword{internal}

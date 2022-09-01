@@ -14,11 +14,11 @@ construct_fc(point, sd, dist)
 \item{dist}{The forecast distribution (typically produced using \code{new_fcdist})}
 }
 \description{
-\lifecycle{deprecated}
-}
-\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 This function is deprecated. \code{forecast()} methods for a model should return
 a vector of distributions using the distributional package.
 
 Backtransformations are automatically handled, and so no transformations should be specified here.
 }
+\keyword{internal}
