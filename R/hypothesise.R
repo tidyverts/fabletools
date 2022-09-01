@@ -25,6 +25,7 @@ hypothesize.mdl_df <- function(x, ...){
   unnest(x, ".hypothesis")
 }
 
+#' @param tests a list of test functions to perform on the model
 #' @rdname hypothesize.mdl_df
 #' @export
 hypothesize.mdl_ts <- function(x, tests = list(), ...){

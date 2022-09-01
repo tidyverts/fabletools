@@ -13,6 +13,8 @@
 \item{x}{A mable.}
 
 \item{...}{Arguments for model methods.}
+
+\item{tests}{a list of test functions to perform on the model}
 }
 \description{
 This function will return the results of a hypothesis test for each model in
