@@ -3,6 +3,10 @@ url: https://fabletools.tidyverts.org
 template:
   params:
     bootswatch: cosmo
+  includes:
+    in_header: |
+      <script defer data-domain="fabletools.tidyverts.org" src="https://track.mitchelloharawild.com/js/plausible.js"></script>
+
 
 development:
   mode: auto
