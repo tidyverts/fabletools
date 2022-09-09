@@ -4,6 +4,15 @@
 
 * Fixed handling of transformed distributions which accept a parameter from the
   dataset.
+* `.` in a model formula for `xreg` implemented with `special_xreg()` will now
+  include all measured variables (excluding the index and key variables).
+* Improved handling of transformations with forecast sample distributions.
+* Added support for reconciling sample paths.
+* `accuracy(<fbl_ts>)` can now summarise accuracy over key variables. This is
+  done by specifying the accuracy `by` argument and not including some (or all)
+  of the fable's key variables (#341).
+* Like `forecast()`, `generate()` will now keep exogenous regressors in the
+  output table.
 
 # fabletools 0.3.2
 
@@ -12,9 +21,6 @@
 * Added `hypothesize()` generic for running statistical tests on a trained model.
 * Added `combination_weighted()` function for producing a combination model with
   arbitrary weights.
-* `accuracy(<fbl_ts>)` can now summarise accuracy over key variables. This is
-  done by specifying the accuracy `by` argument and not including some (or all)
-  of the fable's key variables (#341).
 
 ## Improvements
 

@@ -14,6 +14,7 @@
 #'   model(lm = TSLM(log(Time) ~ trend())) %>% 
 #'   hypothesize()
 #' 
+#' @rdname hypothesize.mdl_df
 #' @importFrom generics hypothesize
 #' @export
 hypothesize.mdl_df <- function(x, ...){
@@ -24,7 +25,8 @@ hypothesize.mdl_df <- function(x, ...){
   unnest(x, ".hypothesis")
 }
 
-#' @rdname hypothesize
+#' @param tests a list of test functions to perform on the model
+#' @rdname hypothesize.mdl_df
 #' @export
 hypothesize.mdl_ts <- function(x, tests = list(), ...){
   if(is_function(tests)){

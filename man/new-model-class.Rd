@@ -10,8 +10,10 @@ new_model_class(
   train = function(.data, formula, specials, ...)
     abort("This model has not defined a training method."),
   specials = new_specials(),
-  check = function(.data) { },
-  prepare = function(...) { },
+  check = function(.data) {
+ },
+  prepare = function(...) {
+ },
   ...,
   .env = caller_env(),
   .inherit = model_definition

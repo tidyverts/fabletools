@@ -12,3 +12,4 @@ parse_model_rhs(model)
 \description{
 Parse the RHS of the model formula for specials
 }
+\keyword{internal}

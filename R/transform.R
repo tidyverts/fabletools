@@ -98,6 +98,7 @@ new_transformation <- function(transformation, inverse){
 #' exp(y)
 #' adj_fn(y)
 #' 
+#' @keywords internal
 #' @export
 bias_adjust <- function(bt, sd){
   fvar <- sd^2

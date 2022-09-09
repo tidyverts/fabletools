@@ -26,3 +26,4 @@ traverse(
 \description{
 Recursively traverse an object
 }
+\keyword{internal}

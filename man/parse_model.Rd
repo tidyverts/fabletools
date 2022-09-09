@@ -13,3 +13,4 @@ parse_model(model)
 Using a list of defined special functions, the user's formula specification and data
 is parsed to extract important modelling components.
 }
+\keyword{internal}

@@ -226,7 +226,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
       abort("Transformations of multivariate forecasts are not yet supported")
     }
   }
-  if(all(is_transformed)) {
+  if(any(is_transformed)) {
     if (identical(unique(dist_types(fc)), "dist_sample")) {
       fc <- vec_c(!!!mapply(exec, bt[[1]], fc))
     } else {
@@ -255,7 +255,8 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
 
 #' Construct a new set of forecasts
 #' 
-#' \lifecycle{deprecated}
+#' @description 
+#' `r lifecycle::badge('deprecated')`
 #' 
 #' This function is deprecated. `forecast()` methods for a model should return
 #' a vector of distributions using the distributional package.
@@ -266,6 +267,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
 #' @param sd The standard deviation of the transformed forecasts
 #' @param dist The forecast distribution (typically produced using `new_fcdist`)
 #' 
+#' @keywords internal
 #' @export
 construct_fc <- function(point, sd, dist){
   lifecycle::deprecate_stop("0.3.0", what = "fabletools::construct_fc()",

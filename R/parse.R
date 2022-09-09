@@ -49,7 +49,7 @@ parse_specials <- function(call = NULL, specials = NULL){
 #' @param model A quosure for the user's model specification
 #' @param data A dataset used for automatic response selection
 #' 
-#' @export
+#' @keywords internal
 validate_formula <- function(model, data = NULL){
   # Clean inputs
   if(!is_quosure(model$formula)){
@@ -89,7 +89,7 @@ validate_formula <- function(model, data = NULL){
 #' 
 #' @param model A model definition
 #' 
-#' @export
+#' @keywords internal
 parse_model <- function(model){
   # Parse model
   list2(
@@ -102,8 +102,7 @@ parse_model <- function(model){
 #' Parse the RHS of the model formula for specials
 #' 
 #' @inheritParams parse_model
-#' 
-#' @export
+#' @keywords internal
 parse_model_rhs <- function(model){
   # if(length(model$specials) == 0){
   #   return(list(specials = NULL))
@@ -118,8 +117,7 @@ parse_model_rhs <- function(model){
 #' Parse the RHS of the model formula for transformations
 #' 
 #' @inheritParams parse_model
-#' 
-#' @export
+#' @keywords internal
 parse_model_lhs <- function(model){
   model_lhs <- model_lhs(model)
   if(is_call_name(model_lhs, c("vars", "c"))){

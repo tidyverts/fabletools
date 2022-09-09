@@ -191,25 +191,25 @@ agg_vec <- function(x = character(), aggregated = logical(vec_size(x))){
 }
 
 #' @export
-format.agg_vec <- function(x, ..., na_chr = "<aggregated>"){
+format.agg_vec <- function(x, ..., agg_chr = "<aggregated>"){
   n <- vec_size(x)
   x <- vec_data(x)
   is_agg <- x[["agg"]]
   out <- character(length = n)
-  out[is_agg] <- na_chr
+  out[is_agg] <- agg_chr
   out[!is_agg] <- format(x[["x"]][!is_agg], ...)
   out 
 }
 
 pillar_shaft.agg_vec <- function(x, ...) {
   if(requireNamespace("crayon")){
-    na_chr <- crayon::style("<aggregated>", crayon::make_style("#999999", grey = TRUE))
+    agg_chr <- crayon::style("<aggregated>", crayon::make_style("#999999", grey = TRUE))
   }
   else{
-    na_chr <- "<aggregated>"
+    agg_chr <- "<aggregated>"
   }
   
-  out <- format(x, na_chr = na_chr)
+  out <- format(x, agg_chr = agg_chr)
   
   pillar::new_pillar_shaft_simple(out, align = "left", min_width = 10)
 }

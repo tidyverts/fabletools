@@ -3,6 +3,10 @@ url: https://fabletools.tidyverts.org
 template:
   params:
     bootswatch: cosmo
+  includes:
+    in_header: |
+      <script defer data-domain="fabletools.tidyverts.org" src="https://track.mitchelloharawild.com/js/plausible.js"></script>
+
 
 development:
   mode: auto
@@ -16,28 +20,49 @@ authors:
     href: https://earo.me
 
 reference:
+- title: Overview
+  desc: >
+    Describes the package
+  contents:
+    - fabletools-package
 - title: Data structures
   desc: >
     Data classes for models, forecasts and decompositions.
   contents:
     - mable
+    - as_mable
+    - is_mable
     - fable
+    - as_fable
+    - is_fable
     - dable
+    - as_dable
+    - is_dable
+    - mable_vars
+    - response_vars
+    - distribution_var
 - title: Models
   desc: >
     Models which make use of models from other packages, or are useful for programming.
   contents:
     - decomposition_model
     - combination_model
+    - combination_ensemble
+    - combination_weighted
     - null_model
 - title: Forecast reconciliation
   desc: >
     Use reconciliation techniques to ensure that forecasts are coherent with the hierarchical structure of data.
   contents:
-    - aggregate_key
-    - is_aggregated
     - reconcile
     - min_trace
+    - bottom_up
+    - middle_out
+    - top_down
+    - aggregate_key
+    - aggregate_index
+    - agg_vec
+    - is_aggregated
 - title: Accuracy evaluation
   desc: >
     Functionality for evaluating model performance
@@ -49,13 +74,15 @@ reference:
     - MAE
     - MPE
     - MAPE
+    - MAAPE
     - MASE
     - ACF1
     - winkler_score
     - percentile_score
-    - MDA, 
+    - MDA 
     - MDV
     - MDPV
+    - skill_score
 - title: Methods
   desc: >
     The fabletools package facilitates the handling of key structures for these generics.
@@ -64,6 +91,8 @@ reference:
     - model
     - report
     - stream
+    - outliers
+    - model_sum
     - generate.mdl_df
     - interpolate.mdl_df
     - refit.mdl_df
@@ -73,6 +102,25 @@ reference:
     - components.mdl_df
     - fitted.mdl_df
     - residuals.mdl_df
+    - estimate
+    - response
+    - scenarios
+    - hypothesize.mdl_df
+    - is_model
+- title: Features
+  desc: >
+    Functions for using and defining features across a dataset.
+  contents:
+    - features
+    - feature_set
+    - register_feature
+- title: Transformations
+  desc: >
+    Commonly used transformation functions.
+  contents:
+    - box_cox
+    - inv_box_cox
+    - new_transformation
 - title: Graphics
   desc: >
     Some `autoplot()` and `autolayer()` methods are defined for classes commonly used within fabletools.
@@ -82,3 +130,14 @@ reference:
     - autoplot.fbl_ts
     - autolayer.fbl_ts
     - autoplot.dcmp_ts
+- title: Extension package helpers
+  desc: >
+    Functions provided to help develop extension packages.
+  contents:
+    - special_xreg
+    - new_specials
+    - new_model_class
+    - model_lhs
+    - model_rhs
+    - common_periods
+    - common_xregs
