@@ -229,7 +229,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
   }
   if(any(is_transformed)) {
     if (identical(unique(dist_types(fc)), "dist_sample")) {
-      fc <- vec_c(!!!mapply(exec, bt[[1]], fc))
+      fc <- vec_c(!!!.mapply(exec, list(bt[[1]], fc), MoreArgs = NULL))
     } else {
       bt <- bt[[1]]
       fc <- distributional::dist_transformed(fc, `attributes<-`(bt, NULL), bt%@%"inverse")
