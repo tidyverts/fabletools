@@ -73,6 +73,19 @@ forecast.lst_mint_mdl <- function(object, key_data,
     cov2cor <- stats::cov2cor
   }
   
+  pdmat_inverse <- function(X, Y, ...) {
+    n <- nrow(X)
+    scalex <- abs(max(X))
+    X <- X/scalex
+    L <- diag(rep(1e6, n))
+    Xinv <- L %*% solve(diag(n) + L %*% X %*% L, ...) %*% L / scalex
+    if(missing(Y)) {
+      return(Xinv)
+    } else {
+      return(Xinv %*% Y)
+    }
+  }
+  
   point_method <- point_forecast
   point_forecast <- list()
   # Get forecasts
@@ -147,14 +160,14 @@ forecast.lst_mint_mdl <- function(object, key_data,
     U <- U[, order(c(row_agg, row_btm)), drop = FALSE]
     Ut <- t(U)
     WUt <- W %*% Ut
-    P <- J - J %*% WUt %*% solve(U %*% WUt, U)
+    P <- J - J %*% WUt %*% pdmat_inverse(U %*% WUt, U)
     # P <- J - J%*%W%*%t(U)%*%solve(U%*%W%*%t(U))%*%U
   }
   else {
     S <- matrix(0L, nrow = length(agg_data$agg), ncol = max(vec_c(!!!agg_data$agg)))
     S[length(agg_data$agg)*(vec_c(!!!agg_data$agg)-1) + rep(seq_along(agg_data$agg), lengths(agg_data$agg))] <- 1L
-    R <- t(S)%*%solve(W)
-    P <- solve(R%*%S)%*%R
+    R <- t(S)%*%pdmat_inverse(W)
+    P <- pdmat_inverse(R%*%S)%*%R
   }
   
   reconcile_fbl_list(fc, S, P, W, point_forecast = point_method)
