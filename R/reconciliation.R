@@ -66,7 +66,7 @@ forecast.lst_mint_mdl <- function(object, key_data,
     require_package("Matrix")
     as.matrix <- Matrix::as.matrix
     t <- Matrix::t
-    diag <- function(x) if(is.vector(x)) Matrix::Diagonal(x = x) else Matrix::diag(x)
+    diag <- function(x) if(is.vector(x)) Matrix::Diagonal(n = x) else Matrix::diag(x)
     solve <- Matrix::solve
     cov2cor <- Matrix::cov2cor
   } else {
