@@ -66,19 +66,36 @@ forecast.lst_mint_mdl <- function(object, key_data,
     require_package("Matrix")
     as.matrix <- Matrix::as.matrix
     t <- Matrix::t
-    diag <- function(x) if(is.vector(x)) Matrix::Diagonal(n = x) else Matrix::diag(x)
+    diag <- function(x, n) {
+      if(!missing(x)) {
+        if(is.vector(x)) Matrix::Diagonal(x = x) else Matrix::diag(x)
+      } else {
+        Matrix::Diagonal(n)
+      }
+    }
     solve <- Matrix::solve
     cov2cor <- Matrix::cov2cor
   } else {
     cov2cor <- stats::cov2cor
+    diag <- function(x, n) {
+      if(!missing(x)) {
+        if(is.vector(x)) {
+          diag(x, nrow = length(x), ncol = length(x))
+        } else {
+          diag(x)
+        }
+      } else {
+        diag(n)
+      }
+    }
   }
   
   pdmat_inverse <- function(X, Y, ...) {
     n <- nrow(X)
     scalex <- abs(max(X))
     X <- X/scalex
-    L <- diag(rep(1e6, n))
-    Xinv <- L %*% solve(diag(n) + L %*% X %*% L, ...) %*% L / scalex
+    L <- diag(x = rep(1e6, n))
+    Xinv <- L %*% solve(diag(n = n) + L %*% X %*% L, ...) %*% L / scalex
     if(missing(Y)) {
       return(Xinv)
     } else {
@@ -110,7 +127,7 @@ forecast.lst_mint_mdl <- function(object, key_data,
   covm <- crossprod(stats::na.omit(res)) / n
   if(method == "ols"){
     # OLS
-    W <- diag(rep(1L, nrow(covm)))
+    W <- diag(n = nrow(covm))
   } else if(method == "wls_var"){
     # WLS variance scaling
     W <- diag(diag(covm))
