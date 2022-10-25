@@ -141,7 +141,7 @@ forecast.lst_mint_mdl <- function(object, key_data,
     # min_trace shrink
     tar <- diag(apply(res, 2, compose(crossprod, stats::na.omit))/n)
     corm <- cov2cor(covm)
-    xs <- scale(res, center = FALSE, scale = sqrt(diag(covm)))
+    xs <- scale(res, center = FALSE, scale = pmax(sqrt(diag(covm)), .Machine$double.eps))
     xs <- xs[stats::complete.cases(xs),]
     v <- (1/(n * (n - 1))) * (crossprod(xs^2) - 1/n * (crossprod(xs))^2)
     diag(v) <- 0
