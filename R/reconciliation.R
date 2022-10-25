@@ -155,10 +155,10 @@ forecast.lst_mint_mdl <- function(object, key_data,
   }
   
   # Check positive definiteness of weights
-  eigenvalues <- eigen(W, only.values = TRUE)[["values"]]
-  if (any(eigenvalues < 1e-8)) {
-    abort("min_trace needs covariance matrix to be positive definite.", call. = FALSE)
-  }
+  # eigenvalues <- eigen(W, only.values = TRUE)[["values"]]
+  # if (any(eigenvalues < 1e-8)) {
+  #   abort("min_trace needs covariance matrix to be positive definite.", call. = FALSE)
+  # }
   
   # Reconciliation matrices
   if(sparse){ 
