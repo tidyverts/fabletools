@@ -91,36 +91,76 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://fabletools.tidyverts.org/">fabletools</a></span><span class="op">)</span></span></code></pre></div>
-<p>Writing a time series model using fabletools provides your model with many additional features without extra effort. Features that aren’t model specific are handled by fabletools, allowing you to spend more time writing methods for your model. Some functionality handled by fabletools includes:</p>
+<p>Writing a time series model using fabletools provides your model with
+many additional features without extra effort. Features that aren’t
+model specific are handled by fabletools, allowing you to spend more
+time writing methods for your model. Some functionality handled by
+fabletools includes:</p>
 <ul>
-<li>Seamless integration with data manipulation and visualisation tools from the tidyverse.</li>
-<li>Consistent formula interface with other tidy time series models.</li>
-<li>Transformations with automatic back-transformation of response variables.</li>
-<li>Batch modelling of many time series and models with parallel support.</li>
-<li>Accuracy evaluation tools (in-sample, out-of-sample, and cross validation).</li>
-<li>Visualisation functions for decompositions, models, and forecasts.</li>
-<li>Support for ensemble and combination modelling (such as decomposition forecasting).</li>
-<li>Hierarchical, grouped, and temporal reconciliation of forecasts.</li>
+<li>Seamless integration with data manipulation and visualisation tools
+from the tidyverse.</li>
+<li>Consistent formula interface with other tidy time series
+models.</li>
+<li>Transformations with automatic back-transformation of response
+variables.</li>
+<li>Batch modelling of many time series and models with parallel
+support.</li>
+<li>Accuracy evaluation tools (in-sample, out-of-sample, and cross
+validation).</li>
+<li>Visualisation functions for decompositions, models, and
+forecasts.</li>
+<li>Support for ensemble and combination modelling (such as
+decomposition forecasting).</li>
+<li>Hierarchical, grouped, and temporal reconciliation of
+forecasts.</li>
 </ul>
-<p>The fabletools package promotes consistent interfaces and output structures that allow various time series models to work well together. This vignette will guide you through creating a fabletools model, and provide a glimpse into the steps used to convert user data to modelling inputs, and modelling outputs to user data.</p>
-<p>As an example, we’ll create a fabletools model that uses seasonal averages: <code>SMEAN()</code>. It can be thought of as a seasonal version of <code><a href="https://fable.tidyverts.org/reference/MEAN.html" class="external-link">fable::MEAN()</a></code>, which instead of averaging the entire series, it averages values from each season.</p>
+<p>The fabletools package promotes consistent interfaces and output
+structures that allow various time series models to work well together.
+This vignette will guide you through creating a fabletools model, and
+provide a glimpse into the steps used to convert user data to modelling
+inputs, and modelling outputs to user data.</p>
+<p>As an example, we’ll create a fabletools model that uses seasonal
+averages: <code>SMEAN()</code>. It can be thought of as a seasonal
+version of <code><a href="https://fable.tidyverts.org/reference/MEAN.html" class="external-link">fable::MEAN()</a></code>, which instead of averaging the
+entire series, it averages values from each season.</p>
 <div class="section level2">
 <h2 id="the-model-interface">The model interface<a class="anchor" aria-label="anchor" href="#the-model-interface"></a>
 </h2>
-<p>Much like cross-sectional models (such as <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>), tidy time-series models use a formula based interface. Of course not all arguments need to be specified from within the formula (much like <code>na.action</code> in <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>). The model formula is a familiar and user friendly interface for specifying key model concepts (like <code>pdq()</code> in <code><a href="https://fable.tidyverts.org/reference/ARIMA.html" class="external-link">ARIMA()</a></code>), and data-varying inputs (such as holidays and exogenous regressors). Model specific formula functions (like <code>pdq()</code>) are known as specials (much like <code>specials</code> from <code><a href="https://rdrr.io/r/stats/terms.formula.html" class="external-link">stats::terms.formula()</a></code>).</p>
-<p>Before writing code, it is a good idea to think about what interface best suits your model. This is often model specific, however you may find it useful to look at existing interfaces to see how yours could be written consistently. A good example of this is with seasonality: fourier terms are specified with the <code>fourier(period, K)</code> special, and seasonal dummy variables use <code>season(period)</code>.</p>
-<p>A potential interface for the <code>SMEAN()</code> model could be:</p>
+<p>Much like cross-sectional models (such as <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>), tidy
+time-series models use a formula based interface. Of course not all
+arguments need to be specified from within the formula (much like
+<code>na.action</code> in <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>). The model formula is a
+familiar and user friendly interface for specifying key model concepts
+(like <code>pdq()</code> in <code><a href="https://fable.tidyverts.org/reference/ARIMA.html" class="external-link">ARIMA()</a></code>), and data-varying
+inputs (such as holidays and exogenous regressors). Model specific
+formula functions (like <code>pdq()</code>) are known as specials (much
+like <code>specials</code> from
+<code><a href="https://rdrr.io/r/stats/terms.formula.html" class="external-link">stats::terms.formula()</a></code>).</p>
+<p>Before writing code, it is a good idea to think about what interface
+best suits your model. This is often model specific, however you may
+find it useful to look at existing interfaces to see how yours could be
+written consistently. A good example of this is with seasonality:
+fourier terms are specified with the <code>fourier(period, K)</code>
+special, and seasonal dummy variables use
+<code>season(period)</code>.</p>
+<p>A potential interface for the <code>SMEAN()</code> model could
+be:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">SMEAN</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu">season</span><span class="op">(</span><span class="va">period</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="minimum-implementation-of-a-model">Minimum implementation of a model<a class="anchor" aria-label="anchor" href="#minimum-implementation-of-a-model"></a>
 </h2>
-<p>At minimum, a model consists of a model function (something that returns a model definition), a set of specials, and a training function.</p>
+<p>At minimum, a model consists of a model function (something that
+returns a model definition), a set of specials, and a training
+function.</p>
 <div class="section level3">
 <h3 id="the-model-function">The model function<a class="anchor" aria-label="anchor" href="#the-model-function"></a>
 </h3>
-<p>Model functions typically consist of two function calls. A model class (defining the training method, the specials, and data checks) with <code><a href="../reference/new-model-class.html">new_model_class()</a></code>, and <code>new_model_definition</code> to return the model definition:</p>
+<p>Model functions typically consist of two function calls. A model
+class (defining the training method, the specials, and data checks) with
+<code><a href="../reference/new-model-class.html">new_model_class()</a></code>, and <code>new_model_definition</code> to
+return the model definition:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' Seasonal mean models</span></span>
 <span><span class="co">#' </span></span>
@@ -144,14 +184,37 @@
 <span>  <span class="co"># Return a model definition which stores the user's model specification</span></span>
 <span>  <span class="fu"><a href="../reference/new-model-class.html">new_model_definition</a></span><span class="op">(</span><span class="va">model_smean</span>, <span class="op">{</span><span class="op">{</span><span class="va">formula</span><span class="op">}</span><span class="op">}</span>, <span class="va">...</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>Anything passed to <code>...</code> of <code><a href="../reference/new-model-class.html">new_model_definition()</a></code> will be passed onward to the model training function. Note that the formula needs to be embraced with <code>{{formula}}</code> in order to allow for non-formula inputs like <code>SMEAN(y)</code>.</p>
+<p>Anything passed to <code>...</code> of
+<code><a href="../reference/new-model-class.html">new_model_definition()</a></code> will be passed onward to the model
+training function. Note that the formula needs to be embraced with
+<code>{{formula}}</code> in order to allow for non-formula inputs like
+<code>SMEAN(y)</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="the-specials">The specials<a class="anchor" aria-label="anchor" href="#the-specials"></a>
 </h3>
-<p>The specials for a model are created using <code><a href="../reference/new_specials.html">new_specials()</a></code>. The functions specified here will be used to compute specials each time the model is provided with new data (model training, forecasting, refitting, etc.). The results of these functions will be passed to the subsequent method via the <code>specials</code> argument (more on this later).</p>
-<p>To enable automatic model specification (with <code>SMEAN(y)</code>), the <code>.required_specials</code> argument will ensure that the special is called at least once. By setting <code>season()</code> as a required special, <code>SMEAN(y)</code> will be parsed as <code>SMEAN(y ~ season())</code>. As no arguments will be provided for omitted required specials, make sure they have good defaults. The <code><a href="../reference/freq_tools.html">fabletools::get_frequencies()</a></code> function is a useful helper for handling seasonal periods, as automatically chooses appropriate seasonalities when <code>period = NULL</code>, and is able to handle inputs like <code>period = "week"</code>.</p>
-<p>Anything not handled by defined specials will be treated as exogenous regressors and passed to the <code>xreg()</code> special. That is to say <code>SMEAN(y ~ season("year") + x)</code> will be parsed as <code>SMEAN(y ~ season("year") + xreg(x))</code>. The <code>xreg()</code> special should be defined by all models, even if your model doesn’t support it.</p>
+<p>The specials for a model are created using
+<code><a href="../reference/new_specials.html">new_specials()</a></code>. The functions specified here will be used
+to compute specials each time the model is provided with new data (model
+training, forecasting, refitting, etc.). The results of these functions
+will be passed to the subsequent method via the <code>specials</code>
+argument (more on this later).</p>
+<p>To enable automatic model specification (with <code>SMEAN(y)</code>),
+the <code>.required_specials</code> argument will ensure that the
+special is called at least once. By setting <code>season()</code> as a
+required special, <code>SMEAN(y)</code> will be parsed as
+<code>SMEAN(y ~ season())</code>. As no arguments will be provided for
+omitted required specials, make sure they have good defaults. The
+<code><a href="../reference/freq_tools.html">fabletools::get_frequencies()</a></code> function is a useful helper
+for handling seasonal periods, as automatically chooses appropriate
+seasonalities when <code>period = NULL</code>, and is able to handle
+inputs like <code>period = "week"</code>.</p>
+<p>Anything not handled by defined specials will be treated as exogenous
+regressors and passed to the <code>xreg()</code> special. That is to say
+<code>SMEAN(y ~ season("year") + x)</code> will be parsed as
+<code>SMEAN(y ~ season("year") + xreg(x))</code>. The
+<code>xreg()</code> special should be defined by all models, even if
+your model doesn’t support it.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">specials_smean</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_specials.html">new_specials</a></span><span class="op">(</span></span>
 <span>  season <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">period</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
@@ -166,16 +229,32 @@
 <span>  <span class="co"># Adding this allows `SMEAN(y)` to automatically include the `season()` special</span></span>
 <span>  .required_specials <span class="op">=</span> <span class="st">"season"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>The specials are the only thing needed for the formula to work, as the fabletools handles the transformations and response variables specified in the formula’s left side.</p>
+<p>The specials are the only thing needed for the formula to work, as
+the fabletools handles the transformations and response variables
+specified in the formula’s left side.</p>
 </div>
 <div class="section level3">
 <h3 id="the-training-function">The training function<a class="anchor" aria-label="anchor" href="#the-training-function"></a>
 </h3>
-<p>This function is used to apply the model definition created by the model function (<code>SMEAN()</code>) to users data when they use <code>model(data, SMEAN())</code>.</p>
-<p>The <code>.data</code> argument is a single series tsibble (no keys), representing the parsed left side of the formula. The index of <code>.data</code> is the time of the measurement, and the measured variables are the transformed response variable(s).</p>
-<p>The <code>specials</code> argument is a list of results from parsing the specials used in the right side of the formula. The result from the <code>season()</code> special in <code>SMEAN(y ~ season("year"))</code> would be accessible from <code>specials$season[[1]]</code>. As specials can be used more than once, the nth usage of special <code>xyz()</code> can be accessed with <code>specials$xyz[[n]]</code>.</p>
-<p>As mentioned earlier, <code>...</code> will contain additional parameters passed <code>...</code> of <code><a href="../reference/new-model-class.html">new_model_definition()</a></code>.</p>
-<p>The function should return an S3 object that contains everything you need for your future methods (such as forecasting, getting fitted values, refitting, etc.).</p>
+<p>This function is used to apply the model definition created by the
+model function (<code>SMEAN()</code>) to users data when they use
+<code>model(data, SMEAN())</code>.</p>
+<p>The <code>.data</code> argument is a single series tsibble (no keys),
+representing the parsed left side of the formula. The index of
+<code>.data</code> is the time of the measurement, and the measured
+variables are the transformed response variable(s).</p>
+<p>The <code>specials</code> argument is a list of results from parsing
+the specials used in the right side of the formula. The result from the
+<code>season()</code> special in <code>SMEAN(y ~ season("year"))</code>
+would be accessible from <code>specials$season[[1]]</code>. As specials
+can be used more than once, the nth usage of special <code>xyz()</code>
+can be accessed with <code>specials$xyz[[n]]</code>.</p>
+<p>As mentioned earlier, <code>...</code> will contain additional
+parameters passed <code>...</code> of
+<code><a href="../reference/new-model-class.html">new_model_definition()</a></code>.</p>
+<p>The function should return an S3 object that contains everything you
+need for your future methods (such as forecasting, getting fitted
+values, refitting, etc.).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">train_smean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">.data</span>, <span class="va">specials</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># Extract a vector of response data</span></span>
@@ -211,7 +290,8 @@
 <span>    class <span class="op">=</span> <span class="st">"model_smean"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>Great, that’s the bare minimum for a model complete with interface and training method. Let’s try it out.</p>
+<p>Great, that’s the bare minimum for a model complete with interface
+and training method. Let’s try it out.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">tsibbledata</span><span class="fu">::</span><span class="va"><a href="https://tsibbledata.tidyverts.org/reference/aus_production.html" class="external-link">aus_production</a></span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/model.html">model</a></span><span class="op">(</span><span class="fu">SMEAN</span><span class="op">(</span><span class="va">Beer</span><span class="op">)</span><span class="op">)</span></span>
@@ -220,7 +300,10 @@
 <span><span class="co">#&gt;   `SMEAN(Beer)`</span></span>
 <span><span class="co">#&gt;         <span style="color: #949494; font-style: italic;">&lt;model&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>    &lt;modl_smn&gt;</span></span></code></pre></div>
-<p>It doesn’t look like much, but it has used the above specials and training method to compute the seasonal average and store it in the object. However we can’t see any details about the model yet. To make the model useful, we’ll need to define some methods.</p>
+<p>It doesn’t look like much, but it has used the above specials and
+training method to compute the seasonal average and store it in the
+object. However we can’t see any details about the model yet. To make
+the model useful, we’ll need to define some methods.</p>
 </div>
 </div>
 <div class="section level2">
@@ -241,12 +324,14 @@
 <tr class="odd">
 <td align="left"><code><a href="../reference/model_sum.html">model_sum()</a></code></td>
 <td align="left"><code>character(1L)</code></td>
-<td align="left">A short summary of the model to display in the mable</td>
+<td align="left">A short summary of the model to display in the
+mable</td>
 </tr>
 <tr class="even">
 <td align="left"><code><a href="../reference/report.html">report()</a></code></td>
 <td align="left">console output</td>
-<td align="left">A detailed summary of the model, similar to <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>
+<td align="left">A detailed summary of the model, similar to
+<code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>
 </td>
 </tr>
 <tr class="odd">
@@ -267,7 +352,8 @@
 <tr class="even">
 <td align="left"><code><a href="https://generics.r-lib.org/reference/generate.html" class="external-link">generate()</a></code></td>
 <td align="left">tsibble</td>
-<td align="left">Generate potential reponse values at certain times from the model</td>
+<td align="left">Generate potential reponse values at certain times from
+the model</td>
 </tr>
 <tr class="odd">
 <td align="left"><code><a href="https://generics.r-lib.org/reference/interpolate.html" class="external-link">interpolate()</a></code></td>

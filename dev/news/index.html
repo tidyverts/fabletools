@@ -239,7 +239,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-0-1-3">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-1-3"></a></h3>
-<ul><li>Fixed <code><a href="../reference/accuracy.html">accuracy.fbl_ts()</a></code> error when certain names were used in the fable.</li></ul></div>
+<ul><li>Fixed <code><a href="../reference/accuracy.html">accuracy.fbl_ts()</a></code> error when certain names were used in the fable.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.2" id="fabletools-012">fabletools 0.1.2<small>2020-01-29</small><a class="anchor" aria-label="anchor" href="#fabletools-012"></a></h2>
@@ -252,7 +253,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="breaking-changes-0-1-2">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-1-2"></a></h3>
-<ul><li>Decompositions are now treated as models. To access the decomposed values, you will now have to use <code><a href="https://generics.r-lib.org/reference/components.html" class="external-link">components()</a></code>. For example, <code>tourism %&gt;% STL(Trips)</code> is now <code>tourism %&gt;% model(STL(Trips)) %&gt;% components()</code>. This change allows for more flexible decomposition specifications, and better interfaces for decomposition modelling.</li></ul></div>
+<ul><li>Decompositions are now treated as models. To access the decomposed values, you will now have to use <code><a href="https://generics.r-lib.org/reference/components.html" class="external-link">components()</a></code>. For example, <code>tourism %&gt;% STL(Trips)</code> is now <code>tourism %&gt;% model(STL(Trips)) %&gt;% components()</code>. This change allows for more flexible decomposition specifications, and better interfaces for decomposition modelling.</li>
+</ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-0-1-2">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-1-2"></a></h3>
 <ul><li>Fixed <code>select.mdl_df()</code> usage with negative select values (<a href="https://github.com/tidyverts/fabletools/issues/120" class="external-link">#120</a>).</li>
@@ -265,7 +267,8 @@
 <h2 class="page-header" data-toc-text="0.1.1" id="fabletools-011">fabletools 0.1.1<small>2019-09-16</small><a class="anchor" aria-label="anchor" href="#fabletools-011"></a></h2>
 <div class="section level3">
 <h3 id="breaking-changes-0-1-1">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-1-1"></a></h3>
-<ul><li>Updated method names available for <code><a href="../reference/min_trace.html">min_trace()</a></code> reconciliation (<a href="https://github.com/GeorgeAthana" class="external-link">@GeorgeAthana</a>).</li></ul></div>
+<ul><li>Updated method names available for <code><a href="../reference/min_trace.html">min_trace()</a></code> reconciliation (<a href="https://github.com/GeorgeAthana" class="external-link">@GeorgeAthana</a>).</li>
+</ul></div>
 <div class="section level3">
 <h3 id="improvements-0-1-1">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-1-1"></a></h3>
 <ul><li>Improved error messaging for failing features.</li>
@@ -277,11 +280,13 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-0-1-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-1-1"></a></h3>
-<ul><li>Added failure condition for disjoint reconciliation graphs.</li></ul></div>
+<ul><li>Added failure condition for disjoint reconciliation graphs.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0" id="fabletools-010">fabletools 0.1.0<small>2019-08-08</small><a class="anchor" aria-label="anchor" href="#fabletools-010"></a></h2>
-<ul><li>First release.</li></ul><div class="section level3">
+<ul><li>First release.</li>
+</ul><div class="section level3">
 <h3 id="new-features-0-1-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-1-0"></a></h3>
 <div class="section level4">
 <h4 id="data-structures-0-1-0">Data structures<a class="anchor" aria-label="anchor" href="#data-structures-0-1-0"></a></h4>
@@ -325,7 +330,8 @@
 </ul></div>
 <div class="section level4">
 <h4 id="evaluation-0-1-0">Evaluation<a class="anchor" aria-label="anchor" href="#evaluation-0-1-0"></a></h4>
-<ul><li>Added <code><a href="../reference/accuracy.html">accuracy()</a></code>, which allows the accuracy of a model to be evaluated. This function can be used to summarise model performance on the training data (<code><a href="../reference/accuracy.html">accuracy.mdl_df()</a></code>, <code>accuracy.mdl_ts()</code>), or to evaluate the accuracy of forecasts over a test dataset (<code><a href="../reference/accuracy.html">accuracy.fbl_ts()</a></code>). Several accuracy measures are supported, including <code>point_accuracy_measures</code> (<code>ME</code>, <code>MSE</code>, <code>RMSE</code>, <code>MAE</code>, <code>MPE</code>, <code>MAPE</code>, <code>MASE</code>, <code>ACF1</code>), <code>interval_accuracy_measures</code> (<code>winkler_score</code>) and <code>distribution_accuracy_measures</code> (<code>percentile_score</code>). These accuracy functions can be used in conjunction with the rolling functions in the tsibble package (<code><a href="https://tsibble.tidyverts.org/reference/stretch_tsibble.html" class="external-link">stretch_tsibble()</a></code>, <code><a href="https://tsibble.tidyverts.org/reference/slide_tsibble.html" class="external-link">slide_tsibble()</a></code>, <code><a href="https://tsibble.tidyverts.org/reference/tile_tsibble.html" class="external-link">tile_tsibble()</a></code>) to computed time series cross-validated accuracy measures.</li></ul></div>
+<ul><li>Added <code><a href="../reference/accuracy.html">accuracy()</a></code>, which allows the accuracy of a model to be evaluated. This function can be used to summarise model performance on the training data (<code><a href="../reference/accuracy.html">accuracy.mdl_df()</a></code>, <code>accuracy.mdl_ts()</code>), or to evaluate the accuracy of forecasts over a test dataset (<code><a href="../reference/accuracy.html">accuracy.fbl_ts()</a></code>). Several accuracy measures are supported, including <code>point_accuracy_measures</code> (<code>ME</code>, <code>MSE</code>, <code>RMSE</code>, <code>MAE</code>, <code>MPE</code>, <code>MAPE</code>, <code>MASE</code>, <code>ACF1</code>), <code>interval_accuracy_measures</code> (<code>winkler_score</code>) and <code>distribution_accuracy_measures</code> (<code>percentile_score</code>). These accuracy functions can be used in conjunction with the rolling functions in the tsibble package (<code><a href="https://tsibble.tidyverts.org/reference/stretch_tsibble.html" class="external-link">stretch_tsibble()</a></code>, <code><a href="https://tsibble.tidyverts.org/reference/slide_tsibble.html" class="external-link">slide_tsibble()</a></code>, <code><a href="https://tsibble.tidyverts.org/reference/tile_tsibble.html" class="external-link">tile_tsibble()</a></code>) to computed time series cross-validated accuracy measures.</li>
+</ul></div>
 </div>
 </div>
   </div>
