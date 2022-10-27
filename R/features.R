@@ -1,7 +1,7 @@
 features_impl <- function(.tbl, .var, features, ...){
   dots <- dots_list(...)
   
-  if(is_function(features)){
+  if(is_function(features) || is_formula(features)){
     features <- list(features)
   }
   features <- map(squash(features), as_function)
