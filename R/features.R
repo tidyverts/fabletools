@@ -6,9 +6,7 @@ features_impl <- function(.tbl, .var, features, ...){
   }
   features <- map(squash(features), as_function)
   
-  if(is.null(dots$.period)){
-    dots$.period <- get_frequencies(NULL, .tbl, .auto = "smallest")
-  }
+  dots$.period <- get_frequencies(dots$.period, .tbl, .auto = "smallest")
   
   # Compute response
   key_dt <- key_data(.tbl)
