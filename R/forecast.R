@@ -14,13 +14,6 @@
 #' extract the numerical upper and lower bounds you can use [`unpack_hilo()`].
 #' 
 #' @param object The time series model used to produce the forecasts
-#' 
-#' @rdname forecast
-#' @export
-forecast <- function(object, ...){
-  UseMethod("forecast")
-}
-
 #' @param new_data A `tsibble` containing future information used to forecast.
 #' @param h The forecast horison (can be used instead of `new_data` for regular
 #' time series with no exogenous regressors).

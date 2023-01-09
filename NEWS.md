@@ -13,6 +13,8 @@
   of the fable's key variables (#341).
 * Like `forecast()`, `generate()` will now keep exogenous regressors in the
   output table.
+* Re-export `generics::forecast()` for better compatibility with registering 
+  methods alongside other packages (#375).
 
 # fabletools 0.3.2
 

@@ -17,6 +17,7 @@
 \alias{hypothesize}
 \alias{generate}
 \alias{refit}
+\alias{forecast}
 \alias{hilo}
 \alias{guide_level}
 \title{Objects exported from other packages}
@@ -30,7 +31,7 @@ below to see their documentation.
 
   \item{dplyr}{\code{\link[dplyr:reexports]{\%>\%}}, \code{\link[dplyr]{vars}}}
 
-  \item{generics}{\code{\link[generics]{augment}}, \code{\link[generics]{components}}, \code{\link[generics]{equation}}, \code{\link[generics]{generate}}, \code{\link[generics]{glance}}, \code{\link[generics]{hypothesize}}, \code{\link[generics]{interpolate}}, \code{\link[generics]{refit}}, \code{\link[generics]{tidy}}}
+  \item{generics}{\code{\link[generics]{augment}}, \code{\link[generics]{components}}, \code{\link[generics]{equation}}, \code{\link[generics]{forecast}}, \code{\link[generics]{generate}}, \code{\link[generics]{glance}}, \code{\link[generics]{hypothesize}}, \code{\link[generics]{interpolate}}, \code{\link[generics]{refit}}, \code{\link[generics]{tidy}}}
 
   \item{ggplot2}{\code{\link[ggplot2]{autolayer}}, \code{\link[ggplot2]{autoplot}}}
 

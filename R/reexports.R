@@ -53,6 +53,10 @@ generics::generate
 #' @export
 generics::refit
 
+#' @importFrom generics forecast
+#' @export
+generics::forecast
+
 #' @importFrom distributional hilo
 #' @export
 distributional::hilo
