@@ -28,6 +28,6 @@ unpack_hilo <- function(data, cols, names_sep = "_", names_repair = "check_uniqu
     ))
   }
   data[cols] <- map(data[cols], function(x) vctrs::vec_proxy(x)[c("lower", "upper")])
-  data <- tidyr::unpack(data, cols, names_sep = names_sep, names_repair = names_repair)
+  data <- tidyr::unpack(data, names(cols), names_sep = names_sep, names_repair = names_repair)
   vctrs::vec_restore(data, orig)
 }
