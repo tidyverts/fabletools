@@ -107,7 +107,7 @@ Please check that you have specified the decomposition models appropriately.")
 #'   components() %>% 
 #'   autoplot()
 #'   
-#' # Use an ARIMA model to seasonally adjusted data, and SNAIVE to season_year
+#' # Use an ETS model to seasonally adjusted data, and SNAIVE to season_year
 #' # Any model can be used, and seasonal components will default to use SNAIVE.
 #' my_dcmp_spec <- decomposition_model(
 #'   STL(log(Turnover) ~ season(window = Inf)),
