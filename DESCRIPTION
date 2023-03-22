@@ -54,6 +54,7 @@ Suggests:
     crayon,
     fable (>= 0.2.0),
     future,
+    future.apply,
     knitr,
     pillar (>= 1.0.1),
     feasts (>= 0.1.2),
@@ -63,8 +64,6 @@ Suggests:
     tsibbledata (>= 0.2.0),
     lubridate,
     Matrix
-Remotes:
-    mitchelloharawild/distributional
 VignetteBuilder: 
     knitr
 RdMacros: 

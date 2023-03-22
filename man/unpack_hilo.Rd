@@ -42,7 +42,7 @@ strategies used to enforce them.}
 
 This function is superceded. It is recommended that you use the functionality
 from the \href{https://pkg.mitchelloharawild.com/distributional/}{distributional}
-package to extract elements from a \if{html}{\out{<hilo>}} object. For example, you can access
+package to extract elements from a \verb{<hilo>} object. For example, you can access
 the lower bound with \verb{<hilo>$lower}.
 
 Allows a hilo column to be unpacked into its component columns: "lower",
