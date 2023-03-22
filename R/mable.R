@@ -217,8 +217,8 @@ group_data.mdl_df <- function(.data){
 }
 
 #' @export
-key_data.mdl_df <- function(x){
-  x%@%"key"
+key_data.mdl_df <- function(.data){
+  .data%@%"key"
 }
 
 #' @export

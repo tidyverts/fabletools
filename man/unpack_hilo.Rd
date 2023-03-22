@@ -25,10 +25,10 @@ packing and unpacking.}
 \item{names_repair}{Used to check that output data frame has valid
 names. Must be one of the following options:
 \itemize{
-\item "minimal": no name repair or checks, beyond basic existence,
-\item "unique": make sure names are unique and not empty,
-\item "check_unique": (the default), no name repair, but check they are unique,
-\item "universal": make the names unique and syntactic
+\item \verb{"minimal}": no name repair or checks, beyond basic existence,
+\item \verb{"unique}": make sure names are unique and not empty,
+\item \verb{"check_unique}": (the default), no name repair, but check they are unique,
+\item \verb{"universal}": make the names unique and syntactic
 \item a function: apply custom name repair.
 \item \link[tidyr]{tidyr_legacy}: use the name repair from tidyr 0.8.
 \item a formula: a purrr-style anonymous function (see \code{\link[rlang:as_function]{rlang::as_function()}})
@@ -42,7 +42,7 @@ strategies used to enforce them.}
 
 This function is superceded. It is recommended that you use the functionality
 from the \href{https://pkg.mitchelloharawild.com/distributional/}{distributional}
-package to extract elements from a <hilo> object. For example, you can access
+package to extract elements from a \if{html}{\out{<hilo>}} object. For example, you can access
 the lower bound with \verb{<hilo>$lower}.
 
 Allows a hilo column to be unpacked into its component columns: "lower",

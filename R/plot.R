@@ -122,7 +122,7 @@ autolayer.tbl_ts <- function(object, .vars = NULL, ...){
 
 #' @importFrom ggplot2 fortify
 #' @export
-fortify.fbl_ts <- function(object, level = c(80, 95)){
+fortify.fbl_ts <- function(model, data= NULL, level = c(80, 95), ...){
   if(deparse(match.call()) != "fortify.fbl_ts(object = data)"){
     warn("The output of `fortify(<fable>)` has changed to better suit usage with the ggdist package.
 If you're using it to extract intervals, consider using `hilo()` to compute intervals, and `unpack_hilo()` to obtain values.")
