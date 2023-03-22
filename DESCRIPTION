@@ -53,7 +53,7 @@ Suggests:
     covr,
     crayon,
     fable (>= 0.2.0),
-    future.apply,
+    future,
     knitr,
     pillar (>= 1.0.1),
     feasts (>= 0.1.2),
