@@ -224,6 +224,8 @@ pillar_shaft.agg_vec <- function(x, ...) {
 NULL
 
 #' @rdname aggregation-vctrs
+#' @importFrom vctrs vec_ptype2
+#' @method vec_ptype2 agg_vec
 #' @export
 vec_ptype2.agg_vec <- function(x, y, ...) UseMethod("vec_ptype2.agg_vec", y)
 #' @rdname aggregation-vctrs
@@ -257,6 +259,7 @@ vec_ptype_abbr.agg_vec <- function(x, ...) {
 }
 
 #' @rdname aggregation-vctrs
+#' @method vec_cast agg_vec
 #' @export
 vec_cast.agg_vec <- function(x, to, ...) UseMethod("vec_cast.agg_vec")
 #' @rdname aggregation-vctrs

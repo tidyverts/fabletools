@@ -6,9 +6,9 @@
 \alias{vec_cast.dcmp_ts}
 \title{Internal vctrs methods}
 \usage{
-vec_ptype2.dcmp_ts(x, y, ...)
+\method{vec_ptype2}{dcmp_ts}(x, y, ...)
 
-vec_cast.dcmp_ts(x, to, ...)
+\method{vec_cast}{dcmp_ts}(x, to, ...)
 }
 \description{
 These methods are the extensions that allow dable objects to
