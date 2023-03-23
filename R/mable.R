@@ -164,7 +164,7 @@ select.mdl_df <- function (.data, ...){
 transmute.mdl_df <- function (.data, ...){
   nm <- names(enquos(..., .named = TRUE))
   res <- mutate(.data, ...)
-  select(res, !!nm)
+  select(res, all_of(nm))
 }
 
 #' @export

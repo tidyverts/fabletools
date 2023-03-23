@@ -6,7 +6,7 @@
 #' 
 #' @param object A tsibble.
 #' @param .vars A bare expression containing data you wish to plot. Multiple variables can be plotted using [`ggplot2::vars()`].
-#' @param ... Further arguments passed to [`ggplot2::geom_line()`], which can be used to specify fixed aesthetics such as `colour = "red"` or `size = 3`. 
+#' @param ... Further arguments passed to [`ggplot2::geom_line()`], which can be used to specify fixed aesthetics such as `colour = "red"` or `linewidth = 3`. 
 #' 
 #' @examplesIf requireNamespace("fable", quietly = TRUE)
 #' library(fable)
@@ -141,7 +141,7 @@ If you're using it to extract intervals, consider using `hilo()` to compute inte
 #' @param data A tsibble with the same key structure as the fable.
 #' @param level The confidence level(s) for the plotted intervals.
 #' @param show_gap Setting this to `FALSE` will connect the most recent value in `data` with the forecasts.
-#' @param ... Further arguments passed used to specify fixed aesthetics for the forecasts such as `colour = "red"` or `size = 3`.
+#' @param ... Further arguments passed used to specify fixed aesthetics for the forecasts such as `colour = "red"` or `linewidth = 3`.
 #' @param point_forecast The point forecast measure to be displayed in the plot.
 #' 
 #' @examplesIf requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)
@@ -463,7 +463,7 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE,
     p <- p + geom_rect(data = range_data,
       aes(ymin = !!sym("ymin"), ymax = !!sym("ymax"),
           xmin = !!sym("xmin"), xmax = !!sym("xmax")),
-      fill = "gray75", colour = "black", size = 1 / 3
+      fill = "gray75", colour = "black", linewidth = 1 / 3
     )
   }
   
