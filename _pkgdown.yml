@@ -93,6 +93,7 @@ reference:
     - stream
     - outliers
     - model_sum
+    - forecast.mdl_df
     - generate.mdl_df
     - interpolate.mdl_df
     - refit.mdl_df
