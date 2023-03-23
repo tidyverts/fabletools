@@ -19,9 +19,11 @@
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<![endif]--><script defer data-domain="fabletools.tidyverts.org" src="https://track.mitchelloharawild.com/js/plausible.js"></script>
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -34,23 +36,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -67,7 +63,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/tidyverts/fabletools/">
+  <a href="https://github.com/tidyverts/fabletools/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -84,75 +80,78 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="fabletools" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#fabletools" class="anchor"></a>fabletools</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="fabletools">fabletools<a class="anchor" aria-label="anchor" href="#fabletools"></a>
+</h1></div>
+<!-- badges: start -->
 
 <p>The R package <em>fabletools</em> provides tools for building modelling packages, with a focus on time series forecasting. This package allows package developers to extend <em>fable</em> with additional models, without needing to depend on the models supported by <em>fable</em>.</p>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>You could install the <strong>stable</strong> version on <a href="https://cran.r-project.org/package=fabletools">CRAN</a>:</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>You could install the <strong>stable</strong> version on <a href="https://cran.r-project.org/package=fabletools" class="external-link">CRAN</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"fabletools"</span><span class="op">)</span></code></pre></div>
-<p>You can install the <strong>development</strong> version from <a href="https://github.com/tidyverts/fabletools">GitHub</a>:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"fabletools"</span><span class="op">)</span></span></code></pre></div>
+<p>You can install the <strong>development</strong> version from <a href="https://github.com/tidyverts/fabletools" class="external-link">GitHub</a>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"tidyverts/fabletools"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"tidyverts/fabletools"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=fabletools">https://​cloud.r-project.org/​package=fabletools</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/tidyverts/fabletools/">https://​github.com/​tidyverts/​fabletools/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/tidyverts/fabletools/issues">https://​github.com/​tidyverts/​fabletools/​issues</a>
-</li>
-</ul>
-</div>
-<div class="license">
-<h2>License</h2>
-<ul class="list-unstyled">
-<li><a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a></li>
-</ul>
-</div>
-<div class="developers">
-<h2>Developers</h2>
-<ul class="list-unstyled">
-<li>
-<a href="https://mitchelloharawild.com">Mitchell O'Hara-Wild</a> <br><small class="roles"> Author, maintainer </small>  </li>
-<li>
-<a href="http://robjhyndman.com">Rob Hyndman</a> <br><small class="roles"> Author </small>  </li>
-<li>
-<a href="https://earo.me">Earo Wang</a> <br><small class="roles"> Author </small>  </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="https://cloud.r-project.org/package=fabletools" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/tidyverts/fabletools/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/tidyverts/fabletools/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="license">
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/tidyverts/fabletools"><img src="https://github.com/tidyverts/fabletools/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
-<li><a href="https://app.codecov.io/gh/tidyverts/fabletools?branch=master"><img src="https://codecov.io/gh/tidyverts/fabletools/branch/master/graph/badge.svg" alt="Code test coverage"></a></li>
-<li><a href="https://lifecycle.r-lib.org/articles/stages.html"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"></a></li>
-<li><a href="https://www.gnu.org/licenses/gpl-3.0.en.html"><img src="https://img.shields.io/badge/licence-GPL--3-blue.svg" alt="Licence"></a></li>
+<li><a href="https://www.r-project.org/Licenses/GPL-3" class="external-link">GPL-3</a></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing fabletools</a></li>
+</ul>
 </div>
+
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
+<ul class="list-unstyled">
+<li>
+<a href="https://mitchelloharawild.com" class="external-link">Mitchell O'Hara-Wild</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-6729-7695" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>
+<a href="http://robjhyndman.com" class="external-link">Rob Hyndman</a> <br><small class="roles"> Author </small>  </li>
+<li>
+<a href="https://earo.me" class="external-link">Earo Wang</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-6448-5260" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li><a href="authors.html">More about authors...</a></li>
+</ul>
+</div>
+
+
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="https://mitchelloharawild.com">Mitchell O'Hara-Wild</a>, <a href="http://robjhyndman.com">Rob Hyndman</a>, <a href="https://earo.me">Earo Wang</a>.</p>
+  <p></p>
+<p>Developed by <a href="https://mitchelloharawild.com" class="external-link">Mitchell O’Hara-Wild</a>, <a href="http://robjhyndman.com" class="external-link">Rob Hyndman</a>, <a href="https://earo.me" class="external-link">Earo Wang</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -160,6 +159,8 @@
 
   
 
+
+  
 
   </body>
 </html>

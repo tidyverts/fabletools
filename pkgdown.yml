@@ -1,9 +1,9 @@
-pandoc: 2.7.3
-pkgdown: 1.6.1
+pandoc: 2.19.2
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   extension_models: extension_models.html
-last_built: 2021-11-29T06:08Z
+last_built: 2023-03-23T02:38Z
 urls:
   reference: https://fabletools.tidyverts.org/reference
   article: https://fabletools.tidyverts.org/articles
