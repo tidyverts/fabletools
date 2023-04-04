@@ -11,8 +11,8 @@ aggregate_key(.data, .spec, ...)
 
 \item{.spec}{The specification of aggregation structure.}
 
-\item{...}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}> Name-value pairs of summary
-functions. The name will be the name of the variable in the result.
+\item{...}{<\code{\link[rlang:args_data_masking]{data-masking}}> Name-value pairs of
+summary functions. The name will be the name of the variable in the result.
 
 The value can be:
 \itemize{
