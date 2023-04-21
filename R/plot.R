@@ -347,19 +347,20 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   
   mapping$y <- sym(dist_var)
   if(length(point_forecast) > 1){
-    mapping$linetype <- sym("Point forecast")
+    mapping$linetype <- mapping$shape <- sym("Point forecast")
     grp <- c(grp, mapping$linetype)
     mapping$group <- expr(interaction(!!!map(grp, function(x) expr(format(!!x))), sep = "/"))
   }
+  without <- function(x, el) x[setdiff(names(x), el)]
   object <- as_tibble(object)
   if(!is.null(col)){
     mapping$colour <- col
-    out[[length(out) + 1]] <- geom_line(mapping = mapping, data = dplyr::anti_join(object, single_row, by = key_vars), linetype = linetype, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
-    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = mapping, data = dplyr::semi_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
+    out[[length(out) + 1]] <- geom_line(mapping = without(mapping, "shape"), data = dplyr::anti_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
+    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = without(mapping, "linetype"), data = dplyr::semi_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
     out[[length(out) + 1]] <- ggplot2::labs(colour = col_nm)
   } else {
-    out[[length(out) + 1]] <- geom_line(mapping = mapping, data = dplyr::anti_join(object, single_row, by = key_vars), color = colour, linetype = linetype, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
-    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = mapping, data = dplyr::semi_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
+    out[[length(out) + 1]] <- geom_line(mapping = without(mapping, "shape"), data = dplyr::anti_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
+    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = without(mapping, "linetype"), data = dplyr::semi_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
   }
   out
 }

@@ -1,5 +1,14 @@
 # fabletools (development version)
 
+## Improvements
+
+* Added support for visualising different point forecasts (say means and medians)
+  when only one forecast is to be plotted for each series.
+  
+## Bug fixes
+* Resolved issue with `autoplot(<fbl_ts>)` not identifying multiple point 
+  forecasts by `linetype`.
+
 # fabletools 0.3.3
 
 ## Improvements
