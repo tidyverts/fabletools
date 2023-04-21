@@ -21,7 +21,7 @@ some hierarchy."><meta name="robots" content="noindex"><!-- mathjax --><script s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.2.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.3.9000</span>
       </span>
     </div>
 
@@ -85,12 +85,12 @@ some hierarchy.</p>
 
 
 <dt>...</dt>
-<dd><p>&lt;<code><a href="https://dplyr.tidyverse.org/reference/dplyr_data_masking.html" class="external-link">data-masking</a></code>&gt; Name-value pairs of summary
-functions. The name will be the name of the variable in the result.</p>
+<dd><p>&lt;<code><a href="https://rlang.r-lib.org/reference/args_data_masking.html" class="external-link">data-masking</a></code>&gt; Name-value pairs of
+summary functions. The name will be the name of the variable in the result.</p>
 <p>The value can be:</p><ul><li><p>A vector of length 1, e.g. <code>min(x)</code>, <code><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n()</a></code>, or <code>sum(is.na(y))</code>.</p></li>
-<li><p>A vector of length <code>n</code>, e.g. <code><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile()</a></code>.</p></li>
 <li><p>A data frame, to add multiple columns from a single expression.</p></li>
-</ul></dd>
+</ul><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Returning values with size 0 or &gt;1 was
+deprecated as of 1.1.0. Please use <code><a href="https://dplyr.tidyverse.org/reference/reframe.html" class="external-link">reframe()</a></code> for this instead.</p></dd>
 
 </dl></div>
     <div id="details">
@@ -124,7 +124,7 @@ similar way to how <code>[dplyr::summarise()]</code> is used.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 1999 Q4 <span style="color: #949494;">&lt;aggregated&gt;</span> <span style="color: #949494;">&lt;aggregated&gt;</span> <span style="color: #949494;">&lt;aggregated&gt;</span> <span style="text-decoration: underline;">20</span>028.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 2000 Q1 <span style="color: #949494;">&lt;aggregated&gt;</span> <span style="color: #949494;">&lt;aggregated&gt;</span> <span style="color: #949494;">&lt;aggregated&gt;</span> <span style="text-decoration: underline;">22</span>339.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 2000 Q2 <span style="color: #949494;">&lt;aggregated&gt;</span> <span style="color: #949494;">&lt;aggregated&gt;</span> <span style="color: #949494;">&lt;aggregated&gt;</span> <span style="text-decoration: underline;">19</span>941.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 33,990 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 33,990 more rows</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -140,7 +140,7 @@ similar way to how <code>[dplyr::summarise()]</code> is used.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

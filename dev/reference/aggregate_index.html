@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.2.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.3.9000</span>
       </span>
     </div>
 
@@ -79,12 +79,12 @@ specified in several ways (see details).</p></dd>
 
 
 <dt>...</dt>
-<dd><p>&lt;<code><a href="https://dplyr.tidyverse.org/reference/dplyr_data_masking.html" class="external-link">data-masking</a></code>&gt; Name-value pairs of summary
-functions. The name will be the name of the variable in the result.</p>
+<dd><p>&lt;<code><a href="https://rlang.r-lib.org/reference/args_data_masking.html" class="external-link">data-masking</a></code>&gt; Name-value pairs of
+summary functions. The name will be the name of the variable in the result.</p>
 <p>The value can be:</p><ul><li><p>A vector of length 1, e.g. <code>min(x)</code>, <code><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n()</a></code>, or <code>sum(is.na(y))</code>.</p></li>
-<li><p>A vector of length <code>n</code>, e.g. <code><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile()</a></code>.</p></li>
 <li><p>A data frame, to add multiple columns from a single expression.</p></li>
-</ul></dd>
+</ul><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Returning values with size 0 or &gt;1 was
+deprecated as of 1.1.0. Please use <code><a href="https://dplyr.tidyverse.org/reference/reframe.html" class="external-link">reframe()</a></code> for this instead.</p></dd>
 
 
 <dt>.offset</dt>
@@ -130,7 +130,7 @@ and a space, or followed by "s".</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 2015-02-21 <span style="text-decoration: underline;">530</span>409</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 2015-02-28 <span style="text-decoration: underline;">444</span>666</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 2015-03-07 <span style="text-decoration: underline;">614</span>122</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 94 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 94 more rows</span></span>
 </code></pre></div>
     </div>
   </div>
@@ -145,7 +145,7 @@ and a space, or followed by "s".</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

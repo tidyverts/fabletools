@@ -18,7 +18,7 @@ in accordance with its key structure."><meta name="robots" content="noindex"><!-
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.2.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.3.9000</span>
       </span>
     </div>
 
@@ -91,7 +91,7 @@ in accordance with its key structure.</p>
 <span class="r-in"><span><span class="va">lung_deaths_agg</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="model.html">model</a></span><span class="op">(</span>lm <span class="op">=</span> <span class="fu"><a href="https://fable.tidyverts.org/reference/TSLM.html" class="external-link">TSLM</a></span><span class="op">(</span><span class="va">value</span> <span class="op">~</span> <span class="fu">trend</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">season</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">reconcile</span><span class="op">(</span>lm <span class="op">=</span> <span class="fu"><a href="min_trace.html">min_trace</a></span><span class="op">(</span><span class="va">lm</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
-<span class="r-in"><span>  <span class="fu"><a href="forecast.html">forecast</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A fable: 72 x 5 [1M]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:     key, .model [3]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    key     .model    index        value .mean</span>
@@ -106,7 +106,7 @@ in accordance with its key structure.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> fdeaths lm     1980 Aug N(335, 5606)  335.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> fdeaths lm     1980 Sep N(340, 5606)  340.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> fdeaths lm     1980 Oct N(413, 5606)  413.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 62 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 62 more rows</span></span>
 </code></pre></div>
     </div>
   </div>
@@ -121,7 +121,7 @@ in accordance with its key structure.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

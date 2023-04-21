@@ -20,7 +20,7 @@ useful to focus on the more recent observations."><meta name="robots" content="n
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.2.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.3.9000</span>
       </span>
     </div>
 
@@ -102,7 +102,7 @@ useful to focus on the more recent observations.</p>
 
 
 <dt>...</dt>
-<dd><p>Further arguments passed used to specify fixed aesthetics for the forecasts such as <code>colour = "red"</code> or <code>size = 3</code>.</p></dd>
+<dd><p>Further arguments passed used to specify fixed aesthetics for the forecasts such as <code>colour = "red"</code> or <code>linewidth = 3</code>.</p></dd>
 
 
 <dt>point_forecast</dt>
@@ -117,7 +117,7 @@ useful to focus on the more recent observations.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="va">aus_production</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="model.html">model</a></span><span class="op">(</span>ets <span class="op">=</span> <span class="fu"><a href="https://fable.tidyverts.org/reference/ETS.html" class="external-link">ETS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">Beer</span><span class="op">)</span> <span class="op">~</span> <span class="fu">error</span><span class="op">(</span><span class="st">"M"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">trend</span><span class="op">(</span><span class="st">"Ad"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">season</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
-<span class="r-in"><span>  <span class="fu"><a href="forecast.html">forecast</a></span><span class="op">(</span>h <span class="op">=</span> <span class="st">"3 years"</span><span class="op">)</span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span>h <span class="op">=</span> <span class="st">"3 years"</span><span class="op">)</span> </span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">fc</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">aus_production</span><span class="op">)</span></span></span>
@@ -140,7 +140,7 @@ useful to focus on the more recent observations.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
