@@ -48,7 +48,8 @@ Imports:
     vctrs (>= 0.2.2),
     distributional (>= 0.3.0.9000),
     progressr,
-    lifecycle
+    lifecycle,
+    tidygraph
 Suggests:
     covr,
     crayon,

@@ -3,12 +3,14 @@
   register_s3_method("pillar", "type_sum", "mdl_ts")
   register_s3_method("pillar", "type_sum", "lst_mdl")
   register_s3_method("pillar", "type_sum", "fbl_ts")
+  register_s3_method("tibble", "type_sum", "str_tbl_ts")
   
   register_s3_method("pillar", "pillar_shaft", "agg_vec")
   
   register_s3_method("tibble", "tbl_sum", "dcmp_ts")
   register_s3_method("tibble", "tbl_sum", "mdl_df")
   register_s3_method("tibble", "tbl_sum", "fbl_ts")
+  register_s3_method("tibble", "tbl_sum", "str_tbl_ts")
   
   register_s3_method("ggplot2", "scale_type", "agg_vec")
   

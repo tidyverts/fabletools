@@ -28,6 +28,59 @@ aggregate_key <- function(.data, .spec, ...){
   UseMethod("aggregate_key")
 }
 
+compute_graph <- function(object) {
+  kd <- key_data(object)
+  # Rows ordering is unimportant for now
+  kd$.rows <- as.list(vctrs::vec_seq_along(kd))
+  
+  kv <- names(kd)[-ncol(kd)]
+  agg_shadow <- as_tibble(lapply(kd[kv], is_aggregated))
+  grp <- as_tibble(vctrs::vec_group_loc(agg_shadow))
+  num_agg <- rowSums(grp$key)
+  # Initialise comparison leafs with known/guaranteed leafs
+  x_leaf <- kd[vctrs::vec_c(!!!grp$loc[which(num_agg == min(num_agg))]),]
+  
+  # Sort by disaggregation to identify aggregated leafs in order
+  grp <- grp[order(num_agg),]
+  
+  grp$match <- lapply(unname(split(grp, seq_len(nrow(grp)))), function(level){
+    disagg_col <- which(!vctrs::vec_c(!!!level$key))
+    agg_idx <- level[["loc"]][[1]]
+    pos <- vctrs::vec_match(x_leaf[disagg_col], kd[agg_idx, disagg_col])
+    pos <- vctrs::vec_group_loc(pos)
+    pos <- pos[!is.na(pos$key),]
+    
+    # Add non-matches as leaf nodes
+    agg_leaf <- setdiff(seq_along(agg_idx), pos$key)
+    if(!vctrs::vec_is_empty(agg_leaf)){
+      pos <- vctrs::vec_rbind(
+        pos,
+        structure(list(key = agg_leaf, loc = as.list(seq_along(agg_leaf) + nrow(x_leaf))), 
+                  class = "data.frame", row.names = agg_leaf)
+      )
+      x_leaf <<- vctrs::vec_rbind(
+        x_leaf, 
+        kd[agg_idx[agg_leaf],]
+      )
+    }
+    pos$loc[order(pos$key)]
+  })
+  
+  kv_format <- expr(paste(!!!syms(kv), sep = ":"))
+  
+  # Retain row order
+  idx <- order(pos <- vctrs::vec_c(!!!grp$loc))
+  kd$.rows <- lapply(vctrs::vec_c(!!!grp$match), function(i) pos[i])[idx]
+  
+  nodes <- transmute(kd, name = !!kv_format)
+  edges <- kd |> 
+    mutate(to = dplyr::row_number()) |> 
+    filter(lengths(.rows) > 1) |> 
+    tidyr::unchop(.rows) |> 
+    transmute(from = .rows, to, relationship = !!kv_format)
+  tidygraph::tbl_graph(nodes, edges)
+}
+
 #' @export
 aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){#, dev = FALSE){
   .spec <- enexpr(.spec)
@@ -80,9 +133,12 @@ aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){#, dev = FALSE){
   .data <- ungroup(.data)
   
   # Return tsibble
-  build_tsibble_meta(.data, key_data = key_dt, index = idx, 
-                     index2 = as_string(idx), ordered = TRUE,
-                     interval = intvl)
+  .data <- build_tsibble_meta(
+    .data, key_data = key_dt, index = idx, 
+    index2 = as_string(idx), ordered = TRUE,
+    interval = intvl
+  )
+  build_coherent_tsibble(.data, structure = compute_graph(.data))
 }
 
 parse_agg_spec <- function(expr){
