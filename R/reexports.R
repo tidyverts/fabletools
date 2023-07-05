@@ -17,6 +17,10 @@ ggplot2::autoplot
 #' @export
 ggplot2::autolayer
 
+#' @importFrom generics accuracy
+#' @export
+generics::accuracy
+
 #' @importFrom generics equation
 #' @export
 generics::equation

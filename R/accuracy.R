@@ -413,19 +413,11 @@ skill_score <- function(measure) {
 #' used to train the model.
 #' 
 #' @param object A model or forecast object
+#' @param measures A list of accuracy measure functions to compute (such as [`point_accuracy_measures`], [`interval_accuracy_measures`], or [`distribution_accuracy_measures`])
 #' @param ... Additional arguments to be passed to measures that use it.
 #' 
 #' @seealso 
 #' [Evaluating forecast accuracy](https://otexts.com/fpp3/accuracy.html)
-#' 
-#' @export
-accuracy <- function(object, ...){
-  UseMethod("accuracy")
-}
-
-#' @rdname accuracy
-#' 
-#' @param measures A list of accuracy measure functions to compute (such as [`point_accuracy_measures`], [`interval_accuracy_measures`], or [`distribution_accuracy_measures`])
 #' 
 #' @examplesIf requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)
 #' library(fable)
@@ -456,6 +448,7 @@ accuracy <- function(object, ...){
 #'     measures = list(interval_accuracy_measures, distribution_accuracy_measures)
 #'   )
 #' 
+#' @rdname accuracy
 #' @export
 accuracy.mdl_df <- function(object, measures = point_accuracy_measures, ...){
   if(is_tsibble(measures)){
@@ -468,6 +461,7 @@ Hint: A tsibble of future values is only required when computing accuracy of a f
     unnest_tbl("fit")
 }
 
+#' @rdname accuracy
 #' @export
 accuracy.mdl_ts <- function(object, measures = point_accuracy_measures, ...){
   dots <- dots_list(...)
