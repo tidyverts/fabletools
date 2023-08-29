@@ -91,7 +91,7 @@ forecast.lst_mint_mdl <- function(object, key_data,
   }
   
   # Construct S matrix - ??GA: have moved this here as I need it for Structural scaling
-  agg_data <- build_key_data_smat(key_data)
+  agg_data <- coherence_constraints(key_data)
   
   n <- nrow(res)
   covm <- crossprod(stats::na.omit(res)) / n
@@ -131,23 +131,25 @@ forecast.lst_mint_mdl <- function(object, key_data,
   }
   
   # Reconciliation matrices
-  if(sparse){ 
-    row_btm <- agg_data$leaf
-    row_agg <- seq_len(nrow(key_data))[-row_btm]
-    S <- Matrix::sparseMatrix(
-      i = rep(seq_along(agg_data$agg), lengths(agg_data$agg)),
-      j = vec_c(!!!agg_data$agg),
-      x = rep(1, sum(lengths(agg_data$agg))))
-    J <- Matrix::sparseMatrix(i = S[row_btm,,drop = FALSE]@i+1, j = row_btm, x = 1L, 
-                              dims = rev(dim(S)))
-    U <- cbind(
-      Matrix::Diagonal(diff(dim(J))),
-      -S[row_agg,,drop = FALSE]
-    )
-    U <- U[, order(c(row_agg, row_btm)), drop = FALSE]
+  if(TRUE){ 
+    # row_btm <- agg_data$leaf
+    # row_agg <- seq_len(nrow(key_data))[-row_btm]
+    # S <- Matrix::sparseMatrix(
+    #   i = rep(seq_along(agg_data$agg), lengths(agg_data$agg)),
+    #   j = vec_c(!!!agg_data$agg),
+    #   x = rep(1, sum(lengths(agg_data$agg))))
+    # J <- Matrix::sparseMatrix(i = S[row_btm,,drop = FALSE]@i+1, j = row_btm, x = 1L, 
+    #                           dims = rev(dim(S)))
+    # U <- cbind(
+    #   Matrix::Diagonal(diff(dim(J))),
+    #   -S[row_agg,,drop = FALSE]
+    # )
+    U <- agg_data
+    # U <- U[, order(c(row_agg, row_btm)), drop = FALSE]
     Ut <- t(U)
     WUt <- W %*% Ut
-    P <- J - J %*% WUt %*% solve(U %*% WUt, U)
+    M <- diag(rep(1, ncol(U))) - WUt %*% solve(U %*% WUt, U)
+    return(reconcile_fbl_list(fc, S = NULL, P = NULL, W = W, point_forecast = point_method, SP = M))
     # P <- J - J%*%W%*%t(U)%*%solve(U%*%W%*%t(U))%*%U
   }
   else {
@@ -582,16 +584,27 @@ build_key_data_smat <- function(x){
   grp <- as_tibble(vctrs::vec_group_loc(agg_shadow))
   num_agg <- rowSums(grp$key)
   # Initialise comparison leafs with known/guaranteed leafs
-  x_leaf <- x[vec_c(!!!grp$loc[which(num_agg == min(num_agg))]),]
+  x_leaf <- lapply(
+    grp$loc[which(num_agg == min(num_agg))],
+    function(i) x[i,,drop = FALSE]
+  )
   
   # Sort by disaggregation to identify aggregated leafs in order
   grp <- grp[order(num_agg),]
   
-  grp$match <- lapply(unname(split(grp, seq_len(nrow(grp)))), function(level){
+  grp <- lapply(unname(split(grp, seq_len(nrow(grp)))), function(level){
     disagg_col <- which(!vec_c(!!!level$key))
     agg_idx <- level[["loc"]][[1]]
-    pos <- vec_match(x_leaf[disagg_col], x[agg_idx, disagg_col])
-    pos <- vec_group_loc(pos)
+    pos <- lapply(x_leaf, function(leaf) vec_group_loc(vec_match(leaf[disagg_col], x[agg_idx, disagg_col])))
+    pos <- map2(
+      pos, c(0, map_int(x_leaf, nrow)[-length(x_leaf)]),
+      function(a,b) {
+        a$loc <- lapply(a$loc, function(loc) loc+b)
+        a
+      }
+    )
+    pos <- vec_rbind(!!!pos)
+    
     pos <- pos[!is.na(pos$key),]
     # Add non-matches as leaf nodes
     agg_leaf <- setdiff(seq_along(agg_idx), pos$key)
@@ -601,19 +614,89 @@ build_key_data_smat <- function(x){
         structure(list(key = agg_leaf, loc = as.list(seq_along(agg_leaf) + nrow(x_leaf))), 
                   class = "data.frame", row.names = agg_leaf)
       )
-      x_leaf <<- vec_rbind(
+      x_leaf <<- list(
         x_leaf, 
         x[agg_idx[agg_leaf],]
       )
     }
-    pos$loc[order(pos$key)]
+    level$match <- list(pos$loc[order(pos$key)])
+    level$loc <- list(level$loc[[1]][pos$key])
+    level
   })
+  grp <- vec_rbind(!!!grp)
   if(any(lengths(grp$loc) != lengths(grp$match))) {
     abort("An error has occurred when constructing the summation matrix.\nPlease report this bug here: https://github.com/tidyverts/fabletools/issues")
   }
-  idx_leaf <- vec_c(!!!x_leaf$.rows)
+  idx_leaf <- vec_c(!!!lapply(x_leaf, function(x) x$.rows))
   x$.rows[unlist(x$.rows)[vec_c(!!!grp$loc)]] <- vec_c(!!!grp$match)
   return(list(agg = x$.rows, leaf = idx_leaf))
+  # out <- matrix(0L, nrow = nrow(x), ncol = length(idx_leaf))
+  # out[nrow(x)*(vec_c(!!!x$.rows)-1) + rep(seq_along(x$.rows), lengths(x$.rows))] <- 1L
+  # out
+}
+
+
+coherence_constraints <- function(kd){
+  kv <- names(kd)[-ncol(kd)]
+  agg_shadow <- as_tibble(map(kd[kv], is_aggregated))
+  grp <- as_tibble(vctrs::vec_group_loc(agg_shadow))
+  num_agg <- rowSums(grp$key)
+  # Initialise comparison leafs with known/guaranteed leafs
+  x_leaf <- lapply(
+    grp$loc[which(num_agg == min(num_agg))],
+    function(i) kd[i,,drop = FALSE]
+  )
+  
+  # Sort by disaggregation to identify aggregated leafs in order
+  grp <- grp[order(num_agg),]
+  
+  grp <- lapply(unname(split(grp, seq_len(nrow(grp)))), function(level){
+    disagg_col <- which(!vec_c(!!!level$key))
+    agg_idx <- level[["loc"]][[1]]
+    pos <- lapply(x_leaf, function(leaf) vec_group_loc(vec_match(leaf[disagg_col], kd[agg_idx, disagg_col])))
+    pos <- map2(
+      pos, cumsum(c(0, map_int(x_leaf, nrow)[-length(x_leaf)])),
+      function(a,b) {
+        a$loc <- lapply(a$loc, function(loc) loc+b)
+        a
+      }
+    )
+    pos <- vec_rbind(!!!pos)
+    
+    pos <- pos[!is.na(pos$key),]
+    # Add non-matches as leaf nodes
+    agg_leaf <- setdiff(seq_along(agg_idx), pos$key)
+    if(!is_empty(agg_leaf)){
+      pos <- vec_rbind(
+        pos,
+        structure(list(key = agg_leaf, loc = as.list(seq_along(agg_leaf) + nrow(x_leaf))), 
+                  class = "data.frame", row.names = agg_leaf)
+      )
+      x_leaf <<- list(
+        x_leaf, 
+        kd[agg_idx[agg_leaf],]
+      )
+    }
+    level$match <- list(pos$loc[order(pos$key)])
+    level$loc <- list(level$loc[[1]][pos$key])
+    level
+  })
+  grp <- vec_rbind(!!!grp)
+  if(any(lengths(grp$loc) != lengths(grp$match))) {
+    abort("An error has occurred when constructing the summation matrix.\nPlease report this bug here: https://github.com/tidyverts/fabletools/issues")
+  }
+  constraints <- unnest(grp, all_of(c("loc", "match"))) |> 
+    rowwise() |> 
+    filter(!identical(loc, as.integer(match)))
+  cmat <- matrix(0, nrow = nrow(constraints), ncol = nrow(kd))
+  for(i in seq_len(nrow(constraints))){
+    cmat[i,constraints$loc[i]] <- -1
+    cmat[i,constraints$match[[i]]] <- 1
+  }
+  cmat
+  # idx_leaf <- vec_c(!!!lapply(x_leaf, function(kd) kd$.rows))
+  # kd$.rows[unlist(kd$.rows)[vec_c(!!!grp$loc)]] <- vec_c(!!!grp$match)
+  # return(list(agg = kd$.rows, leaf = idx_leaf))
   # out <- matrix(0L, nrow = nrow(x), ncol = length(idx_leaf))
   # out[nrow(x)*(vec_c(!!!x$.rows)-1) + rep(seq_along(x$.rows), lengths(x$.rows))] <- 1L
   # out
