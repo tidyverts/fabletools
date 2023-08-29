@@ -654,50 +654,57 @@ coherence_constraints <- function(kd){
     disagg_col <- which(!vec_c(!!!level$key))
     agg_idx <- level[["loc"]][[1]]
     pos <- lapply(x_leaf, function(leaf) vec_group_loc(vec_match(leaf[disagg_col], kd[agg_idx, disagg_col])))
-    pos <- map2(
-      pos, cumsum(c(0, map_int(x_leaf, nrow)[-length(x_leaf)])),
-      function(a,b) {
-        a$loc <- lapply(a$loc, function(loc) loc+b)
-        a
-      }
+    
+    pos <- .mapply(
+      function(leaf, pos) {
+        pos$key <- unlist(level$loc)[pos$key]
+        pos$loc <- relist(unlist(leaf$.rows)[unlist(pos$loc)], pos$loc)
+        pos
+      }, 
+      dots = list(x_leaf, pos), MoreArgs = NULL
     )
+    
+    # pos <- map2(
+    #   pos, cumsum(c(0, map_int(x_leaf, nrow)[-length(x_leaf)])),
+    #   function(a,b) {
+    #     a$loc <- lapply(a$loc, function(loc) loc+b)
+    #     a
+    #   }
+    # )
     pos <- vec_rbind(!!!pos)
     
     pos <- pos[!is.na(pos$key),]
     # Add non-matches as leaf nodes
-    agg_leaf <- setdiff(seq_along(agg_idx), pos$key)
+    agg_leaf <- setdiff(unlist(level$loc), pos$key)
     if(!is_empty(agg_leaf)){
-      pos <- vec_rbind(
-        pos,
-        structure(list(key = agg_leaf, loc = as.list(seq_along(agg_leaf) + nrow(x_leaf))), 
-                  class = "data.frame", row.names = agg_leaf)
-      )
+      # pos <- vec_rbind(
+      #   pos,
+      #   structure(list(key = agg_leaf, loc = as.list(agg_leaf)), 
+      #             class = "data.frame", row.names = seq_along(agg_leaf))
+      # )
       x_leaf <<- list(
         x_leaf, 
-        kd[agg_idx[agg_leaf],]
+        kd[agg_leaf,]
       )
     }
-    level$match <- list(pos$loc[order(pos$key)])
-    level$loc <- list(level$loc[[1]][pos$key])
-    level
+    pos
   })
   grp <- vec_rbind(!!!grp)
   if(any(lengths(grp$loc) != lengths(grp$match))) {
     abort("An error has occurred when constructing the summation matrix.\nPlease report this bug here: https://github.com/tidyverts/fabletools/issues")
   }
-  constraints <- unnest(grp, all_of(c("loc", "match"))) |> 
-    rowwise() |> 
-    filter(!identical(loc, as.integer(match)))
+  leaf_loc <- unlist(vec_rbind(!!!x_leaf)$.rows)
+  
+  constraints <- grp[!(grp$key %in% leaf_loc),]
+  
   cmat <- matrix(0, nrow = nrow(constraints), ncol = nrow(kd))
   for(i in seq_len(nrow(constraints))){
-    cmat[i,constraints$loc[i]] <- -1
-    cmat[i,constraints$match[[i]]] <- 1
+    cmat[i,constraints$key[i]] <- -1
+    cmat[i,constraints$loc[[i]]] <- 1
   }
+  # cmat[9, c(4,8,12,16,20)] <- c(1,1,1,1,-1)
+  # cmat[10, c(17,18,19,20)] <- c(1,1,1,-1)
+  # cmat <- cmat[-8,]
+  # cmat[18,] <- c(rep(0, 12), rep(1, 3), rep(0, 4), -1)
   cmat
-  # idx_leaf <- vec_c(!!!lapply(x_leaf, function(kd) kd$.rows))
-  # kd$.rows[unlist(kd$.rows)[vec_c(!!!grp$loc)]] <- vec_c(!!!grp$match)
-  # return(list(agg = kd$.rows, leaf = idx_leaf))
-  # out <- matrix(0L, nrow = nrow(x), ncol = length(idx_leaf))
-  # out[nrow(x)*(vec_c(!!!x$.rows)-1) + rep(seq_along(x$.rows), lengths(x$.rows))] <- 1L
-  # out
 }
