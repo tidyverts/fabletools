@@ -682,9 +682,9 @@ coherence_constraints <- function(kd){
       #   structure(list(key = agg_leaf, loc = as.list(agg_leaf)), 
       #             class = "data.frame", row.names = seq_along(agg_leaf))
       # )
-      x_leaf <<- list(
+      x_leaf <<- c(
         x_leaf, 
-        kd[agg_leaf,]
+        list(kd[agg_leaf,])
       )
     }
     pos
