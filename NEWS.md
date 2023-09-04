@@ -1,5 +1,12 @@
 # fabletools (development version)
 
+## New features
+
+* The formula parser now identifies and stores length 1 values in the 
+  transformation environment. This simplifies common tasks like automatic
+  box-cox parameters for each series, which can now be done with
+  `fable::ARIMA(box_cox(y, feasts::guerrero(y)))`.
+
 ## Improvements
 
 * Added support for visualising different point forecasts (say means and medians)
