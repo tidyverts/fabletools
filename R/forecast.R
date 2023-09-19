@@ -14,13 +14,6 @@
 #' extract the numerical upper and lower bounds you can use [`unpack_hilo()`].
 #' 
 #' @param object The time series model used to produce the forecasts
-#' 
-#' @rdname forecast
-#' @export
-forecast <- function(object, ...){
-  UseMethod("forecast")
-}
-
 #' @param new_data A `tsibble` containing future information used to forecast.
 #' @param h The forecast horison (can be used instead of `new_data` for regular
 #' time series with no exogenous regressors).
@@ -191,10 +184,27 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
   
   # Back-transform forecast distributions
   bt <- map(object$transformation, function(x){
-    bt <- invert_transformation(x)
-    env <- new_environment(new_data, get_env(bt))
-    req_vars <- setdiff(all.vars(body(bt)), names(formals(bt)))
-    exists_vars <- map_lgl(req_vars, exists, env)
+    trans <- x%@%"inverse"
+    inv_trans <- `attributes<-`(x, NULL)
+    req_vars <- setdiff(all.vars(body(trans)), names(formals(trans)))
+    if(any(req_vars %in% names(new_data))) {
+      trans <- lapply(
+        vec_chop(new_data[req_vars]),
+        function(transform_data) {
+          set_env(trans, new_environment(transform_data, get_env(trans)))
+        }
+      )
+      attr(trans, "inverse") <- lapply(
+        vec_chop(new_data[req_vars]),
+        function(transform_data) {
+          set_env(inv_trans, new_environment(transform_data, get_env(inv_trans)))
+        }
+      )
+      trans
+    } else {
+      structure(list(trans), inverse = list(inv_trans))
+    }
+#     exists_vars <- map_lgl(req_vars, exists, env)
 #     if(any(!exists_vars)){
 #       bt <- custom_error(bt, sprintf(
 # "Unable to find all required variables to back-transform the forecasts (missing %s).
@@ -202,18 +212,22 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
 #         paste0("`", req_vars[!exists_vars], "`", collapse = ", ")
 #       ))
 #     }
-    set_env(bt, env)
   })
   
-  is_transformed <- vapply(bt, function(x) !is_symbol(body(x)), logical(1L))
+  is_transformed <- vapply(bt, function(x) !is_symbol(body(x[[1]])), logical(1L))
   if(length(bt) > 1) {
     if(any(is_transformed)){
       abort("Transformations of multivariate forecasts are not yet supported")
     }
-  } else {
-    if(is_transformed){
+  }
+  if(any(is_transformed)) {
+    if (identical(unique(dist_types(fc)), "dist_sample")) {
+      fc <- distributional::dist_sample(
+        .mapply(exec, list(bt[[1]], distributional::parameters(fc)$x), MoreArgs = NULL)
+      )
+    } else {
       bt <- bt[[1]]
-      fc <- distributional::dist_transformed(fc, bt, bt%@%"inverse")
+      fc <- distributional::dist_transformed(fc, `attributes<-`(bt, NULL), bt%@%"inverse")
     }
   }
   
@@ -237,7 +251,8 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
 
 #' Construct a new set of forecasts
 #' 
-#' \lifecycle{deprecated}
+#' @description 
+#' `r lifecycle::badge('deprecated')`
 #' 
 #' This function is deprecated. `forecast()` methods for a model should return
 #' a vector of distributions using the distributional package.
@@ -248,6 +263,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
 #' @param sd The standard deviation of the transformed forecasts
 #' @param dist The forecast distribution (typically produced using `new_fcdist`)
 #' 
+#' @keywords internal
 #' @export
 construct_fc <- function(point, sd, dist){
   lifecycle::deprecate_stop("0.3.0", what = "fabletools::construct_fc()",

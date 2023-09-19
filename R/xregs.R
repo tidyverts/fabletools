@@ -123,6 +123,9 @@ fbl_fourier <- function(x, period, K, origin = NULL) {
 common_xregs <- list(
   trend = function(knots = NULL, origin = NULL) {
     if (is.null(origin)) {
+      if (is.null(self$origin)) {
+        self$origin <- self$data[[index_var(self$data)]][[1]]
+      }
       origin <- self$origin
     }
     as.matrix(fabletools:::fbl_trend(self$data, knots, origin))
@@ -133,6 +136,9 @@ common_xregs <- list(
   },
   fourier = function(period = NULL, K, origin = NULL) {
     if (is.null(origin)) {
+      if (is.null(self$origin)) {
+        self$origin <- self$data[[index_var(self$data)]][[1]]
+      }
       origin <- self$origin
     }
     as.matrix(fabletools:::fbl_fourier(self$data, period, K, origin))

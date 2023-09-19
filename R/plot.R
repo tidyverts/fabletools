@@ -6,7 +6,7 @@
 #' 
 #' @param object A tsibble.
 #' @param .vars A bare expression containing data you wish to plot. Multiple variables can be plotted using [`ggplot2::vars()`].
-#' @param ... Further arguments passed to [`ggplot2::geom_line()`], which can be used to specify fixed aesthetics such as `colour = "red"` or `size = 3`. 
+#' @param ... Further arguments passed to [`ggplot2::geom_line()`], which can be used to specify fixed aesthetics such as `colour = "red"` or `linewidth = 3`. 
 #' 
 #' @examplesIf requireNamespace("fable", quietly = TRUE)
 #' library(fable)
@@ -122,12 +122,12 @@ autolayer.tbl_ts <- function(object, .vars = NULL, ...){
 
 #' @importFrom ggplot2 fortify
 #' @export
-fortify.fbl_ts <- function(object, level = c(80, 95)){
+fortify.fbl_ts <- function(model, data = NULL, level = c(80, 95), ...){
   if(deparse(match.call()) != "fortify.fbl_ts(object = data)"){
     warn("The output of `fortify(<fable>)` has changed to better suit usage with the ggdist package.
 If you're using it to extract intervals, consider using `hilo()` to compute intervals, and `unpack_hilo()` to obtain values.")
   }
-  return(as_tibble(object))
+  return(as_tibble(model))
 }
 
 #' Plot a set of forecasts
@@ -141,7 +141,7 @@ If you're using it to extract intervals, consider using `hilo()` to compute inte
 #' @param data A tsibble with the same key structure as the fable.
 #' @param level The confidence level(s) for the plotted intervals.
 #' @param show_gap Setting this to `FALSE` will connect the most recent value in `data` with the forecasts.
-#' @param ... Further arguments passed used to specify fixed aesthetics for the forecasts such as `colour = "red"` or `size = 3`.
+#' @param ... Further arguments passed used to specify fixed aesthetics for the forecasts such as `colour = "red"` or `linewidth = 3`.
 #' @param point_forecast The point forecast measure to be displayed in the plot.
 #' 
 #' @examplesIf requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)
@@ -347,19 +347,20 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   
   mapping$y <- sym(dist_var)
   if(length(point_forecast) > 1){
-    mapping$linetype <- sym("Point forecast")
+    mapping$linetype <- mapping$shape <- sym("Point forecast")
     grp <- c(grp, mapping$linetype)
     mapping$group <- expr(interaction(!!!map(grp, function(x) expr(format(!!x))), sep = "/"))
   }
+  without <- function(x, el) x[setdiff(names(x), el)]
   object <- as_tibble(object)
   if(!is.null(col)){
     mapping$colour <- col
-    out[[length(out) + 1]] <- geom_line(mapping = mapping, data = dplyr::anti_join(object, single_row, by = key_vars), linetype = linetype, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
-    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = mapping, data = dplyr::semi_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
+    out[[length(out) + 1]] <- geom_line(mapping = without(mapping, "shape"), data = dplyr::anti_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
+    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = without(mapping, "linetype"), data = dplyr::semi_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
     out[[length(out) + 1]] <- ggplot2::labs(colour = col_nm)
   } else {
-    out[[length(out) + 1]] <- geom_line(mapping = mapping, data = dplyr::anti_join(object, single_row, by = key_vars), color = colour, linetype = linetype, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
-    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = mapping, data = dplyr::semi_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
+    out[[length(out) + 1]] <- geom_line(mapping = without(mapping, "shape"), data = dplyr::anti_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
+    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = without(mapping, "linetype"), data = dplyr::semi_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
   }
   out
 }
@@ -463,7 +464,7 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE,
     p <- p + geom_rect(data = range_data,
       aes(ymin = !!sym("ymin"), ymax = !!sym("ymax"),
           xmin = !!sym("xmin"), xmax = !!sym("xmax")),
-      fill = "gray75", colour = "black", size = 1 / 3
+      fill = "gray75", colour = "black", linewidth = 1 / 3
     )
   }
   

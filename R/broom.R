@@ -24,7 +24,7 @@ augment.mdl_df <- function(x, ...){
   kv <- key_vars(x)
   x <- mutate(as_tibble(x), 
               dplyr::across(all_of(mbl_vars), function(x) lapply(x, augment, ...)))
-  x <- pivot_longer(x, mbl_vars, names_to = ".model", values_to = ".aug")
+  x <- pivot_longer(x, all_of(mbl_vars), names_to = ".model", values_to = ".aug")
   unnest_tsbl(x, ".aug", parent_key = c(kv, ".model"))
 }
 

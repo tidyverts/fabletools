@@ -2,7 +2,7 @@
 % Please edit documentation in R/specials.R
 \name{special_xreg}
 \alias{special_xreg}
-\title{Special for producing a model matrix of exogenous regressors}
+\title{Helper special for producing a model matrix of exogenous regressors}
 \usage{
 special_xreg(...)
 }
@@ -10,7 +10,7 @@ special_xreg(...)
 \item{...}{Arguments for \code{fable_xreg_matrix} (see Details)}
 }
 \description{
-Special for producing a model matrix of exogenous regressors
+Helper special for producing a model matrix of exogenous regressors
 }
 \details{
 Currently the \code{fable_xreg_matrix} helper supports a single argument named

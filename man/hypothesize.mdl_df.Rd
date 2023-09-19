@@ -2,14 +2,19 @@
 % Please edit documentation in R/hypothesise.R
 \name{hypothesize.mdl_df}
 \alias{hypothesize.mdl_df}
+\alias{hypothesize.mdl_ts}
 \title{Run a hypothesis test from a mable}
 \usage{
 \method{hypothesize}{mdl_df}(x, ...)
+
+\method{hypothesize}{mdl_ts}(x, tests = list(), ...)
 }
 \arguments{
 \item{x}{A mable.}
 
 \item{...}{Arguments for model methods.}
+
+\item{tests}{a list of test functions to perform on the model}
 }
 \description{
 This function will return the results of a hypothesis test for each model in

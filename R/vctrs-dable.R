@@ -8,6 +8,7 @@
 NULL
 
 #' @rdname dable-vctrs
+#' @method vec_ptype2 dcmp_ts
 #' @export
 vec_ptype2.dcmp_ts <- function(x, y, ...) {
   UseMethod("vec_ptype2.dcmp_ts", y)
@@ -61,6 +62,7 @@ dable_ptype2 <- function(x, y, ...) {
 }
 
 #' @rdname dable-vctrs
+#' @method vec_cast dcmp_ts
 #' @export
 vec_cast.dcmp_ts <- function(x, to, ...) {
   UseMethod("vec_cast.dcmp_ts")

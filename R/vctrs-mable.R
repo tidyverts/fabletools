@@ -8,6 +8,7 @@
 NULL
 
 #' @rdname mable-vctrs
+#' @method vec_ptype2 mdl_df
 #' @export
 vec_ptype2.mdl_df <- function(x, y, ...) {
   UseMethod("vec_ptype2.mdl_df", y)
@@ -49,6 +50,7 @@ mable_ptype2 <- function(x, y, ...) {
 }
 
 #' @rdname mable-vctrs
+#' @method vec_cast mdl_df
 #' @export
 vec_cast.mdl_df <- function(x, to, ...) {
   UseMethod("vec_cast.mdl_df")

@@ -18,7 +18,7 @@ new_specials <- function(..., .required_specials = NULL, .xreg_specials = NULL){
             class="fable_specials")
 }
 
-#' Special for producing a model matrix of exogenous regressors
+#' Helper special for producing a model matrix of exogenous regressors
 #' 
 #' @param ... Arguments for `fable_xreg_matrix` (see Details)
 #' 
@@ -42,13 +42,19 @@ special_xreg <- function(...) {
 }
 
 fable_xreg_matrix <- function(..., .data, default_intercept = TRUE) {
-  # Remove default intercept if needed.
   dots <- enexprs(...)
+  # Remove default intercept if needed.
   if(!default_intercept) {
     constants <- map_lgl(dots, inherits, "numeric")
     constant_specified <- any(map_lgl(dots[constants], `%in%`, c(-1, 0, 1)))
     # If the constant isn't specified, remove it.
     if(!constant_specified) dots <- c(dots, list(0))
+  }
+  # Remove index and keys from .
+  is_dot <- vapply(dots, function(x) expr_text(x) == ".", logical(1L))
+  if(any(is_dot)) {
+    new_dot <- reduce(syms(c(".", index_var(.data), key_vars(.data))), call2, .fn = "-")
+    dots <- c(new_dot, dots[!is_dot])
   }
   
   # Combine `...` into a model formula, then evaluate terms() to substitute `.`

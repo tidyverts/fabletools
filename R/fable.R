@@ -229,10 +229,14 @@ group_by.fbl_ts <- function(.data, ...) {
 group_by.grouped_fbl <- group_by.fbl_ts
 
 #' @export
-ungroup.fbl_ts <- group_by.fbl_ts
+ungroup.fbl_ts <- function(x, ...) {
+  build_fable(NextMethod(), response_vars(x), distribution_var(x))
+}
 
 #' @export
-ungroup.grouped_fbl <- group_by.fbl_ts
+ungroup.grouped_fbl <- function(x, ...) {
+  build_fable(NextMethod(), response_vars(x), distribution_var(x))
+}
 
 #' @export
 fill_gaps.fbl_ts <- function(.data, ..., .full = FALSE) {

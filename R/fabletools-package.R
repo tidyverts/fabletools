@@ -4,6 +4,7 @@
 
 globalVariables(".")
 
+## usethis namespace: start
 #' @import rlang
 #' @import vctrs
 #' @import tsibble
@@ -13,5 +14,6 @@ globalVariables(".")
 #' @importFrom dplyr bind_rows bind_cols
 #' @importFrom tidyr nest unnest gather spread
 #' @importFrom tidyselect all_of
-#' @importFrom lifecycle deprecate_warn
+#' @importFrom lifecycle deprecate_warn deprecated
+## usethis namespace: end
 NULL

@@ -17,6 +17,10 @@ ggplot2::autoplot
 #' @export
 ggplot2::autolayer
 
+#' @importFrom generics accuracy
+#' @export
+generics::accuracy
+
 #' @importFrom generics equation
 #' @export
 generics::equation
@@ -52,6 +56,10 @@ generics::generate
 #' @importFrom generics refit
 #' @export
 generics::refit
+
+#' @importFrom generics forecast
+#' @export
+generics::forecast
 
 #' @importFrom distributional hilo
 #' @export

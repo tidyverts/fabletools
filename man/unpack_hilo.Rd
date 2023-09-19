@@ -15,20 +15,20 @@ unpack_hilo(data, cols, names_sep = "_", names_repair = "check_unique")
 as is. In \code{pack()}, inner names will come from the former outer names;
 in \code{unpack()}, the new outer names will come from the inner names.
 
-If a string, the inner and outer names will be used together. In \code{pack()},
-the names of the new outer columns will be formed by pasting together the
-outer and the inner column names, separated by \code{names_sep}. In \code{unpack()},
-the new inner names will have the outer names (+ \code{names_sep}) automatically
-stripped. This makes \code{names_sep} roughly symmetric between packing
-and unpacking.}
+If a string, the inner and outer names will be used together. In
+\code{unpack()}, the names of the new outer columns will be formed by pasting
+together the outer and the inner column names, separated by \code{names_sep}. In
+\code{pack()}, the new inner names will have the outer names + \code{names_sep}
+automatically stripped. This makes \code{names_sep} roughly symmetric between
+packing and unpacking.}
 
 \item{names_repair}{Used to check that output data frame has valid
 names. Must be one of the following options:
 \itemize{
-\item "minimal": no name repair or checks, beyond basic existence,
-\item "unique": make sure names are unique and not empty,
-\item "check_unique": (the default), no name repair, but check they are unique,
-\item "universal": make the names unique and syntactic
+\item \verb{"minimal}": no name repair or checks, beyond basic existence,
+\item \verb{"unique}": make sure names are unique and not empty,
+\item \verb{"check_unique}": (the default), no name repair, but check they are unique,
+\item \verb{"universal}": make the names unique and syntactic
 \item a function: apply custom name repair.
 \item \link[tidyr]{tidyr_legacy}: use the name repair from tidyr 0.8.
 \item a formula: a purrr-style anonymous function (see \code{\link[rlang:as_function]{rlang::as_function()}})
@@ -38,9 +38,17 @@ See \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}} for more details on 
 strategies used to enforce them.}
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}
+
+This function is superceded. It is recommended that you use the functionality
+from the \href{https://pkg.mitchelloharawild.com/distributional/}{distributional}
+package to extract elements from a \verb{<hilo>} object. For example, you can access
+the lower bound with \verb{<hilo>$lower}.
+
 Allows a hilo column to be unpacked into its component columns: "lower",
 "upper", and "level".
 }
 \seealso{
 \code{\link[tidyr:pack]{tidyr::unpack()}}
 }
+\keyword{internal}

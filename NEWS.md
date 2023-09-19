@@ -1,5 +1,32 @@
 # fabletools (development version)
 
+## Improvements
+
+* Added support for visualising different point forecasts (say means and medians)
+  when only one forecast is to be plotted for each series.
+  
+## Bug fixes
+* Resolved issue with `autoplot(<fbl_ts>)` not identifying multiple point 
+  forecasts by `linetype`.
+
+# fabletools 0.3.3
+
+## Improvements
+
+* Fixed handling of transformed distributions which accept a parameter from the
+  dataset.
+* `.` in a model formula for `xreg` implemented with `special_xreg()` will now
+  include all measured variables (excluding the index and key variables).
+* Improved handling of transformations with forecast sample distributions.
+* Added support for reconciling sample paths.
+* `accuracy(<fbl_ts>)` can now summarise accuracy over key variables. This is
+  done by specifying the accuracy `by` argument and not including some (or all)
+  of the fable's key variables (#341).
+* Like `forecast()`, `generate()` will now keep exogenous regressors in the
+  output table.
+* Re-export `generics::forecast()` for better compatibility with registering 
+  methods alongside other packages (#375).
+
 # fabletools 0.3.2
 
 ## New features
@@ -7,9 +34,6 @@
 * Added `hypothesize()` generic for running statistical tests on a trained model.
 * Added `combination_weighted()` function for producing a combination model with
   arbitrary weights.
-* `accuracy(<fbl_ts>)` can now summarise accuracy over key variables. This is
-  done by specifying the accuracy `by` argument and not including some (or all)
-  of the fable's key variables (#341).
 
 ## Improvements
 

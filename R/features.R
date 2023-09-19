@@ -1,14 +1,12 @@
 features_impl <- function(.tbl, .var, features, ...){
   dots <- dots_list(...)
   
-  if(is_function(features)){
+  if(is_function(features) || is_formula(features)){
     features <- list(features)
   }
   features <- map(squash(features), as_function)
   
-  if(is.null(dots$.period)){
-    dots$.period <- get_frequencies(NULL, .tbl, .auto = "smallest")
-  }
+  dots$.period <- get_frequencies(dots$.period, .tbl, .auto = "smallest")
   
   # Compute response
   key_dt <- key_data(.tbl)
@@ -325,6 +323,7 @@ rd_features_tag <- function(){
 #' 
 #' @seealso [features_by_tag]
 #' 
+#' @keywords internal
 #' @name features_by_pkg
 NULL
 
@@ -337,5 +336,6 @@ NULL
 #' 
 #' @seealso [features_by_pkg]
 #' 
+#' @keywords internal
 #' @name features_by_tag
 NULL

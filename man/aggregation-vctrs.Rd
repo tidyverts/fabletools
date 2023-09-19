@@ -15,7 +15,7 @@
 \alias{vec_proxy_compare.agg_vec}
 \title{Internal vctrs methods}
 \usage{
-vec_ptype2.agg_vec(x, y, ...)
+\method{vec_ptype2}{agg_vec}(x, y, ...)
 
 \method{vec_ptype2}{agg_vec.agg_vec}(x, y, ...)
 
@@ -27,7 +27,7 @@ vec_ptype2.agg_vec(x, y, ...)
 
 \method{vec_ptype_abbr}{agg_vec}(x, ...)
 
-vec_cast.agg_vec(x, to, ...)
+\method{vec_cast}{agg_vec}(x, to, ...)
 
 \method{vec_cast}{agg_vec.agg_vec}(x, to, ...)
 

@@ -6,9 +6,9 @@
 \alias{vec_cast.mdl_df}
 \title{Internal vctrs methods}
 \usage{
-vec_ptype2.mdl_df(x, y, ...)
+\method{vec_ptype2}{mdl_df}(x, y, ...)
 
-vec_cast.mdl_df(x, to, ...)
+\method{vec_cast}{mdl_df}(x, to, ...)
 }
 \description{
 These methods are the extensions that allow mable objects to

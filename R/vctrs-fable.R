@@ -8,6 +8,7 @@
 NULL
 
 #' @rdname fable-vctrs
+#' @method vec_ptype2 fbl_ts
 #' @export
 vec_ptype2.fbl_ts <- function(x, y, ...) {
   UseMethod("vec_ptype2.fbl_ts", y)
@@ -58,6 +59,7 @@ fable_ptype2 <- function(x, y, ...) {
 }
 
 #' @rdname fable-vctrs
+#' @method vec_cast fbl_ts
 #' @export
 vec_cast.fbl_ts <- function(x, to, ...) {
   UseMethod("vec_cast.fbl_ts")

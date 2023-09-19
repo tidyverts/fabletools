@@ -6,9 +6,9 @@
 \alias{vec_cast.fbl_ts}
 \title{Internal vctrs methods}
 \usage{
-vec_ptype2.fbl_ts(x, y, ...)
+\method{vec_ptype2}{fbl_ts}(x, y, ...)
 
-vec_cast.fbl_ts(x, to, ...)
+\method{vec_cast}{fbl_ts}(x, to, ...)
 }
 \description{
 These methods are the extensions that allow fable objects to

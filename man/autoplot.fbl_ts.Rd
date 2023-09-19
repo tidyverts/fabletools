@@ -25,7 +25,7 @@
 
 \item{show_gap}{Setting this to \code{FALSE} will connect the most recent value in \code{data} with the forecasts.}
 
-\item{...}{Further arguments passed used to specify fixed aesthetics for the forecasts such as \code{colour = "red"} or \code{size = 3}.}
+\item{...}{Further arguments passed used to specify fixed aesthetics for the forecasts such as \code{colour = "red"} or \code{linewidth = 3}.}
 
 \item{point_forecast}{The point forecast measure to be displayed in the plot.}
 }

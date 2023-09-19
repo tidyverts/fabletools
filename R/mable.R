@@ -164,7 +164,7 @@ select.mdl_df <- function (.data, ...){
 transmute.mdl_df <- function (.data, ...){
   nm <- names(enquos(..., .named = TRUE))
   res <- mutate(.data, ...)
-  select(res, !!nm)
+  select(res, all_of(nm))
 }
 
 #' @export
@@ -217,8 +217,8 @@ group_data.mdl_df <- function(.data){
 }
 
 #' @export
-key_data.mdl_df <- function(x){
-  x%@%"key"
+key_data.mdl_df <- function(.data){
+  .data%@%"key"
 }
 
 #' @export
