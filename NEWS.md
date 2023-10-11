@@ -15,6 +15,8 @@
 ## Bug fixes
 * Resolved issue with `autoplot(<fbl_ts>)` not identifying multiple point 
   forecasts by `linetype`.
+* Fix for indexing of bottom series in `top_down()` and `middle_out()`
+  reconciliation methods (#362, #364 @FedericoGarza)
 
 # fabletools 0.3.3
 
