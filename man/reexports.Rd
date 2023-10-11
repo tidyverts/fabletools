@@ -8,6 +8,7 @@
 \alias{vars}
 \alias{autoplot}
 \alias{autolayer}
+\alias{accuracy}
 \alias{equation}
 \alias{interpolate}
 \alias{components}
@@ -31,7 +32,7 @@ below to see their documentation.
 
   \item{dplyr}{\code{\link[dplyr:reexports]{\%>\%}}, \code{\link[dplyr]{vars}}}
 
-  \item{generics}{\code{\link[generics]{augment}}, \code{\link[generics]{components}}, \code{\link[generics]{equation}}, \code{\link[generics]{forecast}}, \code{\link[generics]{generate}}, \code{\link[generics]{glance}}, \code{\link[generics]{hypothesize}}, \code{\link[generics]{interpolate}}, \code{\link[generics]{refit}}, \code{\link[generics]{tidy}}}
+  \item{generics}{\code{\link[generics]{accuracy}}, \code{\link[generics]{augment}}, \code{\link[generics]{components}}, \code{\link[generics]{equation}}, \code{\link[generics]{forecast}}, \code{\link[generics]{generate}}, \code{\link[generics]{glance}}, \code{\link[generics]{hypothesize}}, \code{\link[generics]{interpolate}}, \code{\link[generics]{refit}}, \code{\link[generics]{tidy}}}
 
   \item{ggplot2}{\code{\link[ggplot2]{autolayer}}, \code{\link[ggplot2]{autoplot}}}
 
