@@ -67,7 +67,7 @@ reference:
   desc: >
     Functionality for evaluating model performance
   contents:
-    - accuracy
+    - accuracy.mdl_df
     - ME
     - MSE
     - RMSE
