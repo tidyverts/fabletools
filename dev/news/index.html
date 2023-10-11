@@ -60,6 +60,10 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="fabletools-development-version">fabletools (development version)<a class="anchor" aria-label="anchor" href="#fabletools-development-version"></a></h2>
 <div class="section level3">
+<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<ul><li>The formula parser now identifies and stores length 1 values in the transformation environment. This simplifies common tasks like automatic box-cox parameters for each series, which can now be done with <code>fable::ARIMA(box_cox(y, feasts::guerrero(y)))</code>.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="improvements-development-version">Improvements<a class="anchor" aria-label="anchor" href="#improvements-development-version"></a></h3>
 <ul><li>Added support for visualising different point forecasts (say means and medians) when only one forecast is to be plotted for each series.</li>
 </ul></div>
@@ -139,7 +143,7 @@
 <li>
 <code><a href="../reference/box_cox.html">box_cox()</a></code> and <code><a href="../reference/box_cox.html">inv_box_cox()</a></code> are now vectorised over the transformation parameter <code>lambda</code>.</li>
 <li>
-<code><a href="../reference/point_accuracy_measures.html">RMSSE()</a></code> accuracy measure is now included in default <code><a href="../reference/accuracy.html">accuracy()</a></code> measures.</li>
+<code><a href="../reference/point_accuracy_measures.html">RMSSE()</a></code> accuracy measure is now included in default <code><a href="https://generics.r-lib.org/reference/accuracy.html" class="external-link">accuracy()</a></code> measures.</li>
 <li>Specifying a different <code>response</code> variable in <code><a href="../reference/as-fable.html">as_fable()</a></code> will no longer error, it now sets the provided <code>response</code> value as the distribution’s new response.</li>
 <li>Minor vctrs support improvements.</li>
 </ul></div>
@@ -228,7 +232,7 @@
 <li>
 <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind()</a></code> methods are deprecated in favour of <code><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows()</a></code>
 </li>
-<li>The row order of wide to long mable operations (such as <code><a href="../reference/accuracy.html">accuracy()</a></code>) has changed (due to shift to <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer()</a></code> from <code><a href="https://tidyr.tidyverse.org/reference/gather.html" class="external-link">gather()</a></code>). Model column name values are now nested within key values, rather than key values nested in model name values.</li>
+<li>The row order of wide to long mable operations (such as <code><a href="https://generics.r-lib.org/reference/accuracy.html" class="external-link">accuracy()</a></code>) has changed (due to shift to <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer()</a></code> from <code><a href="https://tidyr.tidyverse.org/reference/gather.html" class="external-link">gather()</a></code>). Model column name values are now nested within key values, rather than key values nested in model name values.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-0-2-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-2-0"></a></h3>
@@ -342,7 +346,7 @@
 </ul></div>
 <div class="section level4">
 <h4 id="evaluation-0-1-0">Evaluation<a class="anchor" aria-label="anchor" href="#evaluation-0-1-0"></a></h4>
-<ul><li>Added <code><a href="../reference/accuracy.html">accuracy()</a></code>, which allows the accuracy of a model to be evaluated. This function can be used to summarise model performance on the training data (<code><a href="../reference/accuracy.html">accuracy.mdl_df()</a></code>, <code>accuracy.mdl_ts()</code>), or to evaluate the accuracy of forecasts over a test dataset (<code><a href="../reference/accuracy.html">accuracy.fbl_ts()</a></code>). Several accuracy measures are supported, including <code>point_accuracy_measures</code> (<code>ME</code>, <code>MSE</code>, <code>RMSE</code>, <code>MAE</code>, <code>MPE</code>, <code>MAPE</code>, <code>MASE</code>, <code>ACF1</code>), <code>interval_accuracy_measures</code> (<code>winkler_score</code>) and <code>distribution_accuracy_measures</code> (<code>percentile_score</code>). These accuracy functions can be used in conjunction with the rolling functions in the tsibble package (<code><a href="https://tsibble.tidyverts.org/reference/stretch_tsibble.html" class="external-link">stretch_tsibble()</a></code>, <code><a href="https://tsibble.tidyverts.org/reference/slide_tsibble.html" class="external-link">slide_tsibble()</a></code>, <code><a href="https://tsibble.tidyverts.org/reference/tile_tsibble.html" class="external-link">tile_tsibble()</a></code>) to computed time series cross-validated accuracy measures.</li>
+<ul><li>Added <code><a href="https://generics.r-lib.org/reference/accuracy.html" class="external-link">accuracy()</a></code>, which allows the accuracy of a model to be evaluated. This function can be used to summarise model performance on the training data (<code><a href="../reference/accuracy.html">accuracy.mdl_df()</a></code>, <code><a href="../reference/accuracy.html">accuracy.mdl_ts()</a></code>), or to evaluate the accuracy of forecasts over a test dataset (<code><a href="../reference/accuracy.html">accuracy.fbl_ts()</a></code>). Several accuracy measures are supported, including <code>point_accuracy_measures</code> (<code>ME</code>, <code>MSE</code>, <code>RMSE</code>, <code>MAE</code>, <code>MPE</code>, <code>MAPE</code>, <code>MASE</code>, <code>ACF1</code>), <code>interval_accuracy_measures</code> (<code>winkler_score</code>) and <code>distribution_accuracy_measures</code> (<code>percentile_score</code>). These accuracy functions can be used in conjunction with the rolling functions in the tsibble package (<code><a href="https://tsibble.tidyverts.org/reference/stretch_tsibble.html" class="external-link">stretch_tsibble()</a></code>, <code><a href="https://tsibble.tidyverts.org/reference/slide_tsibble.html" class="external-link">slide_tsibble()</a></code>, <code><a href="https://tsibble.tidyverts.org/reference/tile_tsibble.html" class="external-link">tile_tsibble()</a></code>) to computed time series cross-validated accuracy measures.</li>
 </ul></div>
 </div>
 </div>
