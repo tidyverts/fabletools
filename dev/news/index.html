@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.3.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.4.9000</span>
       </span>
     </div>
 
@@ -59,16 +59,19 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="fabletools-development-version">fabletools (development version)<a class="anchor" aria-label="anchor" href="#fabletools-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.3.4" id="fabletools-034">fabletools 0.3.4<a class="anchor" aria-label="anchor" href="#fabletools-034"></a></h2>
 <div class="section level3">
-<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<h3 id="new-features-0-3-4">New features<a class="anchor" aria-label="anchor" href="#new-features-0-3-4"></a></h3>
 <ul><li>The formula parser now identifies and stores length 1 values in the transformation environment. This simplifies common tasks like automatic box-cox parameters for each series, which can now be done with <code>fable::ARIMA(box_cox(y, feasts::guerrero(y)))</code>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="improvements-development-version">Improvements<a class="anchor" aria-label="anchor" href="#improvements-development-version"></a></h3>
+<h3 id="improvements-0-3-4">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-3-4"></a></h3>
 <ul><li>Added support for visualising different point forecasts (say means and medians) when only one forecast is to be plotted for each series.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<h3 id="bug-fixes-0-3-4">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-4"></a></h3>
 <ul><li>Resolved issue with <code>autoplot(&lt;fbl_ts&gt;)</code> not identifying multiple point forecasts by <code>linetype</code>.</li>
 <li>Fix for indexing of bottom series in <code><a href="../reference/top_down.html">top_down()</a></code> and <code><a href="../reference/middle_out.html">middle_out()</a></code> reconciliation methods (<a href="https://github.com/tidyverts/fabletools/issues/362" class="external-link">#362</a>, <a href="https://github.com/tidyverts/fabletools/issues/364" class="external-link">#364</a> <a href="https://github.com/FedericoGarza" class="external-link">@FedericoGarza</a>)</li>
 </ul></div>
