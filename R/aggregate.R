@@ -28,6 +28,59 @@ aggregate_key <- function(.data, .spec, ...){
   UseMethod("aggregate_key")
 }
 
+compute_graph <- function(object) {
+  kd <- key_data(object)
+  # Rows ordering is unimportant for now
+  kd$.rows <- as.list(vctrs::vec_seq_along(kd))
+  
+  kv <- names(kd)[-ncol(kd)]
+  agg_shadow <- as_tibble(lapply(kd[kv], is_aggregated))
+  grp <- as_tibble(vctrs::vec_group_loc(agg_shadow))
+  num_agg <- rowSums(grp$key)
+  # Initialise comparison leafs with known/guaranteed leafs
+  x_leaf <- kd[vctrs::vec_c(!!!grp$loc[which(num_agg == min(num_agg))]),]
+  
+  # Sort by disaggregation to identify aggregated leafs in order
+  grp <- grp[order(num_agg),]
+  
+  grp$match <- lapply(unname(split(grp, seq_len(nrow(grp)))), function(level){
+    disagg_col <- which(!vctrs::vec_c(!!!level$key))
+    agg_idx <- level[["loc"]][[1]]
+    pos <- vctrs::vec_match(x_leaf[disagg_col], kd[agg_idx, disagg_col])
+    pos <- vctrs::vec_group_loc(pos)
+    pos <- pos[!is.na(pos$key),]
+    
+    # Add non-matches as leaf nodes
+    agg_leaf <- setdiff(seq_along(agg_idx), pos$key)
+    if(!vctrs::vec_is_empty(agg_leaf)){
+      pos <- vctrs::vec_rbind(
+        pos,
+        structure(list(key = agg_leaf, loc = as.list(seq_along(agg_leaf) + nrow(x_leaf))), 
+                  class = "data.frame", row.names = agg_leaf)
+      )
+      x_leaf <<- vctrs::vec_rbind(
+        x_leaf, 
+        kd[agg_idx[agg_leaf],]
+      )
+    }
+    pos$loc[order(pos$key)]
+  })
+  
+  kv_format <- expr(paste(!!!syms(kv), sep = ":"))
+  
+  # Retain row order
+  idx <- order(pos <- vctrs::vec_c(!!!grp$loc))
+  kd$.rows <- lapply(vctrs::vec_c(!!!grp$match), function(i) pos[i])[idx]
+  
+  nodes <- transmute(kd, name = !!kv_format)
+  edges <- kd |> 
+    mutate(to = dplyr::row_number()) |> 
+    filter(lengths(.rows) > 1) |> 
+    tidyr::unchop(.rows) |> 
+    transmute(from = .rows, to, relationship = !!kv_format)
+  tidygraph::tbl_graph(nodes, edges)
+}
+
 #' @export
 aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){#, dev = FALSE){
   .spec <- enexpr(.spec)
@@ -80,9 +133,12 @@ aggregate_key.tbl_ts <- function(.data, .spec = NULL, ...){#, dev = FALSE){
   .data <- ungroup(.data)
   
   # Return tsibble
-  build_tsibble_meta(.data, key_data = key_dt, index = idx, 
-                     index2 = as_string(idx), ordered = TRUE,
-                     interval = intvl)
+  .data <- build_tsibble_meta(
+    .data, key_data = key_dt, index = idx, 
+    index2 = as_string(idx), ordered = TRUE,
+    interval = intvl
+  )
+  build_coherent_tsibble(.data, structure = compute_graph(.data))
 }
 
 parse_agg_spec <- function(expr){
@@ -402,3 +458,67 @@ scale_type.agg_vec <- function(x) {
 #   }
 #   out
 # }
+
+#' @export
+graph_vec <- function(x = factor(), edges = matrix(integer(), nrow = 0, ncol = 2)) {
+  vctrs::vec_assert(edges, matrix(integer(), nrow = 0, ncol = 2))
+  stopifnot(inherits(x,"factor"))
+  # stopifnot(c("from", "to") %in% names(edges))
+  # if(inherits(x, "vctrs_rcrd")) {
+  #   structure(x, e = edges, class = c("graph_vec", class(x)))
+  # } else{
+  structure(x, levels = levels(x), e = edges, class = c("graph_vec", "vctrs_vctr", "factor"))
+  # }
+}
+
+#' @export
+format.graph_vec <- function(x, ...){
+  class(x) <- "factor"
+  format(x, ...)
+}
+
+#' @export
+levels.graph_vec <- function(x, ...) {
+  attr(x, "levels")
+}
+
+#' @rdname aggregation-vctrs
+#' @importFrom vctrs vec_ptype2
+#' @method vec_ptype2 graph_vec
+#' @export
+vec_ptype2.graph_vec <- function(x, y, ...) UseMethod("vec_ptype2.graph_vec", y)
+
+#' @rdname aggregation-vctrs
+#' @export
+vec_ptype2.graph_vec.default <- function(x, y, ...) graph_vec()
+
+#' @rdname aggregation-vctrs
+#' @method vec_cast graph_vec
+#' @export
+vec_cast.graph_vec <- function(x, to, ...) UseMethod("vec_cast.graph_vec")
+#' @rdname aggregation-vctrs
+#' @export
+vec_cast.graph_vec.graph_vec <- function(x, to, ...) {
+  x <- vec_proxy(x)
+  if(all(x$agg)) x$x <- vec_rep(vec_cast(NA, vec_proxy(to)$x), length(x$x))
+  vec_restore(x, to)
+}
+#' @rdname aggregation-vctrs
+#' @export
+vec_cast.graph_vec.default <- function(x, to, ...) graph_vec(x)
+
+#' @rdname aggregation-vctrs
+#' @export
+vec_ptype_abbr.graph_vec <- function(x, ...) {
+  "graph"
+  # class(x) <- class(x)[-1]
+  # paste0(vec_ptype_abbr(x, ...), "'")
+}
+
+#' @export
+node_is_child <- function(x, node, ...){
+  stopifnot(inherits(x, "graph_vec"))
+  g <- graph_from_edgelist(attr(x, "e"))
+  unclass(x) %in% subcomponent(g, match(node, levels(x)), mode = "out")
+}
+
