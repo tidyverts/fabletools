@@ -72,7 +72,259 @@ compute_graph <- function(object) {
   idx <- order(pos <- vctrs::vec_c(!!!grp$loc))
   kd$.rows <- lapply(vctrs::vec_c(!!!grp$match), function(i) pos[i])[idx]
   
-  nodes <- transmute(kd, name = !!kv_format)
+  nodes <- transmute(kd, name = !!kv_format)#, key = tibble(!!!syms(kv)))
+  edges <- kd |> 
+    mutate(to = dplyr::row_number()) |> 
+    filter(lengths(.rows) > 1) |> 
+    tidyr::unchop(.rows) |> 
+    transmute(from = .rows, to, relationship = !!kv_format)
+  tidygraph::tbl_graph(nodes, edges)
+}
+
+compute_graph2 <- function(object) {
+  kd <- key_data(object)
+  # Rows ordering is unimportant for now
+  kd$.rows <- as.list(vctrs::vec_seq_along(kd))
+  
+  kv <- names(kd)[-ncol(kd)]
+  agg_shadow <- as_tibble(lapply(kd[kv], is_aggregated))
+  grp <- as_tibble(vctrs::vec_group_loc(agg_shadow))
+  num_agg <- rowSums(grp$key)
+  # Initialise comparison leafs with known/guaranteed leafs
+  x_leaf <- kd[vctrs::vec_c(!!!grp$loc[which(num_agg == min(num_agg))]),]
+  
+  # Sort by disaggregation to identify aggregated leafs in order
+  grp <- grp[order(num_agg),]
+  
+  constraint_matrix <- function(x) {
+    x <- unique(x)
+    agg_idx <- which(is_aggregated(x))
+    mat <- matrix(-1, ncol = length(x), nrow = length(agg_idx))
+    mat[,agg_idx] <- 0
+    mat[length(agg_idx)*(agg_idx-1)+seq_along(agg_idx)] <- 1
+    mat
+  }
+  edge_graph <- function(x) {
+    is_agg <- is_aggregated(x)
+    cbind(which(!is_agg), which(is_agg))
+  }
+  list_graph <- function(x) {
+    loc <- vec_group_loc(x)
+    is_agg <- is_aggregated(loc$key)
+    list(unlist(loc$loc[which(is_agg)], recursive = FALSE), loc$loc[!is_agg])
+  }
+  
+  # cmat <- kd[kv] |> 
+  #   lapply(constraint_matrix)
+  
+  # kd[[1]] -> x
+  # lhs <- vec_group_loc(kd[[1]])
+  # c_lhs <- constraint_matrix(lhs$key)
+  # g_lhs <- edge_graph(lhs$key)
+  # l_lhs <- list_graph(kd[[1]])
+  # 
+  # rhs <- vec_group_loc(kd[[2]])
+  # c_rhs <- constraint_matrix(rhs$key)
+  # g_rhs <- edge_graph(rhs$key)
+  # l_rhs <- list_graph(kd[[2]])
+  
+  # Intersect
+  graph_intersect <- function(x, y) {
+    traverse_list(y, .f = function(.x, .y) {
+      compact(.x)
+    }, .h = function(y) intersect(x, y))
+  }
+
+  # Merge
+  # lobstr::tree(c(int_lhs, int_rhs))
+  # 
+  # lobstr::tree(l_rhs)
+  # lobstr::tree(l_lhs)
+  # 
+  # lobstr::tree(x <- int_rhs)
+  # lobstr::tree(y <- int_lhs)
+  
+  g_unlist <- function (x) {
+    traverse_list(x, .f = function(x, y) {
+      i <- vapply(x, is.integer, logical(1L))
+      x[i] <- lapply(x[i], list)
+      vec_c(!!!x)
+    })
+  }
+  g_relist <- function (x, g) {
+    ind <- 1L
+    result <- g
+    for (i in seq_along(g)) {
+      size <- length(g_unlist(result[i]))
+      result[[i]] <- if(size==1L) x[[ind]] else g_relist(x[seq.int(ind, length.out = size)], result[[i]])
+      ind <- ind + size
+    }
+    result
+  }
+  
+  graph_merge <- function(x, y) {
+    # lobstr::tree(x)
+    # lobstr::tree(y)
+    
+    is_rooted <- function(z) {
+      i <- vapply(z, is.list, logical(1L))
+      any(i) && any(!i)
+    }
+    # traverse_list(x, .f = function(x, y) {
+    #   browser()
+    #   x
+    #   vapply(x, is_rooted, logical(1L))
+    # }, base = is_rooted)
+    
+    is_x_root <- vapply(x, is_rooted, logical(1L))
+    is_y_root <- vapply(y, is_rooted, logical(1L))
+    # Should matching root nodes be merged with identifying names? 
+    out <- c(x[is_x_root], y[is_y_root])
+    
+    z <- g_unlist(out)
+    
+    # browser()
+    subgraphs <- unlist(c(x[!is_x_root], y[!is_y_root]), recursive = FALSE)
+    
+    z[match(g_unlist(lapply(subgraphs, function(x) x[[1]])), z)] <- subgraphs
+    
+    # lobstr::tree(z)
+    # 
+    # lobstr::tree(out)
+    # lobstr::tree(reunlist(z, out))
+    # 
+    # lobstr::tree(relist(as.list(unlist(out)), out))
+    # 
+    g_relist(z, out)
+  }
+  
+  list_to_edges <- function(x) {
+    edges <- matrix(nrow = 0, ncol = 2, dimnames = list(NULL, c("from", "to")))
+    # lobstr::tree(x)
+    traverse_list(x, .f = function(x, y) {
+      i <- vapply(x, is.integer, logical(1L))
+      # if(sum(i) > 1) return(unlist(x, recursive = FALSE))
+      if(any(i) && any(!i)) {
+        edges <<- rbind(edges, cbind(unlist(x[!i]), x[[which(i)]]))
+        x <- x[which(i)]
+      }
+      # if(all(i)) x <- unlist(x, recursive = FALSE)
+      x
+    })
+    as_tibble(edges)
+  }
+  
+  g <- Reduce(
+    function(g, k) {
+      int_g <- traverse_list(g, .f = function(x, y) x, .h = function(x) graph_intersect(x, k))
+      int_k <- traverse_list(k, .f = function(x, y) x, .h = function(x) graph_intersect(x, g))
+      # browser()
+      graph_merge(int_g, int_k)
+    }, lapply(kd[-length(kd)], list_graph)
+  )
+  # list_graph(kd[[1]])
+  # int_rhs <- traverse_list(l_rhs, .f = function(x, y) x, .h = function(x) graph_intersect(x, l_lhs))
+  # int_lhs <- traverse_list(l_lhs, .f = function(x, y) x, .h = function(x) graph_intersect(x, l_rhs))
+  
+  # edges <- bind_rows(
+  #   !!kv[1] := list_to_edges(int_lhs),
+  #   !!kv[2] := list_to_edges(int_rhs),
+  #   .id = "relationship"
+  # )
+  g <- tidygraph::tbl_graph(
+    nodes = kd[kv],
+    edges = list_to_edges(g)
+    # edges = list_to_edges(graph_merge(int_lhs, int_rhs))
+  )
+  return(g)
+  
+  traverse_list(l_rhs[2], .f = function(x, y) x, .h = function(x) graph_intersect(x, l_lhs))
+  
+  # Intersecting kronecker graph product
+  
+  ## OR...
+  
+  # Some sort of intersecting graph merge?!
+  l_lhs
+  l_rhs
+  
+  setdiff(l_rhs[[1]], l_lhs[[1]])
+  setdiff(l_lhs[[1]], l_rhs[[1]])
+  
+  plot_constraints(l_rhs)
+  plot_constraints(graph_intersect(c(1,4,7), l_lhs))
+  
+  traverse_list(l_g, .f = function(x, y) browser())
+  
+  intersect(l_lhs[[1]], l_rhs[[1]])
+  l_lhs
+  l_rhs
+  
+  lhs
+  rhs
+  # Match locs to join graphs
+  lhs$loc
+  rhs$loc
+  
+  join_xy <- relist(
+    vec_match(unlist(lhs$loc), unlist(rhs$loc)),
+    # rep(seq_len(nrow(rhs)), lengths(rhs$loc))[vec_match(unlist(lhs$loc), unlist(rhs$loc))],
+    lhs$loc
+  )
+  
+  rhs_key <- rep(seq_len(nrow(rhs)), lengths(rhs$loc))
+  
+  new_loc <- lapply(join_xy, function(x) mutate(vec_group_loc(rhs_key[x]), loc = lapply(loc, function(z) unlist(rhs$loc)[x[z]])))
+  new_lhs <- vec_rbind(!!!new_loc)
+  
+  g_lhs
+  g_rhs
+  
+  lhs |> 
+    rowwise() |> 
+    mutate(key = tibble(lhs = rhs$key))
+  
+  g_new <- matrix(c(1, 2, 2, 9, 3, 4, 4, 9, 5, 6, 6, 9, 7, 8, 8, 9), ncol = 2, byrow = TRUE)
+  plot(igraph::graph(g_new))
+  
+  
+  # By row, update graph based on matching locs as above
+  g_lhs[rep(seq_along(lhs$loc))]
+  rhs
+  
+  kronecker(cmat[[1]], cmat[[2]])
+  cmat[[1]] 
+  
+  grp$match <- lapply(unname(split(grp, seq_len(nrow(grp)))), function(level){
+    disagg_col <- which(!vctrs::vec_c(!!!level$key))
+    agg_idx <- level[["loc"]][[1]]
+    pos <- vctrs::vec_match(x_leaf[disagg_col], kd[agg_idx, disagg_col])
+    pos <- vctrs::vec_group_loc(pos)
+    pos <- pos[!is.na(pos$key),]
+    
+    # Add non-matches as leaf nodes
+    agg_leaf <- setdiff(seq_along(agg_idx), pos$key)
+    if(!vctrs::vec_is_empty(agg_leaf)){
+      pos <- vctrs::vec_rbind(
+        pos,
+        structure(list(key = agg_leaf, loc = as.list(seq_along(agg_leaf) + nrow(x_leaf))), 
+                  class = "data.frame", row.names = agg_leaf)
+      )
+      x_leaf <<- vctrs::vec_rbind(
+        x_leaf, 
+        kd[agg_idx[agg_leaf],]
+      )
+    }
+    pos$loc[order(pos$key)]
+  })
+  
+  kv_format <- expr(paste(!!!syms(kv), sep = ":"))
+  
+  # Retain row order
+  idx <- order(pos <- vctrs::vec_c(!!!grp$loc))
+  kd$.rows <- lapply(vctrs::vec_c(!!!grp$match), function(i) pos[i])[idx]
+  
+  nodes <- transmute(kd, name = !!kv_format)#, key = tibble(!!!syms(kv)))
   edges <- kd |> 
     mutate(to = dplyr::row_number()) |> 
     filter(lengths(.rows) > 1) |> 
