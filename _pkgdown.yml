@@ -61,8 +61,6 @@ reference:
     - top_down
     - aggregate_key
     - aggregate_index
-    - agg_vec
-    - is_aggregated
 - title: Accuracy evaluation
   desc: >
     Functionality for evaluating model performance

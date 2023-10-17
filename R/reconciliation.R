@@ -90,8 +90,10 @@ forecast.lst_mint_mdl <- function(object, key_data,
     res <- matrix(invoke(c, map(res, `[[`, 2)), ncol = length(object))
   }
   
-  # Construct S matrix - ??GA: have moved this here as I need it for Structural scaling
-  agg_data <- coherence_constraints(key_data)
+  # Construct constraint graph
+  agg_data <- graph_coherence_constraints(key_data)
+  # agg_data <- FoReco::lcmat(agg_data)$Cbar
+  # agg_data <- cbind(diag(rep(1L, nrow(agg_data))), agg_data)
   
   n <- nrow(res)
   covm <- crossprod(stats::na.omit(res)) / n
@@ -103,6 +105,7 @@ forecast.lst_mint_mdl <- function(object, key_data,
     W <- diag(diag(covm))
   } else if (method == "wls_struct"){
     # WLS structural scaling
+    stop("Not yet supported for graph reconciliation")
     W <- diag(vapply(agg_data$agg,length,integer(1L)))
   } else if (method == "mint_cov"){
     # min_trace covariance
@@ -131,35 +134,11 @@ forecast.lst_mint_mdl <- function(object, key_data,
   }
   
   # Reconciliation matrices
-  if(TRUE){ 
-    # row_btm <- agg_data$leaf
-    # row_agg <- seq_len(nrow(key_data))[-row_btm]
-    # S <- Matrix::sparseMatrix(
-    #   i = rep(seq_along(agg_data$agg), lengths(agg_data$agg)),
-    #   j = vec_c(!!!agg_data$agg),
-    #   x = rep(1, sum(lengths(agg_data$agg))))
-    # J <- Matrix::sparseMatrix(i = S[row_btm,,drop = FALSE]@i+1, j = row_btm, x = 1L, 
-    #                           dims = rev(dim(S)))
-    # U <- cbind(
-    #   Matrix::Diagonal(diff(dim(J))),
-    #   -S[row_agg,,drop = FALSE]
-    # )
-    U <- agg_data
-    # U <- U[, order(c(row_agg, row_btm)), drop = FALSE]
-    Ut <- t(U)
-    WUt <- W %*% Ut
-    M <- diag(rep(1, ncol(U))) - WUt %*% solve(U %*% WUt, U)
-    return(reconcile_fbl_list(fc, S = NULL, P = NULL, W = W, point_forecast = point_method, SP = M))
-    # P <- J - J%*%W%*%t(U)%*%solve(U%*%W%*%t(U))%*%U
-  }
-  else {
-    S <- matrix(0L, nrow = length(agg_data$agg), ncol = max(vec_c(!!!agg_data$agg)))
-    S[length(agg_data$agg)*(vec_c(!!!agg_data$agg)-1) + rep(seq_along(agg_data$agg), lengths(agg_data$agg))] <- 1L
-    R <- t(S)%*%solve(W)
-    P <- solve(R%*%S)%*%R
-  }
-  
-  reconcile_fbl_list(fc, S, P, W, point_forecast = point_method)
+  U <- agg_data
+  Ut <- t(U)
+  WUt <- W %*% Ut
+  M <- diag(rep(1, ncol(U))) - WUt %*% solve(U %*% WUt, U)
+  return(reconcile_fbl_list(fc, S = NULL, P = NULL, W = W, point_forecast = point_method, SP = M))
 }
 
 #' Bottom up forecast reconciliation
@@ -484,20 +463,8 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
   fc_dist <- map(fc, function(x) x[[distribution_var(x)]])
   dist_type <- lapply(fc_dist, function(x) unique(dist_types(x)))
   dist_type <- unique(unlist(dist_type))
-  is_normal <- all(map_lgl(fc_dist, function(x) all(dist_types(x) == "dist_normal")))
   
-  fc_mean <- as.matrix(invoke(cbind, map(fc_dist, mean)))
-  fc_var <- transpose_dbl(map(fc_dist, distributional::variance))
-  
-  # Apply to forecasts
-  fc_mean <- as.matrix(SP%*%t(fc_mean))
-  fc_mean <- split(fc_mean, row(fc_mean))
-  if(identical(dist_type, "dist_normal")){
-    R1 <- cov2cor(W)
-    W_h <- map(fc_var, function(var) diag(sqrt(var))%*%R1%*%t(diag(sqrt(var))))
-    fc_var <- map(W_h, function(W) diag(SP%*%W%*%t(SP)))
-    fc_dist <- map2(fc_mean, transpose_dbl(map(fc_var, sqrt)), distributional::dist_normal)
-  } else if (identical(dist_type, "dist_sample")) {
+  if (identical(dist_type, "dist_sample")) {
     sample_size <- unique(unlist(lapply(fc_dist, function(x) unique(lengths(distributional::parameters(x)$x)))))
     if(length(sample_size) != 1L) stop("Cannot reconcile sample paths with different replication sizes.")
     sample_horizon <- unique(lengths(fc_dist))
@@ -516,7 +483,23 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
       function(x) unname(distributional::dist_sample(split(x, row(x))))
     )
   } else {
-    fc_dist <- map(fc_mean, distributional::dist_degenerate)
+    fc_mean <- as.matrix(invoke(cbind, map(fc_dist, mean)))
+    
+    # Produce coherent forecast means
+    fc_mean <- as.matrix(SP%*%t(fc_mean))
+    fc_mean <- split(fc_mean, row(fc_mean))
+    
+    if(identical(dist_type, "dist_normal")){
+      # Produce coherent forecast variances
+      R1 <- cov2cor(W)
+      fc_var <- transpose_dbl(map(fc_dist, distributional::variance))
+      W_h <- map(fc_var, function(var) diag(sqrt(var))%*%R1%*%t(diag(sqrt(var))))
+      fc_var <- map(W_h, function(W) diag(SP%*%W%*%t(SP)))
+      fc_dist <- map2(fc_mean, transpose_dbl(map(fc_var, sqrt)), distributional::dist_normal)
+    } else {
+      # Produce only forecast means
+      fc_dist <- map(fc_mean, distributional::dist_degenerate)
+    }
   }
   
   # Update fables
@@ -529,181 +512,15 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
   })
 }
 
-build_smat_rows <- function(key_data){
-  lifecycle::deprecate_warn("0.2.1", "fabletools::build_smat_rows()", "fabletools::build_key_data_smat()")
-  row_col <- sym(colnames(key_data)[length(key_data)])
+graph_coherence_constraints <- function(kd) {
+  g <- graphvec:::combine_graph(kd[-length(kd)]) |> 
+    dplyr::group_split(to, id)
+  agg_data <- matrix(0L, nrow = length(g), ncol = nrow(kd))
   
-  smat <- key_data %>%
-    unnest(!!row_col) %>% 
-    dplyr::arrange(!!row_col) %>% 
-    select(!!expr(-!!row_col))
-  
-  agg_struc <- group_data(dplyr::group_by_all(as_tibble(map(smat, is_aggregated))))
-  
-  # key_unique <- map(smat, function(x){
-  #   x <- unique(x)
-  #   x[!is_aggregated(x)]
-  # })
-  
-  agg_struc$.smat <- map(agg_struc$.rows, function(n) diag(1, nrow = length(n), ncol = length(n)))
-  agg_struc <- map(seq_len(nrow(agg_struc)), function(i) agg_struc[i,])
-  
-  out <- reduce(agg_struc, function(x, y){
-    # For now, assume x is aggregated into y somehow
-    n_key <- ncol(x)-2
-    nm_key <- names(x)[seq_len(n_key)]
-    agg_vars <- map2_lgl(x[seq_len(n_key)], y[seq_len(n_key)], `<`)
-    
-    if(!any(agg_vars)) abort("Something unexpected happened, please report this bug at https://github.com/tidyverts/fabletools/issues/ with a description of what you're trying to do.")
-    
-    # Match rows between summation matrices
-    not_agg <- names(Filter(`!`, y[seq_len(n_key)]))
-    cols <- group_data(group_by(smat[x$.rows[[1]][seq_len(ncol(x$.smat[[1]]))],], !!!syms(not_agg)))$.rows
-    cols_pos <- unlist(cols)
-    cols <- rep(seq_along(cols), map_dbl(cols, length))
-    cols[cols_pos] <- cols
-    
-    x$.rows[[1]] <- c(x$.rows[[1]], y$.rows[[1]])
-    x$.smat <- list(rbind(
-      x$.smat[[1]],
-      y$.smat[[1]][, cols, drop = FALSE]
-    ))
-    x
-  })
-  
-  smat <- out$.smat[[1]]
-  smat[out$.rows[[1]],] <- smat
-  
-  return(smat)
-}
-
-build_key_data_smat <- function(x){
-  kv <- names(x)[-ncol(x)]
-  agg_shadow <- as_tibble(map(x[kv], is_aggregated))
-  grp <- as_tibble(vctrs::vec_group_loc(agg_shadow))
-  num_agg <- rowSums(grp$key)
-  # Initialise comparison leafs with known/guaranteed leafs
-  x_leaf <- lapply(
-    grp$loc[which(num_agg == min(num_agg))],
-    function(i) x[i,,drop = FALSE]
-  )
-  
-  # Sort by disaggregation to identify aggregated leafs in order
-  grp <- grp[order(num_agg),]
-  
-  grp <- lapply(unname(split(grp, seq_len(nrow(grp)))), function(level){
-    disagg_col <- which(!vec_c(!!!level$key))
-    agg_idx <- level[["loc"]][[1]]
-    pos <- lapply(x_leaf, function(leaf) vec_group_loc(vec_match(leaf[disagg_col], x[agg_idx, disagg_col])))
-    pos <- map2(
-      pos, c(0, map_int(x_leaf, nrow)[-length(x_leaf)]),
-      function(a,b) {
-        a$loc <- lapply(a$loc, function(loc) loc+b)
-        a
-      }
-    )
-    pos <- vec_rbind(!!!pos)
-    
-    pos <- pos[!is.na(pos$key),]
-    # Add non-matches as leaf nodes
-    agg_leaf <- setdiff(seq_along(agg_idx), pos$key)
-    if(!is_empty(agg_leaf)){
-      pos <- vec_rbind(
-        pos,
-        structure(list(key = agg_leaf, loc = as.list(seq_along(agg_leaf) + nrow(x_leaf))), 
-                  class = "data.frame", row.names = agg_leaf)
-      )
-      x_leaf <<- list(
-        x_leaf, 
-        x[agg_idx[agg_leaf],]
-      )
-    }
-    level$match <- list(pos$loc[order(pos$key)])
-    level$loc <- list(level$loc[[1]][pos$key])
-    level
-  })
-  grp <- vec_rbind(!!!grp)
-  if(any(lengths(grp$loc) != lengths(grp$match))) {
-    abort("An error has occurred when constructing the summation matrix.\nPlease report this bug here: https://github.com/tidyverts/fabletools/issues")
+  for(i in seq_along(g)) {
+    agg_data[i, g[[i]]$to[[1L]]] <- 1L
+    agg_data[i, g[[i]]$from] <- -1L
   }
-  idx_leaf <- vec_c(!!!lapply(x_leaf, function(x) x$.rows))
-  x$.rows[unlist(x$.rows)[vec_c(!!!grp$loc)]] <- vec_c(!!!grp$match)
-  return(list(agg = x$.rows, leaf = idx_leaf))
-  # out <- matrix(0L, nrow = nrow(x), ncol = length(idx_leaf))
-  # out[nrow(x)*(vec_c(!!!x$.rows)-1) + rep(seq_along(x$.rows), lengths(x$.rows))] <- 1L
-  # out
-}
-
-
-coherence_constraints <- function(kd){
-  kv <- names(kd)[-ncol(kd)]
-  agg_shadow <- as_tibble(map(kd[kv], is_aggregated))
-  grp <- as_tibble(vctrs::vec_group_loc(agg_shadow))
-  num_agg <- rowSums(grp$key)
-  # Initialise comparison leafs with known/guaranteed leafs
-  x_leaf <- lapply(
-    grp$loc[which(num_agg == min(num_agg))],
-    function(i) kd[i,,drop = FALSE]
-  )
   
-  # Sort by disaggregation to identify aggregated leafs in order
-  grp <- grp[order(num_agg),]
-  
-  grp <- lapply(unname(split(grp, seq_len(nrow(grp)))), function(level){
-    disagg_col <- which(!vec_c(!!!level$key))
-    agg_idx <- level[["loc"]][[1]]
-    pos <- lapply(x_leaf, function(leaf) vec_group_loc(vec_match(leaf[disagg_col], kd[agg_idx, disagg_col])))
-    
-    pos <- .mapply(
-      function(leaf, pos) {
-        pos$key <- unlist(level$loc)[pos$key]
-        pos$loc <- relist(unlist(leaf$.rows)[unlist(pos$loc)], pos$loc)
-        pos
-      }, 
-      dots = list(x_leaf, pos), MoreArgs = NULL
-    )
-    
-    # pos <- map2(
-    #   pos, cumsum(c(0, map_int(x_leaf, nrow)[-length(x_leaf)])),
-    #   function(a,b) {
-    #     a$loc <- lapply(a$loc, function(loc) loc+b)
-    #     a
-    #   }
-    # )
-    pos <- vec_rbind(!!!pos)
-    
-    pos <- pos[!is.na(pos$key),]
-    # Add non-matches as leaf nodes
-    agg_leaf <- setdiff(unlist(level$loc), pos$key)
-    if(!is_empty(agg_leaf)){
-      # pos <- vec_rbind(
-      #   pos,
-      #   structure(list(key = agg_leaf, loc = as.list(agg_leaf)), 
-      #             class = "data.frame", row.names = seq_along(agg_leaf))
-      # )
-      x_leaf <<- c(
-        x_leaf, 
-        list(kd[agg_leaf,])
-      )
-    }
-    pos
-  })
-  grp <- vec_rbind(!!!grp)
-  if(any(lengths(grp$loc) != lengths(grp$match))) {
-    abort("An error has occurred when constructing the summation matrix.\nPlease report this bug here: https://github.com/tidyverts/fabletools/issues")
-  }
-  leaf_loc <- unlist(vec_rbind(!!!x_leaf)$.rows)
-  
-  constraints <- grp[!(grp$key %in% leaf_loc),]
-  
-  cmat <- matrix(0, nrow = nrow(constraints), ncol = nrow(kd))
-  for(i in seq_len(nrow(constraints))){
-    cmat[i,constraints$key[i]] <- -1
-    cmat[i,constraints$loc[[i]]] <- 1
-  }
-  # cmat[9, c(4,8,12,16,20)] <- c(1,1,1,1,-1)
-  # cmat[10, c(17,18,19,20)] <- c(1,1,1,-1)
-  # cmat <- cmat[-8,]
-  # cmat[18,] <- c(rep(0, 12), rep(1, 3), rep(0, 4), -1)
-  cmat
+  agg_data
 }
