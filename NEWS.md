@@ -1,5 +1,10 @@
 # fabletools (development version)
 
+## Improvements
+
+* Improved handling of `combination_model()` when used with transformed
+  component models.
+
 # fabletools 0.3.4
 
 ## New features
