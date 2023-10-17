@@ -59,9 +59,13 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="fabletools-development-version">fabletools (development version)<a class="anchor" aria-label="anchor" href="#fabletools-development-version"></a></h2>
+<div class="section level3">
+<h3 id="improvements-development-version">Improvements<a class="anchor" aria-label="anchor" href="#improvements-development-version"></a></h3>
+<ul><li>Improved handling of <code><a href="../reference/combination_model.html">combination_model()</a></code> when used with transformed component models.</li>
+</ul></div>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.3.4" id="fabletools-034">fabletools 0.3.4<a class="anchor" aria-label="anchor" href="#fabletools-034"></a></h2>
+<h2 class="page-header" data-toc-text="0.3.4" id="fabletools-034">fabletools 0.3.4<small>2023-10-11</small><a class="anchor" aria-label="anchor" href="#fabletools-034"></a></h2>
 <div class="section level3">
 <h3 id="new-features-0-3-4">New features<a class="anchor" aria-label="anchor" href="#new-features-0-3-4"></a></h3>
 <ul><li>The formula parser now identifies and stores length 1 values in the transformation environment. This simplifies common tasks like automatic box-cox parameters for each series, which can now be done with <code>fable::ARIMA(box_cox(y, feasts::guerrero(y)))</code>.</li>
