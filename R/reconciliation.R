@@ -513,14 +513,11 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
 }
 
 graph_coherence_constraints <- function(kd) {
-  g <- graphvec:::combine_graph(kd[-length(kd)]) |> 
-    dplyr::group_split(to, id)
-  agg_data <- matrix(0L, nrow = length(g), ncol = nrow(kd))
+  g <- graphvec:::combine_graph(kd[-length(kd)])
+  agg_data <- matrix(0L, nrow = nrow(g), ncol = nrow(kd))
   
-  for(i in seq_along(g)) {
-    agg_data[i, g[[i]]$to[[1L]]] <- 1L
-    agg_data[i, g[[i]]$from] <- -1L
-  }
+  agg_data[(g[["to"]]-1)*nrow(g) + seq_len(nrow(g))] <- 1L
+  agg_data[(unlist(g$from)-1)*nrow(g) + rep(seq_len(nrow(g)), lengths(g$from))] <- -1L
   
   agg_data
 }
