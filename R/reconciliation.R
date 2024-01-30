@@ -91,9 +91,7 @@ forecast.lst_mint_mdl <- function(object, key_data,
   }
   
   # Construct constraint graph
-  agg_data <- graph_coherence_constraints(key_data)
-  # agg_data <- FoReco::lcmat(agg_data)$Cbar
-  # agg_data <- cbind(diag(rep(1L, nrow(agg_data))), agg_data)
+  lc <- FoReco::lcmat(graph_coherence_constraints(key_data))
   
   n <- nrow(res)
   covm <- crossprod(stats::na.omit(res)) / n
@@ -134,11 +132,12 @@ forecast.lst_mint_mdl <- function(object, key_data,
   }
   
   # Reconciliation matrices
-  U <- agg_data
+  U <- cbind(diag(rep(1L, nrow(lc$Cbar))), -lc$Cbar)
   Ut <- t(U)
+  W <- W[lc$pivot, lc$pivot]
   WUt <- W %*% Ut
   M <- diag(rep(1, ncol(U))) - WUt %*% solve(U %*% WUt, U)
-  return(reconcile_fbl_list(fc, S = NULL, P = NULL, W = W, point_forecast = point_method, SP = M))
+  return(reconcile_fbl_list(fc[lc$pivot], S = NULL, P = NULL, W = W, point_forecast = point_method, SP = M)[order(lc$pivot)])
 }
 
 #' Bottom up forecast reconciliation
