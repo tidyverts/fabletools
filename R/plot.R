@@ -454,13 +454,18 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE,
     interval_data <- tidyr::pivot_longer(
       interval_data, paste0(level, "%"), names_to = NULL, values_to = "hilo"
     )
-    intvl_aes <- aes(x = !!idx, hilo = !!sym("hilo"))
+    intvl_aes <- aes(x = !!idx, dist = !!sym(".val"), fill_ramp = after_stat(level))
     line_aes <- aes(x = !!idx, y = mean(!!sym(".val")))
     if(n_keys > 1){
-      line_aes$colour <- intvl_aes$fill <- expr(interaction(!!!keys, sep = "/"))
+      line_aes$colour <- intvl_aes$fill <- intvl_aes$group <- expr(interaction(!!!keys, sep = "/"))
     }
     dcmp_geom <- list(
-      distributional::geom_hilo_ribbon(intvl_aes, ..., data = interval_data),
+      if(n_keys > 1) {
+        ggdist::stat_ribbon(intvl_aes, .width = level/100, ...)
+      } else {
+        ggdist::stat_ribbon(intvl_aes, fill = "gray65", .width = level/100, ...)
+      },
+      ggdist::scale_fill_ramp_discrete(from = "white", range = c(0.3, 0.7), labels = function(x) scales::percent(as.numeric(x))),
       geom_line(line_aes, ...)
     )
   } else {
@@ -478,7 +483,8 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE,
     ylab(NULL) + 
     labs(
       title = paste(method%||%"A", "decomposition"), 
-      subtitle = paste(c(expr_text(get_expr(.vars)), dcmp_str), collapse = " = ")
+      subtitle = paste(c(expr_text(get_expr(.vars)), dcmp_str), collapse = " = "),
+      fill = "Model", colour = "Model"
     )
   
   # Rangebars
@@ -510,7 +516,8 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE,
   }
   
   if(!is_empty(keys)){
-    p <- p + guides(colour = guide_legend(paste0(map_chr(keys, expr_name), collapse = "/")))
+    colour_title <- paste0(map_chr(keys, expr_name), collapse = "/")
+    p <- p + labs(colour = colour_title, fill = colour_title)
   }
   
   p
