@@ -511,12 +511,24 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
   })
 }
 
-graph_coherence_constraints <- function(kd) {
-  g <- graphvec:::combine_graph(kd[-length(kd)])
-  agg_data <- matrix(0L, nrow = nrow(g), ncol = nrow(kd))
+graph_coherence_constraints <- function(g) {
+  Matrix::sparseMatrix(
+    i = c(
+      seq_len(nrow(g)), 
+      rep(seq_len(nrow(g)), lengths(g$from))
+    ),
+    j = c(
+      g[["to"]],
+      unlist(g$from)
+    ),
+    x = c(
+      rep(1L, nrow(g)),
+      rep(-1L, sum(lengths(g$from)))
+    )
+  )
   
-  agg_data[(g[["to"]]-1)*nrow(g) + seq_len(nrow(g))] <- 1L
-  agg_data[(unlist(g$from)-1)*nrow(g) + rep(seq_len(nrow(g)), lengths(g$from))] <- -1L
-  
-  agg_data
+  # agg_data <- matrix(0L, nrow = nrow(g), ncol = nrow(kd))
+  # agg_data[(g[["to"]]-1)*nrow(g) + seq_len(nrow(g))] <- 1L
+  # agg_data[(unlist(g$from)-1)*nrow(g) + rep(seq_len(nrow(g)), lengths(g$from))] <- -1L
+  # agg_data
 }
