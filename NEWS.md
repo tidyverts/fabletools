@@ -4,6 +4,8 @@
 
 * Improved handling of `combination_model()` when used with transformed
   component models.
+* `autoplot(<fbl_ts>)`, `autolayer(<fbl_ts>)` and `autoplot(<dcmp_ts>)` now use
+  the ggdist package visualising uncertainty with distributional vectors.
 
 # fabletools 0.3.4
 
