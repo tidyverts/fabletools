@@ -81,20 +81,29 @@ forecast.lst_mint_mdl <- function(object, key_data,
     abort("Reconciliation of temporal hierarchies is not yet supported.")
   }
   
-  # Compute weights (sample covariance)
-  res <- map(object, function(x, ...) residuals(x, ...), type = "response")
-  if(length(unique(map_dbl(res, nrow))) > 1){
-    # Join residuals by index #199
-    res <- unname(as.matrix(reduce(res, full_join, by = index_var(res[[1]]))[,-1]))
-  } else {
-    res <- matrix(invoke(c, map(res, `[[`, 2)), ncol = length(object))
-  }
   
   # Construct constraint graph
-  lc <- FoReco::lcmat(graph_coherence_constraints(key_data))
+  g <- graphvec:::combine_graph(key_data[-length(key_data)])
+  lc <- FoReco::lcmat(graph_coherence_constraints(g))
   
-  n <- nrow(res)
-  covm <- crossprod(stats::na.omit(res)) / n
+  # Compute weights (sample covariance)
+  res <- map(object, function(x, ...) residuals(x, ...), type = "response")
+  
+  res_grp <- split(seq_along(res), node_disjoint_id(g))
+  res_order <- order(unlist(res_grp))
+  
+  covm <- Matrix::.bdiag(lapply(res_grp, function(i) {
+    if(length(unique(map_dbl(res[i], nrow))) > 1){
+      # Join residuals by index #199
+      res <- unname(as.matrix(reduce(res[i], full_join, by = index_var(res[[1]]))[,-1]))
+    } else {
+      res <- matrix(invoke(c, map(res[i], `[[`, 2)), ncol = length(i))
+    }
+    
+    n <- nrow(res)
+    crossprod(stats::na.omit(res)) / n
+  }))[res_order,res_order]
+
   if(method == "ols"){
     # OLS
     W <- diag(rep(1L, nrow(covm)))
