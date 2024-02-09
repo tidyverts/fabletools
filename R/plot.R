@@ -310,16 +310,8 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   object <- object %>% 
     dplyr::mutate_if(~inherits(., "agg_vec"), compose(trimws, format))
   
-  key_glyph_rect <- function (data, params, size) {
-    data$alpha <- data$alpha %||% NA
-    ggdist:::draw_key_lineribbon(
-      list(default_key_aes = list(fill = "gray65", colour = "black", linewidth = 1.25)),
-      data, params, size
-    )
-  }
   # Adapted from ggdist:::draw_key_lineribbon
-  draw_key_ribbon <- function (self, data, params, size) 
-  {
+  draw_key_ribbon <- function (self, data, params, size) {
     data$alpha <- data$alpha %||% NA
     if (is.null(data[["fill"]]) && (!is.null(data[["fill_ramp"]]) || !all(is.na(data[["alpha"]])))) {
       data$fill = "gray65"
@@ -336,25 +328,48 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   # Add forecast interval ribbons to plot
   if(!is.null(level)){
     intvl_mapping <- mapping
-    intvl_mapping$dist <- sym(response_vars(object))
-    intvl_mapping$fill_ramp <- intvl_mapping$colour_ramp <- expr(after_stat(level))
+    # intvl_mapping$dist <- sym(distribution_var(object))
+    intvl_mapping$ymin <- sym(".lower")
+    intvl_mapping$ymax <- sym(".upper")
+    intvl_mapping$fill_ramp <- intvl_mapping$colour_ramp <- sym(".width")
     intvl_mapping$fill <- intvl_mapping$colour <- col
+    
+    dist_qi_frame <- function(data, level) {
+      data <- ggdist::median_qi(as_tibble(data), !!sym(distribution_var(data)), .width = level/100)
+      names(data)[match(".index", names(data))] <- ".response"
+      data
+    }
     
     if(!is.null(col)){
       if(length(single_row[["FALSE"]]) > 0) {
-        out[[length(out) + 1L]] <- ggdist::stat_ribbon(without(intvl_mapping, "colour_ramp"), data = object[single_row[["FALSE"]],], .width = level/100, ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
+        out[[length(out) + 1L]] <- ggdist::stat_ribbon(without(intvl_mapping, "colour_ramp"), data = dist_qi_frame(object[single_row[["FALSE"]],], level), ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
       }
       if(length(single_row[["TRUE"]]) > 0) {
-        out[[length(out) + 1L]] <- ggdist::stat_interval(intvl_mapping, data = object[single_row[["TRUE"]],], .width = level/100, ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
+        out[[length(out) + 1L]] <- ggdist::stat_interval(intvl_mapping, data = dist_qi_frame(object[single_row[["TRUE"]],], level), ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
       }
-      out[[length(out) + 1]] <- ggplot2::labs(fill = col_nm)
+      out[[length(out) + 1L]] <- ggplot2::labs(fill = col_nm)
     } else {
       if(length(single_row[["FALSE"]]) > 0) {
-        out[[length(out) + 1L]] <- ggdist::stat_ribbon(without(intvl_mapping, "colour_ramp"), data = object[single_row[["FALSE"]],], .width = level/100, fill = colour, ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
+        out[[length(out) + 1L]] <- ggdist::geom_lineribbon(without(intvl_mapping, "colour_ramp"), data = dist_qi_frame(object[single_row[["FALSE"]],], level), fill = colour, ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
       }
       if(length(single_row[["TRUE"]]) > 0) {
-        out[[length(out) + 1L]] <- ggdist::stat_interval(intvl_mapping, data = object[single_row[["TRUE"]],], .width = level/100, colour = colour, ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
+        out[[length(out) + 1L]] <- ggdist::stat_interval(intvl_mapping, data = dist_qi_frame(object[single_row[["TRUE"]],], level), colour = colour, ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
       }
+    }
+    
+    # Add scale for confidence level ramp
+    if(length(level) > 6) {
+      level_breaks <- ggplot2::waiver()
+      level_guide <- ggdist::guide_rampbar()
+    } else {
+      level_breaks <- level/100
+      level_guide <- "legend"
+    }
+    if(length(single_row[["FALSE"]]) > 0) {
+      out[[length(out) + 1L]] <- ggdist::scale_fill_ramp_continuous(name = "level", from = "white", breaks = level_breaks, limits = function(l) range(l), range = c(0.7, 0.3), labels = function(x) scales::percent(as.numeric(x)), guide = level_guide)
+    }
+    if(length(single_row[["TRUE"]]) > 0) {
+      out[[length(out) + 1L]] <- ggdist::scale_colour_ramp_continuous(name = "level", from = "white", breaks = level_breaks, limits = function(l) range(l), range = c(0.7, 0.3), labels = function(x) scales::percent(as.numeric(x)), guide = level_guide)
     }
   }
   
@@ -385,23 +400,21 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     mapping$colour <- col
     
     if(length(single_row[["FALSE"]]) > 0) {
-      out[[length(out) + 1]] <- geom_line(mapping = without(mapping, "shape"), data = unpack_data(object[single_row[["FALSE"]],]), ..., inherit.aes = FALSE)#, key_glyph = ggplot2::draw_key_timeseries)
+      out[[length(out) + 1L]] <- geom_line(mapping = without(mapping, "shape"), data = unpack_data(object[single_row[["FALSE"]],]), ..., inherit.aes = FALSE)#, key_glyph = ggplot2::draw_key_timeseries)
     }
     if(length(single_row[["TRUE"]]) > 0) {
-      out[[length(out) + 1]] <- ggplot2::geom_point(mapping = without(mapping, "linetype"), data = unpack_data(object[single_row[["TRUE"]],]), size = 3, ..., inherit.aes = FALSE)
+      out[[length(out) + 1L]] <- ggplot2::geom_point(mapping = without(mapping, "linetype"), data = unpack_data(object[single_row[["TRUE"]],]), size = 3, ..., inherit.aes = FALSE)
     }
-    out[[length(out) + 1]] <- ggplot2::labs(colour = col_nm)
+    out[[length(out) + 1L]] <- ggplot2::labs(colour = col_nm)
   } else {
     if(length(single_row[["FALSE"]]) > 0) {
-      out[[length(out) + 1]] <- geom_line(mapping = without(mapping, "shape"), data = unpack_data(object[single_row[["FALSE"]],]), color = colour, ..., inherit.aes = FALSE)#, key_glyph = ggplot2::draw_key_timeseries)
+      out[[length(out) + 1L]] <- geom_line(mapping = without(mapping, "shape"), data = unpack_data(object[single_row[["FALSE"]],]), color = colour, ..., inherit.aes = FALSE)#, key_glyph = ggplot2::draw_key_timeseries)
     }
     if(length(single_row[["TRUE"]]) > 0) {
-      out[[length(out) + 1]] <- ggplot2::geom_point(mapping = without(mapping, "linetype"), data = unpack_data(object[single_row[["TRUE"]],]), color = colour, size = 3, ..., inherit.aes = FALSE)
+      out[[length(out) + 1L]] <- ggplot2::geom_point(mapping = without(mapping, "linetype"), data = unpack_data(object[single_row[["TRUE"]],]), color = colour, size = 3, ..., inherit.aes = FALSE)
     }
   }
-  # Add scale for confidence level ramp
-  out[[length(out) + 1]] <- ggdist::scale_fill_ramp_discrete(from = "white", range = c(0.3, 0.7), labels = function(x) scales::percent(as.numeric(x)))
-  out[[length(out) + 1]] <- ggdist::scale_colour_ramp_discrete(from = "white", range = c(0.3, 0.7), labels = function(x) scales::percent(as.numeric(x)))
+  
   out
 }
 
@@ -425,7 +438,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
 #'   components() %>%  
 #'   autoplot()
 #' 
-#' @importFrom ggplot2 ggplot geom_line geom_rect facet_grid vars ylab labs
+#' @importFrom ggplot2 ggplot geom_line geom_rect facet_grid vars ylab labs after_stat
 #' @export
 autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE, 
                              level = c(80, 95), ...){
