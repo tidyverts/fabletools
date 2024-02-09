@@ -125,7 +125,10 @@ method, giving a combination model for the response of the decomposition.</p>
 <span class="r-in"><span>  <span class="fu"><a href="model.html">model</a></span><span class="op">(</span><span class="va">my_dcmp_spec</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span>h<span class="op">=</span><span class="st">"5 years"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">vic_food</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in draw_key_rect(data, params, size):</span> could not find function "draw_key_rect"</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in layer_slabinterval(data = data, mapping = mapping, stat = StatRibbon,     geom = geom, position = position, show.legend = show.legend,     inherit.aes = inherit.aes, params = list(.width = .width,         point_interval = point_interval, orientation = orientation,         na.rm = na.rm, ...)):</span> Problem while mapping stat to aesthetics.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Error occurred in the 1st layer.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error in `after_stat()`:</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> could not find function "after_stat"</span>
 </code></pre></div>
     </div>
   </div>
