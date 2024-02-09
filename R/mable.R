@@ -42,11 +42,11 @@ as_mable <- function(x, ...){
 #' 
 #' @export
 as_mable.data.frame <- function(x, key = NULL, model = NULL, ...){
-  build_mable(x, key = !!enquo(key), model = !!enquo(model))
+  build_mable(x, key = !!enquo(key), model = model)
 }
 
 build_mable <- function (x, key = NULL, key_data = NULL, model = NULL) {
-  model <- names(tidyselect::eval_select(enquo(model), data = x))
+  model <- names(tidyselect::eval_select(all_of(model), data = x))
   
   if(length(resp_var <- unique(map(x[model], function(mdl) response_vars(mdl[[1]])))) > 1){
     abort("A mable can only contain models with the same response variable(s).")
@@ -110,7 +110,7 @@ restore_mable <- function(data, template){
   mbl_vars <- setdiff(key_vars(template), data_cols)
   res <- bind_cols(template[mbl_vars], data)
   
-  build_mable(res, key = !!key_vars(template), model = !!model_vars)
+  build_mable(res, key = !!key_vars(template), model = model_vars)
 }
 
 #' @export
@@ -121,7 +121,7 @@ gather.mdl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE
                 ..., na.rm = na.rm, convert = convert, factor_key = factor_key)
   mdls <- names(which(map_lgl(tbl, inherits, "lst_mdl")))
   kv <- c(key_vars(data), key)
-  build_mable(tbl, key = !!kv, model = !!mdls)
+  build_mable(tbl, key = !!kv, model = mdls)
 }
 
 # Adapted from tsibble:::pivot_longer.tbl_ts
@@ -137,7 +137,7 @@ pivot_longer.mdl_df <- function (data, ..., names_to = "name") {
   new_key <- c(key_vars(data), names_to)
   tbl <- tidyr::pivot_longer(as_tibble(data), ..., names_to = names_to)
   build_mable(tbl, key = !!new_key,
-              model = !!which(vapply(tbl, inherits, logical(1L), "lst_mdl")))
+              model = which(vapply(tbl, inherits, logical(1L), "lst_mdl")))
 }
 
 #' @export
@@ -148,7 +148,7 @@ select.mdl_df <- function (.data, ...){
   
   kv <- key_vars(.data)
   rm_kv <- intersect(kv, names(.data)[-loc])
-  key_data <- vec_unique(select(key_data(.data), rm_kv))
+  key_data <- vec_unique(select(key_data(.data), all_of(rm_kv)))
   
   # Drop/keep redundant/necessary key variables
   if(vec_size(key_data) == 1) {
@@ -200,14 +200,14 @@ transmute.mdl_df <- function (.data, ...){
     if(any(lengths(key_data[[length(key_data)]]) > 1))
       return(out)
     else
-      return(build_mable(out, key_data = key_data, model = !!mv))
+      return(build_mable(out, key_data = key_data, model = mv))
   }
   
   # If all models are removed, return a tibble
   if(length(mv) == 0)
     return(out)
   
-  build_mable(out, key = !!old_kv, model = !!mv)
+  build_mable(out, key = !!old_kv, model = mv)
 }
 
 #' @export

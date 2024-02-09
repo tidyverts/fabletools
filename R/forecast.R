@@ -156,7 +156,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
   # If there's nothing to forecast, return an empty fable.
   if(NROW(new_data) == 0){
     new_data[[dist_col]] <- distributional::new_dist(dimnames = resp_vars)
-    fbl <- build_fable(new_data, response = resp_vars, distribution =  !!sym(dist_col))
+    fbl <- build_fable(new_data, response = resp_vars, distribution =  dist_col)
     return(fbl)
   }
   # Compute forecasts
@@ -246,7 +246,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
     interval = interval(new_data)
   )
   
-  build_fable(fbl, response = resp_vars, distribution = !!sym(dist_col))
+  build_fable(fbl, response = resp_vars, distribution = dist_col)
 }
 
 #' Construct a new set of forecasts
