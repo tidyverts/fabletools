@@ -308,8 +308,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   
   out <- list()
   object <- object %>% 
-    dplyr::mutate_if(~inherits(., "agg_vec"), compose(trimws, format)) |> 
-    mutate(.model = factor(.model))
+    dplyr::mutate_if(~inherits(., "agg_vec"), compose(trimws, format))
   
   key_glyph_rect <- function (data, params, size) {
     data$alpha <- data$alpha %||% NA
@@ -331,14 +330,14 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
         (scales::seq_gradient_pal(attr(amount, "from") %||% "white", color))(amount %||% NA)
       }, data$fill, data$fill_ramp)
     }
-    draw_key_rect(data, params, size)
+    ggplot2::draw_key_rect(data, params, size)
   }
   
   # Add forecast interval ribbons to plot
   if(!is.null(level)){
     intvl_mapping <- mapping
     intvl_mapping$dist <- sym(response_vars(object))
-    intvl_mapping$fill_ramp <- intvl_mapping$colour_ramp <- expr(stat(level))
+    intvl_mapping$fill_ramp <- intvl_mapping$colour_ramp <- expr(after_stat(level))
     intvl_mapping$fill <- intvl_mapping$colour <- col
     
     if(!is.null(col)){
