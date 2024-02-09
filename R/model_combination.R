@@ -49,8 +49,9 @@ combination_model <- function(..., cmbn_fn = combination_ensemble,
   if(!any(map_lgl(mdls, inherits, "mdl_defn"))){
     abort("`combination_model()` must contain at least one valid model definition.")
   }
+  
   # Guess the response variable without transformations
-  resp <- Reduce(intersect, lapply(mdls, function(x) all.vars(model_lhs(x))))
+  resp <- Reduce(intersect, lapply(Filter(function(x) inherits(x, "mdl_defn"), mdls), function(x) all.vars(model_lhs(x))))
   if(length(resp) == 0) abort("`combination_model()` must use component models with the same response variable.")
   
   cmbn_model <- new_model_class("cmbn_mdl", train = train_combination, 
@@ -342,9 +343,13 @@ fitted.model_combination <- function(object, ...){
 }
 
 #' @export
-residuals.model_combination <- function(object, ...) {
+residuals.model_combination <- function(object, type = "response", ...) {
   mdls <- map_lgl(object, is_model)
   expr <- attr(object, "combination")
+  # Ignore type and always give response residuals here
+  # if(type != "response") {
+  #   stop("Only response residuals are supported for combination models.")
+  # }
   object[mdls] <- map(object[mdls], residuals, type = "response", ...)
   res <- map(object, function(x) if(is_tsibble(x)) x[[".resid"]] else x)
   eval_tidy(expr, res)
