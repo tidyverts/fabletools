@@ -18,7 +18,7 @@ outliers.mdl_df <- function(object, ...){
   kv <- key_vars(object)
   object <- mutate(as_tibble(object), 
                    dplyr::across(all_of(mbl_vars), function(x) lapply(x, outliers, ...)))
-  object <- pivot_longer(object, mbl_vars, names_to = ".model", values_to = ".outliers")
+  object <- pivot_longer(object, all_of(mbl_vars), names_to = ".model", values_to = ".outliers")
   unnest_tsbl(object, ".outliers", parent_key = c(kv, ".model"))
 }
 

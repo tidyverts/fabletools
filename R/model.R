@@ -160,16 +160,14 @@ model_lhs <- function(model){
   if(is_quosure(f)){
     f <- get_expr(f)
   }
+  if(is.formula(f)){
+    return(f_lhs(f))
+  }
   if(is.call(f)) {
     if(call_name(f) == "~")
       return(f[[2]])
   }
-  if(is.formula(f)){
-    f_lhs(f)
-  }
-  else{
-    f
-  }
+  f
 }
 
 #' Extract the right hand side of a model

@@ -94,7 +94,7 @@ glance.mdl_df <- function(x, ...){
   mbl_vars <- mable_vars(x)
   x <- mutate(as_tibble(x), 
               dplyr::across(all_of(mbl_vars), function(x) lapply(x, glance, ...)))
-  x <- pivot_longer(x, mbl_vars, names_to = ".model", values_to = ".glanced")
+  x <- pivot_longer(x, all_of(mbl_vars), names_to = ".model", values_to = ".glanced")
   unnest(x, ".glanced")
 }
 
@@ -126,7 +126,7 @@ tidy.mdl_df <- function(x, ...){
   mbl_vars <- mable_vars(x)
   x <- mutate(as_tibble(x), 
          dplyr::across(all_of(mbl_vars), function(x) lapply(x, tidy, ...)))
-  x <- pivot_longer(x, mbl_vars, names_to = ".model", values_to = ".tidied")
+  x <- pivot_longer(x, all_of(mbl_vars), names_to = ".model", values_to = ".tidied")
   unnest(x, ".tidied")
 }
 
