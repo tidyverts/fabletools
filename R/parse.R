@@ -120,13 +120,18 @@ parse_model_rhs <- function(model){
 #' @keywords internal
 parse_model_lhs <- function(model){
   model_lhs <- model_lhs(model)
-  if(is_call(model_lhs) && call_name(model_lhs) == "vars"){
+  if(is_call_name(model_lhs, c("vars", "c"))){
     model_lhs[[1]] <- sym("exprs")
     model_lhs <- eval(model_lhs)
   }
   else{
     model_lhs <- list(model_lhs)
   }
+  # Store response variable in a list  
+  model_lhs <- model_lhs %>%
+    map(parse_tidyselect, model$data) %>%
+    map(parse_across, model$data) %>%
+    rlang::squash()
   is_resp <- function(x) is_call(x) && x[[1]] == sym("resp")
   
   # Traverse call removing all resp() usage
@@ -296,4 +301,43 @@ Please specify a valid form of your transformation using `new_transformation()`.
     response = syms(responses),
     transformation = transformations
   )
+}
+
+parse_tidyselect <- function(lhs, data){
+  data <- as_tibble(data) %>% 
+    select(-sym(index_var(data)))
+  pos <- try(tidyselect::eval_select(lhs, data), silent = TRUE)
+  if(class(pos) == "try-error" || length(pos) == 0){
+    if(is_call_name(lhs, "c")) {
+      warning(sprintf("Fail to parse %s. Check that the formula are specified correctly", deparse(lhs)))
+    }
+    return(lhs)
+  }
+  syms(names(pos))
+}
+
+parse_across <- function(lhs, data){
+  if(!is_call_name(lhs, "across")) 
+    return(lhs)
+  
+  across <- function(.cols, .fns = `(`){}
+  lhs <- rlang::call_match(lhs, across, defaults = TRUE)
+  
+  .cols <- lhs[[".cols"]] 
+  .fns <- lhs[[".fns"]]
+  if(deparse(.cols) == "") {
+    abort("No variable selected in `across`.")
+  }
+  
+  .cols <- parse_tidyselect(.cols, data)
+  
+  if(is_call_name(.fns, "list")){
+    .fns <- as.list(.fns)[-1]
+  } else {
+    .fns <- list(.fns)
+  }
+  
+  c(outer(.cols, .fns,FUN = function(cols, fns)
+    map2(cols, fns, function(col, fn) eval(expr( call2(fn, col))))))
+  
 }

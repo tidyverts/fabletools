@@ -55,6 +55,20 @@ test_that("Model parsing variety", {
   mdl3_trans <- parse_log3[[1]][[1]]$transformation[[1]]
   expect_identical(capture.output(mdl1_trans), capture.output(mdl3_trans))
   expect_identical(response_vars(parse_log1), response_vars(parse_log3))
+  
+  # Parse tidyselect multivariate lhs
+  skip_if_not_installed("fable")
+  parse_resp_multivariate <- response_vars(mbl_mv)
+  expect_identical(parse_resp_multivariate, response_vars(model(lung_deaths_wide_tr, fable::VAR(vars(mdeaths, fdeaths) ~ AR(3)))))
+  expect_identical(parse_resp_multivariate, response_vars(model(lung_deaths_wide_tr, fable::VAR(mdeaths:fdeaths ~ AR(3)))))
+  expect_identical(parse_resp_multivariate, response_vars(model(lung_deaths_wide_tr, fable::VAR(everything() ~ AR(3)))))
+  expect_identical(parse_resp_multivariate, response_vars(model(lung_deaths_wide_tr, fable::VAR(ends_with("deaths") ~ AR(3)))))
+  expect_identical(parse_resp_multivariate, response_vars(model(lung_deaths_wide_tr, fable::VAR(all_of(c("mdeaths", "fdeaths")) ~ AR(3)))))
+  
+  # Parse tidyselect lhs
+  parse_resp_tidyselect <- response_vars(model(lung_deaths_wide_tr, fable::VAR(fdeaths ~ AR(3))))
+  expect_identical(parse_resp_tidyselect, response_vars(model(lung_deaths_wide_tr, fable::VAR(!mdeaths ~ AR(3)))))
+  expect_identical(parse_resp_tidyselect, response_vars(model(lung_deaths_wide_tr, fable::VAR(2 ~ AR(3)))))
 })
 
 
