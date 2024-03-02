@@ -18,11 +18,13 @@ features_if(.tbl, .predicate, features, ...)
 \arguments{
 \item{.tbl}{A dataset}
 
-\item{.var, .vars}{The variable(s) to compute features on}
+\item{.var}{An expression that produces a vector from which the features are computed.}
 
 \item{features}{A list of functions (or lambda expressions) for the features to compute. \code{\link[=feature_set]{feature_set()}} is a useful helper for building sets of features.}
 
 \item{...}{Additional arguments to be passed to each feature. These arguments will only be passed to features which use it in their formal arguments (\code{\link[base:formals]{base::formals()}}), and not via their \code{...}. While passing \code{na.rm = TRUE} to \code{\link[stats:cor]{stats::var()}} will work, it will not for \code{\link[base:mean]{base::mean()}} as its formals are \code{x} and \code{...}. To more precisely pass inputs to each function, you should use lambdas in the list of features (\code{~ mean(., na.rm = TRUE)}).}
+
+\item{.vars}{A tidyselect compatible selection of the column(s) to compute features on.}
 
 \item{.predicate}{A predicate function (or lambda expression) to be applied to the columns or a logical vector. The variables for which .predicate is or returns TRUE are selected.}
 }
