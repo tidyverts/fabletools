@@ -88,7 +88,7 @@ test_that("Out-of-sample accuracy", {
 
   acc <- accuracy(fbl, us_deaths, measures = list(interval_accuracy_measures, distribution_accuracy_measures))
   expect_equal(acc$.type, "Test")
-  expect_equal(colnames(acc), c(".model", ".type", "winkler", "percentile", "CRPS"))
+  expect_equal(colnames(acc), c(".model", ".type", "winkler", "pinball", "scaled_pinball", "percentile", "CRPS"))
   expect_true(!any(map_lgl(acc, compose(any, is.na))))
 
   acc_multi <- accuracy(fbl_multi, lung_deaths_long)

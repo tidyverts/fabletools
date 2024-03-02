@@ -5,7 +5,7 @@ Minor patch for upcoming release of ggdist v3.3.1
 ## Improvements
 
 * Added (scaled) pinball loss metrics to `interval_accuracy_measures` (#379).
-* Improved use of random seed in parallel modeling and forecasting (#384).
+* Improved use of random seed in parallel modelling and forecasting (#384).
 * Documentation improvements
 
 # fabletools 0.4.0
