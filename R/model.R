@@ -105,7 +105,8 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
         rep(models, each = length(lst_data)),
         FUN = estimate_progress,
         SIMPLIFY = FALSE,
-        future.globals = FALSE
+        future.globals = FALSE,
+        future.seed = TRUE
       )
       unname(split(out, rep(seq_len(num_mdl), each = num_key)))
     }
