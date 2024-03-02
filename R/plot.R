@@ -319,7 +319,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     # Apply ramped fill
     if (!is.null(data[["fill_ramp"]])) {
       if (utils::packageVersion("ggdist") > "3.3.1") {
-        data$fill <- ggdist::ramp_colours(data$fill, data$fill_ramp)
+        data$fill <- get("ramp_colours", asNamespace("ggdist"), mode = "function")(data$fill, data$fill_ramp)
       } else {
         data$fill <- mapply(function(color, amount){
           (scales::seq_gradient_pal(attr(amount, "from") %||% "white", color))(amount %||% NA)
