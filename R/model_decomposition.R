@@ -67,7 +67,11 @@ Please specify an appropriate model for these components",
   
   model <- reduce(c(mdls, mdls_default), `+`)
   
-  if(!isTRUE(all.equal(response(model)[[".response"]], .data[[measured_vars(.data)]]))){
+  all_match <- function(x, y) {
+    non_missing <- stats::complete.cases(x, y)
+    isTRUE(all.equal(x[non_missing], y[non_missing]))
+  }
+  if(!all_match(response(model)[[".response"]], .data[[measured_vars(.data)]])) {
     abort(
 "The models specified do not combine to give the correct response.
 Please check that you have specified the decomposition models appropriately.")

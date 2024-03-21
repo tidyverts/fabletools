@@ -21,7 +21,7 @@ hypothesize.mdl_df <- function(x, ...){
   mbl_vars <- mable_vars(x)
   x <- mutate(as_tibble(x), 
               dplyr::across(all_of(mbl_vars), function(x) lapply(x, hypothesize, ...)))
-  x <- pivot_longer(x, mbl_vars, names_to = ".model", values_to = ".hypothesis")
+  x <- pivot_longer(x, all_of(mbl_vars), names_to = ".model", values_to = ".hypothesis")
   unnest(x, ".hypothesis")
 }
 

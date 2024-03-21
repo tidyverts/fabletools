@@ -224,7 +224,7 @@ scaled_pinball_loss <- function(.dist, .actual, .train, level = 95, na.rm = TRUE
 #' @param level The level of the forecast interval.
 #' 
 #' @export
-interval_accuracy_measures <- list(winkler = winkler_score)
+interval_accuracy_measures <- list(winkler = winkler_score, pinball = pinball_loss, scaled_pinball = scaled_pinball_loss)
 
 #' @rdname distribution_accuracy_measures
 #' @export

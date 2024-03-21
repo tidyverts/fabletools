@@ -264,7 +264,8 @@ mapply_maybe_parallel <- function (.f, ..., MoreArgs = list(), SIMPLIFY = FALSE)
       ...,
       MoreArgs = MoreArgs,
       SIMPLIFY = SIMPLIFY,
-      future.globals = FALSE
+      future.globals = FALSE,
+      future.seed = TRUE
     )
   }
   else{

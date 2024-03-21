@@ -2,7 +2,7 @@
 #' 
 #' Use a model's fitted distribution to simulate additional data with similar
 #' behaviour to the response. This is a tidy implementation of 
-#' `\link[stats]{simulate}`.
+#' [stats::simulate()].
 #' 
 #' Innovations are sampled by the model's assumed error distribution. 
 #' If `bootstrap` is `TRUE`, innovations will be sampled from the model's 

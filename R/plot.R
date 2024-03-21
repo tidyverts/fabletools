@@ -123,10 +123,6 @@ autolayer.tbl_ts <- function(object, .vars = NULL, ...){
 #' @importFrom ggplot2 fortify
 #' @export
 fortify.fbl_ts <- function(model, data = NULL, level = c(80, 95), ...){
-  if(deparse(match.call()) != "fortify.fbl_ts(object = data)"){
-    warn("The output of `fortify(<fable>)` has changed to better suit usage with the ggdist package.
-If you're using it to extract intervals, consider using `hilo()` to compute intervals, and `unpack_hilo()` to obtain values.")
-  }
   return(as_tibble(model))
 }
 
@@ -224,7 +220,6 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = T
 #'   autoplot(Beer) + 
 #'   autolayer(fc)
 #' 
-#' @importFrom distributional scale_level_continuous guide_level
 #' @export
 autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95), 
                              point_forecast = list(mean = mean), show_gap = TRUE, ...){
@@ -246,7 +241,8 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   dist_var <- distribution_var(object)
   idx <- index(object)
   common_models <- duplicated(key_data[[mdl_key]] %||% rep(TRUE, NROW(key_data(object))))
-  colour <- colour %||% color %||% fill %||% "blue"
+  colour <- colour %||% color %||% fill %||% "#446ffc"
+  without <- function(x, el) x[setdiff(names(x), el)]
   
   if(isFALSE(level)){
     warn("Plot argument `level` should be a numeric vector of levels to display. Setting `level = NULL` will remove the intervals from the plot.")
@@ -306,62 +302,123 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     mapping$group <- expr(interaction(!!!map(grp, function(x) expr(format(!!x))), sep = "/"))
   }
   
-  single_row <- filter(key_data(object), lengths(!!sym(".rows")) == 1)
+  # Single time point forecasts
+  kd <- key_data(object)
+  single_row <- lapply(split(kd$.rows, lengths(kd$.rows) == 1), unlist)
   
   out <- list()
   object <- object %>% 
     dplyr::mutate_if(~inherits(., "agg_vec"), compose(trimws, format))
-  if(!is.null(level)){
-    interval_data <- as_tibble(hilo(object, level = level)) %>% 
-      tidyr::pivot_longer(paste0(level, "%"), names_to = NULL, values_to = "hilo")
-    if(length(resp_var) > 1){
-      interval_data <- interval_data[setdiff(names(interval_data), resp_var)] %>% 
-        tidyr::unpack("hilo", names_repair = "minimal") %>% 
-        tidyr::pivot_longer(names(interval_data$hilo), names_to = ".response", values_to = "hilo")
+  
+  # Adapted from ggdist:::draw_key_lineribbon
+  draw_key_ribbon <- function (self, data, params, size) {
+    data$alpha <- data$alpha %||% NA
+    if (is.null(data[["fill"]]) && (!is.null(data[["fill_ramp"]]) || !all(is.na(data[["alpha"]])))) {
+      data$fill = "gray65"
     }
+    # Apply ramped fill
+    if (!is.null(data[["fill_ramp"]])) {
+      if (utils::packageVersion("ggdist") > "3.3.1") {
+        data$fill <- get("ramp_colours", asNamespace("ggdist"), mode = "function")(data$fill, data$fill_ramp)
+      } else {
+        data$fill <- mapply(function(color, amount){
+          (scales::seq_gradient_pal(attr(amount, "from") %||% "white", color))(amount %||% NA)
+        }, data$fill, data$fill_ramp)
+      }
+    }
+    ggplot2::draw_key_rect(data, params, size)
+  }
+  
+  # Add forecast interval ribbons to plot
+  if(!is.null(level)){
     intvl_mapping <- mapping
-    intvl_mapping$hilo <- sym("hilo")
+    # intvl_mapping$dist <- sym(distribution_var(object))
+    intvl_mapping$ymin <- sym(".lower")
+    intvl_mapping$ymax <- sym(".upper")
+    intvl_mapping$fill_ramp <- intvl_mapping$colour_ramp <- sym(".width")
+    intvl_mapping$fill <- intvl_mapping$colour <- col
+    
+    dist_qi_frame <- function(data, level) {
+      data <- ggdist::median_qi(as_tibble(data), !!sym(distribution_var(data)), .width = level/100)
+      names(data)[match(".index", names(data))] <- ".response"
+      data
+    }
     
     if(!is.null(col)){
-      intvl_mapping$fill <- col
-      out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = dplyr::anti_join(interval_data, single_row, by = key_vars), ..., inherit.aes = FALSE)
-      intvl_mapping$colour <- col
-      intvl_mapping$fill <- NULL
-      out[[2]] <- distributional::geom_hilo_linerange(intvl_mapping, data = dplyr::semi_join(interval_data, single_row, by = key_vars), ..., inherit.aes = FALSE)
-      out[[3]] <- ggplot2::labs(fill = col_nm)
+      if(length(single_row[["FALSE"]]) > 0) {
+        out[[length(out) + 1L]] <- ggdist::geom_lineribbon(without(intvl_mapping, "colour_ramp"), data = dist_qi_frame(object[single_row[["FALSE"]],], level), ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
+      }
+      if(length(single_row[["TRUE"]]) > 0) {
+        out[[length(out) + 1L]] <- ggdist::stat_interval(intvl_mapping, data = dist_qi_frame(object[single_row[["TRUE"]],], level), ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
+      }
+      out[[length(out) + 1L]] <- ggplot2::labs(fill = col_nm)
     } else {
-      out[[1]] <- distributional::geom_hilo_ribbon(intvl_mapping, data = dplyr::anti_join(interval_data, single_row, by = key_vars), fill = colour, ..., inherit.aes = FALSE)
-      out[[2]] <- distributional::geom_hilo_linerange(intvl_mapping, data = dplyr::semi_join(interval_data, single_row, by = key_vars), colour = colour, ..., inherit.aes = FALSE)
+      if(length(single_row[["FALSE"]]) > 0) {
+        out[[length(out) + 1L]] <- ggdist::geom_lineribbon(without(intvl_mapping, "colour_ramp"), data = dist_qi_frame(object[single_row[["FALSE"]],], level), fill = colour, ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
+      }
+      if(length(single_row[["TRUE"]]) > 0) {
+        out[[length(out) + 1L]] <- ggdist::stat_interval(intvl_mapping, data = dist_qi_frame(object[single_row[["TRUE"]],], level), colour = colour, ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
+      }
+    }
+    
+    # Add scale for confidence level ramp
+    if(length(level) > 6) {
+      level_breaks <- ggplot2::waiver()
+      level_guide <- ggdist::guide_rampbar()
+    } else {
+      level_breaks <- level/100
+      level_guide <- "legend"
+    }
+    if(length(single_row[["FALSE"]]) > 0) {
+      out[[length(out) + 1L]] <- ggdist::scale_fill_ramp_continuous(name = "level", from = "white", breaks = level_breaks, limits = function(l) range(l), range = c(0.7, 0.3), labels = function(x) scales::percent(as.numeric(x)), guide = level_guide)
+    }
+    if(length(single_row[["TRUE"]]) > 0) {
+      out[[length(out) + 1L]] <- ggdist::scale_colour_ramp_continuous(name = "level", from = "white", breaks = level_breaks, limits = function(l) range(l), range = c(0.7, 0.3), labels = function(x) scales::percent(as.numeric(x)), guide = level_guide)
     }
   }
   
+  # Calculate point forecasts
   object <- as_tibble(object)
   object[names(point_forecast)] <- map(point_forecast, calc, object[[dist_var]])
-  object <- tidyr::pivot_longer(object[-match(dist_var, names(object))], names(point_forecast), names_to = "Point forecast", values_to = dist_var)
-  if(length(resp_var) > 1){
-    object[[dist_var]] <- as_tibble(object[[dist_var]])
-    object <- object[setdiff(names(object), resp_var)] %>% 
-      tidyr::unpack(!!dist_var) %>% 
-      tidyr::pivot_longer(names(object[[dist_var]]), names_to = ".response", values_to = dist_var)
+  
+  unpack_data <- function(x) {
+    x <- tidyr::pivot_longer(x[-match(dist_var, names(x))], names(point_forecast), names_to = "Point forecast", values_to = dist_var)
+    if(length(resp_var) > 1){
+      x[[dist_var]] <- as_tibble(x[[dist_var]])
+      x <- x[setdiff(names(x), resp_var)] %>% 
+        tidyr::unpack(!!dist_var) %>% 
+        tidyr::pivot_longer(names(x[[dist_var]]), names_to = ".response", values_to = dist_var)
+    }
+    x
   }
   
+  # Add point forecasts to plot
   mapping$y <- sym(dist_var)
   if(length(point_forecast) > 1){
     mapping$linetype <- mapping$shape <- sym("Point forecast")
     grp <- c(grp, mapping$linetype)
     mapping$group <- expr(interaction(!!!map(grp, function(x) expr(format(!!x))), sep = "/"))
   }
-  without <- function(x, el) x[setdiff(names(x), el)]
   object <- as_tibble(object)
   if(!is.null(col)){
     mapping$colour <- col
-    out[[length(out) + 1]] <- geom_line(mapping = without(mapping, "shape"), data = dplyr::anti_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
-    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = without(mapping, "linetype"), data = dplyr::semi_join(object, single_row, by = key_vars), ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
-    out[[length(out) + 1]] <- ggplot2::labs(colour = col_nm)
+    
+    if(length(single_row[["FALSE"]]) > 0) {
+      out[[length(out) + 1L]] <- geom_line(mapping = without(mapping, "shape"), data = unpack_data(object[single_row[["FALSE"]],]), ..., inherit.aes = FALSE)#, key_glyph = ggplot2::draw_key_timeseries)
+    }
+    if(length(single_row[["TRUE"]]) > 0) {
+      out[[length(out) + 1L]] <- ggplot2::geom_point(mapping = without(mapping, "linetype"), data = unpack_data(object[single_row[["TRUE"]],]), size = 3, ..., inherit.aes = FALSE)
+    }
+    out[[length(out) + 1L]] <- ggplot2::labs(colour = col_nm)
   } else {
-    out[[length(out) + 1]] <- geom_line(mapping = without(mapping, "shape"), data = dplyr::anti_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_timeseries)
-    out[[length(out) + 1]] <- ggplot2::geom_point(mapping = without(mapping, "linetype"), data = dplyr::semi_join(object, single_row, by = key_vars), color = colour, ..., inherit.aes = FALSE, key_glyph = ggplot2::draw_key_blank)
+    if(length(single_row[["FALSE"]]) > 0) {
+      out[[length(out) + 1L]] <- geom_line(mapping = without(mapping, "shape"), data = unpack_data(object[single_row[["FALSE"]],]), color = colour, ..., inherit.aes = FALSE)#, key_glyph = ggplot2::draw_key_timeseries)
+    }
+    if(length(single_row[["TRUE"]]) > 0) {
+      out[[length(out) + 1L]] <- ggplot2::geom_point(mapping = without(mapping, "linetype"), data = unpack_data(object[single_row[["TRUE"]],]), color = colour, size = 3, ..., inherit.aes = FALSE)
+    }
   }
+  
   out
 }
 
@@ -385,7 +442,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
 #'   components() %>%  
 #'   autoplot()
 #' 
-#' @importFrom ggplot2 ggplot geom_line geom_rect facet_grid vars ylab labs
+#' @importFrom ggplot2 ggplot geom_line geom_rect facet_grid vars ylab labs after_stat
 #' @export
 autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE, 
                              level = c(80, 95), ...){
@@ -413,13 +470,18 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE,
     interval_data <- tidyr::pivot_longer(
       interval_data, paste0(level, "%"), names_to = NULL, values_to = "hilo"
     )
-    intvl_aes <- aes(x = !!idx, hilo = !!sym("hilo"))
+    intvl_aes <- aes(x = !!idx, dist = !!sym(".val"), fill_ramp = after_stat(level))
     line_aes <- aes(x = !!idx, y = mean(!!sym(".val")))
     if(n_keys > 1){
-      line_aes$colour <- intvl_aes$fill <- expr(interaction(!!!keys, sep = "/"))
+      line_aes$colour <- intvl_aes$fill <- intvl_aes$group <- expr(interaction(!!!keys, sep = "/"))
     }
     dcmp_geom <- list(
-      distributional::geom_hilo_ribbon(intvl_aes, ..., data = interval_data),
+      if(n_keys > 1) {
+        ggdist::stat_ribbon(intvl_aes, .width = level/100, ...)
+      } else {
+        ggdist::stat_ribbon(intvl_aes, fill = "gray65", .width = level/100, ...)
+      },
+      ggdist::scale_fill_ramp_discrete(from = "white", range = c(0.3, 0.7), labels = function(x) scales::percent(as.numeric(x))),
       geom_line(line_aes, ...)
     )
   } else {
@@ -437,7 +499,8 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE,
     ylab(NULL) + 
     labs(
       title = paste(method%||%"A", "decomposition"), 
-      subtitle = paste(c(expr_text(get_expr(.vars)), dcmp_str), collapse = " = ")
+      subtitle = paste(c(expr_text(get_expr(.vars)), dcmp_str), collapse = " = "),
+      fill = "Model", colour = "Model"
     )
   
   # Rangebars
@@ -469,7 +532,8 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE,
   }
   
   if(!is_empty(keys)){
-    p <- p + guides(colour = guide_legend(paste0(map_chr(keys, expr_name), collapse = "/")))
+    colour_title <- paste0(map_chr(keys, expr_name), collapse = "/")
+    p <- p + labs(colour = colour_title, fill = colour_title)
   }
   
   p

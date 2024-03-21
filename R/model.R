@@ -105,7 +105,8 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
         rep(models, each = length(lst_data)),
         FUN = estimate_progress,
         SIMPLIFY = FALSE,
-        future.globals = FALSE
+        future.globals = FALSE,
+        future.seed = TRUE
       )
       unname(split(out, rep(seq_len(num_mdl), each = num_key)))
     }
@@ -160,13 +161,14 @@ model_lhs <- function(model){
   if(is_quosure(f)){
     f <- get_expr(f)
   }
-  
   if(is.formula(f)){
-    f_lhs(f)
+    return(f_lhs(f))
   }
-  else{
-    f
+  if(is.call(f)) {
+    if(call_name(f) == "~")
+      return(f[[2]])
   }
+  f
 }
 
 #' Extract the right hand side of a model

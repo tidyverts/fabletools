@@ -39,7 +39,7 @@ time series with no exogenous regressors).}
 \description{
 Use a model's fitted distribution to simulate additional data with similar
 behaviour to the response. This is a tidy implementation of
-\verb{\link[stats]\{simulate\}}.
+\code{\link[stats:simulate]{stats::simulate()}}.
 }
 \details{
 Innovations are sampled by the model's assumed error distribution.

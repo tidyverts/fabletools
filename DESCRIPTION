@@ -1,6 +1,6 @@
 Package: fabletools
 Title: Core Tools for Packages in the 'fable' Framework
-Version: 0.3.4.9000
+Version: 0.4.1
 Authors@R:
     c(person(given = "Mitchell",
              family = "O'Hara-Wild",
@@ -49,7 +49,9 @@ Imports:
     distributional (>= 0.3.0.9000),
     progressr,
     lifecycle,
-    graphvec
+    graphvec,
+    ggdist,
+    scales
 Suggests:
     covr,
     crayon,

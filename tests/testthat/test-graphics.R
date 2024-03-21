@@ -194,7 +194,7 @@ test_that("autoplot.fbl_ts()", {
   expect_silent(print(p))
   
   expect_equal(
-    ggplot2::layer_data(p, 3)$y,
+    ggplot2::layer_data(p, 2)$y,
     mean(fbl$value)
   )
   
@@ -209,11 +209,11 @@ test_that("autoplot.fbl_ts()", {
   expect_silent(print(p))
 
   expect_equal(
-    ggplot2::layer_data(p, 3)$y,
+    ggplot2::layer_data(p, 2)$y,
     mean(fbl$value)
   )
   expect_equal(
-    ggplot2::layer_data(p, 5)$y,
+    ggplot2::layer_data(p, 3)$y,
     us_deaths$value
   )
   
@@ -228,11 +228,11 @@ test_that("autoplot.fbl_ts()", {
   expect_silent(print(p))
   
   expect_equal(
-    ggplot2::layer_data(p, 3)$y,
+    ggplot2::layer_data(p, 2)$y,
     mean(fbl_complex$value[c(1:24, 25:48)])
   )
   expect_equivalent(
-    as.numeric(table(ggplot2::layer_data(p, 3)$colour)),
+    as.numeric(table(ggplot2::layer_data(p, 2)$colour)),
     rep(24, 2)
   )
   
@@ -247,7 +247,7 @@ test_that("autoplot.fbl_ts()", {
   expect_silent(print(p))
   
   expect_equal(
-    ggplot2::layer_data(p, 3)$y,
+    ggplot2::layer_data(p, 2)$y,
     c(fbl_mv[[".mean_fdeaths"]]%||%fbl_mv$.mean[,"fdeaths"], fbl_mv[[".mean_mdeaths"]]%||%fbl_mv$.mean[,"mdeaths"])
   )
   expect_equivalent(
@@ -270,7 +270,7 @@ test_that("autolayer.fbl_ts()", {
   expect_silent(print(p))
   
   expect_equal(
-    ggplot2::layer_data(p,4)$y,
+    ggplot2::layer_data(p,3)$y,
     mean(fbl$value)
   )
   
@@ -285,11 +285,11 @@ test_that("autolayer.fbl_ts()", {
   expect_silent(print(p))
   
   expect_equal(
-    ggplot2::layer_data(p,4)$y,
+    ggplot2::layer_data(p,3)$y,
     mean(fbl_complex$value[c(1:12, 25:36, 13:24, 37:48)])
   )
   expect_equivalent(
-    as.numeric(table(ggplot2::layer_data(p,4)$colour)),
+    as.numeric(table(ggplot2::layer_data(p,3)$colour)),
     rep(12, 4)
   )
   
@@ -304,7 +304,7 @@ test_that("autolayer.fbl_ts()", {
   expect_silent(print(p))
   
   expect_equal(
-    ggplot2::layer_data(p,4)$y,
+    ggplot2::layer_data(p,3)$y,
     c(fbl_mv[[".mean_fdeaths"]]%||%fbl_mv$.mean[,"fdeaths"], fbl_mv[[".mean_mdeaths"]]%||%fbl_mv$.mean[,"mdeaths"])
   )
   expect_equivalent(

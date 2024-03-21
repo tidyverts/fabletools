@@ -12,7 +12,14 @@
 #'
 #' @export
 fable <- function(..., response, distribution){
-  build_fable(tsibble(...), !!enquo(response), !!enquo(distribution))
+  # Create tsibble from ... inputs
+  x <- tsibble(...)
+  
+  # If the response (from user input) needs converting
+  response <- eval_tidy(enquo(response))
+  distribution <- names(x)[tidyselect::eval_select(enquo(distribution), x)]
+  
+  build_fable(x, response, distribution)
 }
 
 #' Is the object a fable
@@ -39,9 +46,11 @@ as_fable <- function(x, ...){
 #' @rdname as-fable
 #' @export
 as_fable.tbl_ts <- function(x, response, distribution, ...){
-  build_fable(x, 
-              response = !!enquo(response),
-              distribution = !!enquo(distribution))
+  # If the response (from user input) needs converting
+  response <- eval_tidy(enquo(response))
+  distribution <- names(x)[tidyselect::eval_select(enquo(distribution), x)]
+  
+  build_fable(x, response = response, distribution = distribution)
 }
 
 #' @rdname as-fable
@@ -51,9 +60,11 @@ as_fable.grouped_ts <- as_fable.tbl_ts
 #' @rdname as-fable
 #' @export
 as_fable.tbl_df <- function(x, response, distribution, ...){
-  build_fable(as_tsibble(x, ...), 
-              response = !!enquo(response),
-              distribution = !!enquo(distribution))
+  as_fable(
+    as_tsibble(x, ...), 
+    response = !!enquo(response),
+    distribution = !!enquo(distribution)
+  )
 }
 
 #' @rdname as-fable
@@ -121,10 +132,6 @@ as_fable.forecast <- function(x, ..., point_forecast = list(.mean = mean)){
 }
 
 build_fable <- function (x, response, distribution) {
-  # If the response (from user input) needs converting
-  response <- eval_tidy(enquo(response))
-  distribution <- names(x)[tidyselect::eval_select(enquo(distribution), x)]
-  
   if(is_grouped_ts(x)){
     fbl <- structure(x, class = c("grouped_fbl", "grouped_ts", "grouped_df", 
                                   "fbl_ts", "tbl_ts", "tbl_df", "tbl", "data.frame"),
@@ -199,7 +206,7 @@ restore_fable <- function(data, template){
   fbl_vars <- setdiff(distribution_var(template), data_cols)
   res <- bind_cols(data, template[fbl_vars])
   
-  build_fable(data, response = response_vars(template), distribution = !!distribution_var(template))
+  build_fable(data, response = response_vars(template), distribution = distribution_var(template))
 }
 
 #' @export

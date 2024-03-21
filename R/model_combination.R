@@ -50,9 +50,15 @@ combination_model <- function(..., cmbn_fn = combination_ensemble,
     abort("`combination_model()` must contain at least one valid model definition.")
   }
   
+  # Guess the response variable without transformations
+  resp <- Reduce(intersect, lapply(Filter(function(x) inherits(x, "mdl_defn"), mdls), function(x) all.vars(model_lhs(x))))
+  if(length(resp) == 0) abort("`combination_model()` must use component models with the same response variable.")
+  
   cmbn_model <- new_model_class("cmbn_mdl", train = train_combination, 
                                 specials = new_specials(xreg = function(...) NULL))
-  new_model_definition(cmbn_model, !!quo(!!model_lhs(mdls[[1]])), ..., 
+  fml <- mdls[[1]]$formula
+  fml <- quo_set_expr(fml, sym(resp[[1]]))
+  new_model_definition(cmbn_model, !!fml, ..., 
                        cmbn_fn = cmbn_fn, cmbn_args = cmbn_args)
 }
 
@@ -276,51 +282,51 @@ forecast.model_combination <- function(object, new_data, specials, ...){
   # Compute residual covariance to adjust the forecast variance
   # Assumes correlation across h is identical
   
-  if(all(mdls)){
-    fc_cov <- var(
-      cbind(
-        residuals(object[[1]], type = "response")[[".resid"]],
-        residuals(object[[2]], type = "response")[[".resid"]]
-      ),
-      na.rm = TRUE
-    )
-  }
-  else{
-    fc_cov <- 0
-  }
-  object[mdls] <- map(object[mdls], forecast, new_data = new_data, ...)
-  object[mdls] <- map(object[mdls], function(x) x[[distribution_var(x)]])
+  fbl <- object
+  fbl[mdls] <- map(fbl[mdls], forecast, new_data = new_data, ...)
+  fbl[mdls] <- map(fbl[mdls], function(x) x[[distribution_var(x)]])
   
-  if(all(mdls)){
-    fc_sd <- object %>% 
-      map(function(x) sqrt(distributional::variance(x))) %>% 
-      transpose_dbl()
-    fc_cov <- suppressWarnings(stats::cov2cor(fc_cov))
-    fc_cov[!is.finite(fc_cov)] <- 0 # In case of perfect forecasts
-    fc_cov <- map_dbl(fc_sd, function(sigma) (diag(sigma)%*%fc_cov%*%t(diag(sigma)))[1,2])
-  }
-  
-  is_normal <- map_lgl(object[mdls], function(x) all(dist_types(x) == "dist_normal"))
-  if(all(is_normal)){ # Improve check to ensure all distributions are normal
-    .dist <- eval_tidy(expr, object)
+  is_normal <- map_lgl(fbl[mdls], function(x) all(dist_types(x) == "dist_normal"))
+  if(all(is_normal)){
+    .dist <- eval_tidy(expr, fbl)
+    
+    # Adjust for covariance
     # var(x) + var(y) + 2*cov(x,y)
-    .dist <- distributional::dist_normal(mean(.dist), sqrt(distributional::variance(.dist) + 2*fc_cov))
+    if(all(mdls)) {
+      fc_cov <- var(
+        cbind(
+          residuals(object[[1]], type = "response")[[".resid"]],
+          residuals(object[[2]], type = "response")[[".resid"]]
+        ),
+        na.rm = TRUE
+      )
+      fc_sd <- fbl %>% 
+        map(function(x) sqrt(distributional::variance(x))) %>% 
+        transpose_dbl()
+      fc_cov <- suppressWarnings(stats::cov2cor(fc_cov))
+      fc_cov[!is.finite(fc_cov)] <- 0 # In case of perfect forecasts
+      fc_cov <- map_dbl(fc_sd, function(sigma) (diag(sigma)%*%fc_cov%*%t(diag(sigma)))[1,2])
+      .dist <- distributional::dist_normal(mean(.dist), sqrt(distributional::variance(.dist) + 2*fc_cov))
+    }
   } else {
-    .dist <- distributional::dist_degenerate(eval_tidy(expr, map(object, mean)))
+    .dist <- distributional::dist_degenerate(eval_tidy(expr, map(fbl, mean)))
   }
   
   .dist
 }
 
 #' @export
-generate.model_combination <- function(x, new_data, specials, ...){
-  if(".innov" %in% new_data){
-    abort("Providing innovations for simulating combination models is not supported.")
+generate.model_combination <- function(x, new_data, specials, bootstrap = FALSE, ...){
+  if(".innov" %in% names(new_data)){
+    # Assume bootstrapped paths are requested (this needs future work)
+    bootstrap <- TRUE
+    new_data[[".innov"]] <- NULL
+    # abort("Providing innovations for simulating combination models is not supported.")
   }
   
   mdls <- map_lgl(x, is_model)
   expr <- attr(x, "combination")
-  x[mdls] <- map(x[mdls], generate, new_data, ...)
+  x[mdls] <- map(x[mdls], generate, new_data, bootstrap = bootstrap, ...)
   out <- x[[which(mdls)[1]]]
   sims <- map(x, function(x) if(is_tsibble(x)) x[[".sim"]] else x)
   out[[".sim"]] <- eval_tidy(expr, sims)
@@ -334,4 +340,17 @@ fitted.model_combination <- function(object, ...){
   object[mdls] <- map(object[mdls], fitted, ...)
   fits <- map(object, function(x) if(is_tsibble(x)) x[[".fitted"]] else x)
   eval_tidy(expr, fits)
+}
+
+#' @export
+residuals.model_combination <- function(object, type = "response", ...) {
+  mdls <- map_lgl(object, is_model)
+  expr <- attr(object, "combination")
+  # Ignore type and always give response residuals here
+  # if(type != "response") {
+  #   stop("Only response residuals are supported for combination models.")
+  # }
+  object[mdls] <- map(object[mdls], residuals, type = "response", ...)
+  res <- map(object, function(x) if(is_tsibble(x)) x[[".resid"]] else x)
+  eval_tidy(expr, res)
 }

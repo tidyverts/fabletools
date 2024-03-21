@@ -89,7 +89,8 @@ features_impl <- function(.tbl, .var, features, ...){
 #' - [Features by tag][features_by_tag]
 #' 
 #' @param .tbl A dataset
-#' @param .var,.vars The variable(s) to compute features on
+#' @param .var An expression that produces a vector from which the features are computed.
+#' @param .vars A tidyselect compatible selection of the column(s) to compute features on.
 #' @param features A list of functions (or lambda expressions) for the features to compute. [`feature_set()`] is a useful helper for building sets of features.
 #' @param .predicate A predicate function (or lambda expression) to be applied to the columns or a logical vector. The variables for which .predicate is or returns TRUE are selected.
 #' @param ... Additional arguments to be passed to each feature. These arguments will only be passed to features which use it in their formal arguments ([`base::formals()`]), and not via their `...`. While passing `na.rm = TRUE` to [`stats::var()`] will work, it will not for [`base::mean()`] as its formals are `x` and `...`. To more precisely pass inputs to each function, you should use lambdas in the list of features (`~ mean(., na.rm = TRUE)`).

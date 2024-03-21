@@ -55,7 +55,7 @@ fable_ptype2 <- function(x, y, ...) {
     out, key_data = tibble(!!!x[key_x], !!".rows" := list_of(.ptype = integer())),
     index = idx_x, index2 = idx_x, ordered = TRUE,
     interval = new_interval())
-  build_fable(tsbl, response = resp_x, distribution = !!dist_x)
+  build_fable(tsbl, response = resp_x, distribution = dist_x)
 }
 
 #' @rdname fable-vctrs

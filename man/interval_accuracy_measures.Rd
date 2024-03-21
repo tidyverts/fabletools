@@ -8,7 +8,7 @@
 \alias{interval_accuracy_measures}
 \title{Interval estimate accuracy measures}
 \format{
-An object of class \code{list} of length 1.
+An object of class \code{list} of length 3.
 }
 \usage{
 winkler_score(.dist, .actual, level = 95, na.rm = TRUE, ...)

@@ -201,4 +201,13 @@ compose <- function (...) {
     out
   }
 }
+
+flatten <- function(x) {
+  unlist(x, recursive = FALSE)
+}
+
+squash <- function(x) {
+  unlist(x, recursive = TRUE)
+}
+
 # nocov end
