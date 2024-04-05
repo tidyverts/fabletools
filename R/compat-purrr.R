@@ -30,6 +30,10 @@ map_chr <- function(.x, .f, ...) {
 map_cpl <- function(.x, .f, ...) {
   map_mold(.x, .f, complex(1), ...)
 }
+map_dfr <- function(.x, .f, ...) {
+  out <- map(.x, .f, ...)
+  vctrs::vec_rbind(!!!out)
+}
 
 pluck <- function(.x, .f) {
   map(.x, `[[`, .f)
