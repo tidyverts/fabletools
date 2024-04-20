@@ -1,3 +1,5 @@
+# fabletools 0.4.2
+
 # fabletools 0.4.1
 
 Minor patch for upcoming release of ggdist v3.3.1
