@@ -1,5 +1,9 @@
 # fabletools (development version)
 
+## Bug fixes
+
+* Fixed issue with `autoplot()` and length 1 forecasts (#400).
+
 # fabletools 0.4.2
 
 Minor patch to build package with latest R version as requested by CRAN.

@@ -349,7 +349,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
         out[[length(out) + 1L]] <- ggdist::geom_lineribbon(without(intvl_mapping, "colour_ramp"), data = dist_qi_frame(object[single_row[["FALSE"]],], level), ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
       }
       if(length(single_row[["TRUE"]]) > 0) {
-        out[[length(out) + 1L]] <- ggdist::stat_interval(intvl_mapping, data = dist_qi_frame(object[single_row[["TRUE"]],], level), ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
+        out[[length(out) + 1L]] <- ggdist::geom_interval(intvl_mapping, data = dist_qi_frame(object[single_row[["TRUE"]],], level), orientation = "vertical", ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
       }
       out[[length(out) + 1L]] <- ggplot2::labs(fill = col_nm)
     } else {
@@ -357,7 +357,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
         out[[length(out) + 1L]] <- ggdist::geom_lineribbon(without(intvl_mapping, "colour_ramp"), data = dist_qi_frame(object[single_row[["FALSE"]],], level), fill = colour, ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
       }
       if(length(single_row[["TRUE"]]) > 0) {
-        out[[length(out) + 1L]] <- ggdist::stat_interval(intvl_mapping, data = dist_qi_frame(object[single_row[["TRUE"]],], level), colour = colour, ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
+        out[[length(out) + 1L]] <- ggdist::geom_interval(intvl_mapping, data = dist_qi_frame(object[single_row[["TRUE"]],], level), colour = colour, orientation = "vertical", ..., inherit.aes = FALSE, key_glyph = draw_key_ribbon)
       }
     }
     
