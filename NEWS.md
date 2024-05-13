@@ -1,4 +1,8 @@
+# fabletools (development version)
+
 # fabletools 0.4.2
+
+Minor patch to build package with latest R version as requested by CRAN.
 
 # fabletools 0.4.1
 
