@@ -89,7 +89,7 @@ forecast.lst_mint_mdl <- function(object, key_data,
   # Compute weights (sample covariance)
   res <- map(object, function(x, ...) residuals(x, ...), type = "response")
   
-  res_grp <- split(seq_along(res), node_disjoint_id(g))
+  res_grp <- split(seq_along(res), graphvec::node_disjoint_id(g))
   res_order <- order(unlist(res_grp))
   
   covm <- Matrix::.bdiag(lapply(res_grp, function(i) {
