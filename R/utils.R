@@ -256,11 +256,15 @@ flatten_with_names <- function (x, sep = "_") {
 }
 
 mapply_maybe_parallel <- function (.f, ..., MoreArgs = list(), SIMPLIFY = FALSE) {
+  p <- progressr::progressor(length(..1))
+  .fp <- function(...) {
+    p()
+    .f(...)
+  }
   if(is_attached("package:future")){
     require_package("future.apply")
-    
     future.apply::future_mapply(
-      FUN = .f,
+      FUN = .fp,
       ...,
       MoreArgs = MoreArgs,
       SIMPLIFY = SIMPLIFY,
@@ -270,7 +274,7 @@ mapply_maybe_parallel <- function (.f, ..., MoreArgs = list(), SIMPLIFY = FALSE)
   }
   else{
     mapply(
-      FUN = .f,
+      FUN = .fp,
       ...,
       MoreArgs = MoreArgs,
       SIMPLIFY = SIMPLIFY
