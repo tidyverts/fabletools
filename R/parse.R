@@ -120,6 +120,14 @@ parse_model_rhs <- function(model){
 #' @keywords internal
 parse_model_lhs <- function(model){
   model_lhs <- model_lhs(model)
+  
+  if(is_call(model_lhs) && call_name(model_lhs) == "@"){
+    global <- tidyselect::eval_select(model_lhs[[3L]], model$data)
+    model_lhs <- model_lhs[[2L]]
+  } else {
+    global <- NULL
+  }
+  
   if(is_call(model_lhs) && call_name(model_lhs) == "vars"){
     model_lhs[[1]] <- sym("exprs")
     model_lhs <- eval(model_lhs)
@@ -294,6 +302,7 @@ Please specify a valid form of your transformation using `new_transformation()`.
   list(
     expressions = response_exprs,
     response = syms(responses),
-    transformation = transformations
+    transformation = transformations,
+    global = global
   )
 }
