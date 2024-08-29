@@ -109,7 +109,7 @@ forecast.lst_mint_mdl <- function(object, key_data,
     W <- diag(rep(1L, nrow(covm)))
   } else if(method == "wls_var"){
     # WLS variance scaling
-    W <- diag(diag(covm))
+    W <- diag(pmax(0.001, diag(covm)))
   } else if (method == "wls_struct"){
     # WLS structural scaling
     stop("Not yet supported for graph reconciliation")
