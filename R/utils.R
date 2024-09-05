@@ -322,3 +322,11 @@ mable_apply <- function (.data, .f, ..., names_to = ".model") {
 dist_types <- function(dist) {
   map_chr(vec_data(dist), function(x) class(x)[1])
 }
+
+mdl_df_apply <- function(x, f, ...) {
+  mbl_vars <- mable_vars(x)
+  x <- mutate(as_tibble(x), 
+              dplyr::across(all_of(mbl_vars), function(x) lapply(x, f, ...)))
+  x <- pivot_longer(x, all_of(mbl_vars), names_to = ".model", values_to = "__results__")
+  unnest(x, "__results__")
+}
