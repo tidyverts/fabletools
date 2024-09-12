@@ -12,16 +12,36 @@
 #' response to external shocks. It traces the effect of a one-unit change in the impulse 
 #' variable on the response variable over a specified number of periods.
 #'
+#' @export
 IRF <- function(x, ...) {
   UseMethod("IRF")
 }
 
 #' @export
 IRF.mdl_df <- function(x, ...){
-  mdl_df_apply(x, IRF)
+  mdl_df_apply(x, IRF, ...)
 }
 
 #' @export
-IRF.mdl_ts <- function(x, ...) {
-  IRF(x$fit, ...)
+IRF.mdl_ts <- function(x, new_data = NULL, h = NULL, ...) {
+  if(is.null(new_data)){
+    new_data <- make_future_data(x$data, h)
+  }
+  
+  # Compute specials with new_data
+  x$model$stage <- "generate"
+  x$model$add_data(new_data)
+  specials <- tryCatch(parse_model_rhs(x$model),
+                       error = function(e){
+                         abort(sprintf(
+                           "%s
+Unable to compute required variables from provided `new_data`.
+Does your model require extra variables to produce simulations?", e$message))
+                       }, interrupt = function(e) {
+                         stop("Terminated by user", call. = FALSE)
+                       })
+  x$model$remove_data()
+  x$model$stage <- NULL
+  
+  IRF(x$fit, new_data, specials, ...)
 }

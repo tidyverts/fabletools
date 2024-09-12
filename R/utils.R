@@ -328,5 +328,5 @@ mdl_df_apply <- function(x, f, ...) {
   x <- mutate(as_tibble(x), 
               dplyr::across(all_of(mbl_vars), function(x) lapply(x, f, ...)))
   x <- pivot_longer(x, all_of(mbl_vars), names_to = ".model", values_to = "__results__")
-  unnest(x, "__results__")
+  unnest_tsbl(x, "__results__", parent_key = ".model")
 }
