@@ -77,6 +77,7 @@ generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
   }
   
   if(bootstrap) {
+    if(length(x$response) > 1) abort("Generating bootstrap paths from multivariate models is not yet supported.")
     res <- residuals(x$fit)
     res <- stats::na.omit(res) - mean(res, na.rm = TRUE)
     new_data$.innov <- if(bootstrap_block_size == 1) {
@@ -104,13 +105,13 @@ Does your model require extra variables to produce simulations?", e$message))
                        }, interrupt = function(e) {
                          stop("Terminated by user", call. = FALSE)
                        })
-  
   x$model$remove_data()
   x$model$stage <- NULL
   
-  if(length(x$response) > 1) abort("Generating paths from multivariate models is not yet supported.")
-  .sim <- generate(x[["fit"]], new_data = new_data, specials = specials, ...)[[".sim"]]
-  
+  .sim <- generate(x[["fit"]], new_data = new_data, specials = specials, ...)
+  .sim_cols <- setdiff(names(.sim), names(new_data))
+  # TODO: Breaking change, .sim should be response variable name
+  # For now, only do this with multivariate models but this change will be made for v1.0.0
   
   # Back-transform forecast distributions
   bt <- map(x$transformation, function(x){
@@ -119,8 +120,8 @@ Does your model require extra variables to produce simulations?", e$message))
     set_env(bt, env)
   })
   
-  new_data[[".sim"]] <- bt[[1]](.sim)
-  new_data
+  .sim[.sim_cols] <- .mapply(function(f, x) f(x), list(bt, .sim[.sim_cols]), NULL)
+  .sim
 }
 
 block_bootstrap <- function (x, window_size, size = length(x)) {
