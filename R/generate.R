@@ -108,8 +108,15 @@ Does your model require extra variables to produce simulations?", e$message))
   
   .sim <- generate(x[["fit"]], new_data = new_data, specials = specials, ...)
   .sim_cols <- setdiff(names(.sim), names(new_data))
+  
   # TODO: Breaking change, .sim should be response variable name
   # For now, only do this with multivariate models but this change will be made for v1.0.0
+  resp_vars <- vapply(x$response, expr_name, character(1L), USE.NAMES = FALSE)
+  if (length(resp_vars) > 1) {
+    .sim_cols <- resp_vars
+    .sim[resp_vars] <- split(.sim$.sim, col(.sim$.sim))
+    .sim$.sim <- NULL
+  }
   
   # Back-transform forecast distributions
   bt <- map(x$transformation, function(x){
