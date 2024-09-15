@@ -45,7 +45,7 @@ behaviour to the response. This is a tidy implementation of
 Innovations are sampled by the model's assumed error distribution.
 If \code{bootstrap} is \code{TRUE}, innovations will be sampled from the model's
 residuals. If \code{new_data} contains the \code{.innov} column, those values will be
-treated as innovations for the simulated paths..
+treated as innovations for the simulated paths.
 }
 \examples{
 \dontshow{if (requireNamespace("fable", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

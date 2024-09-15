@@ -338,8 +338,15 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     intvl_mapping$fill_ramp <- intvl_mapping$colour_ramp <- sym(".width")
     intvl_mapping$fill <- intvl_mapping$colour <- col
     
+    qi_marginal <- function(x, .width = 0.95, na.rm = FALSE) {
+      if (!na.rm && anyNA(x)) {
+        return(matrix(c(NA_real_, NA_real_), ncol = 2))
+      }
+      do.call(rbind, lapply(quantile(x, (1 + c(-1, 1) * .width)/2, type = "marginal", na.rm = na.rm), t))
+    }
+    
     dist_qi_frame <- function(data, level) {
-      data <- ggdist::median_qi(as_tibble(data), !!sym(distribution_var(data)), .width = level/100)
+      data <- ggdist::point_interval(as_tibble(data), !!sym(distribution_var(data)), .interval = qi_marginal, .width = level/100)
       names(data)[match(".index", names(data))] <- ".response"
       data
     }
