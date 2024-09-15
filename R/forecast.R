@@ -162,8 +162,14 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
   # Compute forecasts
   if(simulate || bootstrap) {
     fc <- generate(object, new_data, bootstrap = bootstrap, times = times, ...)
-    fc <- unname(split(object$transformation[[1]](fc[[".sim"]]), fc[[index_var(fc)]]))
-    fc <- distributional::dist_sample(fc)
+    fc_idx <- fc[[index_var(fc)]]
+    fc <- if (length(resp_vars) > 1) {
+      do.call(cbind, fc[resp_vars])
+    } else {
+      fc[[".sim"]]
+    }
+    
+    fc <- distributional::dist_sample(vctrs::vec_split(fc, fc_idx)$val)
   } else {
     # Compute specials with new_data
     object$model$stage <- "forecast"
@@ -180,54 +186,46 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
     object$model$remove_data()
     object$model$stage <- NULL
     fc <- forecast(object$fit, new_data, specials = specials, times = times, ...)
-  }
-  
-  # Back-transform forecast distributions
-  bt <- map(object$transformation, function(x){
-    trans <- x%@%"inverse"
-    inv_trans <- `attributes<-`(x, NULL)
-    req_vars <- setdiff(all.vars(body(trans)), names(formals(trans)))
-    if(any(req_vars %in% names(new_data))) {
-      trans <- lapply(
-        vec_chop(new_data[req_vars]),
-        function(transform_data) {
-          set_env(trans, new_environment(transform_data, get_env(trans)))
-        }
-      )
-      attr(trans, "inverse") <- lapply(
-        vec_chop(new_data[req_vars]),
-        function(transform_data) {
-          set_env(inv_trans, new_environment(transform_data, get_env(inv_trans)))
-        }
-      )
-      trans
-    } else {
-      structure(list(trans), inverse = list(inv_trans))
+    
+    # Back-transform forecast distributions
+    bt <- map(object$transformation, function(x){
+      trans <- x%@%"inverse"
+      inv_trans <- `attributes<-`(x, NULL)
+      req_vars <- setdiff(all.vars(body(trans)), names(formals(trans)))
+      if(any(req_vars %in% names(new_data))) {
+        trans <- lapply(
+          vec_chop(new_data[req_vars]),
+          function(transform_data) {
+            set_env(trans, new_environment(transform_data, get_env(trans)))
+          }
+        )
+        attr(trans, "inverse") <- lapply(
+          vec_chop(new_data[req_vars]),
+          function(transform_data) {
+            set_env(inv_trans, new_environment(transform_data, get_env(inv_trans)))
+          }
+        )
+        trans
+      } else {
+        structure(list(trans), inverse = list(inv_trans))
+      }
+    })
+    
+    is_transformed <- vapply(bt, function(x) !is_symbol(body(x[[1]])), logical(1L))
+    if(length(bt) > 1) {
+      if(any(is_transformed)){
+        abort("Transformations of multivariate forecasts distributions are not supported, use simulate = TRUE or bootstrap = TRUE.")
+      }
     }
-#     exists_vars <- map_lgl(req_vars, exists, env)
-#     if(any(!exists_vars)){
-#       bt <- custom_error(bt, sprintf(
-# "Unable to find all required variables to back-transform the forecasts (missing %s).
-# These required variables can be provided by specifying `new_data`.",
-#         paste0("`", req_vars[!exists_vars], "`", collapse = ", ")
-#       ))
-#     }
-  })
-  
-  is_transformed <- vapply(bt, function(x) !is_symbol(body(x[[1]])), logical(1L))
-  if(length(bt) > 1) {
-    if(any(is_transformed)){
-      abort("Transformations of multivariate forecasts are not yet supported")
-    }
-  }
-  if(any(is_transformed)) {
-    if (identical(unique(dist_types(fc)), "dist_sample")) {
-      fc <- distributional::dist_sample(
-        .mapply(exec, list(bt[[1]], distributional::parameters(fc)$x), MoreArgs = NULL)
-      )
-    } else {
-      bt <- bt[[1]]
-      fc <- distributional::dist_transformed(fc, `attributes<-`(bt, NULL), bt%@%"inverse")
+    if(any(is_transformed)) {
+      if (identical(unique(dist_types(fc)), "dist_sample")) {
+        fc <- distributional::dist_sample(
+          .mapply(exec, list(bt[[1]], distributional::parameters(fc)$x), MoreArgs = NULL)
+        )
+      } else {
+        bt <- bt[[1]]
+        fc <- distributional::dist_transformed(fc, `attributes<-`(bt, NULL), bt%@%"inverse")
+      }
     }
   }
   

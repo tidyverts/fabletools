@@ -17,11 +17,6 @@ test_that("generate", {
   expect_equal(gen_complex$index, yearmonth("1979 Jan") + rep(0:23, 2*2*3))
   expect_equal(unique(gen_complex$key), c("fdeaths", "mdeaths"))
   expect_equal(unique(gen_complex$.model), c("ets", "lm"))
-  
-  expect_error(
-    mbl_mv %>% generate(),
-    "Generating paths from multivariate models is not yet supported"
-  )
 })
 
 test_that("generate seed setting", {

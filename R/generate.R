@@ -7,7 +7,7 @@
 #' Innovations are sampled by the model's assumed error distribution. 
 #' If `bootstrap` is `TRUE`, innovations will be sampled from the model's 
 #' residuals. If `new_data` contains the `.innov` column, those values will be
-#' treated as innovations for the simulated paths..
+#' treated as innovations for the simulated paths.
 #' 
 #' @param x A mable.
 #' @param new_data The data to be generated (time index and exogenous regressors)
@@ -77,20 +77,18 @@ generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
   }
   
   if(bootstrap) {
-    if(length(x$response) > 1) abort("Generating bootstrap paths from multivariate models is not yet supported.")
     res <- residuals(x$fit)
-    res <- stats::na.omit(res) - mean(res, na.rm = TRUE)
-    new_data$.innov <- if(bootstrap_block_size == 1) {
-      sample(res, nrow(new_data), replace = TRUE)
+    f_mean <- if(length(x$response) == 1) mean else colMeans
+    res <- stats::na.omit(res) - f_mean(res, na.rm = TRUE)
+    i <- if(bootstrap_block_size == 1) {
+      sample.int(NROW(res), nrow(new_data), replace = TRUE)
     } else {
       if(any(has_gaps(x$data)$.gaps)) abort("Residuals must be regularly spaced without gaps to use a block bootstrap method.")
       kr <- tsibble::key_rows(new_data)
-      # idx <- x$data[[index_var(x$data)]]
-      # new_idx <- new_data[[index_var(new_data)]]
-      # block_pos <- ((new_idx - min(idx))%%bootstrap_block_size)+1
-      innov <- lapply(lengths(kr), function(n) block_bootstrap(res, bootstrap_block_size, size = n))
-      vec_c(!!!innov)
+      ki <- lapply(lengths(kr), function(n) block_bootstrap(NROW(res), bootstrap_block_size, size = n))
+      vec_c(!!!ki)
     }
+    new_data$.innov <- if(length(x$response) == 1) res[i] else res[i,]
   }
   
   # Compute specials with new_data
@@ -124,13 +122,13 @@ Does your model require extra variables to produce simulations?", e$message))
   .sim
 }
 
-block_bootstrap <- function (x, window_size, size = length(x)) {
+block_bootstrap <- function (n, window_size, size = length(x)) {
   n_blocks <- size%/%window_size + 2
   bx <- numeric(n_blocks * window_size)
   for (i in seq_len(n_blocks)) {
-    block_pos <- sample(seq_len(length(x) - window_size + 1), 1)
-    bx[((i - 1) * window_size + 1):(i * window_size)] <- x[block_pos:(block_pos + window_size - 1)]
+    block_pos <- sample(seq_len(n - window_size + 1), 1)
+    bx[((i - 1) * window_size + 1):(i * window_size)] <- block_pos:(block_pos + window_size - 1)
   }
-  start_from <- sample(0:(window_size - 1), 1) + 1
+  start_from <- sample.int(window_size, 1)
   bx[seq(start_from, length.out = size)]
 }

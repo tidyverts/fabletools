@@ -3,8 +3,10 @@
 #' This function calculates the impulse response function (IRF) of a time series model.
 #' The IRF describes how a model's variables react to external shocks over time.
 #'
+#' If `new_data` contains the `.impulse` column, those values will be
+#' treated as impulses for the calculated impulse responses.
+#'
 #' @param x A fitted model object, such as from a VAR or ARIMA model. This model is used to compute the impulse response.
-#' @param impulse A character string specifying the name of the variable that is shocked (the impulse variable).
 #' @param ... Additional arguments to be passed to lower-level functions.
 #' 
 #' @details
