@@ -125,7 +125,7 @@ time series with no exogenous regressors).</p></dd>
     <p>Innovations are sampled by the model's assumed error distribution.
 If <code>bootstrap</code> is <code>TRUE</code>, innovations will be sampled from the model's
 residuals. If <code>new_data</code> contains the <code>.innov</code> column, those values will be
-treated as innovations for the simulated paths..</p>
+treated as innovations for the simulated paths.</p>
     </div>
 
     <div id="ref-examples">
@@ -136,20 +136,20 @@ treated as innovations for the simulated paths..</p>
 <span class="r-in"><span><span class="va">UKLungDeaths</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
 <span class="r-in"><span>  <span class="fu"><a href="model.html">model</a></span><span class="op">(</span>lm <span class="op">=</span> <span class="fu"><a href="https://fable.tidyverts.org/reference/TSLM.html" class="external-link">TSLM</a></span><span class="op">(</span><span class="va">mdeaths</span> <span class="op">~</span> <span class="fu">fourier</span><span class="op">(</span><span class="st">"year"</span>, K <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span> <span class="va">fdeaths</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://generics.r-lib.org/reference/generate.html" class="external-link">generate</a></span><span class="op">(</span><span class="va">UKLungDeaths</span>, times <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tsibble: 360 x 6 [1M]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tsibble: 360 x 4 [1M]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:       .model, .rep [5]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    .model .rep     index mdeaths fdeaths  .sim</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;mth&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> lm     1     1974 Jan    <span style="text-decoration: underline;">2</span>134     901 <span style="text-decoration: underline;">2</span>238.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> lm     1     1974 Feb    <span style="text-decoration: underline;">1</span>863     689 <span style="text-decoration: underline;">1</span>856.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> lm     1     1974 Mar    <span style="text-decoration: underline;">1</span>877     827 <span style="text-decoration: underline;">2</span>310.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> lm     1     1974 Apr    <span style="text-decoration: underline;">1</span>877     677 <span style="text-decoration: underline;">1</span>623.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> lm     1     1974 May    <span style="text-decoration: underline;">1</span>492     522 <span style="text-decoration: underline;">1</span>457.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> lm     1     1974 Jun    <span style="text-decoration: underline;">1</span>249     406  946.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> lm     1     1974 Jul    <span style="text-decoration: underline;">1</span>280     441 <span style="text-decoration: underline;">1</span>164.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> lm     1     1974 Aug    <span style="text-decoration: underline;">1</span>131     393 <span style="text-decoration: underline;">1</span>070.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> lm     1     1974 Sep    <span style="text-decoration: underline;">1</span>209     387 <span style="text-decoration: underline;">1</span>106.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> lm     1     1974 Oct    <span style="text-decoration: underline;">1</span>492     582 <span style="text-decoration: underline;">1</span>451.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    .model    index .rep   .sim</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;mth&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> lm     1974 Jan 1     <span style="text-decoration: underline;">2</span>238.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> lm     1974 Feb 1     <span style="text-decoration: underline;">1</span>856.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> lm     1974 Mar 1     <span style="text-decoration: underline;">2</span>310.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> lm     1974 Apr 1     <span style="text-decoration: underline;">1</span>623.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> lm     1974 May 1     <span style="text-decoration: underline;">1</span>457.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> lm     1974 Jun 1      946.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> lm     1974 Jul 1     <span style="text-decoration: underline;">1</span>164.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> lm     1974 Aug 1     <span style="text-decoration: underline;">1</span>070.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> lm     1974 Sep 1     <span style="text-decoration: underline;">1</span>106.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> lm     1974 Oct 1     <span style="text-decoration: underline;">1</span>451.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 350 more rows</span></span>
 </code></pre></div>
     </div>
