@@ -1,276 +1,95 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://fabletools.tidyverts.org/404.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/articles/extension_models.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/index.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/MAAPE.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/accuracy.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/agg_vec.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/aggregate_index.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/aggregate_key.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/aggregation-vctrs.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/as-dable.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/as-fable.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/as_mable.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/augment.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/autoplot.dcmp_ts.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/autoplot.fbl_ts.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/autoplot.tbl_ts.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/bias_adjust.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/bottom_up.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/box_cox.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/combination_ensemble.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/combination_model.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/combination_weighted.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/common_xregs.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/components.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/construct_fc.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/dable-vctrs.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/dable.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/decomposition_model.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/directional_accuracy_measures.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/distribution_accuracy_measures.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/distribution_var.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/estimate.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/fable-vctrs.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/fable.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/fabletools-package.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/feature_set.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/features.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/features_by_pkg.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/features_by_tag.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/fitted.mdl_df.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/forecast.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/freq_tools.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/generate.mdl_df.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/glance.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/hypothesize.mdl_df.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/interpolate.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/interval_accuracy_measures.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/is_aggregated.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/is_dable.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/is_fable.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/is_mable.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/is_model.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/mable-vctrs.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/mable.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/mable_vars.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/middle_out.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/min_trace.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/model.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/model_lhs.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/model_rhs.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/model_sum.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/new-model-class.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/new_specials.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/new_transformation.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/null_model.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/outliers.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/parse_model.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/parse_model_lhs.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/parse_model_rhs.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/point_accuracy_measures.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/reconcile.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/reexports.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/refit.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/register_feature.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/report.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/residuals.mdl_df.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/response.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/response_vars.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/scenarios.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/skill_score.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/special_xreg.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/stream.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/tidy.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/top_down.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/traverse.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/unpack_hilo.html</loc>
-  </url>
-  <url>
-    <loc>https://fabletools.tidyverts.org/reference/validate_formula.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://fabletools.tidyverts.org/404.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/articles/extension_models.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/articles/index.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/authors.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/index.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/news/index.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/IRF.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/MAAPE.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/accuracy.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/agg_vec.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/aggregate_index.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/aggregate_key.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/aggregation-vctrs.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/as-dable.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/as-fable.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/as_mable.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/augment.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/autoplot.dcmp_ts.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/autoplot.fbl_ts.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/autoplot.tbl_ts.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/bias_adjust.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/bottom_up.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/box_cox.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/combination_ensemble.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/combination_model.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/combination_weighted.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/common_xregs.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/components.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/construct_fc.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/dable-vctrs.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/dable.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/decomposition_model.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/directional_accuracy_measures.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/distribution_accuracy_measures.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/distribution_var.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/estimate.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/fable-vctrs.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/fable.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/fabletools-package.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/feature_set.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/features.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/features_by_pkg.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/features_by_tag.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/fitted.mdl_df.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/forecast.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/freq_tools.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/generate.mdl_df.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/glance.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/hypothesize.mdl_df.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/index.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/interpolate.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/interval_accuracy_measures.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/is_aggregated.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/is_dable.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/is_fable.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/is_mable.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/is_model.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/mable-vctrs.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/mable.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/mable_vars.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/middle_out.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/min_trace.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/model.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/model_lhs.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/model_rhs.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/model_sum.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/new-model-class.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/new_specials.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/new_transformation.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/null_model.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/outliers.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/parse_model.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/parse_model_lhs.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/parse_model_rhs.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/point_accuracy_measures.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/reconcile.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/reexports.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/refit.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/register_feature.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/report.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/residuals.mdl_df.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/response.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/response_vars.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/scenarios.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/skill_score.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/special_xreg.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/stream.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/tidy.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/top_down.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/traverse.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/unpack_hilo.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/validate_formula.html</loc></url>
 </urlset>
+
