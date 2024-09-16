@@ -129,7 +129,7 @@ Does your model require extra variables to produce simulations?", e$message))
   .sim
 }
 
-block_bootstrap <- function (n, window_size, size = length(x)) {
+block_bootstrap <- function (n, window_size, size = n) {
   n_blocks <- size%/%window_size + 2
   bx <- numeric(n_blocks * window_size)
   for (i in seq_len(n_blocks)) {

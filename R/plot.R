@@ -342,7 +342,12 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
       if (!na.rm && anyNA(x)) {
         return(matrix(c(NA_real_, NA_real_), ncol = 2))
       }
-      do.call(rbind, lapply(quantile(x, (1 + c(-1, 1) * .width)/2, type = "marginal", na.rm = na.rm), t))
+      
+      if (packageVersion("distributional") > "0.4.0") {
+        do.call(rbind, lapply(quantile(x, (1 + c(-1, 1) * .width)/2, type = "marginal", na.rm = na.rm), t))
+      } else {
+        do.call(rbind, lapply(quantile(x, (1 + c(-1, 1) * .width)/2, na.rm = na.rm), t))
+      }
     }
     
     dist_qi_frame <- function(data, level) {
