@@ -65,6 +65,8 @@ Suggests:
     testthat,
     tsibbledata (>= 0.2.0),
     lubridate,
+    urca,
+    mvtnorm,
     Matrix
 VignetteBuilder: 
     knitr

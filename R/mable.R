@@ -6,7 +6,7 @@
 #' must contain at least one column of time series models (`mdl_ts`), where the
 #' list column itself (`lst_mdl`) describes how these models are related.
 #' 
-#' @inheritParams tibble::tibble
+#' @inheritParams tsibble::tsibble
 #' 
 #' @param key Structural variable(s) that identify each model.
 #' @param model Identifiers for the columns containing model(s).
