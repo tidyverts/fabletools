@@ -1,4 +1,22 @@
-# fabletools (development version)
+# fabletools 0.5.0
+
+## New features
+
+* Added the `IRF()` generic and appropriate mable methods for computing
+  impulse response functions from fitted models.
+* It is now possible to `generate()` bootstrap sample paths for
+  multivariate models.
+
+## Improvements
+
+* Added support for multivariate model forecasting with transformation using
+  sample paths.
+* Performance improvements relating to forecasting with transformations and 
+  sample paths.
+* Forecast plots now explicitly use marginal distributions for plotting
+  forecast intervals from multivariate distributions.
+* Added optional progress reporting when producing forecasts, it can be
+  enabled using `progressr::with_progress()`
 
 ## Bug fixes
 
