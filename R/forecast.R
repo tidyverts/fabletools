@@ -44,7 +44,7 @@
 #' - All columns in `new_data`, excluding those whose names conflict with the
 #'   above.
 #'   
-#' @examplesIf requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)
+#' @examplesIf requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE) && requireNamespace("urca", quietly = TRUE)
 #' library(fable)
 #' library(tsibble)
 #' library(tsibbledata)
