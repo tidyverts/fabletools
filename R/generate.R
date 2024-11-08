@@ -42,6 +42,13 @@ generate.mdl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
   unnest_tsbl(x, ".sim", parent_key = kv)
 }
 
+#' @export
+generate.lst_mdl <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...) {
+  map2(x, 
+       new_data %||% rep(list(NULL), length.out = NROW(x)),
+       generate, h = h, times = times, seed = seed, ...)
+}
+
 #' @rdname generate.mdl_df
 #' 
 #' @param bootstrap If TRUE, then forecast distributions are computed using simulation with resampled errors.
@@ -77,7 +84,7 @@ generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
   }
   
   if(bootstrap) {
-    res <- residuals(x$fit)
+    res <- residuals(x$fit, type = "innovation")
     f_mean <- if(length(x$response) == 1) mean else colMeans
     res <- stats::na.omit(res) - f_mean(res, na.rm = TRUE)
     i <- if(bootstrap_block_size == 1) {
