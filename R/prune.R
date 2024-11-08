@@ -66,6 +66,8 @@ prune_aggregates <- function(.data, .spec = NULL, .predicate = NULL, ..., .keep 
       if(.keep(keep[x])) {
         g <- g[g$to %in% x,]
         g$from
+      } else {
+        NULL
       }
     },
     
