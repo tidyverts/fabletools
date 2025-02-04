@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.4.2.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -498,16 +498,17 @@ the model</td>
 <span><span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A fable: 8 x 4 [1Q]</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># Key:     .model [1]</span></span></span>
-<span><span class="co">#&gt;   .model      Quarter         Beer .mean</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;qtr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dist&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> SMEAN(Beer) 2010 Q3 N(387, 4808)  387.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> SMEAN(Beer) 2010 Q4 N(485, 7057)  485.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> SMEAN(Beer) 2011 Q1 N(417, 5352)  417.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> SMEAN(Beer) 2011 Q2 N(373, 5083)  373.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> SMEAN(Beer) 2011 Q3 N(387, 4808)  387.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> SMEAN(Beer) 2011 Q4 N(485, 7057)  485.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> SMEAN(Beer) 2012 Q1 N(417, 5352)  417.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> SMEAN(Beer) 2012 Q2 N(373, 5083)  373.</span></span></code></pre></div>
+<span><span class="co">#&gt;   .model      Quarter</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;qtr&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> SMEAN(Beer) 2010 Q3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> SMEAN(Beer) 2010 Q4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> SMEAN(Beer) 2011 Q1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> SMEAN(Beer) 2011 Q2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> SMEAN(Beer) 2011 Q3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> SMEAN(Beer) 2011 Q4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> SMEAN(Beer) 2012 Q1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> SMEAN(Beer) 2012 Q2</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: Beer &lt;dist&gt;, .mean &lt;dbl&gt;</span></span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' @importFrom fabletools stream</span></span>
 <span><span class="co">#' @export</span></span>
@@ -687,7 +688,7 @@ the model</td>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>

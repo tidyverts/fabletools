@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.4.2.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -61,6 +61,26 @@
 <h2 class="page-header" data-toc-text="development version" id="fabletools-development-version">fabletools (development version)<a class="anchor" aria-label="anchor" href="#fabletools-development-version"></a></h2>
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<ul><li>Fixed forecast autoplot() and autolayer() draw key for single-point multiple-forecast ribbons (<a href="https://github.com/tidyverts/fabletools/issues/414" class="external-link">#414</a>).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.5.0" id="fabletools-050">fabletools 0.5.0<small>2024-09-17</small><a class="anchor" aria-label="anchor" href="#fabletools-050"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-5-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-5-0"></a></h3>
+<ul><li>Added the <code><a href="../reference/IRF.html">IRF()</a></code> generic and appropriate mable methods for computing impulse response functions from fitted models.</li>
+<li>It is now possible to <code><a href="https://generics.r-lib.org/reference/generate.html" class="external-link">generate()</a></code> bootstrap sample paths for multivariate models.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="improvements-0-5-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-5-0"></a></h3>
+<ul><li>Added support for multivariate model forecasting with transformation using sample paths.</li>
+<li>Performance improvements relating to forecasting with transformations and sample paths.</li>
+<li>Forecast plots now explicitly use marginal distributions for plotting forecast intervals from multivariate distributions.</li>
+<li>Added optional progress reporting when producing forecasts, it can be enabled using <code><a href="https://progressr.futureverse.org/reference/with_progress.html" class="external-link">progressr::with_progress()</a></code>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-5-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-0"></a></h3>
 <ul><li>Fixed issue with <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> and length 1 forecasts (<a href="https://github.com/tidyverts/fabletools/issues/400" class="external-link">#400</a>).</li>
 </ul></div>
 </div>
@@ -395,7 +415,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>
