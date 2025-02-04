@@ -316,6 +316,9 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     if (is.null(data[["fill"]]) && (!is.null(data[["fill_ramp"]]) || !all(is.na(data[["alpha"]])))) {
       data$fill = "gray65"
     }
+    if (is.null(data[["colour"]]) && (!is.null(data[["colour_ramp"]]) || !all(is.na(data[["alpha"]])))) {
+      data$colour = "black"
+    }
     # Apply ramped fill
     if (!is.null(data[["fill_ramp"]])) {
       if (utils::packageVersion("ggdist") > "3.3.1") {
@@ -324,6 +327,16 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
         data$fill <- mapply(function(color, amount){
           (scales::seq_gradient_pal(attr(amount, "from") %||% "white", color))(amount %||% NA)
         }, data$fill, data$fill_ramp)
+      }
+    }
+    # Apply ramped colour
+    if (!is.null(data[["colour_ramp"]])) {
+      if (utils::packageVersion("ggdist") > "3.3.1") {
+        data$colour <- get("ramp_colours", asNamespace("ggdist"), mode = "function")(data$colour, data$colour_ramp)
+      } else {
+        data$colour <- mapply(function(color, amount){
+          (scales::seq_gradient_pal(attr(amount, "from") %||% "white", color))(amount %||% NA)
+        }, data$colour, data$colour_ramp)
       }
     }
     ggplot2::draw_key_rect(data, params, size)

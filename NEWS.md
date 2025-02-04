@@ -1,5 +1,10 @@
 # fabletools (development version)
 
+## Bug fixes
+
+* Fixed forecast autoplot() and autolayer() draw key for single-point
+  multiple-forecast ribbons (#414).
+
 # fabletools 0.5.0
 
 ## New features
