@@ -17,7 +17,7 @@
 #' @param seed The seed for the random generation from distributions.
 #' @param ... Additional arguments for individual simulation methods.
 #' 
-#' @examplesIf requireNamespace("fable", quietly = TRUE)
+#' @examplesIf requireNamespace("fable quietly = TRUE)
 #' library(fable)
 #' library(dplyr)
 #' UKLungDeaths <- as_tsibble(cbind(mdeaths, fdeaths), pivot_longer = FALSE)
