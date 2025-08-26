@@ -263,11 +263,11 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
       gap <- left_join(gap, last_obs, by = key_vars(last_obs))
     }
     if (length(resp_var) > 1) abort("`show_gap = FALSE` is not yet supported for multivariate forecasts.")
-    gap[[distribution_var(object)]] <- distributional::dist_degenerate(gap[[resp_var]])
-    dimnames(gap[[distribution_var(object)]]) <- resp_var
+    gap[[dist_var]] <- distributional::dist_degenerate(gap[[resp_var]])
+    dimnames(gap[[dist_var]]) <- resp_var
     gap <- as_fable(gap, index = !!idx, key = key_vars(object),
                     response = resp_var,
-                    distribution = distribution_var(object))
+                    distribution = dist_var)
     object <- bind_rows(gap, object)
   }
   
@@ -345,7 +345,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
   # Add forecast interval ribbons to plot
   if(!is.null(level)){
     intvl_mapping <- mapping
-    # intvl_mapping$dist <- sym(distribution_var(object))
+    # intvl_mapping$dist <- sym(dist_var)
     intvl_mapping$ymin <- sym(".lower")
     intvl_mapping$ymax <- sym(".upper")
     intvl_mapping$fill_ramp <- intvl_mapping$colour_ramp <- sym(".width")
@@ -364,7 +364,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     }
     
     dist_qi_frame <- function(data, level) {
-      data <- ggdist::point_interval(as_tibble(data), !!sym(distribution_var(data)), .interval = qi_marginal, .width = level/100)
+      data <- ggdist::point_interval(as_tibble(data), !!sym(dist_var), .interval = qi_marginal, .width = level/100)
       names(data)[match(".index", names(data))] <- ".response"
       data
     }
@@ -516,7 +516,7 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE,
     }
     dcmp_geom <- geom_line(line_aes, ...)
   }
-  
+
   p <- object %>% 
     ggplot() + 
     dcmp_geom + 
@@ -524,8 +524,7 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE,
     ylab(NULL) + 
     labs(
       title = paste(method%||%"A", "decomposition"), 
-      subtitle = paste(c(expr_text(get_expr(.vars)), dcmp_str), collapse = " = "),
-      fill = "Model", colour = "Model"
+      subtitle = paste(c(expr_text(get_expr(.vars)), dcmp_str), collapse = " = ")
     )
   
   # Rangebars
@@ -556,9 +555,12 @@ autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE,
     )
   }
   
-  if(!is_empty(keys)){
+  if (n_keys > 1) {
     colour_title <- paste0(map_chr(keys, expr_name), collapse = "/")
-    p <- p + labs(colour = colour_title, fill = colour_title)
+    p <- p + labs(colour = colour_title)
+    if(has_dist) {
+      p <- p + labs(fill = colour_title)
+    }
   }
   
   p
