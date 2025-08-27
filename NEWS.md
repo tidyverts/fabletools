@@ -1,5 +1,7 @@
 # fabletools (development version)
 
+Compatibility release for upcoming ggplot2 4.0.0 release.
+
 ## Bug fixes
 
 * Fixed forecast autoplot() and autolayer() draw key for single-point
