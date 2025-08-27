@@ -4,6 +4,8 @@
 
 * Fixed forecast autoplot() and autolayer() draw key for single-point
   multiple-forecast ribbons (#414).
+* Fixed issue with `accuracy(<fbl_ts>)` when not all key variables were 
+  specified in `by` (#421).
 
 # fabletools 0.5.0
 
