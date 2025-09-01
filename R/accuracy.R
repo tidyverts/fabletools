@@ -68,8 +68,12 @@ RMSSE <- function(.resid, .train, demean = FALSE, na.rm = TRUE, .period, d = .pe
 #' @rdname point_accuracy_measures
 #' @export
 ACF1 <- function(.resid, na.action = stats::na.pass, demean = TRUE, ...){
-  stats::acf(.resid, plot = FALSE, lag.max = 2, na.action = na.action, 
+  if(length(.resid) > 1) {
+    stats::acf(.resid, plot = FALSE, lag.max = 2, na.action = na.action, 
              demean = demean)$acf[2, 1, 1]
+  } else {
+    return(NA_real_)
+  }
 }
 
 #' Mean Arctangent Absolute Percentage Error
