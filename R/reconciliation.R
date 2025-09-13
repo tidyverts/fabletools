@@ -63,7 +63,7 @@ forecast.lst_mint_mdl <- function(object, key_data,
   method <- object%@%"method"
   sparse <- object%@%"sparse"
   if(sparse){
-    require_package("Matrix")
+    check_installed("Matrix")
     as.matrix <- Matrix::as.matrix
     t <- Matrix::t
     diag <- function(x) if(is.vector(x)) Matrix::Diagonal(x = x) else Matrix::diag(x)
@@ -467,7 +467,7 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
   }
   if(!inherits(S, "matrix")) {
     # Use sparse functions
-    require_package("Matrix")
+    check_installed("Matrix")
     as.matrix <- Matrix::as.matrix
     t <- Matrix::t
     diag <- function(x) if(is.vector(x)) Matrix::Diagonal(x = x) else Matrix::diag(x)

@@ -98,7 +98,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   }
   
   if(is_attached("package:future")){
-    require_package("future.apply")
+    check_installed("future.apply")
     eval_models <- function(models, lst_data){
       out <- future.apply::future_mapply(
         rep(lst_data, length(models)),
