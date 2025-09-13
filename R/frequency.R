@@ -87,7 +87,7 @@ get_frequencies.NULL <- function(period, data, ...,
 #' @rdname freq_tools
 #' @export
 get_frequencies.character <- function(period, data, ...){
-  require_package("lubridate")
+  check_installed("lubridate")
   m <- lubridate::as.period(period)
   if(is.na(m)) abort(paste("Unknown period:", period))
   get_frequencies(m, data, ...)
@@ -96,7 +96,7 @@ get_frequencies.character <- function(period, data, ...){
 #' @rdname freq_tools
 #' @export
 get_frequencies.Period <- function(period, data, ...){
-  require_package("lubridate")
+  check_installed("lubridate")
   
   interval <- tsibble::interval(data)
   
