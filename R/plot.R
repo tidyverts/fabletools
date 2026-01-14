@@ -358,6 +358,8 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
       
       if (utils::packageVersion("distributional") > "0.4.0") {
         do.call(rbind, lapply(quantile(x, (1 + c(-1, 1) * .width)/2, type = "marginal", na.rm = na.rm), t))
+      else if (utils::packageVersion("distributional") >= "0.6.0") {
+        do.call(rbind, lapply(quantile(x, (1 + c(-1, 1) * .width)/2, kind = "marginal", na.rm = na.rm), t))
       } else {
         do.call(rbind, lapply(quantile(x, (1 + c(-1, 1) * .width)/2, na.rm = na.rm), t))
       }
