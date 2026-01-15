@@ -76,21 +76,21 @@ the model formulae interface.</p>
 <div class="section">
 <h3 id="trend">trend<a class="anchor" aria-label="anchor" href="#trend"></a></h3>
 <p>The <code>trend</code> special includes common linear trend regressors in the model. It also supports piecewise linear trend via the <code>knots</code> argument.</p><div class="sourceCode"><pre><code><span></span>
-<span><span class="fu">trend</span><span class="op">(</span>knots <span class="op">=</span> <span class="cn">NULL</span>, origin <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/common_xregs.html">trend</a></span><span class="op">(</span>knots <span class="op">=</span> <span class="cn">NULL</span>, origin <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
 
 <table class="table table"><tr><td><code>knots</code></td><td>A vector of times (same class as the data's time index) identifying the position of knots for a piecewise linear trend.</td></tr><tr><td><code>origin</code></td><td>An optional time value to act as the starting time for the trend.</td></tr></table></div>
 
 <div class="section">
 <h3 id="season">season<a class="anchor" aria-label="anchor" href="#season"></a></h3>
 <p>The <code>season</code> special includes seasonal dummy variables in the model.</p><div class="sourceCode"><pre><code><span></span>
-<span><span class="fu">season</span><span class="op">(</span>period <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/common_xregs.html">season</a></span><span class="op">(</span>period <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
 
 <table class="table table"><tr><td><code>period</code></td><td>The periodic nature of the seasonality. This can be either a number indicating the number of observations in each seasonal period, or text to indicate the duration of the seasonal window (for example, annual seasonality would be "1 year").</td></tr></table></div>
 
 <div class="section">
 <h3 id="fourier">fourier<a class="anchor" aria-label="anchor" href="#fourier"></a></h3>
 <p>The <code>fourier</code> special includes seasonal fourier terms in the model. The maximum order of the fourier terms must be specified using <code>K</code>.</p><div class="sourceCode"><pre><code><span></span>
-<span><span class="fu">fourier</span><span class="op">(</span>period <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">K</span>, origin <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/common_xregs.html">fourier</a></span><span class="op">(</span>period <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">K</span>, origin <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
 
 <table class="table table"><tr><td><code>period</code></td><td>The periodic nature of the seasonality. This can be either a number indicating the number of observations in each seasonal period, or text to indicate the duration of the seasonal window (for example, annual seasonality would be "1 year").</td></tr><tr><td><code>K</code></td><td>The maximum order of the fourier terms.</td></tr><tr><td><code>origin</code></td><td>An optional time value to act as the starting time for the fourier series.</td></tr></table></div>
 
