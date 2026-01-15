@@ -48,7 +48,7 @@ residuals. If \code{new_data} contains the \code{.innov} column, those values wi
 treated as innovations for the simulated paths.
 }
 \examples{
-\dontshow{if (requireNamespace("fable", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("fable", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(fable)
 library(dplyr)
 UKLungDeaths <- as_tsibble(cbind(mdeaths, fdeaths), pivot_longer = FALSE)

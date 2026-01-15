@@ -83,7 +83,7 @@ These intervals are stored in a single column using the \code{hilo} class, to
 extract the numerical upper and lower bounds you can use \code{\link[=unpack_hilo]{unpack_hilo()}}.
 }
 \examples{
-\dontshow{if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE) && requireNamespace("urca", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE) && requireNamespace("urca", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(fable)
 library(tsibble)
 library(tsibbledata)

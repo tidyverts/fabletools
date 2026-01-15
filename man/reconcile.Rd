@@ -19,7 +19,7 @@ This function allows you to specify the method used to reconcile forecasts
 in accordance with its key structure.
 }
 \examples{
-\dontshow{if (requireNamespace("fable", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("fable", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(fable)
 lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) \%>\%
   aggregate_key(key, value = sum(value))

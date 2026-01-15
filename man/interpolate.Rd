@@ -20,7 +20,7 @@
 Uses a fitted model to interpolate missing values from a dataset.
 }
 \examples{
-\dontshow{if (requireNamespace("fable", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("fable", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(fable)
 library(tsibbledata)
 

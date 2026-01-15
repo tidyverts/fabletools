@@ -22,7 +22,7 @@ tsibble contains a multiple keys, separate time series will be identified by
 colour.
 }
 \examples{
-\dontshow{if (requireNamespace("fable", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("fable", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(fable)
 library(tsibbledata)
 library(tsibble)

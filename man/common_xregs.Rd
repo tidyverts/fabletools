@@ -3,6 +3,9 @@
 \docType{data}
 \name{common_xregs}
 \alias{common_xregs}
+\alias{trend}
+\alias{season}
+\alias{fourier}
 \title{Common exogenous regressors}
 \usage{
 common_xregs

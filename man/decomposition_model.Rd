@@ -23,7 +23,7 @@ These component models will be combined according to the decomposition
 method, giving a combination model for the response of the decomposition.
 }
 \examples{
-\dontshow{if (requireNamespace("fable", quietly = TRUE) && requireNamespace("feasts", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("fable", quietly = TRUE) && requireNamespace("feasts", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(fable)
 library(feasts)
 library(tsibble)

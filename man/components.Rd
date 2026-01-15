@@ -23,7 +23,7 @@ A dable will be returned, which will allow you to easily plot the components
 and see the way in which components are combined to give forecasts.
 }
 \examples{
-\dontshow{if (requireNamespace("fable", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("fable", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(fable)
 library(tsibbledata)
 

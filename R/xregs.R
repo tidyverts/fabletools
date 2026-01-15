@@ -79,6 +79,8 @@ fbl_fourier <- function(x, period, K, origin = NULL) {
 #' These special functions provide interfaces to more complicated functions within
 #' the model formulae interface.
 #'
+#' @aliases trend season fourier
+#' 
 #' @section Specials:
 #'
 #' \subsection{trend}{

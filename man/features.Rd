@@ -46,7 +46,7 @@ tourism \%>\%
 
 # Search and use useful features with `feature_set()`. 
 
-\dontshow{if (requireNamespace("feasts", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("feasts", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(feasts)
 \dontshow{\}) # examplesIf}
 tourism \%>\% 

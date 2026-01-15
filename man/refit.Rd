@@ -21,7 +21,7 @@ Applies a fitted model to a new dataset. For most methods this can be done
 with or without re-estimation of the parameters.
 }
 \examples{
-\dontshow{if (requireNamespace("fable", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("fable", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(fable)
 
 fit <- as_tsibble(mdeaths) \%>\% 

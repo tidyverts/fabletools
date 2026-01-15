@@ -31,7 +31,7 @@ need to provide a complete dataset that includes the future data and data
 used to train the model.
 }
 \examples{
-\dontshow{if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(fable)
 library(tsibble)
 library(tsibbledata)
