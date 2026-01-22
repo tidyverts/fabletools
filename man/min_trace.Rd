@@ -20,8 +20,12 @@ matrix algebra? By default, sparse matrices will be used if the MatrixM
 package is installed.}
 }
 \description{
-Reconciles a hierarchy using the minimum trace combination method. The
-response variable of the hierarchy must be aggregated using sums. The
+Reconciles a hierarchy using the minimum trace combination method. This
+approach minimizes the mean squared error of the coherent forecasts across
+the entire collection of time series under the assumption of unbiasedness.
+}
+\details{
+The response variable of the hierarchy must be aggregated using sums. The
 forecasted time points must match for all series in the hierarchy (caution:
 this is not yet tested for beyond the series length).
 }
@@ -29,5 +33,6 @@ this is not yet tested for beyond the series length).
 Wickramasuriya, S. L., Athanasopoulos, G., & Hyndman, R. J. (2019). Optimal forecast reconciliation for hierarchical and grouped time series through trace minimization. Journal of the American Statistical Association, 1-45. https://doi.org/10.1080/01621459.2018.1448825
 }
 \seealso{
-\code{\link[=reconcile]{reconcile()}}, \code{\link[=aggregate_key]{aggregate_key()}}
+\code{\link[=reconcile]{reconcile()}}, \code{\link[=aggregate_key]{aggregate_key()}},
+\url{https://otexts.com/fpp2/reconciliation.html}
 }
