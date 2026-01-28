@@ -5,7 +5,12 @@ template:
     bootswatch: cosmo
   includes:
     in_header: |
-      <script defer data-domain="fabletools.tidyverts.org" src="https://track.mitchelloharawild.com/js/plausible.js"></script>
+      <!-- Privacy-friendly analytics by Plausible -->
+      <script async src="https://track.mitchelloharawild.com/js/pa-2cqjELTlQyg2tc3MAngFP.js"></script>
+      <script>
+        window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+        plausible.init()
+      </script>
 
 
 development:
