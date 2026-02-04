@@ -46,7 +46,7 @@ Imports:
     R6,
     utils,
     vctrs (>= 0.2.2),
-    distributional (>= 0.3.0.9000),
+    distributional (>= 0.3.1),
     progressr,
     lifecycle,
     ggdist,
