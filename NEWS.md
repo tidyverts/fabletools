@@ -1,3 +1,5 @@
+# fabletools (development version)
+
 # fabletools 0.5.1
 
 Compatibility release for upcoming ggplot2 4.0.0 release.
