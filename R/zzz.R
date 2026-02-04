@@ -51,13 +51,13 @@ register_s3_method <- function(pkg, generic, class, fun = NULL) {
   if (!is.na(ggtime_version)) {
     ggtime_ns <- getNamespace("ggtime")
     
-    register_s3_method("ggplot2", "autoplot", "tbl_ts", getS3method("autoplot", "tbl_ts", envir = ggtime_ns))
-    register_s3_method("ggplot2", "autolayer", "tbl_ts", getS3method("autolayer", "tbl_ts", envir = ggtime_ns))
-    register_s3_method("ggplot2", "autoplot", "dcmp_ts", getS3method("autoplot", "dcmp_ts", envir = ggtime_ns))
+    register_s3_method("ggplot2", "autoplot", "tbl_ts", utils::getS3method("autoplot", "tbl_ts", envir = ggtime_ns))
+    register_s3_method("ggplot2", "autolayer", "tbl_ts", utils::getS3method("autolayer", "tbl_ts", envir = ggtime_ns))
+    register_s3_method("ggplot2", "autoplot", "dcmp_ts", utils::getS3method("autoplot", "dcmp_ts", envir = ggtime_ns))
     if (ggtime_version >= "0.2.0") {
-      register_s3_method("ggplot2", "autoplot", "fbl_ts", getS3method("autoplot", "fbl_ts", envir = ggtime_ns))
-      register_s3_method("ggplot2", "autolayer", "fbl_ts", getS3method("autolayer", "fbl_ts", envir = ggtime_ns))
-      register_s3_method("ggplot2", "fortify", "tbl_ts", getS3method("fortify", "fbl_ts", envir = ggtime_ns))
+      register_s3_method("ggplot2", "autoplot", "fbl_ts", utils::getS3method("autoplot", "fbl_ts", envir = ggtime_ns))
+      register_s3_method("ggplot2", "autolayer", "fbl_ts", utils::getS3method("autolayer", "fbl_ts", envir = ggtime_ns))
+      register_s3_method("ggplot2", "fortify", "tbl_ts", utils::getS3method("fortify", "fbl_ts", envir = ggtime_ns))
     } else {
       register_s3_method("ggplot2", "autoplot", "fbl_ts", autoplot.fbl_ts)
       register_s3_method("ggplot2", "autolayer", "fbl_ts", autolayer.fbl_ts)
