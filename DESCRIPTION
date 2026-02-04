@@ -67,7 +67,8 @@ Suggests:
     lubridate,
     urca,
     mvtnorm,
-    Matrix
+    Matrix,
+    ggtime
 VignetteBuilder: 
     knitr
 RdMacros: 

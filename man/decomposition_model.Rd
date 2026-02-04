@@ -28,6 +28,7 @@ library(fable)
 library(feasts)
 library(tsibble)
 library(dplyr)
+library(ggtime)
 
 vic_food <- tsibbledata::aus_retail \%>\% 
   filter(State == "Victoria", Industry == "Food retailing")

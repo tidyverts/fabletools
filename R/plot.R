@@ -17,8 +17,13 @@
 #'  autoplot(vars(Close, log(Close)))
 #' 
 #' @importFrom ggplot2 ggplot aes geom_line guides guide_legend xlab
-#' @export
 autoplot.tbl_ts <- function(object, .vars = NULL, ...){
+  lifecycle::deprecate_soft(
+    when = "0.6.0",
+    what = "autoplot.tbl_ts()",
+    with = "ggtime::autoplot.tbl_ts()",
+    details = "Graphics functions have been moved to the {ggtime} package. Please use `library(ggtime)` instead."
+  )
   quo_vars <- enquo(.vars)
   
   kv <- key_vars(object)
@@ -76,8 +81,13 @@ autoplot.tbl_ts <- function(object, .vars = NULL, ...){
 
 #' @rdname autoplot.tbl_ts
 #' @importFrom ggplot2 ggplot aes geom_line guides guide_legend xlab
-#' @export
 autolayer.tbl_ts <- function(object, .vars = NULL, ...){
+  lifecycle::deprecate_soft(
+    when = "0.6.0",
+    what = "autolayer.tbl_ts()",
+    with = "ggtime::autolayer.tbl_ts()",
+    details = "Graphics functions have been moved to the {ggtime} package. Please use `library(ggtime)` instead."
+  )
   quo_vars <- enquo(.vars)
   kv <- key_vars(object)
   nk <- n_keys(object)
@@ -121,7 +131,6 @@ autolayer.tbl_ts <- function(object, .vars = NULL, ...){
 }
 
 #' @importFrom ggplot2 fortify
-#' @export
 fortify.fbl_ts <- function(model, data = NULL, level = c(80, 95), ...){
   return(as_tibble(model))
 }
@@ -152,8 +161,14 @@ fortify.fbl_ts <- function(model, data = NULL, level = c(80, 95), ...){
 #'   autoplot(aus_production)
 #' 
 #' @importFrom ggplot2 facet_wrap
-#' @export
 autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = TRUE, ...){
+  lifecycle::deprecate_soft(
+    when = "0.6.0",
+    what = "autoplot.fbl_ts()",
+    with = "ggtime::autoplot.fbl_ts()",
+    details = "Graphics functions have been moved to the {ggtime} package. Please use `library(ggtime)` instead."
+  )
+
   fc_resp <- response_vars(object)
   fc_key <- setdiff(key_vars(object), ".model")
   common_models <- duplicated(key_data(object)[[".model"]] %||% rep(TRUE, NROW(key_data(object))))
@@ -219,10 +234,14 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = T
 #' aus_production %>% 
 #'   autoplot(Beer) + 
 #'   autolayer(fc)
-#' 
-#' @export
 autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95), 
                              point_forecast = list(mean = mean), show_gap = TRUE, ...){
+  lifecycle::deprecate_soft(
+    when = "0.6.0",
+    what = "autolayer.fbl_ts()",
+    with = "ggtime::autolayer.fbl_ts()",
+    details = "Graphics functions have been moved to the {ggtime} package. Please use `library(ggtime)` instead."
+  )
   build_fbl_layer(object = object, data = data, level = level, 
                   point_forecast = point_forecast, show_gap = show_gap, ...)
 
@@ -470,9 +489,14 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
 #'   autoplot()
 #' 
 #' @importFrom ggplot2 ggplot geom_line geom_rect facet_grid vars ylab labs after_stat
-#' @export
 autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE, 
                              level = c(80, 95), ...){
+  lifecycle::deprecate_soft(
+    when = "0.6.0",
+    what = "autoplot.dcmp_ts()",
+    with = "ggtime::autoplot.dcmp_ts()",
+    details = "Graphics functions have been moved to the {ggtime} package. Please use `library(ggtime)` instead."
+  )
   method <- object%@%"method"
   idx <- index(object)
   keys <- key(object)

@@ -130,13 +130,10 @@ reference:
     - new_transformation
 - title: Graphics
   desc: >
-    Some `autoplot()` and `autolayer()` methods are defined for classes commonly used within fabletools.
-  contents:
-    - autoplot.tbl_ts
-    - autolayer.tbl_ts
-    - autoplot.fbl_ts
-    - autolayer.fbl_ts
-    - autoplot.dcmp_ts
+    Graphics capabilities in feasts have moved to the [ggtime](https://pkg.mitchelloharawild.com/ggtime) package.
+
+    Please use `library(ggtime)` in your code in order to continue using the `autoplot()` and `autolayer()` functions previously provided by this package.
+
 - title: Extension package helpers
   desc: >
     Functions provided to help develop extension packages.

@@ -21,6 +21,9 @@ useful in understanding how they contribute towards the overall fitted values.
 \details{
 A dable will be returned, which will allow you to easily plot the components
 and see the way in which components are combined to give forecasts.
+
+The components can also be visualised using the \code{\link[=autoplot]{autoplot()}} method provided
+by the ggtime package.
 }
 \examples{
 \dontshow{if (requireNamespace("fable", quietly = TRUE)) withAutoprint(\{ # examplesIf}
@@ -30,7 +33,6 @@ library(tsibbledata)
 # Forecasting with an ETS(M,Ad,A) model to Australian beer production
 aus_production \%>\%
   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) \%>\% 
-  components() \%>\% 
-  autoplot()
+  components()
 \dontshow{\}) # examplesIf}
 }

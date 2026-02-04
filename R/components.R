@@ -6,6 +6,9 @@
 #' A dable will be returned, which will allow you to easily plot the components
 #' and see the way in which components are combined to give forecasts.
 #' 
+#' The components can also be visualised using the [`autoplot()`] method provided
+#' by the ggtime package.
+#' 
 #' @param object A mable.
 #' @param ... Other arguments passed to methods.
 #' 
@@ -16,9 +19,8 @@
 #' # Forecasting with an ETS(M,Ad,A) model to Australian beer production
 #' aus_production %>%
 #'   model(ets = ETS(log(Beer) ~ error("M") + trend("Ad") + season("A"))) %>% 
-#'   components() %>% 
-#'   autoplot()
-#'
+#'   components()
+#' 
 #' @rdname components
 #' @export
 components.mdl_df <- function(object, ...){

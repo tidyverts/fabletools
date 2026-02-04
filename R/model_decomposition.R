@@ -101,6 +101,7 @@ Please check that you have specified the decomposition models appropriately.")
 #' library(feasts)
 #' library(tsibble)
 #' library(dplyr)
+#' library(ggtime)
 #' 
 #' vic_food <- tsibbledata::aus_retail %>% 
 #'   filter(State == "Victoria", Industry == "Food retailing")
