@@ -4,6 +4,11 @@ This release migrates graphics functionality to `{ggtime}`. The commonly used gr
 
 After a (very) gradual deprecation process, the `{ggtime}` dependency will be removed and the graphics functions will stop being re-exported. This deprecation process is planned to span approximately 2 years, after which explicitly using `{ggtime}` will be required.
 
+## Improvements
+
+* Update for compatibility with distributional v0.6.0.
+* Documentation improvements.
+
 # fabletools 0.5.1
 
 Compatibility release for upcoming ggplot2 4.0.0 release.
