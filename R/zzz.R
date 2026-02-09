@@ -13,10 +13,8 @@
   register_s3_method("ggplot2", "scale_type", "agg_vec")
   
   # fabletools -> ggtime method migration
-  ggtime_version <- package_version(as.character(
-    suppressWarnings(
-      utils::packageDescription("ggtime", fields = "Version")
-    )
+  ggtime_version <- as.character(suppressWarnings(
+    utils::packageDescription("ggtime", fields = "Version")
   ))
   if (!is.na(ggtime_version) && isFALSE(as.logical(Sys.getenv("R_PACKAGE_BUILDING")))) {
     ggtime_ns <- getNamespace("ggtime")
@@ -24,7 +22,7 @@
     register_s3_method("ggplot2", "autoplot", "tbl_ts", utils::getS3method("autoplot", "tbl_ts", envir = ggtime_ns))
     register_s3_method("ggplot2", "autolayer", "tbl_ts", utils::getS3method("autolayer", "tbl_ts", envir = ggtime_ns))
     register_s3_method("ggplot2", "autoplot", "dcmp_ts", utils::getS3method("autoplot", "dcmp_ts", envir = ggtime_ns))
-    if (ggtime_version >= "0.2.0") {
+    if (package_version(ggtime_version) >= "0.2.0") {
       register_s3_method("ggplot2", "autoplot", "fbl_ts", utils::getS3method("autoplot", "fbl_ts", envir = ggtime_ns))
       register_s3_method("ggplot2", "autolayer", "fbl_ts", utils::getS3method("autolayer", "fbl_ts", envir = ggtime_ns))
       register_s3_method("ggplot2", "fortify", "tbl_ts", utils::getS3method("fortify", "fbl_ts", envir = ggtime_ns))
