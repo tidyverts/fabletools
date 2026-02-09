@@ -116,14 +116,6 @@ big_mark <- function (x, ...) {
   ret
 }
 
-require_package <- function(pkg){
-  if(!requireNamespace(pkg, quietly = TRUE)){
-    abort(
-      sprintf('The `%s` package must be installed to use this functionality. It can be installed with install.packages("%s")', pkg, pkg)
-    )
-  }
-}
-
 calc <- function(f, ...){
   f(...)
 }
@@ -262,7 +254,7 @@ mapply_maybe_parallel <- function (.f, ..., MoreArgs = list(), SIMPLIFY = FALSE)
     .f(...)
   }
   if(is_attached("package:future")){
-    require_package("future.apply")
+    check_installed("future.apply")
     future.apply::future_mapply(
       FUN = .fp,
       ...,

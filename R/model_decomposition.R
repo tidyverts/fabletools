@@ -51,7 +51,7 @@ Please specify an appropriate model for these components",
   }
   
   mdls_default <- if(!is_empty(miss_vars)){
-    require_package("fable")
+    check_installed("fable")
     lag <- NULL
     
     structure[miss_vars] %>% 
