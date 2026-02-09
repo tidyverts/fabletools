@@ -109,6 +109,14 @@ method, giving a combination model for the response of the decomposition.</p>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tsibble.tidyverts.org" class="external-link">tsibble</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ggtime</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Registered S3 methods overwritten by 'ggtime':</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   method                  from      </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   +.gg_tsensemble         feasts    </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   autolayer.tbl_ts        fabletools</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   autoplot.dcmp_ts        fabletools</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   autoplot.tbl_ts         fabletools</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   grid.draw.gg_tsensemble feasts    </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   print.gg_tsensemble     feasts    </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘ggtime’</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:feasts’:</span>
@@ -124,6 +132,10 @@ method, giving a combination model for the response of the decomposition.</p>
 <span class="r-in"><span>  <span class="fu"><a href="model.html">model</a></span><span class="op">(</span><span class="fu"><a href="https://feasts.tidyverts.org/reference/STL.html" class="external-link">STL</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">Turnover</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="common_xregs.html">season</a></span><span class="op">(</span>window <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://generics.r-lib.org/reference/components.html" class="external-link">components</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use `linewidth` instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">ggtime</span> package.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   Please report the issue to the authors.</span>
 <span class="r-plt img"><img src="decomposition_model-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span>  </span></span>
 <span class="r-in"><span><span class="co"># Use an ETS model to seasonally adjusted data, and SNAIVE to season_year</span></span></span>
