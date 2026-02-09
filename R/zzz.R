@@ -18,7 +18,7 @@
       utils::packageDescription("ggtime", fields = "Version")
     )
   ))
-  if (!is.na(ggtime_version)) {
+  if (!is.na(ggtime_version) && isFALSE(as.logical(Sys.getenv("R_PACKAGE_BUILDING")))) {
     ggtime_ns <- getNamespace("ggtime")
     
     register_s3_method("ggplot2", "autoplot", "tbl_ts", utils::getS3method("autoplot", "tbl_ts", envir = ggtime_ns))
