@@ -1,3 +1,5 @@
+# fabletools (development version)
+
 # fabletools 0.6.0
 
 This release migrates graphics functionality to `{ggtime}`. The commonly used graphics functions are currently exported with a soft deprecation message. To use the `autoplot()` and `autolayer()` time series plot helper functions please include `library(ggtime)` in your code.
