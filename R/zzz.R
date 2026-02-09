@@ -25,11 +25,11 @@
     if (package_version(ggtime_version) >= "0.2.0") {
       register_s3_method("ggplot2", "autoplot", "fbl_ts", utils::getS3method("autoplot", "fbl_ts", envir = ggtime_ns))
       register_s3_method("ggplot2", "autolayer", "fbl_ts", utils::getS3method("autolayer", "fbl_ts", envir = ggtime_ns))
-      register_s3_method("ggplot2", "fortify", "tbl_ts", utils::getS3method("fortify", "fbl_ts", envir = ggtime_ns))
+      register_s3_method("ggplot2", "fortify", "fbl_ts", utils::getS3method("fortify", "fbl_ts", envir = ggtime_ns))
     } else {
       register_s3_method("ggplot2", "autoplot", "fbl_ts", autoplot.fbl_ts)
       register_s3_method("ggplot2", "autolayer", "fbl_ts", autolayer.fbl_ts)
-      register_s3_method("ggplot2", "fortify", "tbl_ts", fortify.fbl_ts)
+      register_s3_method("ggplot2", "fortify", "fbl_ts", fortify.fbl_ts)
     }
   } else {
     register_s3_method("ggplot2", "autoplot", "fbl_ts", autoplot.fbl_ts)
@@ -37,7 +37,7 @@
     register_s3_method("ggplot2", "autoplot", "dcmp_ts", autoplot.dcmp_ts)
     register_s3_method("ggplot2", "autolayer", "fbl_ts", autolayer.fbl_ts)
     register_s3_method("ggplot2", "autolayer", "tbl_ts", autolayer.fbl_ts)
-    register_s3_method("ggplot2", "fortify", "tbl_ts", fortify.fbl_ts)
+    register_s3_method("ggplot2", "fortify", "fbl_ts", fortify.fbl_ts)
   }
 
 
