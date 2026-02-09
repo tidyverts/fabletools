@@ -47,7 +47,11 @@ register_s3_method <- function(pkg, generic, class, fun = NULL) {
 }
 
 .onAttach <- function(...) {
-  ggtime_version <- package_version(as.character(utils::packageDescription("ggtime", fields = "Version")))
+  ggtime_version <- package_version(as.character(
+    suppressWarnings(
+      utils::packageDescription("ggtime", fields = "Version")
+    )
+  ))
   if (!is.na(ggtime_version)) {
     ggtime_ns <- getNamespace("ggtime")
     
