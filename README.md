@@ -10,7 +10,6 @@ status](https://github.com/tidyverts/fabletools/actions/workflows/R-CMD-check.ya
 [![Code test
 coverage](https://codecov.io/gh/tidyverts/fabletools/branch/master/graph/badge.svg)](https://app.codecov.io/gh/tidyverts/fabletools?branch=master)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
-[![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/fabletools)](https://CRAN.R-project.org/package=fabletools)
 <!-- badges: end -->
