@@ -12,13 +12,23 @@
   
   register_s3_method("ggplot2", "scale_type", "agg_vec")
   
-  # fabletools -> ggtime method migration
+  op <- options()
+  op.fable <- list(
+    fable.show_progress = TRUE
+  )
+  toset <- !(names(op.fable) %in% names(op))
+  if (any(toset)) options(op.fable[toset])
+  
+  invisible()
+}
+
+.onAttach <- function(...) {
+    # fabletools -> ggtime method migration
   ggtime_version <- as.character(suppressWarnings(
     utils::packageDescription("ggtime", fields = "Version")
   ))
-  if (!is.na(ggtime_version) && isFALSE(as.logical(Sys.getenv("R_PACKAGE_BUILDING")))) {
+  if (!is.na(ggtime_version)) {
     ggtime_ns <- getNamespace("ggtime")
-    
     register_s3_method("ggplot2", "autoplot", "tbl_ts", utils::getS3method("autoplot", "tbl_ts", envir = ggtime_ns))
     register_s3_method("ggplot2", "autolayer", "tbl_ts", utils::getS3method("autolayer", "tbl_ts", envir = ggtime_ns))
     register_s3_method("ggplot2", "autoplot", "dcmp_ts", utils::getS3method("autoplot", "dcmp_ts", envir = ggtime_ns))
@@ -39,16 +49,6 @@
     register_s3_method("ggplot2", "autolayer", "tbl_ts", autolayer.fbl_ts)
     register_s3_method("ggplot2", "fortify", "fbl_ts", fortify.fbl_ts)
   }
-
-
-  op <- options()
-  op.fable <- list(
-    fable.show_progress = TRUE
-  )
-  toset <- !(names(op.fable) %in% names(op))
-  if (any(toset)) options(op.fable[toset])
-  
-  invisible()
 }
 
 register_s3_method <- function(pkg, generic, class, fun = NULL) {
