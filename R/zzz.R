@@ -23,7 +23,7 @@
 }
 
 .onAttach <- function(...) {
-    # fabletools -> ggtime method migration
+  # fabletools -> ggtime method migration
   ggtime_version <- as.character(suppressWarnings(
     utils::packageDescription("ggtime", fields = "Version")
   ))
