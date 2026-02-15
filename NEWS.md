@@ -1,5 +1,11 @@
 # fabletools (development version)
 
+Small patch to progress deprecation of graphics functionality that required updating reverse dependencies to require fabletools >=0.6.0.
+
+## Breaking changes
+
+* The `autoplot()` and `autolayer()` methods for graphics functions now require the fabletools to be attached (not just loaded). If you previously used `library()` to load fabletools (or fable, fpp3), your code will continue to work. We do however recommend that you also include `library(ggtime)` (or fpp3) for time-series graphics going forward.
+
 # fabletools 0.6.0
 
 This release migrates graphics functionality to `{ggtime}`. The commonly used graphics functions are currently exported with a soft deprecation message. To use the `autoplot()` and `autolayer()` time series plot helper functions please include `library(ggtime)` in your code.
