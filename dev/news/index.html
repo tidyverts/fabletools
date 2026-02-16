@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
       </span>
     </div>
 
@@ -62,14 +62,17 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="fabletools-development-version">fabletools (development version)<a class="anchor" aria-label="anchor" href="#fabletools-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.6.1" id="fabletools-061">fabletools 0.6.1<small>2026-02-16</small><a class="anchor" aria-label="anchor" href="#fabletools-061"></a></h2>
 <p>Small patch to progress deprecation of graphics functionality that required updating reverse dependencies to require fabletools &gt;=0.6.0.</p>
 <div class="section level3">
-<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<h3 id="breaking-changes-0-6-1">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-6-1"></a></h3>
 <ul><li>The <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> and <code><a href="https://ggplot2.tidyverse.org/reference/autolayer.html" class="external-link">autolayer()</a></code> methods for graphics functions now require the fabletools to be attached (not just loaded). If you previously used <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> to load fabletools (or fable, fpp3), your code will continue to work. We do however recommend that you also include <code><a href="https://pkg.mitchelloharawild.com/ggtime/" class="external-link">library(ggtime)</a></code> (or fpp3) for time-series graphics going forward.</li>
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.6.0" id="fabletools-060">fabletools 0.6.0<a class="anchor" aria-label="anchor" href="#fabletools-060"></a></h2>
+<h2 class="page-header" data-toc-text="0.6.0" id="fabletools-060">fabletools 0.6.0<small>2026-02-09</small><a class="anchor" aria-label="anchor" href="#fabletools-060"></a></h2>
 <p>This release migrates graphics functionality to <a href="https://pkg.mitchelloharawild.com/ggtime/" class="external-link">ggtime</a>. The commonly used graphics functions are currently exported with a soft deprecation message. To use the <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> and <code><a href="https://ggplot2.tidyverse.org/reference/autolayer.html" class="external-link">autolayer()</a></code> time series plot helper functions please include <code><a href="https://pkg.mitchelloharawild.com/ggtime/" class="external-link">library(ggtime)</a></code> in your code.</p>
 <p>After a (very) gradual deprecation process, the <a href="https://pkg.mitchelloharawild.com/ggtime/" class="external-link">ggtime</a> dependency will be removed and the graphics functions will stop being re-exported. This deprecation process is planned to span approximately 2 years, after which explicitly using <a href="https://pkg.mitchelloharawild.com/ggtime/" class="external-link">ggtime</a> will be required.</p>
 <div class="section level3">
