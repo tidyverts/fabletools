@@ -1,3 +1,5 @@
+# fabletools (development version)
+
 # fabletools 0.6.1
 
 Small patch to progress deprecation of graphics functionality that required updating reverse dependencies to require fabletools >=0.6.0.
