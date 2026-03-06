@@ -1,7 +1,16 @@
 #' Forecast reconciliation 
 #' 
-#' This function allows you to specify the method used to reconcile forecasts
-#' in accordance with its key structure.
+#' This function allows you to specify the method for reconciling forecasts for
+#' hierarchical or grouped time series. `aggregate_key()` specifies the 
+#' relationships between the series. After an aggregated `tsibble` is modeled, 
+#' `reconcile()` defines the reconciliation algorithm, which is applied to the 
+#' individual and aggregated forecasts for each forecast horizon.
+#' 
+#' Forecast reconciliation ensures that the relationships between time series 
+#' (e.g. that a national forecast equals the sum of regional forecasts within 
+#' that nation) are maintained in the forecasts. Specific reconciliation methods 
+#' may have different constraints. For example, some only work with aggregations 
+#' that are summations.
 #' 
 #' @param .data A mable.
 #' @param ... Reconciliation methods applied to model columns within `.data`.
@@ -29,8 +38,11 @@ reconcile.mdl_df <- function(.data, ...){
 
 #' Minimum trace forecast reconciliation
 #' 
-#' Reconciles a hierarchy using the minimum trace combination method. The 
-#' response variable of the hierarchy must be aggregated using sums. The 
+#' Reconciles a hierarchy using the minimum trace combination method. This 
+#' approach minimizes the mean squared error of the coherent forecasts across 
+#' the entire collection of time series under the assumption of unbiasedness.
+#' 
+#' The response variable of the hierarchy must be aggregated using sums. The 
 #' forecasted time points must match for all series in the hierarchy (caution:
 #' this is not yet tested for beyond the series length).
 #' 
@@ -41,7 +53,8 @@ reconcile.mdl_df <- function(.data, ...){
 #' package is installed.
 #' 
 #' @seealso 
-#' [`reconcile()`], [`aggregate_key()`]
+#' [`reconcile()`], [`aggregate_key()`],
+#' \url{https://otexts.com/fpp2/reconciliation.html}
 #' 
 #' @references 
 #' Wickramasuriya, S. L., Athanasopoulos, G., & Hyndman, R. J. (2019). Optimal forecast reconciliation for hierarchical and grouped time series through trace minimization. Journal of the American Statistical Association, 1-45. https://doi.org/10.1080/01621459.2018.1448825 
@@ -164,14 +177,19 @@ forecast.lst_mint_mdl <- function(object, key_data,
 #' 
 #' \lifecycle{experimental}
 #' 
-#' Reconciles a hierarchy using the bottom up reconciliation method. The 
-#' response variable of the hierarchy must be aggregated using sums. The 
+#' Reconciles a hierarchy using the bottom up reconciliation method. This
+#' method generates forecasts for all time series at the lowest level, then 
+#' sums them according to the aggregation to create forecasts for each level 
+#' of aggregation.
+#' 
+#' The response variable of the hierarchy must be aggregated using sums. The 
 #' forecasted time points must match for all series in the hierarchy.
 #' 
 #' @param models A column of models in a mable.
 #' 
 #' @seealso 
-#' [`reconcile()`], [`aggregate_key()`]
+#' [`reconcile()`], [`aggregate_key()`],
+#' \url{https://otexts.com/fpp2/bottom-up.html}
 #' @export
 bottom_up <- function(models){
   structure(models, class = c("lst_btmup_mdl", "lst_mdl", "list"))
@@ -216,15 +234,20 @@ forecast.lst_btmup_mdl <- function(object, key_data,
 #' 
 #' \lifecycle{experimental}
 #' 
-#' Reconciles a hierarchy using the top down reconciliation method. The 
-#' response variable of the hierarchy must be aggregated using sums. The 
+#' Reconciles a hierarchy using the top down reconciliation method. This method
+#' generates forecasts for the highest level, then disaggregates these 
+#' forecasts to lower levels using the disaggregation specified in the `method` 
+#' argument.
+#' 
+#' The response variable of the hierarchy must be aggregated using sums. The 
 #' forecasted time points must match for all series in the hierarchy.
 #' 
 #' @param models A column of models in a mable.
 #' @param method The reconciliation method to use.
 #' 
 #' @seealso 
-#' [`reconcile()`], [`aggregate_key()`]
+#' [`reconcile()`], [`aggregate_key()`],
+#' \url{https://otexts.com/fpp2/top-down.html}
 #' 
 #' @export
 top_down <- function(models, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
