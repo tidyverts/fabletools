@@ -2,10 +2,13 @@
 % Please edit documentation in R/broom.R
 \name{augment.mdl_df}
 \alias{augment.mdl_df}
+\alias{augment.lst_mdl}
 \alias{augment.mdl_ts}
 \title{Augment a mable}
 \usage{
 \method{augment}{mdl_df}(x, ...)
+
+\method{augment}{lst_mdl}(x, ...)
 
 \method{augment}{mdl_ts}(x, type = NULL, ...)
 }

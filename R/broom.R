@@ -22,10 +22,15 @@
 augment.mdl_df <- function(x, ...){
   mbl_vars <- mable_vars(x)
   kv <- key_vars(x)
-  x <- mutate(as_tibble(x), 
-              dplyr::across(all_of(mbl_vars), function(x) lapply(x, augment, ...)))
+  x <- mutate(as_tibble(x), dplyr::across(all_of(mbl_vars), augment))
   x <- pivot_longer(x, all_of(mbl_vars), names_to = ".model", values_to = ".aug")
   unnest_tsbl(x, ".aug", parent_key = c(kv, ".model"))
+}
+
+#' @rdname augment
+#' @export
+augment.lst_mdl <- function(x, ...){
+  lapply(x, augment, ...)
 }
 
 #' @rdname augment
@@ -92,10 +97,15 @@ Response residuals are now always found in `.resid` and innovation residuals are
 #' @export
 glance.mdl_df <- function(x, ...){
   mbl_vars <- mable_vars(x)
-  x <- mutate(as_tibble(x), 
-              dplyr::across(all_of(mbl_vars), function(x) lapply(x, glance, ...)))
+  x <- mutate(as_tibble(x), dplyr::across(all_of(mbl_vars), glance))
   x <- pivot_longer(x, all_of(mbl_vars), names_to = ".model", values_to = ".glanced")
   unnest(x, ".glanced")
+}
+
+#' @rdname glance
+#' @export
+glance.lst_mdl <- function(x, ...){
+  lapply(x, glance, ...)
 }
 
 #' @rdname glance
@@ -124,8 +134,7 @@ glance.mdl_ts <- function(x, ...){
 #' @export
 tidy.mdl_df <- function(x, ...){
   mbl_vars <- mable_vars(x)
-  x <- mutate(as_tibble(x), 
-         dplyr::across(all_of(mbl_vars), function(x) lapply(x, tidy, ...)))
+  x <- mutate(as_tibble(x), dplyr::across(all_of(mbl_vars), tidy))
   x <- pivot_longer(x, all_of(mbl_vars), names_to = ".model", values_to = ".tidied")
   unnest(x, ".tidied")
 }
@@ -134,6 +143,12 @@ tidy.mdl_df <- function(x, ...){
 #' @export
 coef.mdl_df <- function(object, ...){
   tidy(object, ...)
+}
+
+#' @rdname tidy
+#' @export
+tidy.lst_mdl <- function(x, ...){
+  lapply(x, tidy, ...)
 }
 
 #' @rdname tidy
@@ -147,3 +162,4 @@ tidy.mdl_ts <- function(x, ...){
 coef.mdl_ts <- function(object, ...){
   tidy(object, ...)
 }
+

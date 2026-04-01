@@ -3,6 +3,7 @@
 \name{tidy.mdl_df}
 \alias{tidy.mdl_df}
 \alias{coef.mdl_df}
+\alias{tidy.lst_mdl}
 \alias{tidy.mdl_ts}
 \alias{coef.mdl_ts}
 \title{Extract model coefficients from a mable}
@@ -10,6 +11,8 @@
 \method{tidy}{mdl_df}(x, ...)
 
 \method{coef}{mdl_df}(object, ...)
+
+\method{tidy}{lst_mdl}(x, ...)
 
 \method{tidy}{mdl_ts}(x, ...)
 

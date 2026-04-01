@@ -1,5 +1,9 @@
 # fabletools (development version)
 
+## Improvements
+
+* Added `lst_mdl` methods for `augment()`, `glance()`, and `tidy()` to enable global models (including reconciliation models) to provide statistics for these methods.
+
 # fabletools 0.6.1
 
 Small patch to progress deprecation of graphics functionality that required updating reverse dependencies to require fabletools >=0.6.0.
