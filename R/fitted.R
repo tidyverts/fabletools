@@ -51,18 +51,27 @@ hfitted <- function(object, ...) {
 hfitted.mdl_ts <- function(object, h, ...) {
   fn <- tryCatch(utils::getS3method("hfitted", class(object[["fit"]])),
                  error = function(e) NULL)
+
   if(is.null(fn)) {
+    # No direct hfitted method exists, so we will refit the model repeatedly to get the fitted values.
     dt <- object$data
     resp <- response_vars(object)
+    n <- nrow(dt)
+    fits <- rep(NA_real_, n)
+
+    fn <- tryCatch(utils::getS3method("refit", mdl_cls <- class(object[["fit"]])), error = function(e) NULL)
+    if (is.null(fn)) {
+      cli::cli_warn(
+        "No method for hfitted() or refit() for class {.cls {mdl_cls}}. Returning NA.",
+        class = "fabletools_no_hfitted_method"
+      )
+    }
     
     # Undo transformations
     bt <- lapply(object$transformation, invert_transformation)
     mv <- match(measured_vars(dt), names(dt))
     dt[mv] <- mapply(calc, bt, dt[measured_vars(dt)], SIMPLIFY = FALSE)
     names(dt)[mv] <- resp
-    
-    n <- nrow(dt)
-    fits <- rep(NA_real_, n)
     
     for (i in seq_len(n-h)) {
       mdl <- tryCatch(refit(object, vec_slice(dt, seq_len(i))),
@@ -72,6 +81,7 @@ hfitted.mdl_ts <- function(object, h, ...) {
     }
     fits <- list(fits)
   } else {
+    # Direct hfitted method is 
     fits <- as.matrix(fn(object[["fit"]], h=h, ...))
     # Backtransform fits from model method
     bt <- map(object$transformation, invert_transformation)

@@ -2,7 +2,8 @@
 
 ## Improvements
 
-* Added `lst_mdl` methods for `augment()`, `glance()`, and `tidy()` to enable global models (including reconciliation models) to provide statistics for these methods.
+* Added `lst_mdl` methods for `augment()`, `glance()`, and `tidy()` to enable global models (including reconciliation models) to provide statistics for these methods (#424).
+* Added warning for `hfitted()` used on models without `refit()` method (#432).
 
 # fabletools 0.6.1
 
