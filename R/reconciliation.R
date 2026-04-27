@@ -140,15 +140,20 @@ forecast.lst_mint_mdl <- function(object, key_data,
       x = rep(1, sum(lengths(agg_data$agg))))
     J <- Matrix::sparseMatrix(i = S[row_btm,,drop = FALSE]@i+1, j = row_btm, x = 1L, 
                               dims = rev(dim(S)))
-    U <- cbind(
-      Matrix::Diagonal(diff(dim(J))),
-      -S[row_agg,,drop = FALSE]
-    )
-    U <- U[, order(c(row_agg, row_btm)), drop = FALSE]
-    Ut <- t(U)
-    WUt <- W %*% Ut
-    P <- J - J %*% WUt %*% solve(U %*% WUt, U)
-    # P <- J - J%*%W%*%t(U)%*%solve(U%*%W%*%t(U))%*%U
+    if (length(row_agg) == 0) {
+      # Simple case of no constraints, to avoid unnecessary matrix algebra
+      P <- J
+    } else {
+      U <- cbind(
+        Matrix::Diagonal(diff(dim(J))),
+        -S[row_agg,,drop = FALSE]
+      )
+      U <- U[, order(c(row_agg, row_btm)), drop = FALSE]
+      Ut <- t(U)
+      WUt <- W %*% Ut
+      P <- J - J %*% WUt %*% solve(U %*% WUt, U)
+      # P <- J - J%*%W%*%t(U)%*%solve(U%*%W%*%t(U))%*%U
+    }
   }
   else {
     S <- matrix(0L, nrow = length(agg_data$agg), ncol = max(vec_c(!!!agg_data$agg)))
