@@ -1,7 +1,12 @@
 #' @export
 dplyr_row_slice.mdl_df <- function(data, i, ..., preserve = FALSE) {
   res <- dplyr_row_slice(as_tibble(data), i, ..., preserve = preserve)
-  build_mable(res, key = !!key_vars(data), model = mable_vars(data))
+  build_mable_meta(
+    res,
+    key_data = dplyr::group_data(dplyr::group_by(res, !!!syms(key_vars(data)))),
+    model = mable_vars(data),
+    response = response_vars(data)
+  )
 }
 
 #' @export

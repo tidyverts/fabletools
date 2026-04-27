@@ -45,6 +45,10 @@ as_mable.data.frame <- function(x, key = NULL, model = NULL, ...){
   build_mable(x, key = !!enquo(key), model = model)
 }
 
+# TODO - allow empty mdl_df objects to be constructed with a given response variable
+# which is used to check if the models use that response variable. The default
+# response variable would then simply be that of the first model (violating the
+# check if models have different response variables).
 build_mable <- function (x, key = NULL, key_data = NULL, model = NULL) {
   model <- names(tidyselect::eval_select(all_of(model), data = x))
   
