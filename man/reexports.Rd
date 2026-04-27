@@ -27,14 +27,14 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{distributional}{\code{\link[distributional]{hilo}}}
+  \item{distributional}{\code{\link[distributional:hilo]{hilo()}}}
 
-  \item{dplyr}{\code{\link[dplyr:reexports]{\%>\%}}, \code{\link[dplyr]{vars}}}
+  \item{dplyr}{\code{\link[dplyr:\%>\%]{\%>\%}}, \code{\link[dplyr:vars]{vars()}}}
 
-  \item{generics}{\code{\link[generics]{accuracy}}, \code{\link[generics]{augment}}, \code{\link[generics]{components}}, \code{\link[generics]{equation}}, \code{\link[generics]{forecast}}, \code{\link[generics]{generate}}, \code{\link[generics]{glance}}, \code{\link[generics]{hypothesize}}, \code{\link[generics]{interpolate}}, \code{\link[generics]{refit}}, \code{\link[generics]{tidy}}}
+  \item{generics}{\code{\link[generics:accuracy]{accuracy()}}, \code{\link[generics:augment]{augment()}}, \code{\link[generics:components]{components()}}, \code{\link[generics:equation]{equation()}}, \code{\link[generics:forecast]{forecast()}}, \code{\link[generics:generate]{generate()}}, \code{\link[generics:glance]{glance()}}, \code{\link[generics:hypothesize]{hypothesize()}}, \code{\link[generics:interpolate]{interpolate()}}, \code{\link[generics:refit]{refit()}}, \code{\link[generics:tidy]{tidy()}}}
 
-  \item{ggplot2}{\code{\link[ggplot2]{autolayer}}, \code{\link[ggplot2]{autoplot}}}
+  \item{ggplot2}{\code{\link[ggplot2:autolayer]{autolayer()}}, \code{\link[ggplot2:autoplot]{autoplot()}}}
 
-  \item{tsibble}{\code{\link[tsibble:as-tsibble]{as_tsibble}}}
+  \item{tsibble}{\code{\link[tsibble:as_tsibble]{as_tsibble()}}}
 }}
 

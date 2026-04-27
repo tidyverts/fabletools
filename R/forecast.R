@@ -121,7 +121,7 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
 }
 
 #' @export
-forecast.lst_mdl <- function(object, new_data = NULL, key_data, ...){
+forecast.mdl_lst <- function(object, new_data = NULL, key_data, ...){
   mapply_maybe_parallel(
     .f = forecast,
     object, 

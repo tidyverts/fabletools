@@ -4,7 +4,7 @@
 #' for applying multiple models to a dataset. Each row of the mable refers to a
 #' different time series from the data (identified by the key columns). A mable
 #' must contain at least one column of time series models (`mdl_ts`), where the
-#' list column itself (`lst_mdl`) describes how these models are related.
+#' list column itself (`mdl_lst`) describes how these models are related.
 #' 
 #' @inheritParams tsibble::tsibble
 #' 
@@ -119,7 +119,7 @@ gather.mdl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE
   value <- enexpr(value)
   tbl <- gather(as_tibble(data), key = !!key, value = !!value, 
                 ..., na.rm = na.rm, convert = convert, factor_key = factor_key)
-  mdls <- names(which(map_lgl(tbl, inherits, "lst_mdl")))
+  mdls <- names(which(map_lgl(tbl, inherits, "mdl_lst")))
   kv <- c(key_vars(data), key)
   build_mable(tbl, key = !!kv, model = mdls)
 }
@@ -137,7 +137,7 @@ pivot_longer.mdl_df <- function (data, ..., names_to = "name") {
   new_key <- c(key_vars(data), names_to)
   tbl <- tidyr::pivot_longer(as_tibble(data), ..., names_to = names_to)
   build_mable(tbl, key = !!new_key,
-              model = which(vapply(tbl, inherits, logical(1L), "lst_mdl")))
+              model = which(vapply(tbl, inherits, logical(1L), "mdl_lst")))
 }
 
 #' @export
@@ -170,7 +170,7 @@ transmute.mdl_df <- function (.data, ...){
 #' @export
 `$<-.mdl_df` <- function (x, name, value) {
   tbl <- NextMethod()
-  mdls <- names(which(map_lgl(tbl, inherits, "lst_mdl")))
+  mdls <- names(which(map_lgl(tbl, inherits, "mdl_lst")))
   as_mable(tbl, key = key_vars(x), model = mdls)
 }
 

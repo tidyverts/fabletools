@@ -25,7 +25,7 @@ stream.mdl_df <- function(object, new_data, ...){
 }
 
 #' @export
-stream.lst_mdl <- function(object, new_data, ...){
+stream.mdl_lst <- function(object, new_data, ...){
   add_class(map2(object, new_data, stream, ...), class(object))
 }
 

@@ -24,7 +24,7 @@ null_model <- function(formula, ...){
 #' @export
 is_null_model <- function(x){
   if(is_model(x)) return(is_null_model(x[["fit"]]))
-  if(inherits(x, "lst_mdl")) return(map_lgl(x, is_null_model))
+  if(inherits(x, "mdl_lst")) return(map_lgl(x, is_null_model))
   is.null(x) || inherits(x, "null_mdl")
 }
 

@@ -7,7 +7,7 @@ dplyr_row_slice.mdl_df <- function(data, i, ..., preserve = FALSE) {
 #' @export
 dplyr_col_modify.mdl_df <- function(data, cols) {
   res <- dplyr_col_modify(as_tibble(data), cols)
-  is_mdl <- map_lgl(cols, inherits, "lst_mdl")
+  is_mdl <- map_lgl(cols, inherits, "mdl_lst")
   # val_key <- any(key_vars(data) %in% cols)
   # if (val_key) {
   #   key_vars <- setdiff(names(res), measured_vars(data))
@@ -21,7 +21,7 @@ dplyr_col_modify.mdl_df <- function(data, cols) {
 #' @export
 dplyr_reconstruct.mdl_df <- function(data, template) {
   res <- NextMethod()
-  mbl_vars <- names(which(vapply(data, inherits, logical(1L), "lst_mdl")))
+  mbl_vars <- names(which(vapply(data, inherits, logical(1L), "mdl_lst")))
   kv <- key_vars(template)
   if(all(kv %in% names(res))) {
     build_mable(data, key = !!kv, model = mbl_vars)

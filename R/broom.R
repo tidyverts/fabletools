@@ -29,7 +29,7 @@ augment.mdl_df <- function(x, ...){
 
 #' @rdname augment
 #' @export
-augment.lst_mdl <- function(x, ...){
+augment.mdl_lst <- function(x, ...){
   lapply(x, augment, ...)
 }
 
@@ -104,7 +104,7 @@ glance.mdl_df <- function(x, ...){
 
 #' @rdname glance
 #' @export
-glance.lst_mdl <- function(x, ...){
+glance.mdl_lst <- function(x, ...){
   lapply(x, glance, ...)
 }
 
@@ -147,7 +147,7 @@ coef.mdl_df <- function(object, ...){
 
 #' @rdname tidy
 #' @export
-tidy.lst_mdl <- function(x, ...){
+tidy.mdl_lst <- function(x, ...){
   lapply(x, tidy, ...)
 }
 

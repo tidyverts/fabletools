@@ -43,7 +43,7 @@ generate.mdl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
 }
 
 #' @export
-generate.lst_mdl <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...) {
+generate.mdl_lst <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...) {
   map2(x, 
        new_data %||% rep(list(NULL), length.out = NROW(x)),
        generate, h = h, times = times, seed = seed, ...)

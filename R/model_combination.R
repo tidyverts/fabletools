@@ -98,7 +98,7 @@ combination_ensemble <- function(..., weights = c("equal", "inv_var")){
   else{
     out <- structure(
       map(out, `[[<-`, "response", mdls[[1]][[1]]$response), 
-      class = c("lst_mdl", "list"))
+      class = c("mdl_lst", "lst_mdl", "list"))
   }
   out
 }
@@ -270,7 +270,7 @@ Ops.mdl_ts <- function(e1, e2){
 }
 
 #' @export
-Ops.lst_mdl <- function(e1, e2){
+Ops.mdl_lst <- function(e1, e2){
   list_of_models(map2(e1, e2, .Generic))
 }
 
