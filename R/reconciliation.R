@@ -581,11 +581,10 @@ build_smat_rows <- function(key_data){
 }
 
 build_key_data_smat <- function(x){
-  # if (any(lengths(x[[ncol(x)]]) > 1L)) {
-  #   # Find the order based on the first entry position of each key
-  #   x[[ncol(x)]] <- as.list(rank(vapply(x[[ncol(x)]], min, integer(1L))))
-  # }
-  x[[ncol(x)]] <- as.list(seq_len(nrow(x)))
+  if (any(lengths(x[[ncol(x)]]) > 1L)) {
+    # Find the order based on the first entry position of each key
+    x[[ncol(x)]] <- as.list(rank(vapply(x[[ncol(x)]], min, integer(1L))))
+  }
 
   kv <- names(x)[-ncol(x)]
   agg_shadow <- as_tibble(map(x[kv], is_aggregated))
@@ -622,6 +621,6 @@ build_key_data_smat <- function(x){
     abort("An error has occurred when constructing the summation matrix.\nPlease report this bug here: https://github.com/tidyverts/fabletools/issues")
   }
   idx_leaf <- unlist(x_leaf$.rows)
-  x$.rows[unlist(grp$loc)] <- unlist(grp$match, recursive = FALSE)
+  x$.rows[unlist(x$.rows)[unlist(grp$loc)]] <- unlist(grp$match, recursive = FALSE)
   return(list(agg = x$.rows, leaf = idx_leaf))
 }
