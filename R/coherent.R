@@ -39,7 +39,7 @@
 #'
 #' @examples
 #' tsibble::tourism %>% 
-#'   aggregate_key(Purpose, Trips = sum(Trips)) %>% 
+#'   aggregate_key(Purpose, Trips = sum(Trips)) %>%
 #'   coherent_smat()
 #' 
 #' @export
@@ -50,9 +50,14 @@ coherent_smat <- function(data, sparse = FALSE) {
 #' @export
 coherent_smat.tbl <- function(data, sparse = FALSE) {
   if (names(data)[[ncol(data)]] != ".rows") {
-    cli::cli_abort(
-      "The data must be a `key_data` object, or an object with a suitable `key_data()` method.",
-      call = NULL
+    tryCatch(
+      data <- key_data(data),
+      error = function(e) {
+        cli::cli_abort(
+          "The data must be a `key_data` object, or an object with a suitable `key_data()` method.",
+          call = NULL
+        )
+      }
     )
   }
 
