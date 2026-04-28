@@ -12,7 +12,7 @@ dplyr_row_slice.mdl_df <- function(data, i, ..., preserve = FALSE) {
 #' @export
 dplyr_col_modify.mdl_df <- function(data, cols) {
   res <- dplyr_col_modify(as_tibble(data), cols)
-  is_mdl <- map_lgl(cols, inherits, "mdl_lst")
+  is_mdl <- map_lgl(cols, inherits, c("lst_mdl", "mdl_lst"))
   # val_key <- any(key_vars(data) %in% cols)
   # if (val_key) {
   #   key_vars <- setdiff(names(res), measured_vars(data))
