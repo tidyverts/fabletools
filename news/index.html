@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
@@ -57,9 +57,22 @@
   <div class="col-md-9 contents">
     <div class="page-header">
       <h1 data-toc-skip>Changelog <small></small></h1>
-      <small>Source: <a href="https://github.com/tidyverts/fabletools/blob/v0.6.1/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/tidyverts/fabletools/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.7.0" id="fabletools-070">fabletools 0.7.0<a class="anchor" aria-label="anchor" href="#fabletools-070"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-7-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-7-0"></a></h3>
+<ul><li>Added <code><a href="../reference/coherent_smat.html">coherent_smat()</a></code> and <code><a href="../reference/coherent_cmat.html">coherent_cmat()</a></code> for obtaining the structural and zero-constraint matrices that encode the coherency structure of related time series (<a href="https://github.com/tidyverts/fabletools/issues/429" class="external-link">#429</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="improvements-0-7-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-7-0"></a></h3>
+<ul><li>Added the preferred <code>mdl_lst</code> class to the previously named <code>lst_mdl</code> class for consistency with other model list classes <code>mdl_df</code> and <code>mdl_ts</code> (<a href="https://github.com/tidyverts/fabletools/issues/433" class="external-link">#433</a>).</li>
+<li>Added <code>mdl_lst</code> methods for <code><a href="https://generics.r-lib.org/reference/augment.html" class="external-link">augment()</a></code>, <code><a href="https://generics.r-lib.org/reference/glance.html" class="external-link">glance()</a></code>, and <code><a href="https://generics.r-lib.org/reference/tidy.html" class="external-link">tidy()</a></code> to enable global models (including reconciliation models) to provide statistics for these methods (<a href="https://github.com/tidyverts/fabletools/issues/424" class="external-link">#424</a>).</li>
+<li>Added warning for <code><a href="../reference/fitted.mdl_df.html">hfitted()</a></code> used on models without <code><a href="https://generics.r-lib.org/reference/refit.html" class="external-link">refit()</a></code> method (<a href="https://github.com/tidyverts/fabletools/issues/432" class="external-link">#432</a>).</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.6.1" id="fabletools-061">fabletools 0.6.1<small>2026-02-16</small><a class="anchor" aria-label="anchor" href="#fabletools-061"></a></h2>
 <p>Small patch to progress deprecation of graphics functionality that required updating reverse dependencies to require fabletools &gt;=0.6.0.</p>
