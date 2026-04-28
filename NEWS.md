@@ -1,5 +1,11 @@
 # fabletools (development version)
 
+## New features
+
+* Added `coherent_smat()` and `coherent_cmat()` for obtaining the structural and
+  zero-constraint matrices that encode the coherency structure of related time
+  series (#429).
+
 ## Improvements
 
 * Added the preferred `mdl_lst` class to the previously named `lst_mdl` class 

@@ -50,7 +50,8 @@ Imports:
     progressr,
     lifecycle,
     ggdist,
-    scales
+    scales,
+    cli
 Suggests:
     covr,
     crayon,

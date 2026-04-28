@@ -68,6 +68,8 @@ reference:
     - aggregate_index
     - agg_vec
     - is_aggregated
+    - coherent_smat
+    - coherent_cmat
 - title: Accuracy evaluation
   desc: >
     Functionality for evaluating model performance

@@ -581,12 +581,18 @@ build_smat_rows <- function(key_data){
 }
 
 build_key_data_smat <- function(x){
+  # if (any(lengths(x[[ncol(x)]]) > 1L)) {
+  #   # Find the order based on the first entry position of each key
+  #   x[[ncol(x)]] <- as.list(rank(vapply(x[[ncol(x)]], min, integer(1L))))
+  # }
+  x[[ncol(x)]] <- as.list(seq_len(nrow(x)))
+
   kv <- names(x)[-ncol(x)]
   agg_shadow <- as_tibble(map(x[kv], is_aggregated))
   grp <- as_tibble(vctrs::vec_group_loc(agg_shadow))
   num_agg <- rowSums(grp$key)
   # Initialise comparison leafs with known/guaranteed leafs
-  x_leaf <- x[vec_c(!!!grp$loc[which(num_agg == min(num_agg))]),]
+  x_leaf <- x[unlist(grp$loc[which(num_agg == min(num_agg))]),]
   
   # Sort by disaggregation to identify aggregated leafs in order
   grp <- grp[order(num_agg),]
@@ -615,10 +621,7 @@ build_key_data_smat <- function(x){
   if(any(lengths(grp$loc) != lengths(grp$match))) {
     abort("An error has occurred when constructing the summation matrix.\nPlease report this bug here: https://github.com/tidyverts/fabletools/issues")
   }
-  idx_leaf <- vec_c(!!!x_leaf$.rows)
-  x$.rows[unlist(x$.rows)[vec_c(!!!grp$loc)]] <- vec_c(!!!grp$match)
+  idx_leaf <- unlist(x_leaf$.rows)
+  x$.rows[unlist(grp$loc)] <- unlist(grp$match, recursive = FALSE)
   return(list(agg = x$.rows, leaf = idx_leaf))
-  # out <- matrix(0L, nrow = nrow(x), ncol = length(idx_leaf))
-  # out[nrow(x)*(vec_c(!!!x$.rows)-1) + rep(seq_along(x$.rows), lengths(x$.rows))] <- 1L
-  # out
 }
