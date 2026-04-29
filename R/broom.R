@@ -150,8 +150,8 @@ coef.mdl_df <- function(object, ...){
 }
 #' @rdname tidy
 #' @export
-coef.mdl_lst <- function(x, ...){
-  lapply(x, tidy, ...)
+coef.mdl_lst <- function(object, ...){
+  lapply(object, tidy, ...)
 }
 #' @export
 coef.lst_mdl <- deprecate_lst_mdl(coef.mdl_lst)

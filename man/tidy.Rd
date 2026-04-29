@@ -13,7 +13,7 @@
 
 \method{coef}{mdl_df}(object, ...)
 
-\method{coef}{mdl_lst}(x, ...)
+\method{coef}{mdl_lst}(object, ...)
 
 \method{coef}{mdl_ts}(object, ...)
 
