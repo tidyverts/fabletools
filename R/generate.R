@@ -48,6 +48,8 @@ generate.mdl_lst <- function(x, new_data = NULL, h = NULL, times = 1, seed = NUL
        new_data %||% rep(list(NULL), length.out = NROW(x)),
        generate, h = h, times = times, seed = seed, ...)
 }
+#' @export
+generate.lst_mdl <- deprecate_lst_mdl(generate.mdl_lst)
 
 #' @rdname generate.mdl_df
 #' 

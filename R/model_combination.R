@@ -273,6 +273,8 @@ Ops.mdl_ts <- function(e1, e2){
 Ops.mdl_lst <- function(e1, e2){
   list_of_models(map2(e1, e2, .Generic))
 }
+#' @export
+Ops.lst_mdl <- deprecate_lst_mdl(Ops.mdl_lst)
 
 #' @importFrom stats var
 #' @export

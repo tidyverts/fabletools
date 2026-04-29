@@ -35,6 +35,8 @@ refit.mdl_lst <- function(object, new_data, ...){
   attributes(object) <- attrb
   object
 }
+#' @export
+refit.lst_mdl <- deprecate_lst_mdl(refit.mdl_lst)
 
 #' @rdname refit
 #' @export

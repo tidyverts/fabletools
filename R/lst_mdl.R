@@ -10,9 +10,13 @@ type_sum.mdl_lst <- function(x){
 format.mdl_lst <- function(x, ...){
   map_chr(x, function(x) paste0("<", model_sum(x), ">"))
 }
+#' @export
+format.lst_mdl <- deprecate_lst_mdl(format.mdl_lst)
 
 #' @export
 vec_cast.character.mdl_lst <- function(x, to, ...) format(x)
+#' @export
+vec_cast.character.lst_mdl <- deprecate_lst_mdl(vec_cast.character.mdl_lst)
 
 #' @export
 vec_ptype2.mdl_lst.mdl_lst <- function(x, y, ...){

@@ -28,6 +28,8 @@ stream.mdl_df <- function(object, new_data, ...){
 stream.mdl_lst <- function(object, new_data, ...){
   add_class(map2(object, new_data, stream, ...), class(object))
 }
+#' @export
+stream.lst_mdl <- deprecate_lst_mdl(stream.mdl_lst)
 
 #' @export
 stream.mdl_ts <- function(object, new_data, ...){

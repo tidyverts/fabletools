@@ -32,6 +32,8 @@ augment.mdl_df <- function(x, ...){
 augment.mdl_lst <- function(x, ...){
   lapply(x, augment, ...)
 }
+#' @export
+augment.lst_mdl <- deprecate_lst_mdl(augment.mdl_lst)
 
 #' @rdname augment
 #' @param type Deprecated.
@@ -107,6 +109,8 @@ glance.mdl_df <- function(x, ...){
 glance.mdl_lst <- function(x, ...){
   lapply(x, glance, ...)
 }
+#' @export
+glance.lst_mdl <- deprecate_lst_mdl(glance.mdl_lst)
 
 #' @rdname glance
 #' @export
@@ -144,22 +148,30 @@ tidy.mdl_df <- function(x, ...){
 coef.mdl_df <- function(object, ...){
   tidy(object, ...)
 }
+#' @rdname tidy
+#' @export
+coef.mdl_lst <- function(x, ...){
+  lapply(x, tidy, ...)
+}
+#' @export
+coef.lst_mdl <- deprecate_lst_mdl(coef.mdl_lst)
+#' @rdname tidy
+#' @export
+coef.mdl_ts <- function(object, ...){
+  tidy(object, ...)
+}
 
 #' @rdname tidy
 #' @export
 tidy.mdl_lst <- function(x, ...){
   lapply(x, tidy, ...)
 }
-
+#' @export
+tidy.lst_mdl <- deprecate_lst_mdl(tidy.mdl_lst)
 #' @rdname tidy
 #' @export
 tidy.mdl_ts <- function(x, ...){
   tidy(x$fit, ...)
 }
 
-#' @rdname tidy
-#' @export
-coef.mdl_ts <- function(object, ...){
-  tidy(object, ...)
-}
 

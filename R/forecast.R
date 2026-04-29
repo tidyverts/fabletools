@@ -131,14 +131,7 @@ forecast.mdl_lst <- function(object, new_data = NULL, key_data, ...){
 }
 
 #' @export
-forecast.lst_mdl <- function(object, ...) {
-  lifecycle::deprecate_soft(
-    "0.7.0",
-    I("The `lst_mdl` class"),
-    I("the `mdl_lst` class for lists of models")
-  )
-  forecast.mdl_lst(object, ...)
-}
+forecast.lst_mdl <- deprecate_lst_mdl(forecast.mdl_lst)
 
 #' @rdname forecast
 #' @export
