@@ -45,7 +45,7 @@ reconciliation}. \url{https://robjhyndman.com/hyndsight/reconciliation-notation.
 
 Di Fonzo, T., & Girolimetto, D. (2021). Cross-temporal forecast
 reconciliation: Optimal combination method and heuristic alternatives.
-\emph{International Journal of Forecasting}. \url{https://doi.org/10.1016/j.ijforecast.2021.08.004}
+\emph{International Journal of Forecasting}. \doi{10.1016/j.ijforecast.2021.08.004}
 }
 \seealso{
 \code{\link[=coherent_smat]{coherent_smat()}} for the corresponding structural matrix

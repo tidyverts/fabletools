@@ -42,7 +42,7 @@ with \eqn{\mathbf{W}} a positive definite weight matrix (see
 }
 \examples{
 tsibble::tourism \%>\% 
-  aggregate_key(Purpose, Trips = sum(Trips)) \%>\% 
+  aggregate_key(Purpose, Trips = sum(Trips)) \%>\%
   coherent_smat()
 
 }

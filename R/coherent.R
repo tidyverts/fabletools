@@ -121,7 +121,7 @@ coherent_smat.default <- function(data, sparse = FALSE) {
 #'
 #' Di Fonzo, T., & Girolimetto, D. (2021). Cross-temporal forecast
 #' reconciliation: Optimal combination method and heuristic alternatives.
-#' *International Journal of Forecasting*. <https://doi.org/10.1016/j.ijforecast.2021.08.004>
+#' *International Journal of Forecasting*. \doi{10.1016/j.ijforecast.2021.08.004}
 #'
 #' @export
 coherent_cmat <- function(data, sparse = FALSE) {
