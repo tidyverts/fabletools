@@ -22,7 +22,7 @@ of series and \(n_b\) is the number of bottom-level series."><meta name="robots"
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.7.0.9000</span>
       </span>
     </div>
 
@@ -124,10 +124,14 @@ aggregations with tsibble data sets.</p></div>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">tsibble</span><span class="fu">::</span><span class="va"><a href="https://tsibble.tidyverts.org/reference/tourism.html" class="external-link">tourism</a></span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
-<span class="r-in"><span>  <span class="fu"><a href="aggregate_key.html">aggregate_key</a></span><span class="op">(</span><span class="va">Purpose</span>, Trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">Trips</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="aggregate_key.html">aggregate_key</a></span><span class="op">(</span><span class="va">Purpose</span>, Trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">Trips</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">coherent_smat</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> The data must be a `key_data` object, or an object with a suitable</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> `key_data()` method.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1    1    1    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    1    0    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]    0    1    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]    0    0    1    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,]    0    0    0    1</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
