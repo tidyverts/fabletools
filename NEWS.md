@@ -1,5 +1,13 @@
 # fabletools (development version)
 
+## Improvements
+
+* Added `with_bottom` argument to `coherent_smat()` for inclusion of identity
+  matrix entries for bottom level time series. Setting this to FALSE produces
+  the A matrix (aggregated series only).
+* Added `"bottom"` attribute for `coherent_smat()` for safely identifying the
+  index positions of bottom level series via graph coherency structures.
+
 # fabletools 0.7.0
 
 ## New features

@@ -2,15 +2,23 @@
 % Please edit documentation in R/coherent.R
 \name{coherent_smat}
 \alias{coherent_smat}
+\alias{coherent_smat.tbl}
 \title{Structural (summing) matrix for coherent time series}
 \usage{
-coherent_smat(data, sparse = FALSE)
+coherent_smat(data, sparse = FALSE, ...)
+
+\method{coherent_smat}{tbl}(data, sparse = FALSE, with_bottom = TRUE, ...)
 }
 \arguments{
 \item{data}{A data object which contains linearly related coherent structures.}
 
 \item{sparse}{If \code{TRUE}, a sparse matrix (class \code{"dgCMatrix"} from the
 \pkg{Matrix} package) is returned. Defaults to \code{FALSE}.}
+
+\item{...}{Arguments passed to methods.}
+
+\item{with_bottom}{If \code{TRUE}, the returned matrix includes the identity matrix
+for bottom-level series. Defaults to \code{TRUE}.}
 }
 \value{
 An \eqn{n \times n_b} matrix (dense or sparse) encoding the

@@ -4,13 +4,15 @@
 \alias{coherent_cmat}
 \title{Zero-constraint matrix for coherent time series}
 \usage{
-coherent_cmat(data, sparse = FALSE)
+coherent_cmat(data, sparse = FALSE, ...)
 }
 \arguments{
 \item{data}{A data object which contains linearly related coherent structures.}
 
 \item{sparse}{If \code{TRUE}, a sparse matrix (class \code{"dgCMatrix"} from the
 \pkg{Matrix} package) is returned. Defaults to \code{FALSE}.}
+
+\item{...}{Arguments passed to methods.}
 }
 \value{
 An \eqn{n_a \times n} matrix (dense or sparse) whose rows encode
