@@ -25,6 +25,9 @@
 #' @param data A data object which contains linearly related coherent structures.
 #' @param sparse If `TRUE`, a sparse matrix (class `"dgCMatrix"` from the
 #'   \pkg{Matrix} package) is returned. Defaults to `FALSE`.
+#' @param with_bottom If `TRUE`, the returned matrix includes the identity matrix
+#'   for bottom-level series. Defaults to `TRUE`.
+#' @param ... Arguments passed to methods.
 #'
 #' @return An \eqn{n \times n_b} matrix (dense or sparse) encoding the
 #'   structural relationships among all series.
@@ -42,13 +45,15 @@
 #'   aggregate_key(Purpose, Trips = sum(Trips)) %>%
 #'   coherent_smat()
 #' 
+#' @name coherent_smat
 #' @export
-coherent_smat <- function(data, sparse = FALSE) {
+coherent_smat <- function(data, sparse = FALSE, ...) {
   UseMethod("coherent_smat")
 }
 
+#' @rdname coherent_smat
 #' @export
-coherent_smat.tbl <- function(data, sparse = FALSE) {
+coherent_smat.tbl <- function(data, sparse = FALSE, with_bottom = TRUE) {
   if (names(data)[[ncol(data)]] != ".rows") {
     tryCatch(
       data <- key_data(data),
@@ -62,11 +67,13 @@ coherent_smat.tbl <- function(data, sparse = FALSE) {
   }
 
   spos <- build_key_data_smat(data)
+  if (!with_bottom) {
+    spos$agg <- spos$agg[-spos$leaf]
+  }
 
   if (sparse) {
     row_btm <- spos$leaf
-    row_agg <- seq_len(nrow(data))[-row_btm]
-    Matrix::sparseMatrix(
+    out <- Matrix::sparseMatrix(
       i = rep(seq_along(spos$agg), lengths(spos$agg)),
       j = unlist(spos$agg),
       x = rep(1, sum(lengths(spos$agg)))
@@ -74,8 +81,9 @@ coherent_smat.tbl <- function(data, sparse = FALSE) {
   } else {
     out <- matrix(0L, nrow = nrow(data), ncol = length(spos$leaf))
     out[nrow(data)*(unlist(spos$agg)-1) + rep(seq_along(spos$agg), lengths(spos$agg))] <- 1L
-    out
   }
+  attr(out, "bottom") <- spos$leaf
+  out
 }
 
 #' @export
@@ -131,7 +139,7 @@ coherent_cmat <- function(data, sparse = FALSE) {
 #' @export
 coherent_cmat.default <- function(data, sparse = FALSE) {
   S <- coherent_smat(data, sparse = sparse)
-  row_btm <- apply(S, 1, sum) == 1L
+  row_btm <- attr(S, "bottom")
   row_agg <- which(!row_btm)
   row_btm <- which(row_btm)
   if (sparse) diag <- Matrix::Diagonal
