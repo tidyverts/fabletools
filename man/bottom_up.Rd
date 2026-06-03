@@ -13,10 +13,15 @@ bottom_up(models)
 \lifecycle{experimental}
 }
 \details{
-Reconciles a hierarchy using the bottom up reconciliation method. The
-response variable of the hierarchy must be aggregated using sums. The
+Reconciles a hierarchy using the bottom up reconciliation method. This
+method generates forecasts for all time series at the lowest level, then
+sums them according to the aggregation to create forecasts for each level
+of aggregation.
+
+The response variable of the hierarchy must be aggregated using sums. The
 forecasted time points must match for all series in the hierarchy.
 }
 \seealso{
-\code{\link[=reconcile]{reconcile()}}, \code{\link[=aggregate_key]{aggregate_key()}}
+\code{\link[=reconcile]{reconcile()}}, \code{\link[=aggregate_key]{aggregate_key()}},
+\url{https://otexts.com/fpp2/bottom-up.html}
 }
