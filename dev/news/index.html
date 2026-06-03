@@ -62,9 +62,14 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="fabletools-development-version">fabletools (development version)<a class="anchor" aria-label="anchor" href="#fabletools-development-version"></a></h2>
+<div class="section level3">
+<h3 id="improvements-development-version">Improvements<a class="anchor" aria-label="anchor" href="#improvements-development-version"></a></h3>
+<ul><li>Added <code>with_bottom</code> argument to <code><a href="../reference/coherent_smat.html">coherent_smat()</a></code> for inclusion of identity matrix entries for bottom level time series. Setting this to FALSE produces the A matrix (aggregated series only).</li>
+<li>Added <code>"bottom"</code> attribute for <code><a href="../reference/coherent_smat.html">coherent_smat()</a></code> for safely identifying the index positions of bottom level series via graph coherency structures.</li>
+</ul></div>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.0" id="fabletools-070">fabletools 0.7.0<a class="anchor" aria-label="anchor" href="#fabletools-070"></a></h2>
+<h2 class="page-header" data-toc-text="0.7.0" id="fabletools-070">fabletools 0.7.0<small>2026-04-30</small><a class="anchor" aria-label="anchor" href="#fabletools-070"></a></h2>
 <div class="section level3">
 <h3 id="new-features-0-7-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-7-0"></a></h3>
 <ul><li>Added <code><a href="../reference/coherent_smat.html">coherent_smat()</a></code> and <code><a href="../reference/coherent_cmat.html">coherent_cmat()</a></code> for obtaining the structural and zero-constraint matrices that encode the coherency structure of related time series (<a href="https://github.com/tidyverts/fabletools/issues/429" class="external-link">#429</a>).</li>
