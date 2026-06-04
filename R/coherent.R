@@ -79,8 +79,10 @@ coherent_smat.tbl <- function(data, sparse = FALSE, with_bottom = TRUE, ...) {
       x = rep(1, sum(lengths(spos$agg)))
     )
   } else {
-    out <- matrix(0L, nrow = nrow(data), ncol = length(spos$leaf))
-    out[nrow(data)*(unlist(spos$agg)-1) + rep(seq_along(spos$agg), lengths(spos$agg))] <- 1L
+    na <- length(spos$agg)
+    nb <- length(spos$leaf)
+    out <- matrix(0L, nrow = na, ncol = nb)
+    out[na*(unlist(spos$agg)-1) + rep(seq_len(na), lengths(spos$agg))] <- 1L
   }
   attr(out, "bottom") <- spos$leaf
   out
@@ -140,8 +142,8 @@ coherent_cmat <- function(data, sparse = FALSE, ...) {
 coherent_cmat.default <- function(data, sparse = FALSE, ...) {
   S <- coherent_smat(data, sparse = sparse)
   row_btm <- attr(S, "bottom")
-  row_agg <- which(!row_btm)
-  row_btm <- which(row_btm)
+  row_agg <- seq_len(nrow(S))[-row_btm]
+  
   if (sparse) diag <- Matrix::Diagonal
 
   U <- cbind(
