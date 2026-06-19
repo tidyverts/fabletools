@@ -3,6 +3,8 @@
 \name{generate.mbl_df}
 \alias{generate.mbl_df}
 \alias{generate.mdl_ts}
+\alias{generate.mdl_bootstrap_iid}
+\alias{generate.mdl_bootstrap_block}
 \title{Generate responses from a mable}
 \usage{
 \method{generate}{mbl_df}(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...)
@@ -17,6 +19,10 @@
   bootstrap_block_size = 1,
   ...
 )
+
+\method{generate}{mdl_bootstrap_iid}(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...)
+
+\method{generate}{mdl_bootstrap_block}(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...)
 }
 \arguments{
 \item{x}{A mable.}
@@ -28,13 +34,13 @@ time series with no exogenous regressors).}
 
 \item{times}{The number of replications.}
 
-\item{seed}{The seed for the random generation from distributions.}
+\item{seed}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Call \code{\link[=set.seed]{set.seed()}} before \code{generate()} instead.}
 
 \item{...}{Additional arguments for individual simulation methods.}
 
-\item{bootstrap}{If TRUE, then forecast distributions are computed using simulation with resampled errors.}
+\item{bootstrap}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{\link[=bootstrap_iid]{bootstrap_iid()}} or \code{\link[=bootstrap_block]{bootstrap_block()}} to wrap the model instead.}
 
-\item{bootstrap_block_size}{The bootstrap block size specifies the number of contiguous residuals to be taken in each bootstrap sample.}
+\item{bootstrap_block_size}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{\link[=bootstrap_block]{bootstrap_block()}}'s \code{block_size} argument instead.}
 }
 \description{
 Use a model's fitted distribution to simulate additional data with similar

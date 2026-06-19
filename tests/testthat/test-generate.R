@@ -21,17 +21,28 @@ test_that("generate", {
 
 test_that("generate seed setting", {
   skip_if_not_installed("fable")
-  
+
   seed <- rnorm(1)
-  expect_equal(
-    mbl %>% generate(seed = seed),
-    mbl %>% generate(seed = seed) 
+  expect_warning(
+    gen1 <- mbl %>% generate(seed = seed),
+    "deprecated"
   )
-  
+  # lifecycle only warns once per session for a given deprecation.
+  gen2 <- suppressWarnings(mbl %>% generate(seed = seed))
+  expect_equal(gen1, gen2)
+
   expect_failure(
     expect_equal(
       mbl %>% generate(),
       mbl %>% generate()
     )
   )
+})
+
+test_that("generate(seed = ) restores the global RNG state on exit", {
+  skip_if_not_installed("fable")
+
+  before <- .GlobalEnv$.Random.seed
+  suppressWarnings(invisible(mbl %>% generate(seed = 123)))
+  expect_identical(before, .GlobalEnv$.Random.seed)
 })

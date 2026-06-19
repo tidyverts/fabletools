@@ -52,7 +52,7 @@ min_trace <- function(models, method = c("wls_var", "ols", "wls_struct", "mint_c
   if(is.null(sparse)){
     sparse <- requireNamespace("Matrix", quietly = TRUE)
   }
-  structure(models, class = c("lst_mint_mdl", "mdl_lst", "list"),
+  structure(models, class = union("lst_mint_mdl", class(models)),
             method = match.arg(method), sparse = sparse)
 }
 
@@ -179,7 +179,7 @@ forecast.lst_mint_mdl <- function(object, key_data,
 #' [`reconcile()`], [`aggregate_key()`]
 #' @export
 bottom_up <- function(models){
-  structure(models, class = c("lst_btmup_mdl", "mdl_lst", "list"))
+  structure(models, class = union("lst_btmup_mdl", class(models)))
 }
 
 #' @export
@@ -233,7 +233,7 @@ forecast.lst_btmup_mdl <- function(object, key_data,
 #' 
 #' @export
 top_down <- function(models, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
-  structure(models, class = c("lst_topdwn_mdl", "mdl_lst", "list"),
+  structure(models, class = union("lst_topdwn_mdl", class(models)),
             method = match.arg(method))
 }
 
@@ -391,7 +391,7 @@ propagate_forecast_proportions <- function(fc_mean, key_data, agg_order,
 #' 
 #' @export
 middle_out <- function(models, split = 1){
-  structure(models, class = c("lst_midout_mdl", "mdl_lst", "list"),
+  structure(models, class = union("lst_midout_mdl", class(models)),
             split = split)
 }
 

@@ -3,6 +3,7 @@
 \name{forecast.mbl_df}
 \alias{forecast.mbl_df}
 \alias{forecast.mdl_ts}
+\alias{forecast.mdl_ts_sim}
 \title{Produce forecasts}
 \usage{
 \method{forecast}{mbl_df}(
@@ -21,6 +22,15 @@
   simulate = FALSE,
   bootstrap = FALSE,
   times = 5000,
+  point_forecast = list(.mean = mean),
+  ...
+)
+
+\method{forecast}{mdl_ts_sim}(
+  object,
+  new_data = NULL,
+  h = NULL,
+  times = NULL,
   point_forecast = list(.mean = mean),
   ...
 )
@@ -43,13 +53,9 @@ a distribution and return a vector. To compute forecast medians, you can use
 \item{bias_adjust}{Deprecated. Please use \code{point_forecast} to specify the
 desired point forecast method.}
 
-\item{simulate}{Should forecasts be based on simulated future paths instead
-of analytical results.}
+\item{simulate}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{\link[=simulate_iid]{simulate_iid()}} to wrap the model instead.}
 
-\item{bootstrap}{Should innovations from simulated forecasts be bootstrapped
-from the model's fitted residuals. This allows the forecast distribution to
-have a different underlying shape which could better represent the nature
-of your data.}
+\item{bootstrap}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{\link[=bootstrap_iid]{bootstrap_iid()}} or \code{\link[=bootstrap_block]{bootstrap_block()}} to wrap the model instead.}
 
 \item{times}{The number of future paths for simulations if \code{simulate = TRUE}.}
 }

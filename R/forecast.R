@@ -17,12 +17,8 @@
 #' @param new_data A `tsibble` containing future information used to forecast.
 #' @param h The forecast horison (can be used instead of `new_data` for regular
 #' time series with no exogenous regressors).
-#' @param simulate Should forecasts be based on simulated future paths instead
-#' of analytical results.
-#' @param bootstrap Should innovations from simulated forecasts be bootstrapped
-#' from the model's fitted residuals. This allows the forecast distribution to
-#' have a different underlying shape which could better represent the nature
-#' of your data.
+#' @param simulate `r lifecycle::badge('deprecated')` Please use [simulate_iid()] to wrap the model instead.
+#' @param bootstrap `r lifecycle::badge('deprecated')` Please use [bootstrap_iid()] or [bootstrap_block()] to wrap the model instead.
 #' @param times The number of future paths for simulations if `simulate = TRUE`.
 #' @param point_forecast The point forecast measure(s) which should be returned 
 #' in the resulting fable. Specified as a named list of functions which accept
@@ -146,6 +142,116 @@ forecast.lst_mdl <- deprecate_lst_mdl(forecast.mdl_lst)
 forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NULL,
                             simulate = FALSE, bootstrap = FALSE, times = 5000,
                             point_forecast = list(.mean = mean), ...){
+  if(isTRUE(simulate) || isTRUE(bootstrap)) {
+    lifecycle::deprecate_warn(
+      "0.9.0",
+      if(bootstrap) "forecast(bootstrap = )" else "forecast(simulate = )",
+      if(bootstrap) "bootstrap_iid()" else "simulate_iid()",
+      details = "Wrap the model with `bootstrap_iid()`/`bootstrap_block()`/`simulate_iid()` (via `mutate()`) instead of passing `simulate=`/`bootstrap=` to `forecast()`."
+    )
+    object <- if(bootstrap) bootstrap_iid(object, times = times) else simulate_iid(object, times = times)
+    return(forecast(object, new_data = new_data, h = h, point_forecast = point_forecast, ...))
+  }
+
+  setup <- forecast_mdl_ts_setup(object, new_data, h)
+  if(!is.null(setup$empty_fbl)) return(setup$empty_fbl)
+  new_data <- setup$new_data
+  resp_vars <- setup$resp_vars
+  dist_col <- setup$dist_col
+
+  # Compute specials with new_data
+  object$model$stage <- "forecast"
+  object$model$add_data(new_data)
+  specials <- tryCatch(parse_model_rhs(object$model),
+                       error = function(e){
+                         abort(sprintf(
+"%s
+Unable to compute required variables from provided `new_data`.
+Does your model require extra variables to produce forecasts?", e$message))
+                       }, interrupt = function(e) {
+                         stop("Terminated by user", call. = FALSE)
+                       })
+  object$model$remove_data()
+  object$model$stage <- NULL
+  fc <- forecast(object$fit, new_data, specials = specials, times = times, ...)
+
+  # Back-transform forecast distributions
+  bt <- map(object$transformation, function(x){
+    trans <- x%@%"inverse"
+    inv_trans <- `attributes<-`(x, NULL)
+    req_vars <- setdiff(all.vars(body(trans)), names(formals(trans)))
+    if(any(req_vars %in% names(new_data))) {
+      trans <- lapply(
+        vec_chop(new_data[req_vars]),
+        function(transform_data) {
+          set_env(trans, new_environment(transform_data, get_env(trans)))
+        }
+      )
+      attr(trans, "inverse") <- lapply(
+        vec_chop(new_data[req_vars]),
+        function(transform_data) {
+          set_env(inv_trans, new_environment(transform_data, get_env(inv_trans)))
+        }
+      )
+      trans
+    } else {
+      structure(list(trans), inverse = list(inv_trans))
+    }
+  })
+
+  is_transformed <- vapply(bt, function(x) !is_symbol(body(x[[1]])), logical(1L))
+  if(length(bt) > 1) {
+    if(any(is_transformed)){
+      abort("Transformations of multivariate forecasts distributions are not supported, use `simulate_iid()` or `bootstrap_iid()`.")
+    }
+  }
+  if(any(is_transformed)) {
+    if (identical(unique(dist_types(fc)), "dist_sample")) {
+      fc <- distributional::dist_sample(
+        .mapply(exec, list(bt[[1]], distributional::parameters(fc)$x), MoreArgs = NULL)
+      )
+    } else {
+      bt <- bt[[1]]
+      fc <- distributional::dist_transformed(fc, `attributes<-`(bt, NULL), bt%@%"inverse")
+    }
+  }
+
+  forecast_mdl_ts_assemble(new_data, fc, resp_vars, dist_col, point_forecast)
+}
+
+#' @rdname forecast
+#' @export
+forecast.mdl_ts_sim <- function(object, new_data = NULL, h = NULL, times = NULL,
+                                point_forecast = list(.mean = mean), ...){
+  setup <- forecast_mdl_ts_setup(object, new_data, h)
+  if(!is.null(setup$empty_fbl)) return(setup$empty_fbl)
+  new_data <- setup$new_data
+  resp_vars <- setup$resp_vars
+  dist_col <- setup$dist_col
+
+  times <- times %||% (object%@%"times") %||% 5000
+
+  sim <- generate(object, new_data, times = times, ...)
+  forecast_from_generate(new_data, sim, resp_vars, dist_col, point_forecast)
+}
+
+# Build a forecast fable from generate()'s simulated paths, split by date
+# into a dist_sample distribution.
+forecast_from_generate <- function(new_data, sim, resp_vars, dist_col, point_forecast) {
+  fc_idx <- sim[[index_var(sim)]]
+  fc <- if (length(resp_vars) > 1) {
+    do.call(cbind, sim[resp_vars])
+  } else {
+    sim[[".sim"]]
+  }
+  fc <- distributional::dist_sample(vctrs::vec_split(fc, fc_idx)$val)
+
+  forecast_mdl_ts_assemble(new_data, fc, resp_vars, dist_col, point_forecast)
+}
+
+# Shared setup for forecast.mdl_ts()/forecast.mdl_ts_sim(): resolves
+# new_data/h and response/distribution column names.
+forecast_mdl_ts_setup <- function(object, new_data, h) {
   if(!is.null(h) && !is.null(new_data)){
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
     h <- NULL
@@ -158,103 +264,39 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
   # Reseed lag()'s short term memory from this fit's own snapshot.
   object$model$recent_data <- attr(object, "recent_data")
 
-  # Useful variables
-  idx <- index_var(new_data)
-  mv <- measured_vars(new_data)
   resp_vars <- vapply(object$response, expr_name, character(1L), USE.NAMES = FALSE)
   dist_col <- if(length(resp_vars) > 1) ".distribution" else resp_vars
-  
-  # If there's nothing to forecast, return an empty fable.
+
+  empty_fbl <- NULL
   if(NROW(new_data) == 0){
     new_data[[dist_col]] <- distributional::new_dist(dimnames = resp_vars)
-    fbl <- build_fable(new_data, response = resp_vars, distribution =  dist_col)
-    return(fbl)
+    empty_fbl <- build_fable(new_data, response = resp_vars, distribution = dist_col)
   }
-  # Compute forecasts
-  if(simulate || bootstrap) {
-    fc <- generate(object, new_data, bootstrap = bootstrap, times = times, ...)
-    fc_idx <- fc[[index_var(fc)]]
-    fc <- if (length(resp_vars) > 1) {
-      do.call(cbind, fc[resp_vars])
-    } else {
-      fc[[".sim"]]
-    }
-    
-    fc <- distributional::dist_sample(vctrs::vec_split(fc, fc_idx)$val)
-  } else {
-    # Compute specials with new_data
-    object$model$stage <- "forecast"
-    object$model$add_data(new_data)
-    specials <- tryCatch(parse_model_rhs(object$model),
-                         error = function(e){
-                           abort(sprintf(
-  "%s
-  Unable to compute required variables from provided `new_data`.
-  Does your model require extra variables to produce forecasts?", e$message))
-                         }, interrupt = function(e) {
-                           stop("Terminated by user", call. = FALSE)
-                         })
-    object$model$remove_data()
-    object$model$stage <- NULL
-    fc <- forecast(object$fit, new_data, specials = specials, times = times, ...)
-    
-    # Back-transform forecast distributions
-    bt <- map(object$transformation, function(x){
-      trans <- x%@%"inverse"
-      inv_trans <- `attributes<-`(x, NULL)
-      req_vars <- setdiff(all.vars(body(trans)), names(formals(trans)))
-      if(any(req_vars %in% names(new_data))) {
-        trans <- lapply(
-          vec_chop(new_data[req_vars]),
-          function(transform_data) {
-            set_env(trans, new_environment(transform_data, get_env(trans)))
-          }
-        )
-        attr(trans, "inverse") <- lapply(
-          vec_chop(new_data[req_vars]),
-          function(transform_data) {
-            set_env(inv_trans, new_environment(transform_data, get_env(inv_trans)))
-          }
-        )
-        trans
-      } else {
-        structure(list(trans), inverse = list(inv_trans))
-      }
-    })
-    
-    is_transformed <- vapply(bt, function(x) !is_symbol(body(x[[1]])), logical(1L))
-    if(length(bt) > 1) {
-      if(any(is_transformed)){
-        abort("Transformations of multivariate forecasts distributions are not supported, use simulate = TRUE or bootstrap = TRUE.")
-      }
-    }
-    if(any(is_transformed)) {
-      if (identical(unique(dist_types(fc)), "dist_sample")) {
-        fc <- distributional::dist_sample(
-          .mapply(exec, list(bt[[1]], distributional::parameters(fc)$x), MoreArgs = NULL)
-        )
-      } else {
-        bt <- bt[[1]]
-        fc <- distributional::dist_transformed(fc, `attributes<-`(bt, NULL), bt%@%"inverse")
-      }
-    }
-  }
-  
+
+  list(new_data = new_data, resp_vars = resp_vars, dist_col = dist_col, empty_fbl = empty_fbl)
+}
+
+# Shared assembly for forecast.mdl_ts()/forecast.mdl_ts_sim(): attaches
+# the forecast distribution and builds the fable.
+forecast_mdl_ts_assemble <- function(new_data, fc, resp_vars, dist_col, point_forecast) {
+  idx <- index_var(new_data)
+  mv <- measured_vars(new_data)
+
   dimnames(fc) <- resp_vars
-  
+
   new_data[[dist_col]] <- fc
   point_fc <- compute_point_forecasts(fc, point_forecast)
   new_data[names(point_fc)] <- point_fc
-  
+
   cn <- c(dist_col, names(point_fc))
-  
+
   fbl <- build_tsibble_meta(
     as_tibble(new_data)[unique(c(idx, cn, mv))],
     key_data(new_data),
     index = idx, index2 = idx, ordered = is_ordered(new_data),
     interval = interval(new_data)
   )
-  
+
   build_fable(fbl, response = resp_vars, distribution = dist_col)
 }
 

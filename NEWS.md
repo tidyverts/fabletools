@@ -10,9 +10,34 @@
   as `joint$ets` and `joint$arima`. This is scaffolding for modifiers applied
   jointly across a series' models (e.g. joint bootstrapping). Other mable
   verbs don't support model groups yet.
+* Added `bootstrap_iid()`, `bootstrap_block()`, and `simulate_iid()`, which
+  wrap a fitted model (via `mutate()`) so that `forecast()`/`generate()`
+  produce forecasts from bootstrapped or simulated sample paths instead of
+  closed-form/analytical results (#434). This replaces `forecast()`'s
+  `simulate=`/`bootstrap=`/`times=` arguments and `generate()`'s `bootstrap=`/
+  `bootstrap_block_size=` arguments, which are now deprecated in favour of
+  wrapping the model directly, e.g.
+  `fit %>% mutate(ets = bootstrap_iid(ets)) %>% forecast()`. These modifiers
+  compose with `reconcile()`/`min_trace()` (and each other, across model
+  columns) since they only add an extra class to the wrapped model. When
+  applied to a `mdl_lst` column spanning multiple series, `bootstrap_iid()`/
+  `bootstrap_block()` sample jointly across the series (the same historical
+  time point is drawn for every series at a given replicate/step), so their
+  historical cross-sectional relationship carries over into the simulated
+  forecasts; if the series don't share the same historical time domain,
+  sampling is restricted to the overlapping period and a warning is raised.
+  They can also be applied directly to a model specification inside
+  `model()`, e.g. `model(ets = bootstrap_iid(ETS(value)))`, in which case
+  each series is fitted and wrapped independently (not jointly).
 
 ## Bug fixes
 
+* Fixed `generate()`'s `seed` argument not restoring R's global RNG state
+  afterwards (it was overwriting its own snapshot of the prior state with the
+  seed itself before restoring it, so the ambient RNG stream was left
+  altered, and a stale `.Random.seed` value triggered spurious "not an
+  integer vector" warnings on the next seeded call). `generate(seed = )` is
+  now deprecated in favour of calling `set.seed()` before `generate()`.
 * Fixed misleading "object not found" errors when estimating models with
   `future::plan(multisession)` that reference global variables (#412).
 * Fixed `stream()` failing for every model with an "argument is of length
