@@ -67,6 +67,10 @@
 <ul><li>Added <code>with_bottom</code> argument to <code><a href="../reference/coherent_smat.html">coherent_smat()</a></code> for inclusion of identity matrix entries for bottom level time series. Setting this to FALSE produces the A matrix (aggregated series only).</li>
 <li>Added <code>"bottom"</code> attribute for <code><a href="../reference/coherent_smat.html">coherent_smat()</a></code> for safely identifying the index positions of bottom level series via graph coherency structures.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<ul><li>The <code>mdl_df</code> class for mable data frames has been renamed to <code>mbl_df</code> (a mable data frame). This is to avoid a naming inconsistency with the <code>mdl_ts</code> and <code>mdl_lst</code> (for local and global models respectively), and free the class name for an eventual <code>mdl_df</code> multi-model class.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.7.0" id="fabletools-070">fabletools 0.7.0<small>2026-04-30</small><a class="anchor" aria-label="anchor" href="#fabletools-070"></a></h2>
