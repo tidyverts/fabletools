@@ -20,8 +20,8 @@ IRF <- function(x, ...) {
 }
 
 #' @export
-IRF.mdl_df <- function(x, ...){
-  mdl_df_apply(x, IRF, ...)
+IRF.mbl_df <- function(x, ...){
+  mbl_df_apply(x, IRF, ...)
 }
 
 #' @export

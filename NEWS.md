@@ -8,6 +8,13 @@
 * Added `"bottom"` attribute for `coherent_smat()` for safely identifying the
   index positions of bottom level series via graph coherency structures.
 
+## Breaking changes
+
+* The `mdl_df` class for mable data frames has been renamed to `mbl_df` (a 
+  mable data frame). This is to avoid a naming inconsistency with the `mdl_ts`
+  and `mdl_lst` (for local and global models respectively), and free the class 
+  name for an eventual `mdl_df` multi-model class.
+
 # fabletools 0.7.0
 
 ## New features

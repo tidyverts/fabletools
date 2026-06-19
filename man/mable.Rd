@@ -14,7 +14,7 @@ mable(..., key = NULL, model = NULL)
 \item{model}{Identifiers for the columns containing model(s).}
 }
 \description{
-A mable (model table) data class (\code{mdl_df}) is a tibble-like data structure
+A mable (model table) data class (\code{mbl_df}) is a tibble-like data structure
 for applying multiple models to a dataset. Each row of the mable refers to a
 different time series from the data (identified by the key columns). A mable
 must contain at least one column of time series models (\code{mdl_ts}), where the

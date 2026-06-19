@@ -16,7 +16,7 @@ stream <- function(object, ...){
 #' 
 #' @rdname stream
 #' @export
-stream.mdl_df <- function(object, new_data, ...){
+stream.mbl_df <- function(object, new_data, ...){
   mdls <- mable_vars(object)
   object <- bind_new_data(object, new_data)
   new_data <- object[["new_data"]]

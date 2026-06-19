@@ -90,7 +90,7 @@ as_fable.fbl_ts <- function(x, response, distribution, ...){
 #' @export
 as_fable.grouped_df <- as_fable.tbl_df
 
-#' @inheritParams forecast.mdl_df
+#' @inheritParams forecast.mbl_df
 #' @rdname as-fable
 #' @export
 as_fable.forecast <- function(x, ..., point_forecast = list(.mean = mean)){

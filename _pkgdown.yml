@@ -74,7 +74,7 @@ reference:
   desc: >
     Functionality for evaluating model performance
   contents:
-    - accuracy.mdl_df
+    - accuracy.mbl_df
     - ME
     - MSE
     - RMSE
@@ -100,21 +100,21 @@ reference:
     - stream
     - outliers
     - model_sum
-    - forecast.mdl_df
-    - generate.mdl_df
-    - interpolate.mdl_df
-    - refit.mdl_df
-    - augment.mdl_df
-    - glance.mdl_df
-    - tidy.mdl_df
-    - components.mdl_df
-    - fitted.mdl_df
-    - residuals.mdl_df
+    - forecast.mbl_df
+    - generate.mbl_df
+    - interpolate.mbl_df
+    - refit.mbl_df
+    - augment.mbl_df
+    - glance.mbl_df
+    - tidy.mbl_df
+    - components.mbl_df
+    - fitted.mbl_df
+    - residuals.mbl_df
     - estimate
     - response
     - scenarios
     - IRF
-    - hypothesize.mdl_df
+    - hypothesize.mbl_df
     - is_model
 - title: Features
   desc: >

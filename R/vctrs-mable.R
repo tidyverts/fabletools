@@ -8,30 +8,30 @@
 NULL
 
 #' @rdname mable-vctrs
-#' @method vec_ptype2 mdl_df
+#' @method vec_ptype2 mbl_df
 #' @export
-vec_ptype2.mdl_df <- function(x, y, ...) {
-  UseMethod("vec_ptype2.mdl_df", y)
+vec_ptype2.mbl_df <- function(x, y, ...) {
+  UseMethod("vec_ptype2.mbl_df", y)
 }
 
 #' @export
-vec_ptype2.mdl_df.mdl_df <- function(x, y, ...) {
+vec_ptype2.mbl_df.mbl_df <- function(x, y, ...) {
   mable_ptype2(x, y, ...)
 }
 
 #' @export
-vec_ptype2.data.frame.mdl_df <- function(x, y, ...) {
+vec_ptype2.data.frame.mbl_df <- function(x, y, ...) {
   mable_ptype2(y, x, ...)
 }
 
 #' @export
-vec_ptype2.mdl_df.data.frame <- vec_ptype2.mdl_df.mdl_df
+vec_ptype2.mbl_df.data.frame <- vec_ptype2.mbl_df.mbl_df
 
 #' @export
-vec_ptype2.tbl_df.mdl_df <- vec_ptype2.data.frame.mdl_df
+vec_ptype2.tbl_df.mbl_df <- vec_ptype2.data.frame.mbl_df
 
 #' @export
-vec_ptype2.mdl_df.tbl_df <- vec_ptype2.mdl_df.mdl_df
+vec_ptype2.mbl_df.tbl_df <- vec_ptype2.mbl_df.mbl_df
 
 mable_ptype2 <- function(x, y, ...) {
   key_x <- key_vars(x)
@@ -50,14 +50,14 @@ mable_ptype2 <- function(x, y, ...) {
 }
 
 #' @rdname mable-vctrs
-#' @method vec_cast mdl_df
+#' @method vec_cast mbl_df
 #' @export
-vec_cast.mdl_df <- function(x, to, ...) {
-  UseMethod("vec_cast.mdl_df")
+vec_cast.mbl_df <- function(x, to, ...) {
+  UseMethod("vec_cast.mbl_df")
 }
 
 #' @export
-vec_cast.mdl_df.mdl_df <- function(x, to, ...) {
+vec_cast.mbl_df.mbl_df <- function(x, to, ...) {
   is_identical <- identical(x, to)
   tbl <- tib_cast(x, to, ...)
   build_mable(tbl,
@@ -67,7 +67,7 @@ vec_cast.mdl_df.mdl_df <- function(x, to, ...) {
 }
 
 #' @export
-vec_cast.mdl_df.tbl_df <- function(x, to, ...) {
+vec_cast.mbl_df.tbl_df <- function(x, to, ...) {
   tbl <- tib_cast(x, to, ...)
   build_mable(tbl,
               key = !!key_vars(to), 
@@ -76,14 +76,14 @@ vec_cast.mdl_df.tbl_df <- function(x, to, ...) {
 }
 
 #' @export
-vec_cast.mdl_df.data.frame <- vec_cast.mdl_df.tbl_df
+vec_cast.mbl_df.data.frame <- vec_cast.mbl_df.tbl_df
 
 #' @export
-vec_cast.tbl_df.mdl_df <- function(x, to, ...) {
+vec_cast.tbl_df.mbl_df <- function(x, to, ...) {
   tib_cast(x, to, ...)
 }
 
 #' @export
-vec_cast.data.frame.mdl_df <- function(x, to, ...) {
+vec_cast.data.frame.mbl_df <- function(x, to, ...) {
   df_cast(x, to, ...)
 }

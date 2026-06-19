@@ -2,12 +2,12 @@
 % Please edit documentation in R/reconciliation.R
 \name{reconcile}
 \alias{reconcile}
-\alias{reconcile.mdl_df}
+\alias{reconcile.mbl_df}
 \title{Forecast reconciliation}
 \usage{
 reconcile(.data, ...)
 
-\method{reconcile}{mdl_df}(.data, ...)
+\method{reconcile}{mbl_df}(.data, ...)
 }
 \arguments{
 \item{.data}{A mable.}

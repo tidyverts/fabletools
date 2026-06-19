@@ -25,7 +25,7 @@
 #'   model(lm = TSLM(mdeaths ~ fourier("year", K = 4) + fdeaths)) %>% 
 #'   generate(UKLungDeaths, times = 5)
 #' @export
-generate.mdl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
+generate.mbl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   mdls <- mable_vars(x)
   if(!is.null(new_data)){
     x <- bind_new_data(x, new_data)
@@ -51,7 +51,7 @@ generate.mdl_lst <- function(x, new_data = NULL, h = NULL, times = 1, seed = NUL
 #' @export
 generate.lst_mdl <- deprecate_lst_mdl(generate.mdl_lst)
 
-#' @rdname generate.mdl_df
+#' @rdname generate.mbl_df
 #' 
 #' @param bootstrap If TRUE, then forecast distributions are computed using simulation with resampled errors.
 #' @param bootstrap_block_size The bootstrap block size specifies the number of contiguous residuals to be taken in each bootstrap sample. 

@@ -2,7 +2,7 @@ context("test-mable.R")
 
 test_that("Mable classes", {
   skip_if_not_installed("fable")
-  expect_s3_class(mbl, "mdl_df")
+  expect_s3_class(mbl, "mbl_df")
   expect_s3_class(mbl[[attr(mbl,"model")[[1]]]], "lst_mdl")
 })
 
