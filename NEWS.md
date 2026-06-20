@@ -14,6 +14,11 @@
 
 ## Bug fixes
 
+* `combination_ensemble()` now computes inverse-variance weights using
+  response residuals (`type = "response"`) rather than innovation residuals.
+  This is particularly important for models where the innovation residual 
+  variance is not comparable to the variance on the response scale, e.g. for
+  multiplicative ETS models (#320).
 * Replaced unintuitive behaviour of previous pairwise iterative approach for 
   model combination (e.g. `(A + B + C)/3` as `((A + B) + C)/3`) which used 
   pairwise covariances that yield different results for different orders of

@@ -92,7 +92,7 @@ combination_ensemble <- function(..., weights = c("equal", "inv_var")){
     }
     out <- map(series_list, function(series_models) {
       inv_var <- map_dbl(series_models, function(m) {
-        1 / var(residuals(m)$.resid, na.rm = TRUE)
+        1 / var(residuals(m, type = "response")[[".resid"]], na.rm = TRUE)
       })
       w <- inv_var / sum(inv_var)
       new_model_combination(series_models, w)
