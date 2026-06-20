@@ -1,5 +1,126 @@
 context("test-combination")
 
+test_that("Joint combination: order-invariant variance (equal weights, 3 models)", {
+  skip_if_not_installed("fable")
+  
+  # Three orderings of the same three component models
+  mbl_cmbn <- us_deaths_tr |>
+    model(
+      ABC = combination_model(
+        fable::SNAIVE(value), fable::RW(value ~ drift()), fable::ETS(value),
+        cmbn_args = list(weights = "equal")
+      ),
+      BCA = combination_model(
+        fable::RW(value ~ drift()), fable::ETS(value), fable::SNAIVE(value),
+        cmbn_args = list(weights = "equal")
+      ),
+      CAB = combination_model(
+        fable::ETS(value), fable::SNAIVE(value), fable::RW(value ~ drift()),
+        cmbn_args = list(weights = "equal")
+      )
+    )
+  fc <- forecast(mbl_cmbn, h = 6)
+  
+  vars <- distributional::variance(fc$value)
+  abc  <- vars[fc$.model == "ABC"]
+  bca  <- vars[fc$.model == "BCA"]
+  cab  <- vars[fc$.model == "CAB"]
+  
+  expect_equal(abc, bca, tolerance = 1e-6,
+    label = "equal-weight variance (ABC vs BCA)")
+  expect_equal(abc, cab, tolerance = 1e-6,
+    label = "equal-weight variance (ABC vs CAB)")
+  
+  # Means should also be identical regardless of order
+  means <- mean(fc$value)
+  expect_equal(means[fc$.model == "ABC"], means[fc$.model == "BCA"],
+    tolerance = 1e-6)
+})
+
+test_that("Joint combination: order-invariant variance (inv_var weights, 3 models)", {
+  skip_if_not_installed("fable")
+  
+  mbl_cmbn <- us_deaths_tr |>
+    model(
+      ABC = combination_model(
+        fable::SNAIVE(value), fable::RW(value ~ drift()), fable::ETS(value),
+        cmbn_args = list(weights = "inv_var")
+      ),
+      CAB = combination_model(
+        fable::ETS(value), fable::SNAIVE(value), fable::RW(value ~ drift()),
+        cmbn_args = list(weights = "inv_var")
+      )
+    )
+  fc <- forecast(mbl_cmbn, h = 6)
+  
+  vars <- distributional::variance(fc$value)
+  expect_equal(
+    vars[fc$.model == "ABC"],
+    vars[fc$.model == "CAB"],
+    tolerance = 1e-6,
+    label = "inv_var variance is order-invariant"
+  )
+})
+
+test_that("Joint combination: sum/mean/weighted.mean methods work correctly", {
+  skip_if_not_installed("fable")
+  
+  fit <- us_deaths_tr |>
+    model(
+      snaive = fable::SNAIVE(value),
+      rw     = fable::RW(value ~ drift()),
+      ets    = fable::ETS(value)
+    )
+  m_sn <- fit$snaive[[1]]
+  m_rw <- fit$rw[[1]]
+  m_et <- fit$ets[[1]]
+  
+  # mean() creates equal-weight model_combination
+  cm_mean <- mean(m_sn, m_rw, m_et)
+  expect_s3_class(cm_mean$fit, "model_combination")
+  expect_equal(cm_mean$fit$weights, rep(1/3, 3), tolerance = 1e-9)
+  
+  # weighted.mean() normalises weights and stores them
+  cm_wm <- weighted.mean(m_sn, w = c(1, 2, 3), m_rw, m_et)
+  expect_s3_class(cm_wm$fit, "model_combination")
+  expect_equal(cm_wm$fit$weights, c(1, 2, 3) / 6, tolerance = 1e-9)
+  
+  # sum() uses unit weights (arithmetic sum, not average)
+  cm_sum <- sum(m_sn, m_rw, m_et)
+  expect_s3_class(cm_sum$fit, "model_combination")
+  expect_equal(cm_sum$fit$weights, c(1, 1, 1))
+  
+  # mean() and combination_ensemble(equal) should yield the same forecast
+  fc_mean <- forecast(cm_mean, us_deaths_tr[0,])  # empty new_data trick
+  
+  mbl_ens <- us_deaths_tr |>
+    model(
+      cmbn = combination_model(
+        fable::SNAIVE(value), fable::RW(value ~ drift()), fable::ETS(value),
+        cmbn_args = list(weights = "equal")
+      )
+    )
+  fc_ens <- forecast(mbl_ens, h = 6)
+  
+  # Weighted mean with equal weights matches equal-weight ensemble
+  cm_equal_wm <- weighted.mean(m_sn, w = c(1, 1, 1), m_rw, m_et)
+  expect_equal(cm_equal_wm$fit$weights, rep(1/3, 3), tolerance = 1e-9)
+})
+
+test_that("Joint combination: weighted.mean weight length mismatch errors", {
+  skip_if_not_installed("fable")
+  
+  fit <- us_deaths_tr |>
+    model(snaive = fable::SNAIVE(value), rw = fable::RW(value ~ drift()))
+  m_sn <- fit$snaive[[1]]
+  m_rw <- fit$rw[[1]]
+  
+  expect_error(
+    weighted.mean(m_sn, w = c(0.5, 0.3, 0.2), m_rw),
+    regexp = "length 2"
+  )
+})
+
 test_that("Combination modelling", {
   skip_if_not_installed("fable")
   

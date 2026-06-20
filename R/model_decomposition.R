@@ -141,16 +141,20 @@ model_sum.decomposition_model <- function(x){
 
 #' @export
 report.model_combination <- function(object, ...){
-  is_mdl_cmbn <- function(x) inherits(x, "model_combination")
-  comb_expr <- traverse(
-    object, .f = function(resp, comb) eval(expr(substitute(!!comb, resp))),
-    .h = function(x) if(is_model(x)) x[["response"]][[1]] else if (is_mdl_cmbn(x)) x%@%"combination" else x,
-    base = compose(`!`, is_mdl_cmbn))
+  weights <- object$weights
+  models  <- object$models
   
-  cmbn <- sprintf("Combination: %s", expr_text(comb_expr))
+  terms <- map2_chr(weights, models, function(w, m) {
+    nm <- model_sum(m[["fit"]])
+    if(w == 1) nm else sprintf("%g * %s", w, nm)
+  })
+  cmbn <- sprintf("Combination: %s", paste(terms, collapse = " + "))
   cat(sprintf("%s\n\n%s\n\n", cmbn, strrep("=", nchar(cmbn))))
   
-  traverse(object, .h = function(x) if(is_model(x)) {report(x);cat("\n")}, base = compose(`!`, is_mdl_cmbn))
+  for(m in models) {
+    report(m)
+    cat("\n")
+  }
   
   invisible(object)
 }

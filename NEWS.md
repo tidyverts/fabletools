@@ -1,5 +1,24 @@
 # fabletools (development version)
 
+## New features
+
+* Model combination now uses a joint N-way convolution that correctly accounts
+  for the full residual covariance structure across all component models.
+* Added `sum()`, `mean()`, and `weighted.mean()` S3 methods for `mdl_ts` and
+  `mdl_lst` objects, providing explicit N-way model combination with equal,
+  uniform, or custom weights respectively.
+* All model arithmetic operators (`+`, `-`, `*`, `/`) now produce a single
+  `model_combination` object with correctly implied weights. Arbitrary nested
+  expressions such as `((m1 + m2)/2 + m3)/2` automatically flatten into a
+  single joint combination.
+
+## Bug fixes
+
+* Replaced unintuitive behaviour of previous pairwise iterative approach for 
+  model combination (e.g. `(A + B + C)/3` as `((A + B) + C)/3`) which used 
+  pairwise covariances that yield different results for different orders of
+  models (#321).
+
 ## Improvements
 
 * Added `with_bottom` argument to `coherent_smat()` for inclusion of identity

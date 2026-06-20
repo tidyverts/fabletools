@@ -80,14 +80,22 @@ combination_ensemble <- function(..., weights = c("equal", "inv_var")){
   weights <- match.arg(weights)
   
   if(weights == "equal"){
-    out <- reduce(mdls, `+`)/length(mdls)
+    out <- do.call(mean, mdls)
   }
   else if(weights == "inv_var") {
-    out <- if(is_model(mdls[[1]])) list(mdls) else transpose(mdls)
-    out <- map(out, function(x){
-      inv_var <- map_dbl(x, function(x) 1/var(residuals(x)$.resid, na.rm = TRUE))
-      weights <- inv_var/sum(inv_var)
-      reduce(map2(weights, x, `*`), `+`)
+    # For multi-series, each mdls[[i]] is an mdl_lst; index by series
+    series_list <- if(is_model(mdls[[1]])) {
+      list(mdls)
+    } else {
+      k <- length(mdls[[1]])
+      map(seq_len(k), function(i) map(mdls, `[[`, i))
+    }
+    out <- map(series_list, function(series_models) {
+      inv_var <- map_dbl(series_models, function(m) {
+        1 / var(residuals(m)$.resid, na.rm = TRUE)
+      })
+      w <- inv_var / sum(inv_var)
+      new_model_combination(series_models, w)
     })
     if(is_model(mdls[[1]])) out <- out[[1]]
   }
@@ -121,71 +129,10 @@ combination_weighted <- function(..., weights = NULL){
   }
   vctrs::vec_assert(weights, numeric(), length(mdls))
   
-  # Standardise weights to sum 1
-  weights <- weights/sum(weights)
-  
-  mdls <- map2(mdls, weights, `*`)
-  out <- reduce(mdls, `+`)
+  # Normalisation is handled inside weighted.mean.mdl_ts / new_model_combination
+  out <- do.call(weighted.mean, c(list(x = mdls[[1]], w = weights), mdls[-1]))
   out$response <- resp_var
   out
-}
-
-new_model_combination <- function(x, combination){
-  mdls <- map_lgl(x, is_model)
-  
-  mdls_response <- map(x, function(x) if(is_model(x)) x[["response"]] else x)
-  comb_response <- map(transpose(mdls_response),
-                       function(x) eval(expr(substitute(!!combination, x))))
-  
-  if(length(comb_response) > 1) abort("Combining multivariate models is not yet supported.")
-  
-  # Compute new response data
-  resp <- map2(x, mdls, function(x, is_mdl) if(is_mdl) response(x)[[".response"]] else x)
-  resp <- eval_tidy(combination, resp)
-  
-  if(any(!mdls)){
-    # Simplify the response with a f(numeric, model)
-    op <- deparse(combination[[1]])
-    if(op == "*" || (op == "/" && mdls[1])){
-      num <- x[[which(!mdls)]]
-      num <- switch(op, `*` = 1/num, `/` = num)
-      if(num%%1 == 0){
-        cmp <- all.names(x[[which(mdls)]][["response"]][[1]])
-        if(length(unique(cmp)) == 2 && sum(cmp == "+") + 1 == num){
-          comb_response <- syms(cmp[cmp != "+"][1])
-        }
-      }
-    }
-  } else {
-    # Simplify the response with f(model, model)
-    
-    # Assume both models come from the same root variable, find the data of the
-    # mable's response variable.
-    root_var <- traverse(
-      x$e1, 
-      .f = function(x, y) x[[1]][c("data", "response")],
-      .g = function(mdl) Filter(function(x) inherits(x, "mdl_ts"), mdl$fit),
-      base = function(mdl) !inherits(mdl$fit, "model_combination")
-    )
-    root_resp <- root_var[["response"]]
-    root_resp_var <- rlang::as_label(root_resp[[1]])
-    if(isTRUE(all.equal(resp, root_var$data[[root_resp_var]]))) {
-      comb_response <- root_resp
-    }
-  }
-  
-  new_model(
-    structure(x, combination = combination, class = c("model_combination")),
-    model = x[[which(mdls)[1]]][["model"]],
-    data = transmute(x[[which(mdls)[1]]][["data"]], !!expr_name(comb_response[[1]]) := resp),
-    response = comb_response,
-    transformation = list(new_transformation(identity, identity))
-  )
-}
-
-#' @export
-model_sum.model_combination <- function(x){
-  "COMBINATION"
 }
 
 #' @export
@@ -205,68 +152,61 @@ Ops.mdl_defn <- function(e1, e2){
   combination_model(e1, e2, cmbn_fn = .Generic)
 }
 
+# Extract the component models and weights from any mdl_ts, treating a
+# non-joint model as a single-element joint with weight 1.
+.cj_parts <- function(m) {
+  if(inherits(m[["fit"]], "model_combination")) {
+    list(models = m[["fit"]]$models, weights = m[["fit"]]$weights)
+  } else {
+    list(models = list(m), weights = 1)
+  }
+}
+
 #' @export
 Ops.mdl_ts <- function(e1, e2){
-  e1_expr <- enexpr(e1)
-  e2_expr <- enexpr(e2)
   ok <- switch(.Generic, `+` = , `-` = , `*` = , `/` = TRUE, FALSE)
   if (!ok) {
     warn(sprintf("`%s` not meaningful for models", .Generic))
     return(rep.int(NA, max(length(e1), if (!missing(e2)) length(e2))))
   }
-  if(.Generic == "/" && is_model(e2)){
-    warn(sprintf("Cannot divide by a model"))
-    return(rep.int(NA, max(length(e1), if (!missing(e2)) length(e2))))
+  if(.Generic == "/" && !missing(e2) && is_model(e2)){
+    warn("Cannot divide by a model")
+    return(rep.int(NA, length(e1)))
   }
-  if(.Generic %in% c("-", "+") && missing(e2)){
-    e2 <- e1
-    .Generic <- "*"
-    e1 <- 1
-  }
-  if(.Generic == "-"){
-    .Generic <- "+"
-    e2 <- -e2
-  }
-  else if(.Generic == "/"){
-    .Generic <- "*"
-    e2 <- 1/e2
+  if(.Generic == "*" && !missing(e2) && is_model(e1) && is_model(e2)){
+    warn("Multiplying models is not supported")
+    return(rep.int(NA, length(e1)))
   }
   
-  # e_len <- c(length(e1), length(e2))
-  # if(max(e_len) %% min(e_len) != 0){
-  #   warn("longer object length is not a multiple of shorter object length")
-  # }
-  # 
-  # if(e_len[[1]] != e_len[[2]]){
-  #   if(which.min(e_len) == 1){
-  #     is_mdl <- is_model(e1)
-  #     cls <- class(e1)
-  #     e1 <- rep_len(e1, e_len[[2]])
-  #     if(is_mdl){
-  #       e1 <- structure(e1, class = cls)
-  #     }
-  #   }
-  #   else{
-  #     is_mdl <- is_model(e2)
-  #     cls <- class(e2)
-  #     e2 <- rep_len(e2, e_len[[1]])
-  #     if(is_mdl){
-  #       e2 <- structure(e2, class = cls)
-  #     }
-  #   }
-  # }
-  
-  if(is_model(e1) && is_model(e2)){
-    if(.Generic == "*"){
-      warn(sprintf("Multipling models is not supported"))
-      return(rep.int(NA, length(e1)))
-    }
+  # Unary + and -
+  if(missing(e2)){
+    if(.Generic == "+") return(e1)
+    cmp <- .cj_parts(e1)
+    return(new_model_combination(cmp$models, -cmp$weights))
   }
   
-  new_model_combination(
-    list(e1 = e1, e2 = e2),
-    combination = call2(.Generic, sym("e1"), sym("e2"))
-  )
+  # model +/- model: merge component lists, negating e2 weights for subtraction
+  if(.Generic %in% c("+", "-") && is_model(e1) && is_model(e2)){
+    c1   <- .cj_parts(e1)
+    c2   <- .cj_parts(e2)
+    sign <- if(.Generic == "+") 1 else -1
+    return(new_model_combination(c(c1$models, c2$models), c(c1$weights, c2$weights * sign)))
+  }
+  
+  # model * scalar  or  model / scalar: scale the weights
+  if(.Generic %in% c("*", "/") && is_model(e1)){
+    cmp    <- .cj_parts(e1)
+    scalar <- if(.Generic == "*") e2 else 1/e2
+    return(new_model_combination(cmp$models, cmp$weights * scalar))
+  }
+  # scalar * model
+  if(.Generic == "*" && is_model(e2)){
+    cmp <- .cj_parts(e2)
+    return(new_model_combination(cmp$models, cmp$weights * e1))
+  }
+  
+  warn(sprintf("`%s` not meaningful for models", .Generic))
+  rep.int(NA, max(length(e1), length(e2)))
 }
 
 #' @export
@@ -276,83 +216,219 @@ Ops.mdl_lst <- function(e1, e2){
 #' @export
 Ops.lst_mdl <- deprecate_lst_mdl(Ops.mdl_lst)
 
-#' @importFrom stats var
-#' @export
-forecast.model_combination <- function(object, new_data, specials, ...){
-  mdls <- map_lgl(object, is_model)
-  expr <- attr(object, "combination")
-  # Compute residual covariance to adjust the forecast variance
-  # Assumes correlation across h is identical
+# ---- Joint combination (N-way convolution solved in one step) ----
+
+new_model_combination <- function(models, weights) {
+  # Weighted sum of back-transformed training responses for data slot
+  resp_data <- map(models, function(m) response(m)[[".response"]])
+  resp <- Reduce(`+`, map2(resp_data, weights, `*`))
   
-  fbl <- object
-  fbl[mdls] <- map(fbl[mdls], forecast, new_data = new_data, ...)
-  fbl[mdls] <- map(fbl[mdls], function(x) x[[distribution_var(x)]])
+  comb_response <- models[[1]][["response"]]
   
-  is_normal <- map_lgl(fbl[mdls], function(x) all(dist_types(x) == "dist_normal"))
-  if(all(is_normal)){
-    .dist <- eval_tidy(expr, fbl)
-    
-    # Adjust for covariance
-    # var(x) + var(y) + 2*cov(x,y)
-    if(all(mdls)) {
-      fc_cov <- var(
-        cbind(
-          residuals(object[[1]], type = "response")[[".resid"]],
-          residuals(object[[2]], type = "response")[[".resid"]]
-        ),
-        na.rm = TRUE
-      )
-      fc_sd <- fbl %>% 
-        map(function(x) sqrt(distributional::variance(x))) %>% 
-        transpose_dbl()
-      fc_cov <- suppressWarnings(stats::cov2cor(fc_cov))
-      fc_cov[!is.finite(fc_cov)] <- 0 # In case of perfect forecasts
-      fc_cov <- map_dbl(fc_sd, function(sigma) (diag(sigma)%*%fc_cov%*%t(diag(sigma)))[1,2])
-      .dist <- distributional::dist_normal(mean(.dist), sqrt(distributional::variance(.dist) + 2*fc_cov))
-    }
-  } else {
-    .dist <- distributional::dist_degenerate(eval_tidy(expr, map(fbl, mean)))
-  }
-  
-  .dist
+  new_model(
+    structure(
+      list(models = models, weights = weights),
+      class = "model_combination"
+    ),
+    model = models[[1]][["model"]],
+    data = transmute(
+      models[[1]][["data"]],
+      !!expr_name(comb_response[[1]]) := resp
+    ),
+    response = comb_response,
+    transformation = list(new_transformation(identity, identity))
+  )
 }
 
 #' @export
-generate.model_combination <- function(x, new_data, specials, bootstrap = FALSE, ...){
-  if(".innov" %in% names(new_data)){
-    # Assume bootstrapped paths are requested (this needs future work)
+model_sum.model_combination <- function(x) {
+  "COMBINATION"
+}
+
+#' @importFrom stats var
+#' @export
+forecast.model_combination <- function(object, new_data, specials, ...) {
+  models  <- object$models
+  weights <- object$weights
+  
+  fcs   <- map(models, forecast, new_data = new_data, ...)
+  dists <- map(fcs, function(x) x[[distribution_var(x)]])
+  
+  is_normal <- map_lgl(dists, function(x) all(dist_types(x) == "dist_normal"))
+  
+  if(all(is_normal)) {
+    fc_means <- map(dists, mean)
+    fc_vars  <- map(dists, distributional::variance)
+    
+    # Estimate correlation structure from in-sample residuals
+    resids    <- map(models, function(m) residuals(m, type = "response")[[".resid"]])
+    resid_mat <- do.call(cbind, resids)
+    fc_cov    <- var(resid_mat, na.rm = TRUE)
+    fc_cor    <- suppressWarnings(stats::cov2cor(fc_cov))
+    fc_cor[!is.finite(fc_cor)] <- 0
+    
+    h <- length(dists[[1]])
+    
+    # mu_h  = sum_i  w_i * mu_i_h
+    # var_h = sum_ij w_i * w_j * sigma_i_h * sigma_j_h * rho_ij
+    #       = (w * sigma_h)^T Cor (w * sigma_h)   [avoids diag() scalar issue]
+    mu <- map_dbl(seq_len(h), function(t) {
+      sum(weights * map_dbl(fc_means, `[`, t))
+    })
+    sigma2 <- map_dbl(seq_len(h), function(t) {
+      ws <- weights * sqrt(map_dbl(fc_vars, `[`, t))
+      as.numeric(ws %*% fc_cor %*% ws)
+    })
+    
+    distributional::dist_normal(mu, sqrt(pmax(sigma2, 0)))
+  } else {
+    pt_means <- map(dists, mean)
+    h <- length(pt_means[[1]])
+    mu <- map_dbl(seq_len(h), function(t) sum(weights * map_dbl(pt_means, `[`, t)))
+    distributional::dist_degenerate(mu)
+  }
+}
+
+#' @export
+generate.model_combination <- function(x, new_data, specials, bootstrap = FALSE, ...) {
+  if(".innov" %in% names(new_data)) {
     bootstrap <- TRUE
     new_data[[".innov"]] <- NULL
-    # abort("Providing innovations for simulating combination models is not supported.")
   }
-  
-  mdls <- map_lgl(x, is_model)
-  expr <- attr(x, "combination")
-  x[mdls] <- map(x[mdls], generate, new_data, bootstrap = bootstrap, ...)
-  out <- x[[which(mdls)[1]]]
-  sims <- map(x, function(x) if(is_tsibble(x)) x[[".sim"]] else x)
-  out[[".sim"]] <- eval_tidy(expr, sims)
+  gens <- map(x$models, generate, new_data = new_data, bootstrap = bootstrap, ...)
+  out  <- gens[[1]]
+  sims <- map(gens, function(g) if(is_tsibble(g)) g[[".sim"]] else g)
+  out[[".sim"]] <- Reduce(`+`, map2(sims, x$weights, `*`))
   out
 }
 
 #' @export
-fitted.model_combination <- function(object, ...){
-  mdls <- map_lgl(object, is_model)
-  expr <- attr(object, "combination")
-  object[mdls] <- map(object[mdls], fitted, ...)
-  fits <- map(object, function(x) if(is_tsibble(x)) x[[".fitted"]] else x)
-  eval_tidy(expr, fits)
+fitted.model_combination <- function(object, ...) {
+  fits <- map(object$models, function(m) {
+    f <- fitted(m, ...)
+    if(is_tsibble(f)) f[[".fitted"]] else f
+  })
+  Reduce(`+`, map2(fits, object$weights, `*`))
 }
 
 #' @export
 residuals.model_combination <- function(object, type = "response", ...) {
-  mdls <- map_lgl(object, is_model)
-  expr <- attr(object, "combination")
-  # Ignore type and always give response residuals here
-  # if(type != "response") {
-  #   stop("Only response residuals are supported for combination models.")
-  # }
-  object[mdls] <- map(object[mdls], residuals, type = "response", ...)
-  res <- map(object, function(x) if(is_tsibble(x)) x[[".resid"]] else x)
-  eval_tidy(expr, res)
+  res <- map(object$models, function(m) {
+    r <- residuals(m, type = "response", ...)
+    if(is_tsibble(r)) r[[".resid"]] else r
+  })
+  Reduce(`+`, map2(res, object$weights, `*`))
 }
+
+# ---- sum / mean / weighted.mean for model objects ----
+
+#' Combine models jointly via sum, mean, or weighted mean
+#' 
+#' These methods allow multiple fitted models to be combined into a single
+#' joint combination model. Unlike the pairwise arithmetic approach (e.g.
+#' `(m1 + m2 + m3)/3`), these solve the N-way convolution of all component
+#' distributions simultaneously using the full residual covariance matrix,
+#' so the result is invariant to the order in which models are listed.
+#' 
+#' @param x The first model (or a list/`mdl_lst` of models).
+#' @param ... Additional models to include in the combination.
+#' @param w A numeric vector of weights, one per model (will be normalised to
+#'   sum to 1).
+#' @param na.rm Ignored; present for compatibility with the `Summary` generic.
+#' 
+#' @return A fitted combination model (`mdl_ts`) of class `model_combination`.
+#' 
+#' @seealso [combination_ensemble()], [combination_weighted()]
+#' @name model_combination_ops
+NULL
+
+#' @rdname model_combination_ops
+#' @export
+Summary.mdl_ts <- function(..., na.rm = FALSE) {
+  switch(.Generic,
+    sum = {
+      mdls <- list(...)
+      new_model_combination(mdls, rep(1, length(mdls)))
+    },
+    abort(paste0("`", .Generic, "` is not meaningful for model objects."))
+  )
+}
+
+#' @rdname model_combination_ops
+#' @export
+mean.mdl_ts <- function(x, ...) {
+  mdls <- c(list(x), list(...))
+  n    <- length(mdls)
+  new_model_combination(mdls, rep(1 / n, n))
+}
+
+#' @rdname model_combination_ops
+#' @importFrom stats weighted.mean
+#' @export
+weighted.mean.mdl_ts <- function(x, w, ...) {
+  mdls <- c(list(x), list(...))
+  if(length(w) != length(mdls)) {
+    abort(paste0(
+      "`w` must have length ", length(mdls),
+      " (one weight per model), but has length ", length(w), "."
+    ))
+  }
+  new_model_combination(mdls, w / sum(w))
+}
+
+# mdl_lst variants apply the operation elementwise across series
+
+#' @rdname model_combination_ops
+#' @export
+Summary.mdl_lst <- function(..., na.rm = FALSE) {
+  switch(.Generic,
+    sum = {
+      mdls <- list(...)
+      k    <- length(mdls[[1]])
+      list_of_models(map(seq_len(k), function(i) {
+        series_models <- map(mdls, `[[`, i)
+        new_model_combination(series_models, rep(1, length(series_models)))
+      }))
+    },
+    abort(paste0("`", .Generic, "` is not meaningful for model objects."))
+  )
+}
+
+#' @rdname model_combination_ops
+#' @export
+mean.mdl_lst <- function(x, ...) {
+  mdls <- c(list(x), list(...))
+  n    <- length(mdls)
+  k    <- length(mdls[[1]])
+  list_of_models(map(seq_len(k), function(i) {
+    series_models <- map(mdls, `[[`, i)
+    new_model_combination(series_models, rep(1 / n, n))
+  }))
+}
+
+
+#' @rdname model_combination_ops
+#' @export
+weighted.mean.mdl_lst <- function(x, w, ...) {
+  mdls <- c(list(x), list(...))
+  if(!is.numeric(w)) {
+    cli::cli_abort(
+      c("{.arg w} must be a numeric vector of weights.",
+        "i" = "Did you forget to name the argument? Use {.code weighted.mean(..., w = <weights>)}.")
+    )
+  }
+  if(length(w) != length(mdls)) {
+    cli::cli_abort(
+      c("{.arg w} must have length {length(mdls)} (one weight per {.cls mdl_lst}), but has length {length(w)}.")
+    )
+  }
+  w <- w / sum(w)
+  k <- length(mdls[[1]])
+  list_of_models(map(seq_len(k), function(i) {
+    series_models <- map(mdls, `[[`, i)
+    new_model_combination(series_models, w)
+  }))
+}
+
+
+
