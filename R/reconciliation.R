@@ -265,26 +265,14 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
     fc_dist <- lapply(fc, function(x) x[[distribution_var(x)]])
     fc_mean <- lapply(fc_dist, mean)
     fc_mean <- do.call(cbind, fc_mean)
-    fc_prop <- matrix(1, nrow = nrow(fc_mean), ncol = ncol(fc_mean))
-    
     # Ensure key structure matches order of fc object
     key_data <- key_data[order(vec_c(!!!key_data$.rows)),]
-    for(i in seq_len(agg_depth - 1)) {
-      agg_layer <- key_data[agg_order[seq_len(i)]]
-      agg_nodes <- vec_group_loc(is_aggregated(agg_layer[[length(agg_layer)]]))
-      # Drop nodes which aren't in this layer
-      if((i+1) < agg_depth) {
-        agg_keep <- which(is_aggregated(key_data[[agg_order[[i+1]]]]))
-        agg_nodes$loc <- lapply(agg_nodes$loc, intersect, agg_keep)
-      }
-      # Identify index position of the layer's nodes and their parents
-      agg_child_loc <- agg_nodes$loc[[which(!agg_nodes$key)]]
-      agg_parent_loc <- agg_nodes$loc[[which(agg_nodes$key)]]
-      agg_parent_key <- agg_layer[,-length(agg_layer)]
-      agg_parent <- vec_match(agg_parent_key[agg_child_loc,,drop=FALSE], agg_parent_key[agg_parent_loc,,drop=FALSE])
-      # Compute forecast proportions for this layer
-      fc_prop[,agg_child_loc] <- fc_prop[,agg_parent_loc,drop=FALSE][,agg_parent,drop=FALSE] * fc_mean[,agg_child_loc,drop=FALSE] / t(rowsum(t(fc_mean[,agg_child_loc,drop=FALSE]), agg_parent))[,agg_parent]
-    }
+    level_id <- rowSums(agg_shadow)
+    td <- propagate_forecast_proportions(
+      fc_mean, key_data, agg_order, level_id,
+      start_nodes = which(level_id == length(kv))
+    )
+    fc_prop <- td$fc_prop
     # Code adapted from reconcile_fbl_list to handle changing weights over horizon
     # This will need to be refactored later so that reconcile_fbl_list is broken up into more sub-problems
     # As the weight matrix is an identity, this code and computation is much simpler.
@@ -341,6 +329,50 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
 }
 
 
+# Propagate top-down forecast proportions from a set of start nodes to all
+# descendants, one level at a time.
+#
+# Returns a list with:
+#   fc_prop  - (h x n_all) matrix: 1 at start_nodes, P(j | root_j) for
+#              descendants, 0 for nodes above the start level
+#   root_idx - integer vector (n_all): position within start_nodes for each
+#              node's root; 0 for nodes not descended from start_nodes
+propagate_forecast_proportions <- function(fc_mean, key_data, agg_order,
+                                           level_id, start_nodes) {
+  h        <- nrow(fc_mean)
+  n_all    <- ncol(fc_mean)
+  n_start  <- length(start_nodes)
+  start_level <- level_id[[start_nodes[[1L]]]]
+
+  fc_prop <- matrix(0, h, n_all)
+  fc_prop[, start_nodes] <- 1
+  root_idx <- integer(n_all)
+  root_idx[start_nodes] <- seq_len(n_start)
+
+  # Compact (h x current-layer) proportions, replaced at each level
+  fc_prop_layer <- matrix(1, h, n_start)
+  parent_loc <- start_nodes
+
+  for (i in seq.int(length(agg_order) - start_level + 1L, length(agg_order))) {
+    child_loc  <- which(level_id == (length(agg_order) - i))
+    agg_parent <- vec_match(
+      key_data[child_loc,  agg_order[seq_len(i - 1L)], drop = FALSE],
+      key_data[parent_loc, agg_order[seq_len(i - 1L)], drop = FALSE]
+    )
+    if (anyNA(agg_parent)) {
+      abort("An error has occurred when reconciling the hierarchy.\nPlease report this bug here: https://github.com/tidyverts/fabletools/issues")
+    }
+    fc_prop_layer <- fc_prop_layer[, agg_parent, drop = FALSE] *
+      fc_mean[, child_loc, drop = FALSE] /
+      t(rowsum(t(fc_mean[, child_loc, drop = FALSE]), agg_parent))[, agg_parent]
+    fc_prop[, child_loc] <- fc_prop_layer
+    root_idx[child_loc]  <- root_idx[parent_loc][agg_parent]
+    parent_loc <- child_loc
+  }
+
+  list(fc_prop = fc_prop, root_idx = root_idx)
+}
+
 #' Middle out forecast reconciliation
 #' 
 #' \lifecycle{experimental}
@@ -379,6 +411,12 @@ forecast.lst_midout_mdl <- function(object, key_data,
   top <- which.max(rowSums(S))
   btm <- agg_data$leaf
   
+  key_data <- key_data[order(vec_c(!!!key_data$.rows)),]
+  object <- object[order(vec_c(!!!key_data$.rows))]
+  if(!is.null(new_data)){
+    new_data <- new_data[order(vec_c(!!!key_data$.rows)),]
+  }
+  
   kv <- names(key_data)[-ncol(key_data)]
   agg_shadow <- as_tibble(map(key_data[kv], is_aggregated))
   agg_struct <- vctrs::vec_unique(agg_shadow)
@@ -390,7 +428,14 @@ forecast.lst_midout_mdl <- function(object, key_data,
   if(is.character(split)) {
     split <- match(split, agg_order)
   }
-  nodes_above <- which(agg_shadow[[split]])
+  if(is.na(split) || split < 1L || split > length(agg_order)) {
+    abort("`split` must identify one of the hierarchy levels.")
+  }
+  
+  level_id <- rowSums(agg_shadow)
+  split_level <- length(agg_order) - split
+  split_nodes <- which(level_id == split_level)
+  nodes_above <- which(level_id > split_level)
   object <- object[-nodes_above]
   if(!is.null(new_data)){
     new_data <- new_data[-nodes_above]
@@ -402,34 +447,15 @@ forecast.lst_midout_mdl <- function(object, key_data,
   fc_mean <- matrix(0, h, nrow(key_data))
   fc_mean[,-nodes_above] <- do.call(cbind, lapply(fc_dist, mean))
   
-  fc_prop <- key_data[[split]]
-  fc_prop <- matrix(1, nrow = nrow(fc_mean), ncol = vec_unique_count(fc_prop[!is_aggregated(fc_prop)]))
-  
-  # Ensure key structure matches order of fc object
-  mid_root_nodes <- NULL
-  key_data <- key_data[order(vec_c(!!!key_data$.rows)),]
-  for(i in seq(split+1, length.out = agg_depth - 1 - split)) {
-    agg_layer <- key_data[agg_order[seq_len(i)]][-nodes_above,]
-    agg_nodes <- vec_group_loc(is_aggregated(agg_layer[[length(agg_layer)]]))
-    # Drop nodes which aren't in this layer
-    if((i+1) < agg_depth) {
-      agg_keep <- which(is_aggregated(key_data[[agg_order[[i+1]]]]))
-      agg_nodes$loc <- lapply(agg_nodes$loc, intersect, agg_keep)
-    }
-    # Identify index position of the layer's nodes and their parents
-    agg_child_loc <- agg_nodes$loc[[which(!agg_nodes$key)]]
-    agg_parent_loc <- agg_nodes$loc[[which(agg_nodes$key)]]
-    agg_parent_key <- agg_layer[,-length(agg_layer)]
-    agg_parent <- vec_match(agg_parent_key[agg_child_loc,,drop=FALSE], agg_parent_key[agg_parent_loc,,drop=FALSE])
-    
-    # Produce matching replications of middle layer node positions
-    if(is.null(mid_root_nodes)) mid_root_nodes <- agg_parent_loc
-    mid_root_nodes <- mid_root_nodes[agg_parent]
-    # Compute forecast proportions for this layer
-    fc_prop <- fc_prop[,agg_parent,drop=FALSE] * fc_mean[,agg_child_loc,drop=FALSE] / t(rowsum(t(fc_mean[,agg_child_loc,drop=FALSE]), agg_parent))[,agg_parent]
-  }
-  
-  fc_mean <- (fc_prop*fc_mean[,mid_root_nodes])%*%t(S)
+  td <- propagate_forecast_proportions(
+    fc_mean, key_data, agg_order, level_id,
+    start_nodes = split_nodes
+  )
+  btm_loc        <- which(level_id == 0L)
+  mid_root_nodes <- split_nodes[td$root_idx[btm_loc]]
+  fc_prop        <- td$fc_prop[, btm_loc, drop = FALSE]
+
+  fc_mean <- (fc_prop * fc_mean[, mid_root_nodes]) %*% t(S)
   # Code adapted from reconcile_fbl_list to handle changing weights over horizon
   # This will need to be refactored later so that reconcile_fbl_list is broken up into more sub-problems
   # As the weight matrix is an identity, this code and computation is much simpler.
