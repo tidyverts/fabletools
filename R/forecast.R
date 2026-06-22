@@ -103,6 +103,12 @@ forecast.mdl_df <- function(object, new_data = NULL, h = NULL,
     object <- bind_new_data(object, new_data)
   }
   kv <- c(key_vars(object), ".model")
+
+  # Deprecated bias adjustment
+  if (!is.null(match.call()$bias_adjust)) {
+    lifecycle::deprecate_stop("0.2.0", "forecast(bias_adjust = )", "forecast(point_forecast = )")
+    point_forecast <- if(match.call()$bias_adjust) list(.mean = mean) else list(.median = stats::median)
+  }
   
   # Evaluate forecasts
   object <- dplyr::mutate_at(as_tibble(object), vars(!!!mdls),
@@ -142,10 +148,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
     h <- NULL
   }
-  if(!is.null(bias_adjust)){
-    deprecate_warn("0.2.0", "forecast(bias_adjust = )", "forecast(point_forecast = )")
-    point_forecast <- if(bias_adjust) list(.mean = mean) else list(.median = stats::median)
-  }
+
   if(is.null(new_data)){
     new_data <- make_future_data(object$data, h)
   }
