@@ -101,6 +101,7 @@ new_transformation <- function(transformation, inverse){
 #' @keywords internal
 #' @export
 bias_adjust <- function(bt, sd){
+  lifecycle::deprecate_warn("0.7.1", "bias_adjust()")
   fvar <- sd^2
   if(any(is.na(fvar))){
     warn("Could not bias adjust the point forecasts as the forecast standard deviation is unknown. Perhaps your series is too short or insufficient bootstrap samples are used.")

@@ -67,6 +67,10 @@
   and `mdl_lst` (for local and global models respectively), and free the class 
   name for an eventual `mdl_df` multi-model class. The `mbl_df` class has been
   added, and `mdl_df` will be removed in the next minor release (v0.9.0).
+* The superceded internal utility function `bias_adjust()` has been deprecated.
+  The forecast mean has been correctly calculated (including 'bias adjustments')
+  in the `mean()` function of distributional objects for a long time. The 
+  forecast median can be obtained using `median()` on a forecast distribution.
 
 # fabletools 0.7.0
 
