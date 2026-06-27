@@ -339,6 +339,7 @@ residuals.model_combination <- function(object, type = "response", ...) {
 #' @return A fitted combination model (`mdl_ts`) of class `model_combination`.
 #' 
 #' @seealso [combination_ensemble()], [combination_weighted()]
+#' @keywords internal
 #' @name model_combination_ops
 NULL
 

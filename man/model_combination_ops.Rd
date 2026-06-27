@@ -45,3 +45,4 @@ so the result is invariant to the order in which models are listed.
 \seealso{
 \code{\link[=combination_ensemble]{combination_ensemble()}}, \code{\link[=combination_weighted]{combination_weighted()}}
 }
+\keyword{internal}
