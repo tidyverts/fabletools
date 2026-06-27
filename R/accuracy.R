@@ -459,10 +459,22 @@ accuracy.mbl_df <- function(object, measures = point_accuracy_measures, ...){
     abort("The `measures` argument must contain a list of accuracy measures.
 Hint: A tsibble of future values is only required when computing accuracy of a fable. To compute forecast accuracy, you'll need to compute the forecasts first.")
   }
-  as_tibble(object) %>% 
-    tidyr::pivot_longer(mable_vars(object), names_to = ".model", values_to = "fit") %>% 
-    mutate(fit = map(!!sym("fit"), accuracy, measures = measures, ...)) %>% 
-    unnest_tbl("fit")
+
+  mbl_vars <- mable_vars(object)
+
+  # No longer want semantics of a mable
+  object <- as_tibble(object)
+
+  object[mbl_vars] <- lapply(object[mbl_vars], accuracy, measures = measures, ...)
+
+  tidyr::pivot_longer(object, mbl_vars, names_to = ".model", values_to = ".acc") %>% 
+    unnest_tbl(".acc")
+}
+
+#' @rdname accuracy
+#' @export
+accuracy.mdl_lst <- function(object, measures = point_accuracy_measures, ...){
+  lapply(object, accuracy, measures = measures, ...)
 }
 
 #' @rdname accuracy

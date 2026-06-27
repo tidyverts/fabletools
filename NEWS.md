@@ -23,6 +23,7 @@
   model combination (e.g. `(A + B + C)/3` as `((A + B) + C)/3`) which used 
   pairwise covariances that yield different results for different orders of
   models (#321).
+* Fixed computing training `accuracy()` with global models.
 
 ## Improvements
 

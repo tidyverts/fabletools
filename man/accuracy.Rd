@@ -2,11 +2,14 @@
 % Please edit documentation in R/accuracy.R
 \name{accuracy.mbl_df}
 \alias{accuracy.mbl_df}
+\alias{accuracy.mdl_lst}
 \alias{accuracy.mdl_ts}
 \alias{accuracy.fbl_ts}
 \title{Evaluate accuracy of a forecast or model}
 \usage{
 \method{accuracy}{mbl_df}(object, measures = point_accuracy_measures, ...)
+
+\method{accuracy}{mdl_lst}(object, measures = point_accuracy_measures, ...)
 
 \method{accuracy}{mdl_ts}(object, measures = point_accuracy_measures, ...)
 
