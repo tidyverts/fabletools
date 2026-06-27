@@ -63,6 +63,19 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="fabletools-development-version">fabletools (development version)<a class="anchor" aria-label="anchor" href="#fabletools-development-version"></a></h2>
 <div class="section level3">
+<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<ul><li>Model combination now uses a joint N-way convolution that correctly accounts for the full residual covariance structure across all component models.</li>
+<li>Added <code><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum()</a></code>, <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code>, and <code><a href="https://rdrr.io/r/stats/weighted.mean.html" class="external-link">weighted.mean()</a></code> S3 methods for <code>mdl_ts</code> and <code>mdl_lst</code> objects, providing explicit N-way model combination with equal, uniform, or custom weights respectively.</li>
+<li>All model arithmetic operators (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>) now produce a single <code>model_combination</code> object with correctly implied weights. Arbitrary nested expressions such as <code>((m1 + m2)/2 + m3)/2</code> automatically flatten into a single joint combination.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/combination_ensemble.html">combination_ensemble()</a></code> now computes inverse-variance weights using response residuals (<code>type = "response"</code>) rather than innovation residuals. This is particularly important for models where the innovation residual variance is not comparable to the variance on the response scale, e.g. for multiplicative ETS models (<a href="https://github.com/tidyverts/fabletools/issues/320" class="external-link">#320</a>).</li>
+<li>Replaced unintuitive behaviour of previous pairwise iterative approach for model combination (e.g. <code>(A + B + C)/3</code> as <code>((A + B) + C)/3</code>) which used pairwise covariances that yield different results for different orders of models (<a href="https://github.com/tidyverts/fabletools/issues/321" class="external-link">#321</a>).</li>
+<li>Fixed computing training <code><a href="https://generics.r-lib.org/reference/accuracy.html" class="external-link">accuracy()</a></code> with global models.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="improvements-development-version">Improvements<a class="anchor" aria-label="anchor" href="#improvements-development-version"></a></h3>
 <ul><li>Added <code>with_bottom</code> argument to <code><a href="../reference/coherent_smat.html">coherent_smat()</a></code> for inclusion of identity matrix entries for bottom level time series. Setting this to FALSE produces the A matrix (aggregated series only).</li>
 <li>Added <code>"bottom"</code> attribute for <code><a href="../reference/coherent_smat.html">coherent_smat()</a></code> for safely identifying the index positions of bottom level series via graph coherency structures.</li>
