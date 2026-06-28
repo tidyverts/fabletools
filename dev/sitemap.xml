@@ -43,12 +43,12 @@
 <url><loc>https://fabletools.tidyverts.org/reference/features.html</loc></url>
 <url><loc>https://fabletools.tidyverts.org/reference/features_by_pkg.html</loc></url>
 <url><loc>https://fabletools.tidyverts.org/reference/features_by_tag.html</loc></url>
-<url><loc>https://fabletools.tidyverts.org/reference/fitted.mbl_df.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/fitted.mdl_df.html</loc></url>
 <url><loc>https://fabletools.tidyverts.org/reference/forecast.html</loc></url>
 <url><loc>https://fabletools.tidyverts.org/reference/freq_tools.html</loc></url>
-<url><loc>https://fabletools.tidyverts.org/reference/generate.mbl_df.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/generate.mdl_df.html</loc></url>
 <url><loc>https://fabletools.tidyverts.org/reference/glance.html</loc></url>
-<url><loc>https://fabletools.tidyverts.org/reference/hypothesize.mbl_df.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/hypothesize.mdl_df.html</loc></url>
 <url><loc>https://fabletools.tidyverts.org/reference/index.html</loc></url>
 <url><loc>https://fabletools.tidyverts.org/reference/interpolate.html</loc></url>
 <url><loc>https://fabletools.tidyverts.org/reference/interval_accuracy_measures.html</loc></url>
@@ -81,7 +81,7 @@
 <url><loc>https://fabletools.tidyverts.org/reference/refit.html</loc></url>
 <url><loc>https://fabletools.tidyverts.org/reference/register_feature.html</loc></url>
 <url><loc>https://fabletools.tidyverts.org/reference/report.html</loc></url>
-<url><loc>https://fabletools.tidyverts.org/reference/residuals.mbl_df.html</loc></url>
+<url><loc>https://fabletools.tidyverts.org/reference/residuals.mdl_df.html</loc></url>
 <url><loc>https://fabletools.tidyverts.org/reference/response.html</loc></url>
 <url><loc>https://fabletools.tidyverts.org/reference/response_vars.html</loc></url>
 <url><loc>https://fabletools.tidyverts.org/reference/scenarios.html</loc></url>
