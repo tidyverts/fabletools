@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
       </span>
     </div>
 
@@ -57,11 +57,36 @@
   <div class="col-md-9 contents">
     <div class="page-header">
       <h1 data-toc-skip>Changelog <small></small></h1>
-      <small>Source: <a href="https://github.com/tidyverts/fabletools/blob/v0.7.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/tidyverts/fabletools/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.0" id="fabletools-070">fabletools 0.7.0<a class="anchor" aria-label="anchor" href="#fabletools-070"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.0" id="fabletools-080">fabletools 0.8.0<a class="anchor" aria-label="anchor" href="#fabletools-080"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-8-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-8-0"></a></h3>
+<ul><li>Model combination now uses a joint N-way convolution that correctly accounts for the full residual covariance structure across all component models.</li>
+<li>Added <code><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum()</a></code>, <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code>, and <code><a href="https://rdrr.io/r/stats/weighted.mean.html" class="external-link">weighted.mean()</a></code> S3 methods for <code>mdl_ts</code> and <code>mdl_lst</code> objects, providing explicit N-way model combination with equal, uniform, or custom weights respectively.</li>
+<li>All model arithmetic operators (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>) now produce a single <code>model_combination</code> object with correctly implied weights. Arbitrary nested expressions such as <code>((m1 + m2)/2 + m3)/2</code> automatically flatten into a single joint combination.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-8-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-0"></a></h3>
+<ul><li>
+<code><a href="../reference/combination_ensemble.html">combination_ensemble()</a></code> now computes inverse-variance weights using response residuals (<code>type = "response"</code>) rather than innovation residuals. This is particularly important for models where the innovation residual variance is not comparable to the variance on the response scale, e.g. for multiplicative ETS models (<a href="https://github.com/tidyverts/fabletools/issues/320" class="external-link">#320</a>).</li>
+<li>Replaced unintuitive behaviour of previous pairwise iterative approach for model combination (e.g. <code>(A + B + C)/3</code> as <code>((A + B) + C)/3</code>) which used pairwise covariances that yield different results for different orders of models (<a href="https://github.com/tidyverts/fabletools/issues/321" class="external-link">#321</a>).</li>
+<li>Fixed computing training <code><a href="https://generics.r-lib.org/reference/accuracy.html" class="external-link">accuracy()</a></code> with global models.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="improvements-0-8-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-8-0"></a></h3>
+<ul><li>Added <code>with_bottom</code> argument to <code><a href="../reference/coherent_smat.html">coherent_smat()</a></code> for inclusion of identity matrix entries for bottom level time series. Setting this to FALSE produces the A matrix (aggregated series only).</li>
+<li>Added <code>"bottom"</code> attribute for <code><a href="../reference/coherent_smat.html">coherent_smat()</a></code> for safely identifying the index positions of bottom level series via graph coherency structures.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="breaking-changes-0-8-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-8-0"></a></h3>
+<ul><li>The <code>mdl_df</code> class for mable data frames will be renamed to <code>mbl_df</code> (a mable data frame). This is to avoid a naming inconsistency with the <code>mdl_ts</code> and <code>mdl_lst</code> (for local and global models respectively), and free the class name for an eventual <code>mdl_df</code> multi-model class. The <code>mbl_df</code> class has been added, and <code>mdl_df</code> will be removed in the next minor release (v0.9.0).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.7.0" id="fabletools-070">fabletools 0.7.0<small>2026-04-30</small><a class="anchor" aria-label="anchor" href="#fabletools-070"></a></h2>
 <div class="section level3">
 <h3 id="new-features-0-7-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-7-0"></a></h3>
 <ul><li>Added <code><a href="../reference/coherent_smat.html">coherent_smat()</a></code> and <code><a href="../reference/coherent_cmat.html">coherent_cmat()</a></code> for obtaining the structural and zero-constraint matrices that encode the coherency structure of related time series (<a href="https://github.com/tidyverts/fabletools/issues/429" class="external-link">#429</a>).</li>

@@ -22,7 +22,7 @@ of series and \(n_b\) is the number of bottom-level series."><!-- mathjax --><sc
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fabletools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
       </span>
     </div>
 
@@ -59,7 +59,7 @@ of series and \(n_b\) is the number of bottom-level series."><!-- mathjax --><sc
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Structural (summing) matrix for coherent time series</h1>
-    <small class="dont-index">Source: <a href="https://github.com/tidyverts/fabletools/blob/v0.7.0/R/coherent.R" class="external-link"><code>R/coherent.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/tidyverts/fabletools/blob/main/R/coherent.R" class="external-link"><code>R/coherent.R</code></a></small>
     <div class="hidden name"><code>coherent_smat.Rd</code></div>
     </div>
 
@@ -70,7 +70,10 @@ of series and \(n_b\) is the number of bottom-level series.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">coherent_smat</span><span class="op">(</span><span class="va">data</span>, sparse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">coherent_smat</span><span class="op">(</span><span class="va">data</span>, sparse <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'tbl'</span></span>
+<span><span class="fu">coherent_smat</span><span class="op">(</span><span class="va">data</span>, sparse <span class="op">=</span> <span class="cn">FALSE</span>, with_bottom <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -84,6 +87,15 @@ of series and \(n_b\) is the number of bottom-level series.</p>
 <dt id="arg-sparse">sparse<a class="anchor" aria-label="anchor" href="#arg-sparse"></a></dt>
 <dd><p>If <code>TRUE</code>, a sparse matrix (class <code>"dgCMatrix"</code> from the
 <span class="pkg">Matrix</span> package) is returned. Defaults to <code>FALSE</code>.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Arguments passed to methods.</p></dd>
+
+
+<dt id="arg-with-bottom">with_bottom<a class="anchor" aria-label="anchor" href="#arg-with-bottom"></a></dt>
+<dd><p>If <code>TRUE</code>, the returned matrix includes the identity matrix
+for bottom-level series. Defaults to <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -132,6 +144,8 @@ aggregations with tsibble data sets.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]    0    1    0    0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,]    0    0    1    0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5,]    0    0    0    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"bottom")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2 3 4 5</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
