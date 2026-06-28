@@ -14,7 +14,7 @@ response_vars.fbl_ts <- function(x){
   x%@%"response"
 }
 #' @export
-response_vars.mbl_df <- function(x){
+response_vars.mdl_df <- function(x){
   x%@%"response"
 }
 #' @export
@@ -52,6 +52,6 @@ mable_vars <- function(x){
   UseMethod("mable_vars")
 }
 #' @export
-mable_vars.mbl_df <- function(x){
+mable_vars.mdl_df <- function(x){
   x%@%"model"
 }

@@ -35,10 +35,11 @@
 
 ## Breaking changes
 
-* The `mdl_df` class for mable data frames has been renamed to `mbl_df` (a 
+* The `mdl_df` class for mable data frames will be renamed to `mbl_df` (a 
   mable data frame). This is to avoid a naming inconsistency with the `mdl_ts`
   and `mdl_lst` (for local and global models respectively), and free the class 
-  name for an eventual `mdl_df` multi-model class.
+  name for an eventual `mdl_df` multi-model class. The `mbl_df` class has been
+  added, and `mdl_df` will be removed in the next minor release (v0.9.0).
 
 # fabletools 0.7.0
 

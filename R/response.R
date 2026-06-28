@@ -12,7 +12,7 @@ response <- function(object, ...){
 }
 
 #' @export
-response.mbl_df <- function(object, ...){
+response.mdl_df <- function(object, ...){
   object <- tidyr::pivot_longer(object, all_of(mable_vars(object)),
                              names_to = ".model", values_to = ".fit")
   kv <- c(key_vars(object), ".model")

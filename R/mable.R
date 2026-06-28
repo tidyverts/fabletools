@@ -22,7 +22,7 @@ mable <- function(..., key = NULL, model = NULL){
 #' 
 #' @export
 is_mable <- function(x){
-  inherits(x, "mbl_df")
+  inherits(x, "mdl_df")
 }
 
 #' Coerce a dataset to a mable
@@ -45,7 +45,7 @@ as_mable.data.frame <- function(x, key = NULL, model = NULL, ...){
   build_mable(x, key = !!enquo(key), model = model)
 }
 
-# TODO - allow empty mbl_df objects to be constructed with a given response variable
+# TODO - allow empty mdl_df objects to be constructed with a given response variable
 # which is used to check if the models use that response variable. The default
 # response variable would then simply be that of the first model (violating the
 # check if models have different response variables).
@@ -77,17 +77,17 @@ build_mable <- function (x, key = NULL, key_data = NULL, model = NULL) {
 
 build_mable_meta <- function(x, key_data, model, response){
   tibble::new_tibble(x, key = key_data, model = model, response = response,
-                     nrow = NROW(x), class = "mbl_df", subclass = "mbl_df") 
+                     nrow = NROW(x), class = c("mdl_df", "mbl_df"), subclass = "mdl_df") 
 }
 
 #' @export
-as_tibble.mbl_df <- function(x, ...){
+as_tibble.mdl_df <- function(x, ...){
   attr(x, "key") <- attr(x, "model") <- NULL
   class(x) <- c("tbl_df", "tbl", "data.frame")
   as_tibble(x, ...)
 }
 
-tbl_sum.mbl_df <- function(x){
+tbl_sum.mdl_df <- function(x){
   out <- c(`A mable` = paste(map_chr(dim(x), big_mark), collapse = " x "))
   
   if(!is_empty(key(x))){
@@ -118,7 +118,7 @@ restore_mable <- function(data, template){
 }
 
 #' @export
-gather.mbl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE,
+gather.mdl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE,
                           convert = FALSE, factor_key = FALSE){
   value <- enexpr(value)
   tbl <- gather(as_tibble(data), key = !!key, value = !!value, 
@@ -131,7 +131,7 @@ gather.mbl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE
 # Adapted from tsibble:::pivot_longer.tbl_ts
 #' @importFrom tidyr pivot_longer
 #' @export
-pivot_longer.mbl_df <- function (data, ..., names_to = "name") {
+pivot_longer.mdl_df <- function (data, ..., names_to = "name") {
   if (!has_length(names_to)) {
     abort("`pivot_longer(<mable>)` can't accept zero-length `names_to`.")
   }
@@ -145,7 +145,7 @@ pivot_longer.mbl_df <- function (data, ..., names_to = "name") {
 }
 
 #' @export
-select.mbl_df <- function (.data, ...){
+select.mdl_df <- function (.data, ...){
   res <- NextMethod()
   
   loc <- tidyselect::eval_select(expr(c(...)), .data)
@@ -165,21 +165,21 @@ select.mbl_df <- function (.data, ...){
   restore_mable(res, .data)
 }
 #' @export
-transmute.mbl_df <- function (.data, ...){
+transmute.mdl_df <- function (.data, ...){
   nm <- names(enquos(..., .named = TRUE))
   res <- mutate(.data, ...)
   select(res, all_of(nm))
 }
 
 #' @export
-`$<-.mbl_df` <- function (x, name, value) {
+`$<-.mdl_df` <- function (x, name, value) {
   tbl <- NextMethod()
   mdls <- names(which(map_lgl(tbl, inherits, "mdl_lst")))
   as_mable(tbl, key = key_vars(x), model = mdls)
 }
 
 #' @export
-`names<-.mbl_df` <- function(x, value) {
+`names<-.mdl_df` <- function(x, value) {
   nm <- colnames(x)
   key_pos <- match(key_vars(x), nm)
   kd <- key_data(x)
@@ -191,7 +191,7 @@ transmute.mbl_df <- function (.data, ...){
 }
 
 #' @export
-`[.mbl_df` <- function (x, i, j, drop = FALSE){
+`[.mdl_df` <- function (x, i, j, drop = FALSE){
   out <- as_tibble(NextMethod())
   cn <- names(out)
   new_kv <- intersect(old_kv <- key_vars(x), cn)
@@ -215,23 +215,23 @@ transmute.mbl_df <- function (.data, ...){
 }
 
 #' @export
-group_data.mbl_df <- function(.data){
+group_data.mdl_df <- function(.data){
   .data <- as_tibble(.data)
   NextMethod()
 }
 
 #' @export
-key_data.mbl_df <- function(.data){
+key_data.mdl_df <- function(.data){
   .data%@%"key"
 }
 
 #' @export
-key_vars.mbl_df <- function(x){
+key_vars.mdl_df <- function(x){
   keys <- key_data(x)
   names(keys)[-NCOL(keys)]
 }
 
 #' @export
-key.mbl_df <- function(x){
+key.mdl_df <- function(x){
   syms(key_vars(x))
 }

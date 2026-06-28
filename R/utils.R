@@ -315,7 +315,7 @@ dist_types <- function(dist) {
   map_chr(vec_data(dist), function(x) class(x)[1])
 }
 
-mbl_df_apply <- function(x, f, ...) {
+mdl_df_apply <- function(x, f, ...) {
   mbl_vars <- mable_vars(x)
   kv <- key_vars(x)
   x <- mutate(as_tibble(x), 

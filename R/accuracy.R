@@ -454,7 +454,7 @@ skill_score <- function(measure) {
 #' 
 #' @rdname accuracy
 #' @export
-accuracy.mbl_df <- function(object, measures = point_accuracy_measures, ...){
+accuracy.mdl_df <- function(object, measures = point_accuracy_measures, ...){
   if(is_tsibble(measures)){
     abort("The `measures` argument must contain a list of accuracy measures.
 Hint: A tsibble of future values is only required when computing accuracy of a fable. To compute forecast accuracy, you'll need to compute the forecasts first.")

@@ -92,7 +92,7 @@
 #' 
 #' @rdname forecast
 #' @export
-forecast.mbl_df <- function(object, new_data = NULL, h = NULL, 
+forecast.mdl_df <- function(object, new_data = NULL, h = NULL, 
                             point_forecast = list(.mean = mean), ...){
   mdls <- mable_vars(object)
   if(!is.null(h) && !is.null(new_data)){

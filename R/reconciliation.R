@@ -23,7 +23,7 @@ reconcile <- function(.data, ...){
 
 #' @rdname reconcile
 #' @export
-reconcile.mbl_df <- function(.data, ...){
+reconcile.mdl_df <- function(.data, ...){
   mutate(.data, ...)
 }
 

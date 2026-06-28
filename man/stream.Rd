@@ -2,12 +2,12 @@
 % Please edit documentation in R/stream.R
 \name{stream}
 \alias{stream}
-\alias{stream.mbl_df}
+\alias{stream.mdl_df}
 \title{Extend a fitted model with new data}
 \usage{
 stream(object, ...)
 
-\method{stream}{mbl_df}(object, new_data, ...)
+\method{stream}{mdl_df}(object, new_data, ...)
 }
 \arguments{
 \item{object}{An object (such as a model) which can be extended with additional data.}
