@@ -1,5 +1,10 @@
 # fabletools (development version)
 
+## Improvements
+
+* Increased the minimum required version of distributional to 0.6.0 for upstream
+  improvements to statistics on transformed distributions (#442).
+
 # fabletools 0.8.0
 
 ## New features
