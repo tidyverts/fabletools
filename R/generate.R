@@ -61,13 +61,11 @@ generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
                             bootstrap = FALSE, bootstrap_block_size = 1, ...){
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
     stats::runif(1)
-  if (is.null(seed))
-    RNGstate <- get(".Random.seed", envir = .GlobalEnv)
-  else {
-    R.seed <- get(".Random.seed", envir = .GlobalEnv)
+  RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+  if (!is.null(seed)) {
     set.seed(seed)
     RNGstate <- structure(seed, kind = as.list(RNGkind()))
-    on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
+    on.exit(assign(".Random.seed", RNGstate, envir = .GlobalEnv))
   }
   
   if(is.null(new_data)){
