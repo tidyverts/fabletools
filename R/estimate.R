@@ -20,6 +20,8 @@ estimate.tbl_ts <- function(.data, .model, ...){
   }
   .model$stage <- "estimate"
   .model$add_data(.data)
+  # Clear any leftover lag() memory from a prior estimate() reusing `.model`.
+  .model$recent_data <- NULL
   validate_formula(.model, .data)
   parsed <- parse_model(.model)
   
@@ -33,7 +35,9 @@ estimate.tbl_ts <- function(.data, .model, ...){
   fit <- eval_tidy(
     expr(.model$train(.data = .data, specials = parsed$specials, !!!.model$extra))
   )
+  # Snapshot lag()'s short term memory onto this fit, not just `.model`.
+  recent_data <- .model$recent_data
   .model$remove_data()
   .model$stage <- NULL
-  new_model(fit, .model, .data, parsed$response, parsed$transformation)
+  new_model(fit, .model, .data, parsed$response, parsed$transformation, recent_data)
 }

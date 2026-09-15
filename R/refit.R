@@ -41,18 +41,27 @@ refit.lst_mdl <- deprecate_lst_mdl(refit.mdl_lst)
 #' @rdname refit
 #' @export
 refit.mdl_ts <- function(object, new_data, ...){
+  # Reseed lag()'s short term memory from this fit's own snapshot.
+  recent_data <- attr(object, "recent_data")
+  object$model$recent_data <- recent_data
+
   # Compute specials with new_data
   object$model$stage <- "refit"
   object$model$add_data(new_data)
   specials <- parse_model_rhs(object$model)
   object$model$remove_data()
   object$model$stage <- NULL
-  
+
+  # new_data is the complete replacement history, so its tail is the new window.
+  if (NROW(recent_data) > 0) {
+    attr(object, "recent_data") <- utils::tail(new_data, NROW(recent_data))
+  }
+
   resp <- map2(seq_along(object$response), object$response, function(i, resp){
     expr(object$transformation[[!!i]](!!resp))
-  }) %>% 
+  }) %>%
     set_names(map_chr(object$response, as_string))
-  
+
   new_data <- transmute(new_data, !!!resp)
   object$fit <- refit(object[["fit"]], new_data, specials = specials, ...)
   object$data <- new_data

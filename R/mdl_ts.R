@@ -1,6 +1,8 @@
-new_model <- function(fit = NULL, model, data, response, transformation){
+new_model <- function(fit = NULL, model, data, response, transformation,
+                       recent_data = NULL){
   structure(list(fit = fit, model = model, data = data,
                  response = response, transformation = transformation),
+            recent_data = recent_data,
             class = "mdl_ts")
 }
 

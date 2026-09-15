@@ -71,7 +71,10 @@ generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
   if(is.null(new_data)){
     new_data <- make_future_data(x$data, h)
   }
-  
+
+  # Reseed lag()'s short term memory from this fit's own snapshot.
+  x$model$recent_data <- attr(x, "recent_data")
+
   if(is.null(new_data[[".rep"]])){
     kv <- c(".rep", key_vars(new_data))
     idx <- index_var(new_data)

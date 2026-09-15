@@ -1,5 +1,25 @@
 # fabletools (development version)
 
+## Bug fixes
+
+* Fixed `stream()` failing for every model with an "argument is of length
+  zero" error, caused by `stream.mdl_ts()` not setting the model definition's
+  `stage` before evaluating specials on the new data (unlike `forecast()`,
+  `generate()`, `interpolate()` and `refit()`, which all set a stage).
+* Fixed `lag()` (used in specials such as `xreg()`) returning `NA` for the
+  first observation(s) of a `stream()` call, by having it recognise the new
+  `"stream"` stage as a source of short-term memory (#446).
+* Fixed `lag()`-based regressors (and other specials relying on short-term
+  memory via `self$recent_data`) resolving incorrectly whenever a model
+  definition is reused for more than one call, including repeated
+  (chained) `stream()` calls, `forecast()` or `generate()` following a
+  `stream()`/`refit()`, and (most commonly) `model()`/`forecast()` across
+  multiple series or multiple training windows (e.g. from
+  `stretch_tsibble()`), since every series shares the same model definition
+  object (#318, #326). The short-term memory is now snapshotted onto each
+  fitted model individually, rather than only ever living on the shared,
+  mutable model definition.
+
 ## Improvements
 
 * Increased the minimum required version of distributional to 0.6.0 for upstream

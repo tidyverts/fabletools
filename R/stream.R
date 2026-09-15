@@ -33,20 +33,35 @@ stream.lst_mdl <- deprecate_lst_mdl(stream.mdl_lst)
 
 #' @export
 stream.mdl_ts <- function(object, new_data, ...){
+  # Reseed lag()'s short term memory from this fit's own snapshot.
+  recent_data <- attr(object, "recent_data")
+  object$model$recent_data <- recent_data
+
   # Compute specials with new_data
+  object$model$stage <- "stream"
   object$model$add_data(new_data)
   specials <- parse_model_rhs(object$model)
   object$model$remove_data()
-  
-  resp <- map2(object$response, object$transformation, 
+  object$model$stage <- NULL
+
+  # Slide the short term memory window forward for the next stream() call.
+  if (NROW(recent_data) > 0) {
+    attr(object, "recent_data") <- utils::tail(
+      bind_rows(recent_data, new_data),
+      NROW(recent_data)
+    )
+  }
+
+  resp <- map2(object$response, object$transformation,
        function(y, t){
          eval_tidy(expr(t(!!y)), new_data)
        }
   )
   new_data <- new_data[index_var(new_data)]
   new_data[measured_vars(object$data)] <- resp
-  
+
   object$fit <- stream(object[["fit"]], new_data, specials = specials, ...)
   object$data <- bind_rows(object$data, select(new_data, !!!syms(colnames(object$data))))
+
   object
 }
