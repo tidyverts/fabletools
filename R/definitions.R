@@ -12,7 +12,15 @@ model_definition <- R6::R6Class(NULL,
     },
     initialize = function(formula, ..., .env){
       self$formula <- enquo(formula)
-      
+
+      # Snapshot global values so they survive to future::multisession workers (#412)
+      if(identical(.env, global_env())){
+        used_vars <- all.vars(get_expr(self$formula))
+        used_vars <- used_vars[map_lgl(used_vars, exists, envir = .env, inherits = FALSE)]
+        .env <- new_environment(mget(used_vars, envir = .env), parent = parent.env(.env))
+        self$formula <- set_env(self$formula, .env)
+      }
+
       # self$env <- .env
       # Create specials environment with user's scoping
       specials_env <- new_environment(parent = .env)

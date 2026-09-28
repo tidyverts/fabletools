@@ -2,6 +2,8 @@
 
 ## Bug fixes
 
+* Fixed misleading "object not found" errors when estimating models with
+  `future::plan(multisession)` that reference global variables (#412).
 * Fixed `stream()` failing for every model with an "argument is of length
   zero" error, caused by `stream.mdl_ts()` not setting the model definition's
   `stage` before evaluating specials on the new data (unlike `forecast()`,

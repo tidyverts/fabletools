@@ -121,6 +121,26 @@ test_that("Model parsing scope", {
 })
 
 
+test_that("Model formulas from the global environment snapshot values (#412)", {
+  # Global values must be snapshotted, since .GlobalEnv isn't transported to future workers
+  assign("test_412_val", 1:72, envir = globalenv())
+  assign("specials", specials, envir = globalenv())
+  on.exit(rm(list = c("test_412_val", "specials"), envir = globalenv()))
+
+  mdl <- eval(
+    quote(specials(value ~ log5(test_412_val))),
+    envir = globalenv()
+  )
+
+  formula_env <- rlang::get_env(mdl$formula)
+  expect_false(identical(formula_env, globalenv()))
+  expect_equal(formula_env$test_412_val, 1:72)
+
+  fit <- model(us_deaths, mdl)
+  expect_equal(fit[[1]][[1]]$fit[[1]][[1]], log(1:72, 5))
+})
+
+
 test_that("Model response identification", {
   dt <- tsibble(
     idx = Sys.Date() - 1:10, GDP = rnorm(10), CPI = rnorm(10),
