@@ -14,10 +14,10 @@
 #'   model(lm = TSLM(log(Time) ~ trend())) %>% 
 #'   hypothesize()
 #' 
-#' @rdname hypothesize.mdl_df
+#' @rdname hypothesize.mbl_df
 #' @importFrom generics hypothesize
 #' @export
-hypothesize.mdl_df <- function(x, ...){
+hypothesize.mbl_df <- function(x, ...){
   mbl_vars <- mable_vars(x)
   x <- mutate(as_tibble(x), 
               dplyr::across(all_of(mbl_vars), function(x) lapply(x, hypothesize, ...)))
@@ -26,7 +26,7 @@ hypothesize.mdl_df <- function(x, ...){
 }
 
 #' @param tests a list of test functions to perform on the model
-#' @rdname hypothesize.mdl_df
+#' @rdname hypothesize.mbl_df
 #' @export
 hypothesize.mdl_ts <- function(x, tests = list(), ...){
   if(is_function(tests)){

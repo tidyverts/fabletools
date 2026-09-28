@@ -8,7 +8,7 @@
 #' 
 #' @importFrom stats residuals
 #' @export
-residuals.mdl_df <- function(object, ...){
+residuals.mbl_df <- function(object, ...){
   mbl_vars <- mable_vars(object)
   kv <- key_vars(object)
   object <- mutate(as_tibble(object), 
@@ -18,7 +18,7 @@ residuals.mdl_df <- function(object, ...){
 }
 
 #' @param type The type of residuals to compute. If `type="response"`, residuals on the back-transformed data will be computed.
-#' @rdname residuals.mdl_df
+#' @rdname residuals.mbl_df
 #' @export
 residuals.mdl_ts <- function(object, type = "innovation", ...){
   if(type == "response"){

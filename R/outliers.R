@@ -13,7 +13,7 @@ outliers <- function(object, ...){
 
 #' @rdname outliers
 #' @export
-outliers.mdl_df <- function(object, ...){
+outliers.mbl_df <- function(object, ...){
   mbl_vars <- mable_vars(object)
   kv <- key_vars(object)
   object <- mutate(as_tibble(object), 

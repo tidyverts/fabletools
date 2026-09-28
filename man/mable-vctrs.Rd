@@ -2,13 +2,13 @@
 % Please edit documentation in R/vctrs-mable.R
 \name{mable-vctrs}
 \alias{mable-vctrs}
-\alias{vec_ptype2.mdl_df}
-\alias{vec_cast.mdl_df}
+\alias{vec_ptype2.mbl_df}
+\alias{vec_cast.mbl_df}
 \title{Internal vctrs methods}
 \usage{
-\method{vec_ptype2}{mdl_df}(x, y, ...)
+\method{vec_ptype2}{mbl_df}(x, y, ...)
 
-\method{vec_cast}{mdl_df}(x, to, ...)
+\method{vec_cast}{mbl_df}(x, to, ...)
 }
 \description{
 These methods are the extensions that allow mable objects to

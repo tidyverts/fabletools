@@ -27,6 +27,18 @@
 * Increased the minimum required version of distributional to 0.6.0 for upstream
   improvements to statistics on transformed distributions (#442).
 
+## Breaking changes
+
+* All of the mable's S3 methods (`forecast()`, `generate()`, `accuracy()`,
+  `report()`, `augment()`, `glance()`, `tidy()`, and others) now dispatch on
+  `mbl_df` rather than `mdl_df`, completing the class rename announced in
+  0.8.0. `mdl_df` is kept as a trailing class on mable objects for this
+  release so old `inherits(x, "mdl_df")` checks in downstream code keep
+  working, but packages defining their own methods for mables (rather than
+  relying on `is_mable()`) need to dispatch on `mbl_df` to keep working once
+  `mdl_df` is dropped in the next minor release. `mdl_df` itself remains
+  reserved for an upcoming joint-model group class.
+
 # fabletools 0.8.0
 
 ## New features

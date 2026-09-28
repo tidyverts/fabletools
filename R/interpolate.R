@@ -20,7 +20,7 @@
 #' 
 #' @rdname interpolate
 #' @export
-interpolate.mdl_df <- function(object, new_data, ...){
+interpolate.mbl_df <- function(object, new_data, ...){
   if(length(mable_vars(object)) > 1){
 abort("Interpolation can only be done using one model. 
 Please use select() to choose the model to interpolate with.")

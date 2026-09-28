@@ -2,13 +2,13 @@
 % Please edit documentation in R/outliers.R
 \name{outliers}
 \alias{outliers}
-\alias{outliers.mdl_df}
+\alias{outliers.mbl_df}
 \alias{outliers.mdl_ts}
 \title{Identify outliers}
 \usage{
 outliers(object, ...)
 
-\method{outliers}{mdl_df}(object, ...)
+\method{outliers}{mbl_df}(object, ...)
 
 \method{outliers}{mdl_ts}(object, ...)
 }

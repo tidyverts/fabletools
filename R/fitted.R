@@ -11,7 +11,7 @@
 #' 
 #' @importFrom stats fitted
 #' @export
-fitted.mdl_df <- function(object, ...){
+fitted.mbl_df <- function(object, ...){
   mbl_vars <- mable_vars(object)
   kv <- key_vars(object)
   object <- mutate(as_tibble(object), 
@@ -20,7 +20,7 @@ fitted.mdl_df <- function(object, ...){
   unnest_tsbl(object, ".fitted", parent_key = c(kv, ".model"))
 }
 
-#' @rdname fitted.mdl_df
+#' @rdname fitted.mbl_df
 #' 
 #' @param h The number of steps ahead that these fitted values are computed from.
 #' 
