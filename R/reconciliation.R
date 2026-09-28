@@ -27,13 +27,40 @@ reconcile.mbl_df <- function(.data, ...){
   mutate(.data, ...)
 }
 
+#' @rdname min_trace
+#' @export
+reconcile_mint <- function(models, method = c("wls_var", "ols", "wls_struct", "mint_cov", "mint_shrink"),
+                           sparse = NULL){
+  min_trace(models, method = method, sparse = sparse)
+}
+
+#' @rdname bottom_up
+#' @export
+reconcile_bu <- function(models){
+  bottom_up(models)
+}
+
+#' @rdname top_down
+#' @export
+reconcile_td <- function(models, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
+  top_down(models, method = method)
+}
+
+#' @rdname middle_out
+#' @export
+reconcile_mo <- function(models, split = 1){
+  middle_out(models, split = split)
+}
+
 #' Minimum trace forecast reconciliation
-#' 
-#' Reconciles a hierarchy using the minimum trace combination method. The 
-#' response variable of the hierarchy must be aggregated using sums. The 
+#'
+#' Reconciles a hierarchy using the minimum trace combination method. The
+#' response variable of the hierarchy must be aggregated using sums. The
 #' forecasted time points must match for all series in the hierarchy (caution:
 #' this is not yet tested for beyond the series length).
-#' 
+#'
+#' `reconcile_mint()` is a short alias for `min_trace()`.
+#'
 #' @param models A column of models in a mable.
 #' @param method The reconciliation method to use.
 #' @param sparse If TRUE, the reconciliation will be computed using sparse 
@@ -169,13 +196,15 @@ forecast.lst_mint_mdl <- function(object, key_data,
 #' 
 #' \lifecycle{experimental}
 #' 
-#' Reconciles a hierarchy using the bottom up reconciliation method. The 
-#' response variable of the hierarchy must be aggregated using sums. The 
+#' Reconciles a hierarchy using the bottom up reconciliation method. The
+#' response variable of the hierarchy must be aggregated using sums. The
 #' forecasted time points must match for all series in the hierarchy.
-#' 
+#'
+#' `reconcile_bu()` is a short alias for `bottom_up()`.
+#'
 #' @param models A column of models in a mable.
-#' 
-#' @seealso 
+#'
+#' @seealso
 #' [`reconcile()`], [`aggregate_key()`]
 #' @export
 bottom_up <- function(models){
@@ -221,16 +250,18 @@ forecast.lst_btmup_mdl <- function(object, key_data,
 #' 
 #' \lifecycle{experimental}
 #' 
-#' Reconciles a hierarchy using the top down reconciliation method. The 
-#' response variable of the hierarchy must be aggregated using sums. The 
+#' Reconciles a hierarchy using the top down reconciliation method. The
+#' response variable of the hierarchy must be aggregated using sums. The
 #' forecasted time points must match for all series in the hierarchy.
-#' 
+#'
+#' `reconcile_td()` is a short alias for `top_down()`.
+#'
 #' @param models A column of models in a mable.
 #' @param method The reconciliation method to use.
-#' 
-#' @seealso 
+#'
+#' @seealso
 #' [`reconcile()`], [`aggregate_key()`]
-#' 
+#'
 #' @export
 top_down <- function(models, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
   structure(models, class = union("lst_topdwn_mdl", class(models)),
@@ -377,10 +408,12 @@ propagate_forecast_proportions <- function(fc_mean, key_data, agg_order,
 #' 
 #' \lifecycle{experimental}
 #' 
-#' Reconciles a hierarchy using the middle out reconciliation method. The 
-#' response variable of the hierarchy must be aggregated using sums. The 
+#' Reconciles a hierarchy using the middle out reconciliation method. The
+#' response variable of the hierarchy must be aggregated using sums. The
 #' forecasted time points must match for all series in the hierarchy.
-#' 
+#'
+#' `reconcile_mo()` is a short alias for `middle_out()`.
+#'
 #' @param models A column of models in a mable.
 #' @param split The middle level of the hierarchy from which the bottom-up and
 #' top-down approaches are used above and below respectively.

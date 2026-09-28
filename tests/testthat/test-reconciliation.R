@@ -171,3 +171,22 @@ test_that("middle_out reconciles multi-level hierarchies", {
     dplyr::arrange(index)
   expect_equal(total$.mean, total_from_cat$.mean)
 })
+
+test_that("reconcile_*() aliases match their underlying functions", {
+  skip_if_not_installed("fable")
+
+  lung_deaths_agg <- lung_deaths_long %>%
+    aggregate_key(key, value = sum(value))
+  fit_agg <- lung_deaths_agg %>%
+    model(snaive = fable::SNAIVE(value))
+  snaive <- fit_agg$snaive
+
+  # Each alias is a thin wrapper, so it should produce an identical wrapped
+  # object (same classes/attributes) to the function it aliases.
+  expect_equal(reconcile_mint(snaive), min_trace(snaive))
+  expect_equal(reconcile_mint(snaive, method = "ols"), min_trace(snaive, method = "ols"))
+  expect_equal(reconcile_bu(snaive), bottom_up(snaive))
+  expect_equal(reconcile_td(snaive), top_down(snaive))
+  expect_equal(reconcile_mo(snaive), middle_out(snaive))
+  expect_equal(reconcile_mo(snaive, split = 2), middle_out(snaive, split = 2))
+})
