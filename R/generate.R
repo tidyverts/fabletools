@@ -31,13 +31,31 @@ generate.mbl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
     x <- bind_new_data(x, new_data)
   }
   kv <- c(key_vars(x), ".model")
-  x <- tidyr::pivot_longer(as_tibble(x), all_of(mdls),
+  x <- as_tibble(x)
+  
+  # Model groups (`mdl_df`) are simulated as a whole, keeping any joint
+  # behaviour they have, before the remaining models are simulated separately.
+  grps <- mdls[map_lgl(x[mdls], is_mdl_df)]
+  sims <- unpack_model_results(
+    map(x[grps], generate, new_data = x[["new_data"]],
+        h = h, times = times, seed = seed, ...)
+  )
+  mdls <- setdiff(mdls, grps)
+  if(!is_empty(grps)) {
+    # Allow the remaining models to be pivoted alongside the simulations
+    x[mdls] <- map(x[mdls], vec_data)
+  }
+  x <- vec_cbind(x[setdiff(names(x), grps)], tibble::new_tibble(sims, nrow = NROW(x)))
+  x <- tidyr::pivot_longer(x, all_of(c(mdls, names(sims))),
                            names_to = ".model", values_to = ".sim")
   
   # Evaluate simulations
   x[[".sim"]] <- map2(x[[".sim"]], 
                  x[["new_data"]] %||% rep(list(NULL), length.out = NROW(x)),
-                 generate, h = h, times = times, seed = seed, ...)
+                 function(mdl, new_data) {
+                   if(!is_model(mdl)) return(mdl)
+                   generate(mdl, new_data, h = h, times = times, seed = seed, ...)
+                 })
   x[["new_data"]] <- NULL
   unnest_tsbl(x, ".sim", parent_key = kv)
 }

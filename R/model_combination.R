@@ -211,7 +211,7 @@ Ops.mdl_ts <- function(e1, e2){
 
 #' @export
 Ops.mdl_lst <- function(e1, e2){
-  list_of_models(map2(e1, e2, .Generic))
+  new_mdl_lst(map2(e1, e2, .Generic))
 }
 #' @export
 Ops.lst_mdl <- deprecate_lst_mdl(Ops.mdl_lst)
@@ -386,7 +386,7 @@ Summary.mdl_lst <- function(..., na.rm = FALSE) {
     sum = {
       mdls <- list(...)
       k    <- length(mdls[[1]])
-      list_of_models(map(seq_len(k), function(i) {
+      new_mdl_lst(map(seq_len(k), function(i) {
         series_models <- map(mdls, `[[`, i)
         new_model_combination(series_models, rep(1, length(series_models)))
       }))
@@ -401,7 +401,7 @@ mean.mdl_lst <- function(x, ...) {
   mdls <- c(list(x), list(...))
   n    <- length(mdls)
   k    <- length(mdls[[1]])
-  list_of_models(map(seq_len(k), function(i) {
+  new_mdl_lst(map(seq_len(k), function(i) {
     series_models <- map(mdls, `[[`, i)
     new_model_combination(series_models, rep(1 / n, n))
   }))
@@ -425,7 +425,7 @@ weighted.mean.mdl_lst <- function(x, w, ...) {
   }
   w <- w / sum(w)
   k <- length(mdls[[1]])
-  list_of_models(map(seq_len(k), function(i) {
+  new_mdl_lst(map(seq_len(k), function(i) {
     series_models <- map(mdls, `[[`, i)
     new_model_combination(series_models, w)
   }))

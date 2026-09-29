@@ -52,7 +52,7 @@ as_mable.data.frame <- function(x, key = NULL, model = NULL, ...){
 build_mable <- function (x, key = NULL, key_data = NULL, model = NULL) {
   model <- names(tidyselect::eval_select(all_of(model), data = x))
   
-  if(length(resp_var <- unique(map(x[model], function(mdl) response_vars(mdl[[1]])))) > 1){
+  if(length(resp_var <- unique(map(x[model], model_col_response))) > 1){
     abort("A mable can only contain models with the same response variable(s).")
   }
   if(length(resp_var) == 0) {
@@ -126,7 +126,7 @@ gather.mbl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE
   value <- enexpr(value)
   tbl <- gather(as_tibble(data), key = !!key, value = !!value, 
                 ..., na.rm = na.rm, convert = convert, factor_key = factor_key)
-  mdls <- names(which(map_lgl(tbl, inherits, "mdl_lst")))
+  mdls <- names(which(map_lgl(tbl, inherits, c("mdl_lst", "mdl_df"))))
   kv <- c(key_vars(data), key)
   build_mable(tbl, key = !!kv, model = mdls)
 }
@@ -144,7 +144,7 @@ pivot_longer.mbl_df <- function (data, ..., names_to = "name") {
   new_key <- c(key_vars(data), names_to)
   tbl <- tidyr::pivot_longer(as_tibble(data), ..., names_to = names_to)
   build_mable(tbl, key = !!new_key,
-              model = which(vapply(tbl, inherits, logical(1L), "mdl_lst")))
+              model = which(vapply(tbl, inherits, logical(1L), c("mdl_lst", "mdl_df"))))
 }
 
 #' @export
@@ -177,7 +177,7 @@ transmute.mbl_df <- function (.data, ...){
 #' @export
 `$<-.mbl_df` <- function (x, name, value) {
   tbl <- NextMethod()
-  mdls <- names(which(map_lgl(tbl, inherits, "mdl_lst")))
+  mdls <- names(which(map_lgl(tbl, inherits, c("mdl_lst", "mdl_df"))))
   as_mable(tbl, key = key_vars(x), model = mdls)
 }
 

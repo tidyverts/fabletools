@@ -1,4 +1,4 @@
-list_of_models <- function(x = list()){
+new_mdl_lst <- function(x = list()){
   vctrs::new_vctr(x, class = c("mdl_lst", "lst_mdl"))
 }
 
@@ -20,7 +20,7 @@ vec_cast.character.lst_mdl <- deprecate_lst_mdl(vec_cast.character.mdl_lst)
 
 #' @export
 vec_ptype2.mdl_lst.mdl_lst <- function(x, y, ...){
-  list_of_models()
+  new_mdl_lst()
 }
 
 #' @export

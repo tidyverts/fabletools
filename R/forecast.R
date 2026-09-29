@@ -111,12 +111,14 @@ forecast.mbl_df <- function(object, new_data = NULL, h = NULL,
   }
   
   # Evaluate forecasts
-  object <- dplyr::mutate_at(as_tibble(object), vars(!!!mdls),
-                             forecast, new_data = object[["new_data"]],
-                             h = h, point_forecast = point_forecast, ...,
-                             key_data = key_data(object))
+  tbl <- as_tibble(object)
+  fc <- map(tbl[mdls], forecast, new_data = tbl[["new_data"]],
+            h = h, point_forecast = point_forecast, ...,
+            key_data = key_data(object))
+  fc <- unpack_model_results(fc)
+  object <- vec_cbind(tbl[key_vars(object)], tibble::new_tibble(fc, nrow = NROW(tbl)))
   
-  object <- tidyr::pivot_longer(object, !!mdls, names_to = ".model", values_to = ".fc") 
+  object <- tidyr::pivot_longer(object, all_of(names(fc)), names_to = ".model", values_to = ".fc") 
   
   # Combine and re-construct fable
   fbl_attr <- attributes(object$.fc[[1]])

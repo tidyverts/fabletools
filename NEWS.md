@@ -1,5 +1,16 @@
 # fabletools (development version)
 
+## New features
+
+* Model columns from the same mable can now be grouped with `cbind()` (e.g.
+  `mutate(fit, joint = cbind(ets, arima))`) into a model group (the new
+  `mdl_df` class): a data frame of model columns for the same series, which
+  can be stacked with `rbind()`. Model groups are printed compactly within a
+  mable (`<ets+arima>`), and `forecast()` and `generate()` label their models
+  as `joint$ets` and `joint$arima`. This is scaffolding for modifiers applied
+  jointly across a series' models (e.g. joint bootstrapping). Other mable
+  verbs don't support model groups yet.
+
 ## Bug fixes
 
 * Fixed misleading "object not found" errors when estimating models with
