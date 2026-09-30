@@ -78,7 +78,37 @@ test_that("mable dplyr verbs", {
   # expect_error(select(mbl_complex, -key),
   #              "not a valid mable")
   
-  expect_output(mbl_complex %>% filter(key == "mdeaths") %>% print, "mable") %>% 
-    .[["key"]] %>% 
+  expect_output(mbl_complex %>% filter(key == "mdeaths") %>% print, "mable") %>%
+    .[["key"]] %>%
     expect_identical("mdeaths")
+})
+
+test_that("Assigning model columns registers them as models (#402, #323)", {
+  skip_if_not_installed("fable")
+  m1 <- model(us_deaths_tr, a = fable::SNAIVE(value))
+  m2 <- model(us_deaths_tr, b = fable::NAIVE(value))
+
+  # [[<- with a character name
+  m_dbl <- m1
+  m_dbl[["b"]] <- m2[["b"]]
+  expect_s3_class(m_dbl, "mbl_df")
+  expect_identical(mable_vars(m_dbl), c("a", "b"))
+  expect_identical(key_vars(m_dbl), key_vars(m1))
+  expect_identical(unique(forecast(m_dbl, h = 1)[[".model"]]), c("a", "b"))
+
+  # $<- still works
+  m_dol <- m1
+  m_dol$b <- m2$b
+  expect_s3_class(m_dol, "mbl_df")
+  expect_identical(mable_vars(m_dol), c("a", "b"))
+  expect_identical(m_dol, m_dbl)
+
+  # Replacing an existing model column keeps it registered
+  m_rep <- m1
+  m_rep[["a"]] <- m2[["b"]]
+  expect_identical(mable_vars(m_rep), "a")
+
+  # Non-model columns are not registered as models
+  m_dbl[["c"]] <- 1
+  expect_identical(mable_vars(m_dbl), c("a", "b"))
 })
