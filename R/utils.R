@@ -247,13 +247,21 @@ flatten_with_names <- function (x, sep = "_") {
   flatten(unname(map(x, flatten_with_names, sep = sep)))
 }
 
+# Use future-based parallelism only when the future package is loaded and a
+# non-sequential plan is active, regardless of whether future is attached
+# (#363). This keeps the default sequential code path (and RNG) unchanged when
+# future is merely attached under a sequential plan (#420).
+use_future <- function() {
+  isNamespaceLoaded("future") && !inherits(future::plan(), "sequential")
+}
+
 mapply_maybe_parallel <- function (.f, ..., MoreArgs = list(), SIMPLIFY = FALSE) {
   p <- progressr::progressor(length(..1))
   .fp <- function(...) {
     p()
     .f(...)
   }
-  if(is_attached("package:future")){
+  if(use_future()){
     check_installed("future.apply")
     future.apply::future_mapply(
       FUN = .fp,
