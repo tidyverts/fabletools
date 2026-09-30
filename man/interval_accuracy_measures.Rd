@@ -4,6 +4,7 @@
 \alias{winkler_score}
 \alias{pinball_loss}
 \alias{scaled_pinball_loss}
+\alias{coverage}
 \alias{interval_accuracy_measures}
 \title{Interval estimate accuracy measures}
 \usage{
@@ -23,6 +24,8 @@ scaled_pinball_loss(
   D = .period > 1,
   ...
 )
+
+coverage(.dist, .actual, level = 95, na.rm = TRUE, ...)
 
 interval_accuracy_measures
 }
@@ -51,5 +54,8 @@ from a model, or forecasted values from the forecast.}
 \item{D}{Should the response model include a seasonal difference?}
 }
 \description{
-Interval estimate accuracy measures
+\code{coverage()} computes the proportion of actual values that fall within the
+central \code{level}\% interval of the distribution (bounds inclusive). It is not
+included in \code{interval_accuracy_measures} by default, but can be added via
+\code{measures = list(coverage = coverage)} in \code{\link[=accuracy]{accuracy()}}.
 }
