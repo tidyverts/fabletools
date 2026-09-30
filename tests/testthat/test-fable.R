@@ -107,3 +107,39 @@ test_that("rename() and relocate() keep the fable class (#348, #403)", {
   expect_s3_class(res, "grouped_fbl")
   expect_identical(names(res)[1], ".mean")
 })
+
+test_that("forecast() errors informatively when `.model` is already used (#275)", {
+  skip_if_not_installed("fable")
+
+  dt <- tsibble::tsibble(
+    .model = rep(c("a", "b"), each = 10), t = rep(1:10, 2), y = 1:20,
+    key = .model, index = t
+  )
+  expect_error(
+    forecast(model(dt, naive = fable::NAIVE(y)), h = 2),
+    "key variable named `.model`"
+  )
+  # Renaming the key avoids the clash
+  expect_s3_class(
+    forecast(model(dplyr::rename(dt, series = .model), naive = fable::NAIVE(y)), h = 2),
+    "fbl_ts"
+  )
+
+  # A non-key `.model` column in new_data also clashes
+  dt1 <- tsibble::tsibble(t = 1:10, y = 1:10, index = t)
+  expect_error(
+    forecast(
+      model(dt1, naive = fable::NAIVE(y)),
+      new_data = dplyr::mutate(tsibble::new_data(dt1, 2), .model = "x")
+    ),
+    "`new_data` has a column named `.model`"
+  )
+
+  # A mable fitted to components() output, which has a `.model` key
+  skip_if_not_installed("feasts")
+  cmp <- components(model(tsibble::as_tsibble(USAccDeaths), feasts::STL(value)))
+  expect_error(
+    forecast(model(cmp, fable::NAIVE(season_adjust)), h = 2),
+    "key variable named `.model`"
+  )
+})

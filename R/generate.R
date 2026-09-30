@@ -27,6 +27,8 @@
 #' @export
 generate.mbl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   mdls <- mable_vars(x)
+  # A `.rep` column is allowed in `new_data`, where it identifies replications.
+  check_reserved_names(x, new_data, key = c(".model", ".rep"), data = ".model")
   if(!is.null(new_data)){
     x <- bind_new_data(x, new_data)
   }

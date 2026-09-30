@@ -331,3 +331,52 @@ mbl_df_apply <- function(x, f, ...) {
   x <- pivot_longer(x, all_of(mbl_vars), names_to = ".model", values_to = "__results__")
   unnest_tsbl(x, "__results__", parent_key = c(kv, ".model"))
 }
+
+# Check that the data underlying a mable does not already contain columns whose
+# names are reserved for identifiers added to the output (such as `.model` from
+# forecast() or `.rep` from generate()). Without this check the name clash
+# produces confusing errors from tidyr/tsibble internals (#275).
+#
+# `key` are reserved names that must not be keys of the mable (the keys of the
+# data used to estimate the models). `data` are reserved names that must not be
+# columns of `new_data`.
+check_reserved_names <- function(object, new_data = NULL, key = ".model",
+                                 data = key, call = caller_env()) {
+  clash_key <- intersect(key, key_vars(object))
+  nd_names <- if (is.data.frame(new_data)) {
+    names(new_data)
+  } else if (is.list(new_data)) {
+    # Multiple scenarios
+    unique(unlist(lapply(new_data, names)))
+  }
+  clash_data <- setdiff(intersect(data, nd_names), clash_key)
+  clash <- c(clash_key, clash_data)
+  if (length(clash) == 0) return(invisible())
+
+  fmt <- function(x) paste0("`", x, "`", collapse = ", ")
+  plural <- function(x, one, many) if (length(x) == 1) one else many
+  abort(
+    c(
+      sprintf("Can't add the %s %s to the output, as the data already contains %s with %s name.",
+              fmt(clash), plural(clash, "column", "columns"),
+              plural(clash, "a column", "columns"), plural(clash, "this", "these")),
+      x = if (length(clash_key)) sprintf(
+        "The data used to estimate the models has %s %s.",
+        plural(clash_key, "a key variable named", "key variables named"), fmt(clash_key)
+      ),
+      x = if (length(clash_data)) sprintf(
+        "The `new_data` has %s %s.",
+        plural(clash_data, "a column named", "columns named"), fmt(clash_data)
+      ),
+      i = if (length(clash_key)) sprintf(
+        "Rename or remove the %s %s before estimating the models, e.g. with `dplyr::rename()` or `dplyr::select()`.",
+        fmt(clash_key), plural(clash_key, "column", "columns")
+      ),
+      i = if (length(clash_data)) sprintf(
+        "Rename or remove the %s %s from `new_data`, e.g. with `dplyr::rename()` or `dplyr::select()`.",
+        fmt(clash_data), plural(clash_data, "column", "columns")
+      )
+    ),
+    call = call
+  )
+}

@@ -95,6 +95,7 @@ forecast.mbl_df <- function(object, new_data = NULL, h = NULL,
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
     h <- NULL
   }
+  check_reserved_names(object, new_data, key = ".model")
   if(!is.null(new_data)){
     object <- bind_new_data(object, new_data)
   }

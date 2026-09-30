@@ -46,3 +46,30 @@ test_that("generate(seed = ) restores the global RNG state on exit", {
   suppressWarnings(invisible(mbl %>% generate(seed = 123)))
   expect_identical(before, .GlobalEnv$.Random.seed)
 })
+
+test_that("generate() errors informatively when `.model` or `.rep` is already used (#275)", {
+  skip_if_not_installed("fable")
+
+  dt <- tsibble::tsibble(
+    .model = rep(c("a", "b"), each = 10), t = rep(1:10, 2), y = 1:20,
+    key = .model, index = t
+  )
+  expect_error(
+    generate(model(dt, naive = fable::NAIVE(y)), h = 2),
+    "key variable named `.model`"
+  )
+
+  # Modelling simulated paths gives a `.rep` key
+  dt1 <- tsibble::tsibble(t = 1:10, y = 1:10, index = t)
+  sim <- generate(model(dt1, naive = fable::NAIVE(y)), h = 5, times = 2)
+  sim <- dplyr::select(sim, -.model)
+  mbl_rep <- model(sim, naive = fable::NAIVE(.sim))
+  expect_error(generate(mbl_rep, h = 2), "key variable named `.rep`")
+  # forecast() does not add `.rep`, so is unaffected
+  expect_s3_class(forecast(mbl_rep, h = 2), "fbl_ts")
+
+  # A `.rep` column in new_data is still allowed to specify the replications
+  nd <- dplyr::mutate(tsibble::new_data(dt1, 2), .rep = "1")
+  gen <- generate(model(dt1, naive = fable::NAIVE(y)), new_data = nd)
+  expect_equal(NROW(gen), 2)
+})
