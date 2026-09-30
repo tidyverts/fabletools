@@ -30,3 +30,80 @@ test_that("fable dplyr verbs", {
     as.list(bind_rows(fbl_multi[1:12,], fbl_multi[13:24,]))
   )
 })
+
+test_that("select() and transmute() keep the distribution (#324)", {
+  skip_if_not_installed("fable")
+
+  expect_message(
+    res <- select(fbl_complex, -value),
+    "Selecting distribution: `value`"
+  )
+  expect_s3_class(res, "fbl_ts")
+  expect_true("value" %in% names(res))
+  expect_identical(distribution_var(res), "value")
+  expect_identical(res[["value"]], fbl_complex[["value"]])
+
+  expect_message(
+    res <- select(group_by(fbl_complex, key), .mean),
+    "Selecting distribution"
+  )
+  expect_s3_class(res, "fbl_ts")
+  expect_true("value" %in% names(res))
+
+  expect_message(
+    res <- transmute(fbl_complex, m = .mean * 2),
+    "Selecting distribution"
+  )
+  expect_s3_class(res, "fbl_ts")
+  expect_true(all(c("m", "value") %in% names(res)))
+
+  # Renaming the distribution in select()
+  res <- select(fbl_complex, dist = value)
+  expect_s3_class(res, "fbl_ts")
+  expect_identical(distribution_var(res), "dist")
+  expect_identical(response_vars(res), "value")
+})
+
+test_that("rename() and relocate() keep the fable class (#348, #403)", {
+  skip_if_not_installed("fable")
+
+  res <- relocate(fbl_complex, .mean)
+  expect_s3_class(res, "fbl_ts")
+  expect_identical(names(res)[1], ".mean")
+  expect_identical(distribution_var(res), "value")
+
+  res <- relocate(fbl_complex, value, .after = .mean)
+  expect_s3_class(res, "fbl_ts")
+  expect_identical(tail(names(res), 1), "value")
+
+  res <- relocate(fbl_complex, dist = value)
+  expect_s3_class(res, "fbl_ts")
+  expect_identical(names(res)[1], "dist")
+  expect_identical(distribution_var(res), "dist")
+
+  res <- rename(fbl_complex, point = .mean)
+  expect_s3_class(res, "fbl_ts")
+  expect_true("point" %in% names(res))
+  expect_identical(distribution_var(res), "value")
+
+  res <- rename(fbl_complex, dist = value)
+  expect_s3_class(res, "fbl_ts")
+  expect_identical(distribution_var(res), "dist")
+  expect_identical(response_vars(res), "value")
+  expect_s3_class(res[["dist"]], "distribution")
+
+  # Renaming keys and index is still handled by tsibble
+  res <- rename(fbl_complex, series = key, time = index)
+  expect_s3_class(res, "fbl_ts")
+  expect_identical(tsibble::index_var(res), "time")
+  expect_true("series" %in% tsibble::key_vars(res))
+
+  # Grouped fables
+  grp <- group_by(fbl_complex, key)
+  res <- rename(grp, dist = value)
+  expect_s3_class(res, "grouped_fbl")
+  expect_identical(distribution_var(res), "dist")
+  res <- relocate(grp, .mean)
+  expect_s3_class(res, "grouped_fbl")
+  expect_identical(names(res)[1], ".mean")
+})

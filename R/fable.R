@@ -199,24 +199,58 @@ hilo.fbl_ts <- function(x, level = c(80, 95), ...){
     mutate(!!!hilo_exprs)
 }
 
-restore_fable <- function(data, template){
-  data_cols <- names(data)
-  
-  # Variables to keep
-  fbl_vars <- setdiff(distribution_var(template), data_cols)
-  res <- bind_cols(data, template[fbl_vars])
-  
-  build_fable(data, response = response_vars(template), distribution = distribution_var(template))
+restore_fable <- function(data, template, dist_var = distribution_var(template)){
+  # The distribution is required for a fable, so re-add it if it was dropped
+  # (like tsibble does for the index and key variables).
+  if(!(dist_var %in% names(data))) {
+    dist_var <- distribution_var(template)
+    inform(sprintf("Selecting distribution: `%s`", dist_var))
+    data[[dist_var]] <- template[[dist_var]]
+  }
+
+  build_fable(data, response = response_vars(template), distribution = dist_var)
+}
+
+# Find the new name of the distribution variable after renaming columns.
+# `loc` is a named integer vector of column positions from tidyselect.
+renamed_distribution_var <- function(.data, loc) {
+  dist_var <- distribution_var(.data)
+  i <- match(match(dist_var, names(.data)), loc)
+  if(is.na(i)) dist_var else names(loc)[i]
 }
 
 #' @export
 select.fbl_ts <- function (.data, ...){
+  loc <- tidyselect::eval_select(expr(c(...)), .data)
   res <- select(as_tsibble(.data), ...)
-  restore_fable(res, .data)
+  restore_fable(res, .data, renamed_distribution_var(.data, loc))
 }
 
 #' @export
 select.grouped_fbl <- select.fbl_ts
+
+#' @export
+rename.fbl_ts <- function (.data, ...){
+  loc <- tidyselect::eval_rename(expr(c(...)), .data)
+  res <- rename(as_tsibble(.data), ...)
+  build_fable(res, response = response_vars(.data),
+              distribution = renamed_distribution_var(.data, loc))
+}
+
+#' @export
+rename.grouped_fbl <- rename.fbl_ts
+
+#' @importFrom dplyr relocate
+#' @export
+relocate.fbl_ts <- function (.data, ..., .before = NULL, .after = NULL){
+  loc <- tidyselect::eval_select(expr(c(...)), .data)
+  res <- relocate(as_tsibble(.data), ..., .before = {{ .before }}, .after = {{ .after }})
+  build_fable(res, response = response_vars(.data),
+              distribution = renamed_distribution_var(.data, loc))
+}
+
+#' @export
+relocate.grouped_fbl <- relocate.fbl_ts
 
 #' @export
 transmute.fbl_ts <- function (.data, ...) {
