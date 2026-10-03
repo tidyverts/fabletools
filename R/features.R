@@ -115,6 +115,18 @@ features_impl <- function(.tbl, .var, features, ...){
 #' tourism %>% 
 #'   features(Trips, list(~ quantile(., probs=seq(0,1,by=0.2))))
 #'
+#' @examplesIf requireNamespace("feasts", quietly = TRUE)
+#' # Arguments can be passed to feature functions in two ways.
+#' # Using `...` of `features()` passes the argument to every feature which
+#' # accepts it. For example, `.period` sets the seasonal period used by
+#' # `feat_stl()`, and can be specified with text like "1 year".
+#' tourism %>%
+#'   features(Trips, feat_stl, .period = "1 year")
+#'
+#' # Alternatively, use a lambda function to pass arguments to a specific
+#' # feature function.
+#' tourism %>%
+#'   features(Trips, ~ feat_stl(., .period = 4))
 #'
 #' @export
 features <- function(.tbl, .var, features, ...){
