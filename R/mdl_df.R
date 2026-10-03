@@ -3,7 +3,7 @@
 # from the same mable. Unlike a mable (`mbl_df`) it has no key of its own; row
 # identity is positional, inherited from the mable it came from.
 #
-# While mables still carry "mdl_df" as a trailing class (dropped in v0.9.0),
+# While mables still carry "mdl_df" as a trailing class (dropped in v1.1.0),
 # any `.mdl_df` method without a `.mbl_df` counterpart would also catch
 # mables, so those methods defer to `NextMethod()` for mables.
 new_mdl_df <- function(x = list()){

@@ -81,7 +81,7 @@ generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
                             bootstrap = FALSE, bootstrap_block_size = 1, ...){
   if(isTRUE(bootstrap)) {
     lifecycle::deprecate_warn(
-      "0.9.0", "generate(bootstrap = )", "bootstrap_iid()",
+      "1.0.0", "generate(bootstrap = )", "bootstrap_iid()",
       details = "Wrap the model with `bootstrap_iid()` or `bootstrap_block()` (via `mutate()`) instead of passing `bootstrap = TRUE` to `generate()`."
     )
     x <- if(bootstrap_block_size > 1) {
@@ -145,7 +145,7 @@ generate_mdl_ts_setup <- function(x, new_data, h, times, seed) {
   RNGstate <- NULL
   if (!is.null(seed)) {
     lifecycle::deprecate_warn(
-      "0.9.0", "generate(seed = )",
+      "1.0.0", "generate(seed = )",
       details = "Call `set.seed()` before `generate()` instead of passing `seed=`."
     )
     if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))

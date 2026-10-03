@@ -78,7 +78,7 @@ build_mable <- function (x, key = NULL, key_data = NULL, model = NULL) {
 build_mable_meta <- function(x, key_data, model, response){
   # "mdl_df" is kept as a trailing class for one more release cycle so old
   # `inherits(x, "mdl_df")` checks in downstream code keep working; it will
-  # be dropped in v0.9.0 per the NEWS.md deprecation notice.
+  # be dropped in v1.1.0 per the NEWS.md deprecation notice.
   tibble::new_tibble(x, key = key_data, model = model, response = response,
                      nrow = NROW(x), class = c("mbl_df", "mdl_df"), subclass = "mbl_df")
 }

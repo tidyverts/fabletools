@@ -145,7 +145,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
                             point_forecast = list(.mean = mean), ...){
   if(isTRUE(simulate) || isTRUE(bootstrap)) {
     lifecycle::deprecate_warn(
-      "0.9.0",
+      "1.0.0",
       if(bootstrap) "forecast(bootstrap = )" else "forecast(simulate = )",
       if(bootstrap) "bootstrap_iid()" else "simulate_iid()",
       details = "Wrap the model with `bootstrap_iid()`/`bootstrap_block()`/`simulate_iid()` (via `mutate()`) instead of passing `simulate=`/`bootstrap=` to `forecast()`."
