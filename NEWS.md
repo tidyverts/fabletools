@@ -37,9 +37,20 @@
   into the same `<family>_<variant>` naming used by `bootstrap_*()`/
   `simulate_*()`. The original names remain the canonical, documented
   functions.
+* Added `coverage()` interval accuracy measure for the proportion of actual
+  values within the prediction interval (#368).
 
 ## Bug fixes
 
+* Fixed `select()`, `transmute()`, `rename()` and `relocate()` dropping the
+  fable class or distribution column (#324, #348, #403).
+* Fixed `[[<-` not registering model columns in a mable (#402, #323).
+* Fixed `min_trace()` positive definite check not being scale invariant (#358).
+* Improved error for singular covariance matrices in `min_trace()` (#309).
+* Fixed parallel estimation not being used when `future::plan()` is set
+  without attaching future (#363, #420).
+* Improved error for name clashes with existing `.model` or `.rep` columns in
+  `forecast()` and `generate()` (#275).
 * Fixed `generate()`'s `seed` argument not restoring R's global RNG state
   afterwards (it was overwriting its own snapshot of the prior state with the
   seed itself before restoring it, so the ambient RNG stream was left
@@ -70,6 +81,7 @@
 
 * Increased the minimum required version of distributional to 0.6.0 for upstream
   improvements to statistics on transformed distributions (#442).
+* Documentation improvements (#281, #371, #389, #410).
 
 ## Breaking changes
 
