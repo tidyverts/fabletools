@@ -29,6 +29,8 @@
   They can also be applied directly to a model specification inside
   `model()`, e.g. `model(ets = bootstrap_iid(ETS(value)))`, in which case
   each series is fitted and wrapped independently (not jointly).
+* Added `conformal_scp()` for producing forecast distributions using split
+  conformal prediction, e.g. `fit %>% mutate(ets = conformal_scp(ets))`.
 * Added `reconcile_mint()`, `reconcile_bu()`, `reconcile_td()`, and
   `reconcile_mo()` as short aliases for `min_trace()`, `bottom_up()`,
   `top_down()`, and `middle_out()` respectively, bringing reconciliation

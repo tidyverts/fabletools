@@ -62,7 +62,11 @@ refit.mdl_ts <- function(object, new_data, ...){
   }) %>%
     set_names(map_chr(object$response, as_string))
 
-  new_data <- transmute(new_data, !!!resp)
+  # Equivalent to transmute(new_data, !!!resp), but much cheaper for the
+  # repeated refits in rolling-origin loops (e.g. conformal_scp()).
+  resp <- lapply(resp, eval_tidy, data = new_data, env = environment())
+  new_data <- new_data[c(key_vars(new_data), index_var(new_data))]
+  new_data[names(resp)] <- resp
   object$fit <- refit(object[["fit"]], new_data, specials = specials, ...)
   object$data <- new_data
   object
