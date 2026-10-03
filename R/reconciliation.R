@@ -151,9 +151,11 @@ forecast.lst_mint_mdl <- function(object, key_data,
     abort("Unknown reconciliation method")
   }
   
-  # Check positive definiteness of weights
+  # Check positive definiteness of weights, using a tolerance relative to the
+  # largest eigenvalue so that the check does not depend on the scale of the
+  # data (#358).
   eigenvalues <- eigen(W, only.values = TRUE)[["values"]]
-  if (any(eigenvalues < 1e-8)) {
+  if (any(eigenvalues <= max(eigenvalues) * sqrt(.Machine$double.eps))) {
     abort("min_trace needs covariance matrix to be positive definite.", call. = FALSE)
   }
   

@@ -88,6 +88,37 @@ test_that("reconciliation", {
   )
 })
 
+test_that("min_trace positive definite check is scale invariant (#358)", {
+  skip_if_not_installed("fable")
+
+  lung_deaths_agg <- lung_deaths_long %>%
+    aggregate_key(key, value = sum(value))
+  # Residual variances of the rescaled data are well below the previous
+  # absolute tolerance of 1e-8.
+  lung_deaths_small <- lung_deaths_agg %>%
+    dplyr::mutate(value = value / 1e7)
+
+  fit <- lung_deaths_agg %>%
+    model(lm = fable::TSLM(value ~ trend() + season()))
+  fit_small <- lung_deaths_small %>%
+    model(lm = fable::TSLM(value ~ trend() + season()))
+
+  # mint_cov is excluded as TSLM residuals are exactly additive across the
+  # hierarchy, giving a truly singular sample covariance matrix.
+  for (method in c("wls_var", "mint_shrink")) {
+    fc <- fit %>%
+      reconcile(lm = min_trace(lm, method = !!method)) %>%
+      forecast(h = 6)
+    expect_no_error(
+      fc_small <- fit_small %>%
+        reconcile(lm = min_trace(lm, method = !!method)) %>%
+        forecast(h = 6)
+    )
+    # Rescaling the data should rescale the reconciled forecasts
+    expect_equal(fc_small$.mean, fc$.mean / 1e7)
+  }
+})
+
 test_that("top_down reconciles multi-level hierarchies", {
   skip_if_not_installed("fable")
 
