@@ -20,10 +20,11 @@ min_trace(
 \arguments{
 \item{models}{A column of models in a mable.}
 
-\item{method}{The reconciliation method to use.}
+\item{method}{The reconciliation method to use, which determines how the
+base forecast error covariance matrix is estimated.}
 
 \item{sparse}{If TRUE, the reconciliation will be computed using sparse
-matrix algebra? By default, sparse matrices will be used if the MatrixM
+matrix algebra? By default, sparse matrices will be used if the Matrix
 package is installed.}
 }
 \description{
@@ -33,11 +34,18 @@ forecasted time points must match for all series in the hierarchy (caution:
 this is not yet tested for beyond the series length).
 }
 \details{
+The \code{"wls_var"}, \code{"mint_cov"} and \code{"mint_shrink"} methods require a positive
+definite covariance matrix, which is not the case if two series in the
+hierarchy are identical (e.g. an aggregate with only one child). Use
+\code{"wls_struct"} or \code{"ols"} in these situations.
+
 \code{reconcile_mint()} is a short alias for \code{min_trace()}.
 }
 \references{
 Wickramasuriya, S. L., Athanasopoulos, G., & Hyndman, R. J. (2019). Optimal forecast reconciliation for hierarchical and grouped time series through trace minimization. Journal of the American Statistical Association, 1-45. https://doi.org/10.1080/01621459.2018.1448825
 }
 \seealso{
-\code{\link[=reconcile]{reconcile()}}, \code{\link[=aggregate_key]{aggregate_key()}}
+\code{\link[=reconcile_bu]{reconcile_bu()}}, \code{\link[=reconcile_td]{reconcile_td()}}, \code{\link[=reconcile_mo]{reconcile_mo()}}, \code{\link[=aggregate_key]{aggregate_key()}}
+
+\href{https://otexts.com/fpp3/reconciliation.html}{\emph{Forecasting: Principles and Practice} - Forecast reconciliation}
 }

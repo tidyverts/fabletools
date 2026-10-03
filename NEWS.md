@@ -73,6 +73,9 @@
 
 ## Breaking changes
 
+* `reconcile()` is soft-deprecated in favour of `mutate()` with the
+  `reconcile_*()` functions (e.g. `mutate(lm = reconcile_mint(lm))`).
+
 * All of the mable's S3 methods (`forecast()`, `generate()`, `accuracy()`,
   `report()`, `augment()`, `glance()`, `tidy()`, and others) now dispatch on
   `mbl_df` rather than `mdl_df`, completing the class rename announced in

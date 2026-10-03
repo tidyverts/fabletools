@@ -49,7 +49,7 @@ the same historical time point is drawn for every series at a given
 relationship between series' residuals carries over into the simulated
 innovations, rather than resampling each series as if it were independent
 of the others. This matters most for hierarchies (see \code{\link[=aggregate_key]{aggregate_key()}}/
-\code{\link[=reconcile]{reconcile()}}): jointly bootstrapping respects the observed correlation
+\code{\link[=reconcile_mint]{reconcile_mint()}}): jointly bootstrapping respects the observed correlation
 between a hierarchy's nodes, instead of treating every node as unrelated.
 If the series don't all share the same historical time domain, sampling is
 restricted to their overlapping period and a warning is raised.

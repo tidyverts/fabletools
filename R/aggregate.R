@@ -16,7 +16,8 @@
 #' @inheritParams dplyr::summarise
 #' 
 #' @seealso 
-#' [`reconcile()`], [`is_aggregated()`]
+#' [`reconcile_bu()`], [`reconcile_td()`], [`reconcile_mo()`],
+#' [`reconcile_mint()`], [`is_aggregated()`]
 #' 
 #' @examples 
 #' library(tsibble)

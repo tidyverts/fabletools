@@ -23,7 +23,7 @@ test_that("reconciliation", {
     model(snaive = fable::SNAIVE(value))
   
   fc_agg <- fit_agg %>% forecast()
-  fc_agg_reconciled <- fit_agg %>% reconcile(snaive = min_trace(snaive)) %>% forecast()
+  fc_agg_reconciled <- fit_agg %>% mutate(snaive = reconcile_mint(snaive)) %>% forecast()
   
   expect_equal(
     mean(fc_agg$value),
@@ -39,7 +39,7 @@ test_that("reconciliation", {
   fit_agg <- lung_deaths_agg %>% 
     model(ses = fable::ETS(value ~ error("A") + trend("A") + season("A")))
   fc_agg <- fit_agg %>% forecast()
-  fc_agg_reconciled <- fit_agg %>% reconcile(ses = min_trace(ses)) %>% forecast()
+  fc_agg_reconciled <- fit_agg %>% mutate(ses = reconcile_mint(ses)) %>% forecast()
   expect_equal(
     mean(fc_agg_reconciled$value[48 + (1:24)]),
     mean(fc_agg_reconciled$value[(1:24)] + fc_agg_reconciled$value[24 + (1:24)]),
@@ -51,7 +51,7 @@ test_that("reconciliation", {
     )
   )
   
-  fc_agg_reconciled <- fit_agg %>% reconcile(ses = min_trace(ses, method = "wls_var")) %>% forecast()
+  fc_agg_reconciled <- fit_agg %>% mutate(ses = reconcile_mint(ses, method = "wls_var")) %>% forecast()
   expect_equal(
     mean(fc_agg_reconciled$value[48 + (1:24)]),
     mean(fc_agg_reconciled$value[(1:24)] + fc_agg_reconciled$value[24 + (1:24)])
@@ -63,7 +63,7 @@ test_that("reconciliation", {
     )
   )
   
-  fc_agg_reconciled <- fit_agg %>% reconcile(ses = min_trace(ses, method = "ols")) %>% forecast()
+  fc_agg_reconciled <- fit_agg %>% mutate(ses = reconcile_mint(ses, method = "ols")) %>% forecast()
   expect_equal(
     mean(fc_agg_reconciled$value[48 + (1:24)]),
     mean(fc_agg_reconciled$value[(1:24)] + fc_agg_reconciled$value[24 + (1:24)])
@@ -75,7 +75,7 @@ test_that("reconciliation", {
     )
   )
   
-  fc_agg_reconciled <- fit_agg %>% reconcile(ses = min_trace(ses, method = "mint_cov")) %>% forecast()
+  fc_agg_reconciled <- fit_agg %>% mutate(ses = reconcile_mint(ses, method = "mint_cov")) %>% forecast()
   expect_equal(
     mean(fc_agg_reconciled$value[48 + (1:24)]),
     mean(fc_agg_reconciled$value[(1:24)] + fc_agg_reconciled$value[24 + (1:24)])
@@ -85,6 +85,21 @@ test_that("reconciliation", {
       fc_agg$value,
       fc_agg_reconciled$value
     )
+  )
+})
+
+test_that("reconcile() is deprecated", {
+  skip_if_not_installed("fable")
+
+  fit <- lung_deaths_long %>%
+    aggregate_key(key, value = sum(value)) %>%
+    model(snaive = fable::SNAIVE(value))
+  lifecycle::expect_deprecated(
+    fc <- fit %>% reconcile(snaive = min_trace(snaive)) %>% forecast()
+  )
+  expect_equal(
+    fc,
+    fit %>% mutate(snaive = reconcile_mint(snaive)) %>% forecast()
   )
 })
 
@@ -107,11 +122,11 @@ test_that("min_trace positive definite check is scale invariant (#358)", {
   # hierarchy, giving a truly singular sample covariance matrix.
   for (method in c("wls_var", "mint_shrink")) {
     fc <- fit %>%
-      reconcile(lm = min_trace(lm, method = !!method)) %>%
+      mutate(lm = reconcile_mint(lm, method = !!method)) %>%
       forecast(h = 6)
     expect_no_error(
       fc_small <- fit_small %>%
-        reconcile(lm = min_trace(lm, method = !!method)) %>%
+        mutate(lm = reconcile_mint(lm, method = !!method)) %>%
         forecast(h = 6)
     )
     # Rescaling the data should rescale the reconciled forecasts
@@ -131,13 +146,13 @@ test_that("min_trace errors informatively for singular covariance matrices", {
     model(snaive = fable::SNAIVE(value))
   expect_error(
     fit %>%
-      reconcile(snaive = min_trace(snaive, method = "mint_cov")) %>%
+      mutate(snaive = reconcile_mint(snaive, method = "mint_cov")) %>%
       forecast(h = 6),
     "singular"
   )
   expect_no_error(
     fit %>%
-      reconcile(snaive = min_trace(snaive, method = "wls_struct")) %>%
+      mutate(snaive = reconcile_mint(snaive, method = "wls_struct")) %>%
       forecast(h = 6)
   )
 })
@@ -159,7 +174,7 @@ test_that("top_down reconciles multi-level hierarchies", {
 
   fc_tbl <- sim_hts |>
     model(snaive = fable::SNAIVE(sales)) |>
-    reconcile(td = top_down(snaive, method = "forecast_proportions")) |>
+    mutate(td = reconcile_td(snaive, method = "forecast_proportions")) |>
     forecast(h = 3) |>
     dplyr::filter(.model == "td") |>
     as_tibble()
@@ -200,7 +215,7 @@ test_that("middle_out reconciles multi-level hierarchies", {
 
   fc_tbl <- sim_hts |>
     model(snaive = fable::SNAIVE(sales)) |>
-    reconcile(mo = middle_out(snaive, split = 1)) |>
+    mutate(mo = reconcile_mo(snaive, split = 1)) |>
     forecast(h = 3) |>
     dplyr::filter(.model == "mo") |>
     as_tibble()

@@ -1,11 +1,19 @@
-#' Forecast reconciliation 
-#' 
-#' This function allows you to specify the method used to reconcile forecasts
-#' in accordance with its key structure.
-#' 
+#' Forecast reconciliation
+#'
+#' `r lifecycle::badge('deprecated')`
+#'
+#' `reconcile()` is deprecated in favour of [`dplyr::mutate()`] with the
+#' `reconcile_*()` functions ([`reconcile_bu()`], [`reconcile_td()`],
+#' [`reconcile_mo()`] and [`reconcile_mint()`]).
+#'
 #' @param .data A mable.
 #' @param ... Reconciliation methods applied to model columns within `.data`.
-#' 
+#'
+#' @seealso
+#' [`aggregate_key()`]
+#'
+#' [*Forecasting: Principles and Practice* - Forecasting hierarchical and grouped time series](https://otexts.com/fpp3/hierarchical.html)
+#'
 #' @examplesIf requireNamespace("fable", quietly = TRUE)
 #' library(fable)
 #' lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) %>%
@@ -13,7 +21,7 @@
 #' 
 #' lung_deaths_agg %>%
 #'   model(lm = TSLM(value ~ trend() + season())) %>%
-#'   reconcile(lm = min_trace(lm)) %>% 
+#'   dplyr::mutate(lm = reconcile_mint(lm)) %>% 
 #'   forecast()
 #' 
 #' @export
@@ -24,6 +32,10 @@ reconcile <- function(.data, ...){
 #' @rdname reconcile
 #' @export
 reconcile.mbl_df <- function(.data, ...){
+  lifecycle::deprecate_soft(
+    "1.0.0", "reconcile()",
+    details = "Please use `mutate()` with the `reconcile_*()` functions instead."
+  )
   mutate(.data, ...)
 }
 
@@ -59,17 +71,25 @@ reconcile_mo <- function(models, split = 1){
 #' forecasted time points must match for all series in the hierarchy (caution:
 #' this is not yet tested for beyond the series length).
 #'
+#' The `"wls_var"`, `"mint_cov"` and `"mint_shrink"` methods require a positive
+#' definite covariance matrix, which is not the case if two series in the
+#' hierarchy are identical (e.g. an aggregate with only one child). Use
+#' `"wls_struct"` or `"ols"` in these situations.
+#'
 #' `reconcile_mint()` is a short alias for `min_trace()`.
 #'
 #' @param models A column of models in a mable.
-#' @param method The reconciliation method to use.
-#' @param sparse If TRUE, the reconciliation will be computed using sparse 
-#' matrix algebra? By default, sparse matrices will be used if the MatrixM 
+#' @param method The reconciliation method to use, which determines how the
+#' base forecast error covariance matrix is estimated.
+#' @param sparse If TRUE, the reconciliation will be computed using sparse
+#' matrix algebra? By default, sparse matrices will be used if the Matrix
 #' package is installed.
-#' 
-#' @seealso 
-#' [`reconcile()`], [`aggregate_key()`]
-#' 
+#'
+#' @seealso
+#' [`reconcile_bu()`], [`reconcile_td()`], [`reconcile_mo()`], [`aggregate_key()`]
+#'
+#' [*Forecasting: Principles and Practice* - Forecast reconciliation](https://otexts.com/fpp3/reconciliation.html)
+#'
 #' @references 
 #' Wickramasuriya, S. L., Athanasopoulos, G., & Hyndman, R. J. (2019). Optimal forecast reconciliation for hierarchical and grouped time series through trace minimization. Journal of the American Statistical Association, 1-45. https://doi.org/10.1080/01621459.2018.1448825 
 #' 
@@ -212,7 +232,9 @@ forecast.lst_mint_mdl <- function(object, key_data,
 #' @param models A column of models in a mable.
 #'
 #' @seealso
-#' [`reconcile()`], [`aggregate_key()`]
+#' [`reconcile_td()`], [`reconcile_mo()`], [`reconcile_mint()`], [`aggregate_key()`]
+#'
+#' [*Forecasting: Principles and Practice* - Bottom-up approach](https://otexts.com/fpp3/single-level.html#bottom-up-approach)
 #' @export
 bottom_up <- function(models){
   structure(models, class = union("lst_btmup_mdl", class(models)))
@@ -264,10 +286,12 @@ forecast.lst_btmup_mdl <- function(object, key_data,
 #' `reconcile_td()` is a short alias for `top_down()`.
 #'
 #' @param models A column of models in a mable.
-#' @param method The reconciliation method to use.
+#' @param method The method used to compute the disaggregation proportions.
 #'
 #' @seealso
-#' [`reconcile()`], [`aggregate_key()`]
+#' [`reconcile_bu()`], [`reconcile_mo()`], [`reconcile_mint()`], [`aggregate_key()`]
+#'
+#' [*Forecasting: Principles and Practice* - Top-down approaches](https://otexts.com/fpp3/single-level.html#top-down-approaches)
 #'
 #' @export
 top_down <- function(models, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
@@ -426,7 +450,7 @@ propagate_forecast_proportions <- function(fc_mean, key_data, agg_order,
 #' top-down approaches are used above and below respectively.
 #' 
 #' @seealso 
-#' [`reconcile()`], [`aggregate_key()`]
+#' [`reconcile_bu()`], [`reconcile_td()`], [`reconcile_mint()`], [`aggregate_key()`]
 #' [*Forecasting: Principles and Practice* - Middle-out approach](https://otexts.com/fpp3/single-level.html#middle-out-approach)
 #' 
 #' @export

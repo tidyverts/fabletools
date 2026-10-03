@@ -15,8 +15,12 @@ reconcile(.data, ...)
 \item{...}{Reconciliation methods applied to model columns within \code{.data}.}
 }
 \description{
-This function allows you to specify the method used to reconcile forecasts
-in accordance with its key structure.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+}
+\details{
+\code{reconcile()} is deprecated in favour of \code{\link[dplyr:mutate]{dplyr::mutate()}} with the
+\verb{reconcile_*()} functions (\code{\link[=reconcile_bu]{reconcile_bu()}}, \code{\link[=reconcile_td]{reconcile_td()}},
+\code{\link[=reconcile_mo]{reconcile_mo()}} and \code{\link[=reconcile_mint]{reconcile_mint()}}).
 }
 \examples{
 \dontshow{if (requireNamespace("fable", quietly = TRUE)) withAutoprint(\{ # examplesIf}
@@ -26,7 +30,12 @@ lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) \%>\%
 
 lung_deaths_agg \%>\%
   model(lm = TSLM(value ~ trend() + season())) \%>\%
-  reconcile(lm = min_trace(lm)) \%>\% 
+  dplyr::mutate(lm = reconcile_mint(lm)) \%>\% 
   forecast()
 \dontshow{\}) # examplesIf}
+}
+\seealso{
+\code{\link[=aggregate_key]{aggregate_key()}}
+
+\href{https://otexts.com/fpp3/hierarchical.html}{\emph{Forecasting: Principles and Practice} - Forecasting hierarchical and grouped time series}
 }

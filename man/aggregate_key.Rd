@@ -40,5 +40,6 @@ tourism \%>\%
 
 }
 \seealso{
-\code{\link[=reconcile]{reconcile()}}, \code{\link[=is_aggregated]{is_aggregated()}}
+\code{\link[=reconcile_bu]{reconcile_bu()}}, \code{\link[=reconcile_td]{reconcile_td()}}, \code{\link[=reconcile_mo]{reconcile_mo()}},
+\code{\link[=reconcile_mint]{reconcile_mint()}}, \code{\link[=is_aggregated]{is_aggregated()}}
 }

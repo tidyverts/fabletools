@@ -18,7 +18,7 @@ top_down(
 \arguments{
 \item{models}{A column of models in a mable.}
 
-\item{method}{The reconciliation method to use.}
+\item{method}{The method used to compute the disaggregation proportions.}
 }
 \description{
 \lifecycle{experimental}
@@ -31,5 +31,7 @@ forecasted time points must match for all series in the hierarchy.
 \code{reconcile_td()} is a short alias for \code{top_down()}.
 }
 \seealso{
-\code{\link[=reconcile]{reconcile()}}, \code{\link[=aggregate_key]{aggregate_key()}}
+\code{\link[=reconcile_bu]{reconcile_bu()}}, \code{\link[=reconcile_mo]{reconcile_mo()}}, \code{\link[=reconcile_mint]{reconcile_mint()}}, \code{\link[=aggregate_key]{aggregate_key()}}
+
+\href{https://otexts.com/fpp3/single-level.html#top-down-approaches}{\emph{Forecasting: Principles and Practice} - Top-down approaches}
 }
