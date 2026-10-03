@@ -14,6 +14,32 @@
 #' response to external shocks. It traces the effect of a one-unit change in the impulse 
 #' variable on the response variable over a specified number of periods.
 #'
+#' For a mable, the number of periods is specified using `h` (or by providing
+#' `new_data`). Model specific options are passed via `...`, for example
+#' [fable::VAR()] models accept `impulse` (the name of the variable to shock)
+#' and `orthogonal` (whether to compute orthogonalised impulse responses).
+#'
+#' @examplesIf requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)
+#' library(fable)
+#' library(tsibble)
+#'
+#' # Annual GDP growth and CPI inflation (%) for Australia
+#' aus_economy <- tsibbledata::global_economy %>%
+#'   dplyr::filter(Country == "Australia") %>%
+#'   dplyr::transmute(Growth, Inflation = 100 * difference(log(CPI))) %>%
+#'   dplyr::filter(!is.na(Growth), !is.na(Inflation))
+#'
+#' fit <- aus_economy %>%
+#'   model(VAR(vars(Growth, Inflation) ~ AR(1)))
+#'
+#' # Response of both variables to a unit shock in GDP growth
+#' fit %>%
+#'   IRF(h = 10, impulse = "Growth")
+#'
+#' # Orthogonalised response to a shock in inflation
+#' fit %>%
+#'   IRF(h = 10, impulse = "Inflation", orthogonal = TRUE)
+#'
 #' @export
 IRF <- function(x, ...) {
   UseMethod("IRF")

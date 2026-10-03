@@ -22,4 +22,32 @@ treated as impulses for the calculated impulse responses.
 The impulse response function provides insight into the dynamic behaviour of a system in
 response to external shocks. It traces the effect of a one-unit change in the impulse
 variable on the response variable over a specified number of periods.
+
+For a mable, the number of periods is specified using \code{h} (or by providing
+\code{new_data}). Model specific options are passed via \code{...}, for example
+\code{\link[fable:VAR]{fable::VAR()}} models accept \code{impulse} (the name of the variable to shock)
+and \code{orthogonal} (whether to compute orthogonalised impulse responses).
+}
+\examples{
+\dontshow{if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+library(fable)
+library(tsibble)
+
+# Annual GDP growth and CPI inflation (\%) for Australia
+aus_economy <- tsibbledata::global_economy \%>\%
+  dplyr::filter(Country == "Australia") \%>\%
+  dplyr::transmute(Growth, Inflation = 100 * difference(log(CPI))) \%>\%
+  dplyr::filter(!is.na(Growth), !is.na(Inflation))
+
+fit <- aus_economy \%>\%
+  model(VAR(vars(Growth, Inflation) ~ AR(1)))
+
+# Response of both variables to a unit shock in GDP growth
+fit \%>\%
+  IRF(h = 10, impulse = "Growth")
+
+# Orthogonalised response to a shock in inflation
+fit \%>\%
+  IRF(h = 10, impulse = "Inflation", orthogonal = TRUE)
+\dontshow{\}) # examplesIf}
 }
