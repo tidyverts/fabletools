@@ -119,6 +119,29 @@ test_that("min_trace positive definite check is scale invariant (#358)", {
   }
 })
 
+test_that("min_trace errors informatively for singular covariance matrices", {
+  skip_if_not_installed("fable")
+
+  # A parent with a single child produces identical series in the hierarchy
+  single_child <- lung_deaths_long %>%
+    dplyr::filter(key == "mdeaths") %>%
+    aggregate_key(key, value = sum(value))
+
+  fit <- single_child %>%
+    model(snaive = fable::SNAIVE(value))
+  expect_error(
+    fit %>%
+      reconcile(snaive = min_trace(snaive, method = "mint_cov")) %>%
+      forecast(h = 6),
+    "singular"
+  )
+  expect_no_error(
+    fit %>%
+      reconcile(snaive = min_trace(snaive, method = "wls_struct")) %>%
+      forecast(h = 6)
+  )
+})
+
 test_that("top_down reconciles multi-level hierarchies", {
   skip_if_not_installed("fable")
 
