@@ -42,6 +42,8 @@
 
 ## Bug fixes
 
+* Fixed `common_periods()` giving incorrect frequencies for sub-daily
+  intervals made of several units (e.g. 1 hour 30 minutes).
 * Fixed `select()`, `transmute()`, `rename()` and `relocate()` dropping the
   fable class or distribution column (#324, #348, #403).
 * Fixed `[[<-` not registering model columns in a mable (#402, #323).

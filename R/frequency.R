@@ -45,7 +45,7 @@ common_periods.interval <- function(x){
          "month" = c("year" = 12/x[["month"]]),
          "week" = c("year" = 52/x[["week"]]),
          "day" = c("year" = 365.25, "week" = 7)/x[["day"]],
-         with(list(secs = freq_sec/sum(as.numeric(x)*freq_sec[nm])), secs[secs>1])
+         with(list(secs = freq_sec/sum(as.numeric(unlist(x[nm]))*freq_sec[nm])), secs[secs>1])
   )
 }
 
