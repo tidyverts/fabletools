@@ -9,6 +9,9 @@ t0 <- as.POSIXct("2020-01-01", tz = "UTC")
 ym0 <- suppressWarnings(tsibble::yearmonth(d0))
 yq0 <- suppressWarnings(tsibble::yearquarter(d0))
 yw0 <- suppressWarnings(tsibble::yearweek(d0))
+# Sub-daily mixtime indices (mixtime::datetime() has a 1 second chronon)
+mt_hourly <- function(x) mixtime::linear_time(x, chronon = hour(1L))
+mt_15min <- function(x) mixtime::linear_time(x, chronon = minute(15L))
 
 # Skip unless tsibble intervals are mixtime time units (granules)
 skip_if_no_granules <- function() {
@@ -69,22 +72,22 @@ test_that("common_periods() for mixtime indices", {
     common_periods(freq_tsbl(mixtime::date(d0 + 0:23))),
     c(year = 365.25, week = 7)
   )
-  # Hourly mixtime intervals are measured in seconds
+  # Sub-daily mixtime indices take their interval from the chronon
   expect_equal(
-    common_periods(freq_tsbl(mixtime::datetime(t0 + 3600*(0:23)))),
+    common_periods(freq_tsbl(mt_hourly(t0 + 3600*(0:23)))),
     c(year = 8766, week = 168, day = 24)
   )
   expect_equal(
-    common_periods(freq_tsbl(mixtime::datetime(t0 + 900*(0:23)))),
+    common_periods(freq_tsbl(mt_15min(t0 + 900*(0:23)))),
     c(year = 35064, week = 672, day = 96, hour = 4)
   )
   expect_equal(
     get_frequencies(c(mixtime::days(1L), mixtime::weeks(1L)),
-                    freq_tsbl(mixtime::datetime(t0 + 3600*(0:23)))),
+                    freq_tsbl(mt_hourly(t0 + 3600*(0:23)))),
     c(24, 168)
   )
   expect_equal(
-    get_frequencies("1 year", freq_tsbl(mixtime::datetime(t0 + 3600*(0:23)))),
+    get_frequencies("1 year", freq_tsbl(mt_hourly(t0 + 3600*(0:23)))),
     8766
   )
 })
@@ -102,11 +105,11 @@ test_that("trend(), season() and fourier() match for mixtime and base indices", 
     )
   }
   compare_xregs(d0 + 0:30, mixtime::date(d0 + 0:30), period = 7)
-  compare_xregs(t0 + 3600*(0:60), mixtime::datetime(t0 + 3600*(0:60)), period = 24)
-  compare_xregs(t0 + 900*(0:200), mixtime::datetime(t0 + 900*(0:200)), period = 96)
+  compare_xregs(t0 + 3600*(0:60), mt_hourly(t0 + 3600*(0:60)), period = 24)
+  compare_xregs(t0 + 900*(0:200), mt_15min(t0 + 900*(0:200)), period = 96)
 
   # Trend counts interval steps from the origin
-  x <- freq_tsbl(mixtime::datetime(t0 + 900*(0:10)))
+  x <- freq_tsbl(mt_15min(t0 + 900*(0:10)))
   expect_equal(fbl_trend(x, origin = x$t[1])$trend, 1:11)
 })
 
