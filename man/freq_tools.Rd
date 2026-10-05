@@ -5,11 +5,14 @@
 \alias{common_periods.default}
 \alias{common_periods.tbl_ts}
 \alias{common_periods.interval}
+\alias{common_periods.mixtime::mt_unit}
+\alias{common_periods.list}
 \alias{get_frequencies}
 \alias{get_frequencies.numeric}
 \alias{get_frequencies.NULL}
 \alias{get_frequencies.character}
 \alias{get_frequencies.Period}
+\alias{get_frequencies.mixtime::mixtime}
 \title{Extract frequencies for common seasonal periods}
 \usage{
 common_periods(x)
@@ -20,6 +23,10 @@ common_periods(x)
 
 \method{common_periods}{interval}(x)
 
+\method{common_periods}{`mixtime::mt_unit`}(x)
+
+\method{common_periods}{list}(x)
+
 get_frequencies(period, ...)
 
 \method{get_frequencies}{numeric}(period, ...)
@@ -29,6 +36,8 @@ get_frequencies(period, ...)
 \method{get_frequencies}{character}(period, data, ...)
 
 \method{get_frequencies}{Period}(period, data, ...)
+
+\method{get_frequencies}{`mixtime::mixtime`}(period, data, ...)
 }
 \arguments{
 \item{x}{An object containing temporal data (such as a \code{tsibble}, \code{interval}, \code{datetime} and others.)}
