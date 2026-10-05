@@ -53,6 +53,9 @@
 
 ## Bug fixes
 
+* `trend()` now converts `knots` and `origin` to the class of the time index,
+  and errors if they're incompatible. Previously other classes (e.g. a `Date`
+  origin for a `yearmonth` index, or text knots) silently gave wrong trends.
 * Fixed `common_periods()` giving incorrect frequencies for sub-daily
   intervals made of several units (e.g. 1 hour 30 minutes).
 * Fixed `select()`, `transmute()`, `rename()` and `relocate()` dropping the

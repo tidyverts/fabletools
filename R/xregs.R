@@ -16,19 +16,44 @@ index_time_units <- function(x) {
   default_time_units(itvl)
 }
 
+# Times (such as trend() knots and origin) as numbers on the same scale as
+# `as.double()` of the index, after checking they are compatible with it.
+index_time_as_double <- function(x, time, arg) {
+  idx <- x[[index_var(x)]]
+  time <- vctrs::vec_cast(time, vctrs::vec_ptype(idx), x_arg = arg)
+  if (inherits(idx, "mixtime::mixtime") && length(time) > 0) {
+    # mixtime values of the same class can have a different chronon (e.g. a
+    # date cast to a year-month), which changes the scale of `as.double()`
+    idx_chronon <- mixtime::chronon_glb(idx)
+    time_chronon <- mixtime::chronon_glb(time)
+    if (!identical(class(time_chronon), class(idx_chronon)) ||
+        time_chronon@n != idx_chronon@n) {
+      abort(sprintf(
+        "`%s` must have the same time resolution as the index (%s), not %s.",
+        arg, format_granule(idx_chronon), format_granule(time_chronon)
+      ))
+    }
+  }
+  as.double(time)
+}
+
+format_granule <- function(x) {
+  paste(x@n, sub("^mixtime::(tu_)?", "", class(x)[1]))
+}
+
 fbl_trend <- function(x, knots = NULL, origin = NULL) {
   idx_num <- as.double(x[[index_var(x)]])
   knots_num <- if (is.null(knots)) {
     NULL
   } else {
-    as.double(knots)
+    index_time_as_double(x, knots, "knots")
   }
   index_interval <- index_time_units(x)
   idx_num <- idx_num / index_interval
   knots_num <- knots_num / index_interval
   if (!is.null(origin)) {
     # trend should count from 1
-    origin <- as.double(origin) / index_interval - 1
+    origin <- index_time_as_double(x, origin, "origin") / index_interval - 1
     idx_num <- idx_num - origin
     knots_num <- knots_num - origin
   }
@@ -106,7 +131,7 @@ fbl_fourier <- function(x, period, K) {
 #'
 #' \tabular{ll}{
 #'   `knots`    \tab A vector of times (same class as the data's time index) identifying the position of knots for a piecewise linear trend.\cr
-#'   `origin`   \tab An optional time value to act as the starting time for the trend.
+#'   `origin`   \tab An optional time value (same class as the data's time index) to act as the starting time for the trend.
 #' }
 #' }
 #'

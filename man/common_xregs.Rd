@@ -24,7 +24,7 @@ trend(knots = NULL, origin = NULL)
 
 \tabular{ll}{
 \code{knots}    \tab A vector of times (same class as the data's time index) identifying the position of knots for a piecewise linear trend.\cr
-\code{origin}   \tab An optional time value to act as the starting time for the trend.
+\code{origin}   \tab An optional time value (same class as the data's time index) to act as the starting time for the trend.
 }
 }
 
