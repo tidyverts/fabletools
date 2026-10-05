@@ -139,26 +139,8 @@ tbl_sum.mdl_df <- function(x){
   c(`A model group` = paste(map_chr(dim(x), big_mark), collapse = " x "))
 }
 
-#' @export
-forecast.mdl_df <- function(object, new_data = NULL, ...){
-  # A model group's forecasts are a data frame of per-model columns, each
-  # holding one forecast per row (as for `forecast.mdl_lst()`).
-  tibble::new_tibble(
-    map(unclass(object), forecast, new_data = new_data, ...),
-    nrow = NROW(object)
-  )
-}
-
-#' @export
-generate.mdl_df <- function(x, new_data = NULL, ...){
-  tibble::new_tibble(
-    map(unclass(x), generate, new_data = new_data, ...),
-    nrow = NROW(x)
-  )
-}
-
-# Splice the data frame results of `mdl_df` columns (from `forecast.mdl_df()`
-# or `generate.mdl_df()`) into top-level columns named `<group>$<model>`, so
+# Splice the data frame results of `mdl_df` columns (from `dispatch_mdl_df()`)
+# into top-level columns named `<group>$<model>`, so
 # every model's results can be pivoted into a single `.model` column.
 unpack_model_results <- function(x){
   out <- map2(x, names(x), function(col, nm) {

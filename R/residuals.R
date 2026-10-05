@@ -8,14 +8,13 @@
 #' 
 #' @importFrom stats residuals
 #' @export
-residuals.mbl_df <- function(object, ...){
-  mbl_vars <- mable_vars(object)
-  kv <- key_vars(object)
-  object <- mutate(as_tibble(object), 
-              dplyr::across(all_of(mbl_vars), function(x) lapply(x, residuals, ...)))
-  object <- pivot_longer(object, all_of(mbl_vars), names_to = ".model", values_to = ".resid")
-  unnest_tsbl(object, ".resid", parent_key = c(kv, ".model"))
-}
+residuals.mbl_df <- mbl_df_method(residuals, ".resid", unnest = "tsibble")
+
+#' @export
+residuals.mdl_df <- mdl_df_method(residuals)
+
+#' @export
+residuals.mdl_lst <- mdl_lst_method(residuals)
 
 #' @param type The type of residuals to compute. If `type="response"`, residuals on the back-transformed data will be computed.
 #' @rdname residuals.mbl_df

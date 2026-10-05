@@ -20,21 +20,13 @@
 #' 
 #' @rdname refit
 #' @export
-refit.mbl_df <- function(object, new_data, ...){
-  mdls <- mable_vars(object)
-  object <- bind_new_data(object, new_data)
-  new_data <- object[["new_data"]]
-  object[["new_data"]] <- NULL
-  dplyr::mutate_at(object, vars(!!!mdls), refit, new_data, ...)
-}
+refit.mbl_df <- mbl_df_method(refit, new_data = "required", modify = TRUE)
 
 #' @export
-refit.mdl_lst <- function(object, new_data, ...){
-  attrb <- attributes(object)
-  object <- map2(object, new_data, refit, ...)
-  attributes(object) <- attrb
-  object
-}
+refit.mdl_df <- mdl_df_method(refit, modify = TRUE)
+
+#' @export
+refit.mdl_lst <- mdl_lst_method(refit, new_data = TRUE, modify = TRUE)
 #' @export
 refit.lst_mdl <- deprecate_lst_mdl(refit.mdl_lst)
 

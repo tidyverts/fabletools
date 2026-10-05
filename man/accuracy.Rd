@@ -9,7 +9,7 @@
 \usage{
 \method{accuracy}{mbl_df}(object, measures = point_accuracy_measures, ...)
 
-\method{accuracy}{mdl_lst}(object, measures = point_accuracy_measures, ...)
+\method{accuracy}{mdl_lst}(object, ...)
 
 \method{accuracy}{mdl_ts}(object, measures = point_accuracy_measures, ...)
 

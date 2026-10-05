@@ -21,19 +21,29 @@
 #' @rdname interpolate
 #' @export
 interpolate.mbl_df <- function(object, new_data, ...){
-  if(length(mable_vars(object)) > 1){
+  mdls <- mable_vars(object)
+  if(length(mdls) > 1 || is_mdl_df(object[[mdls]])){
 abort("Interpolation can only be done using one model. 
 Please use select() to choose the model to interpolate with.")
   }
-  
-  object <- bind_new_data(object, new_data)
-  kv <- key_vars(object)
-  object <- transmute(as_tibble(object),
-      !!!syms(kv),
-      interpolated = map2(!!sym(mable_vars(object)), new_data, interpolate, ...)
-    )
-  unnest_tsbl(object, "interpolated", parent_key = kv)
+
+  # The interpolated data has the same structure as `new_data`, and so the
+  # `.model` column identifying the only model isn't added.
+  dispatch_mbl_df(
+    object, ..., .f = interpolate, .new_data = new_data,
+    .values_to = ".interpolated", .reserved = NULL,
+    .unnest = function(x, col, key) {
+      x[[".model"]] <- NULL
+      unnest_tsbl(x, col, parent_key = setdiff(key, ".model"))
+    }
+  )
 }
+
+#' @export
+interpolate.mdl_df <- mdl_df_method(interpolate)
+
+#' @export
+interpolate.mdl_lst <- mdl_lst_method(interpolate, new_data = TRUE)
 
 #' @rdname interpolate
 #' @export

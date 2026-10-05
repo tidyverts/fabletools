@@ -60,3 +60,17 @@ test_that("tidy", {
   expect_equal(unique(td_mv$.model), "var")
   expect_equal(unique(td_mv$.response), c("mdeaths", "fdeaths"))
 })
+
+test_that("broom generics error informatively when `.model` is already used (#275)", {
+  skip_if_not_installed("fable")
+
+  dt <- tsibble::tsibble(
+    .model = rep(c("a", "b"), each = 10), t = rep(1:10, 2), y = 1:20,
+    key = .model, index = t
+  )
+  fit <- model(dt, naive = fable::NAIVE(y))
+  expect_error(tidy(fit), "key variable named `.model`")
+  expect_error(glance(fit), "key variable named `.model`")
+  expect_error(augment(fit), "key variable named `.model`")
+  expect_error(coef(fit), "key variable named `.model`")
+})

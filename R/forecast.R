@@ -90,49 +90,43 @@
 #' @export
 forecast.mbl_df <- function(object, new_data = NULL, h = NULL, 
                             point_forecast = list(.mean = mean), ...){
-  mdls <- mable_vars(object)
-  if(!is.null(h) && !is.null(new_data)){
-    warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
-    h <- NULL
-  }
-  check_reserved_names(object, new_data, key = ".model")
-  if(!is.null(new_data)){
-    object <- bind_new_data(object, new_data)
-  }
-  kv <- c(key_vars(object), ".model")
+  h <- check_horizon(new_data, h)
 
   # Deprecated bias adjustment
   if (!is.null(match.call()$bias_adjust)) {
     lifecycle::deprecate_stop("0.2.0", "forecast(bias_adjust = )", "forecast(point_forecast = )")
     point_forecast <- if(match.call()$bias_adjust) list(.mean = mean) else list(.median = stats::median)
   }
-  
-  # Evaluate forecasts
-  tbl <- as_tibble(object)
-  fc <- map(tbl[mdls], forecast, new_data = tbl[["new_data"]],
-            h = h, point_forecast = point_forecast, ...,
-            key_data = key_data(object))
-  fc <- unpack_model_results(fc)
-  object <- vec_cbind(tbl[key_vars(object)], tibble::new_tibble(fc, nrow = NROW(tbl)))
-  
-  object <- tidyr::pivot_longer(object, all_of(names(fc)), names_to = ".model", values_to = ".fc") 
-  
-  # Combine and re-construct fable
-  fbl_attr <- attributes(object$.fc[[1]])
-  out <- suppressWarnings(
-    unnest_tsbl(as_tibble(object)[c(kv, ".fc")], ".fc", parent_key = kv)
+
+  check_reserved_names(object, new_data, key = ".model")
+  # The data is bound here, rather than by dispatch_mbl_df(), so that joint
+  # forecasting methods (such as reconciliation) get the key structure of all
+  # the series to forecast.
+  if(!is.null(new_data)){
+    object <- bind_new_data(object, new_data)
+  }
+  dispatch_mbl_df(
+    object, h = h, point_forecast = point_forecast, ...,
+    key_data = key_data(object),
+    .f = forecast, .values_to = ".fc", .unnest = unnest_fable
   )
-  build_fable(out, response = fbl_attr$response, distribution = fbl_attr$dist)
+}
+
+# Combine the nested forecasts of each model into a fable
+unnest_fable <- function(x, col, key) {
+  fbl_attr <- attributes(x[[col]][[1]])
+  x <- suppressWarnings(unnest_tsbl(x, col, parent_key = key))
+  build_fable(x, response = fbl_attr$response, distribution = fbl_attr$dist)
 }
 
 #' @export
+forecast.mdl_df <- mdl_df_method(forecast)
+
+#' @export
 forecast.mdl_lst <- function(object, new_data = NULL, key_data, ...){
-  mapply_maybe_parallel(
-    .f = forecast,
-    object, 
-    new_data %||% rep(list(NULL), length.out = length(object)),
-    MoreArgs = dots_list(...)
-  )
+  # `key_data` is only used by joint forecasting methods for `mdl_lst`
+  # subclasses, and so it isn't passed on to each model.
+  dispatch_mdl_lst(object, ..., .f = forecast, .new_data = new_data)
 }
 
 #' @export

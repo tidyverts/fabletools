@@ -49,6 +49,8 @@
 * Improved error for singular covariance matrices in `min_trace()` (#309).
 * Fixed `top_down()` and `middle_out()` reconciliation collapsing sample path
   forecasts (e.g. from `simulate_iid()`) to degenerate distributions (#408).
+* Fixed `generate()` erroring for mables with model columns of different
+  classes, such as models using different reconciliation methods (#408).
 * Fixed parallel estimation not being used when `future::plan()` is set
   without attaching future (#363, #420).
 * Improved error for name clashes with existing `.model` or `.rep` columns in

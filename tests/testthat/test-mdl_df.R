@@ -92,3 +92,76 @@ test_that("forecast() and generate() with mdl_df", {
   expect_equal(unique(sim$.model), c("ets", "lm", "grp$ets", "grp$lm"))
   expect_equal(NROW(sim), 12 * 2 * 4 * 2)
 })
+
+test_that("tidy(), glance(), augment() and coef() with mdl_df", {
+  skip_if_not_installed("fable")
+
+  grp <- cbind(mbl_complex$ets, mbl_complex$lm)
+  td <- tidy(grp)
+  expect_equal(names(td), c("ets", "lm"))
+  expect_equal(td$ets, tidy(mbl_complex$ets))
+  expect_equal(coef(grp), td)
+
+  mbl_grp <- mbl_complex %>%
+    mutate(grp = cbind(ets, lm))
+  mdl_names <- c("ets", "lm", "grp$ets", "grp$lm")
+  td_grp <- tidy(mbl_grp)
+  expect_equal(unique(td_grp$.model), mdl_names)
+  expect_equal(
+    dplyr::select(dplyr::filter(td_grp, .model == "grp$lm"), -.model),
+    dplyr::select(dplyr::filter(tidy(mbl_complex), .model == "lm"), -.model)
+  )
+  expect_equal(coef(mbl_grp), td_grp)
+
+  gl_grp <- glance(mbl_grp)
+  expect_equal(NROW(gl_grp), 2 * 4)
+  expect_equal(unique(gl_grp$.model), mdl_names)
+
+  aug_grp <- augment(mbl_grp)
+  expect_s3_class(aug_grp, "tbl_ts")
+  expect_equal(unique(aug_grp$.model), mdl_names)
+  expect_equal(
+    dplyr::filter(aug_grp, .model == "grp$ets")$.fitted,
+    dplyr::filter(augment(mbl_complex), .model == "ets")$.fitted
+  )
+})
+
+test_that("accuracy(), residuals(), fitted(), components() and refit() with mdl_df", {
+  skip_if_not_installed("fable")
+
+  mbl_grp <- mbl_complex %>%
+    mutate(grp = cbind(ets, lm))
+  mdl_names <- c("ets", "lm", "grp$ets", "grp$lm")
+
+  acc <- accuracy(mbl_grp)
+  expect_equal(unique(acc$.model), mdl_names)
+  expect_equal(
+    dplyr::select(dplyr::filter(acc, .model == "grp$lm"), -.model),
+    dplyr::select(dplyr::filter(acc, .model == "lm"), -.model)
+  )
+
+  res <- residuals(mbl_grp)
+  expect_equal(unique(res$.model), mdl_names)
+  expect_equal(
+    dplyr::filter(res, .model == "grp$ets")$.resid,
+    dplyr::filter(res, .model == "ets")$.resid
+  )
+  fits <- fitted(mbl_grp)
+  expect_equal(
+    dplyr::filter(fits, .model == "grp$lm")$.fitted,
+    dplyr::filter(fits, .model == "lm")$.fitted
+  )
+
+  cmp <- components(mbl_grp %>% mutate(grp = cbind(ets, ets2 = ets)) %>% select(key, grp))
+  expect_s3_class(cmp, "dcmp_ts")
+  expect_equal(unique(cmp$.model), c("grp$ets", "grp$ets2"))
+
+  # Modifying generics return the model group with its models replaced
+  refitted <- refit(mbl_grp, lung_deaths_long)
+  expect_true(is_mable(refitted))
+  expect_true(is_mdl_df(refitted$grp))
+  expect_equal(
+    dplyr::select(dplyr::filter(tidy(refitted), .model == "grp$lm"), -.model),
+    dplyr::select(dplyr::filter(tidy(refitted), .model == "lm"), -.model)
+  )
+})

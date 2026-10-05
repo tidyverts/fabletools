@@ -17,13 +17,13 @@
 #' @rdname hypothesize.mbl_df
 #' @importFrom generics hypothesize
 #' @export
-hypothesize.mbl_df <- function(x, ...){
-  mbl_vars <- mable_vars(x)
-  x <- mutate(as_tibble(x), 
-              dplyr::across(all_of(mbl_vars), function(x) lapply(x, hypothesize, ...)))
-  x <- pivot_longer(x, all_of(mbl_vars), names_to = ".model", values_to = ".hypothesis")
-  unnest(x, ".hypothesis")
-}
+hypothesize.mbl_df <- mbl_df_method(hypothesize, ".hypothesis")
+
+#' @export
+hypothesize.mdl_df <- mdl_df_method(hypothesize)
+
+#' @export
+hypothesize.mdl_lst <- mdl_lst_method(hypothesize)
 
 #' @param tests a list of test functions to perform on the model
 #' @rdname hypothesize.mbl_df

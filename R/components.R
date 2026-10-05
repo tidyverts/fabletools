@@ -24,15 +24,21 @@
 #' @rdname components
 #' @export
 components.mbl_df <- function(object, ...){
-  object <- tidyr::pivot_longer(object, all_of(mable_vars(object)),
-                             names_to = ".model", values_to = ".fit")
-  kv <- key_vars(object)
-  object <- transmute(as_tibble(object),
-                      !!!syms(kv), !!sym(".model"),
-                      cmp = map(!!sym(".fit"), components))
-  attrs <- combine_dcmp_attr(object[["cmp"]])
-  object <- unnest_tsbl(object, "cmp", parent_key = kv)
-  as_dable(object, method = attrs[["method"]], resp = !!attrs[["response"]],
+  dispatch_mbl_df(object, ..., .f = components, .values_to = ".cmp",
+                  .unnest = unnest_dable)
+}
+
+#' @export
+components.mdl_df <- mdl_df_method(components)
+
+#' @export
+components.mdl_lst <- mdl_lst_method(components)
+
+# Combine the nested decompositions of each model into a dable
+unnest_dable <- function(x, col, key) {
+  attrs <- combine_dcmp_attr(x[[col]])
+  x <- unnest_tsbl(x, col, parent_key = key)
+  as_dable(x, method = attrs[["method"]], resp = !!attrs[["response"]],
            seasons = attrs[["seasons"]], aliases = attrs[["aliases"]])
 }
 

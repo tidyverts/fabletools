@@ -323,15 +323,6 @@ dist_types <- function(dist) {
   map_chr(vec_data(dist), function(x) class(x)[1])
 }
 
-mbl_df_apply <- function(x, f, ...) {
-  mbl_vars <- mable_vars(x)
-  kv <- key_vars(x)
-  x <- mutate(as_tibble(x), 
-              dplyr::across(all_of(mbl_vars), function(x) lapply(x, f, ...)))
-  x <- pivot_longer(x, all_of(mbl_vars), names_to = ".model", values_to = "__results__")
-  unnest_tsbl(x, "__results__", parent_key = c(kv, ".model"))
-}
-
 # Check that the data underlying a mable does not already contain columns whose
 # names are reserved for identifiers added to the output (such as `.model` from
 # forecast() or `.rep` from generate()). Without this check the name clash

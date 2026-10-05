@@ -19,19 +19,14 @@
 #' 
 #' @rdname augment
 #' @export
-augment.mbl_df <- function(x, ...){
-  mbl_vars <- mable_vars(x)
-  kv <- key_vars(x)
-  x <- mutate(as_tibble(x), dplyr::across(all_of(mbl_vars), augment))
-  x <- pivot_longer(x, all_of(mbl_vars), names_to = ".model", values_to = ".aug")
-  unnest_tsbl(x, ".aug", parent_key = c(kv, ".model"))
-}
+augment.mbl_df <- mbl_df_method(augment, ".aug", unnest = "tsibble")
+
+#' @export
+augment.mdl_df <- mdl_df_method(augment)
 
 #' @rdname augment
 #' @export
-augment.mdl_lst <- function(x, ...){
-  lapply(x, augment, ...)
-}
+augment.mdl_lst <- mdl_lst_method(augment)
 #' @export
 augment.lst_mdl <- deprecate_lst_mdl(augment.mdl_lst)
 
@@ -97,18 +92,14 @@ Response residuals are now always found in `.resid` and innovation residuals are
 #'   glance()
 #' @rdname glance
 #' @export
-glance.mbl_df <- function(x, ...){
-  mbl_vars <- mable_vars(x)
-  x <- mutate(as_tibble(x), dplyr::across(all_of(mbl_vars), glance))
-  x <- pivot_longer(x, all_of(mbl_vars), names_to = ".model", values_to = ".glanced")
-  unnest(x, ".glanced")
-}
+glance.mbl_df <- mbl_df_method(glance, ".glanced")
+
+#' @export
+glance.mdl_df <- mdl_df_method(glance)
 
 #' @rdname glance
 #' @export
-glance.mdl_lst <- function(x, ...){
-  lapply(x, glance, ...)
-}
+glance.mdl_lst <- mdl_lst_method(glance)
 #' @export
 glance.lst_mdl <- deprecate_lst_mdl(glance.mdl_lst)
 
@@ -136,23 +127,19 @@ glance.mdl_ts <- function(x, ...){
 #' 
 #' @rdname tidy
 #' @export
-tidy.mbl_df <- function(x, ...){
-  mbl_vars <- mable_vars(x)
-  x <- mutate(as_tibble(x), dplyr::across(all_of(mbl_vars), tidy))
-  x <- pivot_longer(x, all_of(mbl_vars), names_to = ".model", values_to = ".tidied")
-  unnest(x, ".tidied")
-}
+tidy.mbl_df <- mbl_df_method(tidy, ".tidied")
 
 #' @rdname tidy
 #' @export
 coef.mbl_df <- function(object, ...){
   tidy(object, ...)
 }
-#' @rdname tidy
 #' @export
-coef.mdl_lst <- function(object, ...){
-  lapply(object, tidy, ...)
-}
+coef.mdl_df <- mdl_df_method(coef)
+#' @rdname tidy
+#' @importFrom stats coef
+#' @export
+coef.mdl_lst <- mdl_lst_method(coef)
 #' @export
 coef.lst_mdl <- deprecate_lst_mdl(coef.mdl_lst)
 #' @rdname tidy
@@ -161,11 +148,11 @@ coef.mdl_ts <- function(object, ...){
   tidy(object, ...)
 }
 
+#' @export
+tidy.mdl_df <- mdl_df_method(tidy)
 #' @rdname tidy
 #' @export
-tidy.mdl_lst <- function(x, ...){
-  lapply(x, tidy, ...)
-}
+tidy.mdl_lst <- mdl_lst_method(tidy)
 #' @export
 tidy.lst_mdl <- deprecate_lst_mdl(tidy.mdl_lst)
 #' @rdname tidy

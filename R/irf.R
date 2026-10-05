@@ -46,9 +46,13 @@ IRF <- function(x, ...) {
 }
 
 #' @export
-IRF.mbl_df <- function(x, ...){
-  mbl_df_apply(x, IRF, ...)
-}
+IRF.mbl_df <- mbl_df_method(IRF, ".irf", unnest = "tsibble", new_data = "optional")
+
+#' @export
+IRF.mdl_df <- mdl_df_method(IRF)
+
+#' @export
+IRF.mdl_lst <- mdl_lst_method(IRF, new_data = TRUE)
 
 #' @export
 IRF.mdl_ts <- function(x, new_data = NULL, h = NULL, ...) {

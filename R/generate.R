@@ -26,48 +26,20 @@
 #'   generate(UKLungDeaths, times = 5)
 #' @export
 generate.mbl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
-  mdls <- mable_vars(x)
+  h <- check_horizon(new_data, h)
   # A `.rep` column is allowed in `new_data`, where it identifies replications.
   check_reserved_names(x, new_data, key = c(".model", ".rep"), data = ".model")
-  if(!is.null(new_data)){
-    x <- bind_new_data(x, new_data)
-  }
-  kv <- c(key_vars(x), ".model")
-  x <- as_tibble(x)
-  
-  # Model groups (`mdl_df`) are simulated as a whole, keeping any joint
-  # behaviour they have, before the remaining models are simulated separately.
-  grps <- mdls[map_lgl(x[mdls], is_mdl_df)]
-  sims <- unpack_model_results(
-    map(x[grps], generate, new_data = x[["new_data"]],
-        h = h, times = times, seed = seed, ...)
+  dispatch_mbl_df(
+    x, h = h, times = times, seed = seed, ...,
+    .f = generate, .new_data = new_data, .values_to = ".sim", .unnest = "tsibble"
   )
-  mdls <- setdiff(mdls, grps)
-  if(!is_empty(grps)) {
-    # Allow the remaining models to be pivoted alongside the simulations
-    x[mdls] <- map(x[mdls], vec_data)
-  }
-  x <- vec_cbind(x[setdiff(names(x), grps)], tibble::new_tibble(sims, nrow = NROW(x)))
-  x <- tidyr::pivot_longer(x, all_of(c(mdls, names(sims))),
-                           names_to = ".model", values_to = ".sim")
-  
-  # Evaluate simulations
-  x[[".sim"]] <- map2(x[[".sim"]], 
-                 x[["new_data"]] %||% rep(list(NULL), length.out = NROW(x)),
-                 function(mdl, new_data) {
-                   if(!is_model(mdl)) return(mdl)
-                   generate(mdl, new_data, h = h, times = times, seed = seed, ...)
-                 })
-  x[["new_data"]] <- NULL
-  unnest_tsbl(x, ".sim", parent_key = kv)
 }
 
 #' @export
-generate.mdl_lst <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...) {
-  map2(x, 
-       new_data %||% rep(list(NULL), length.out = NROW(x)),
-       generate, h = h, times = times, seed = seed, ...)
-}
+generate.mdl_df <- mdl_df_method(generate)
+
+#' @export
+generate.mdl_lst <- mdl_lst_method(generate, new_data = TRUE)
 #' @export
 generate.lst_mdl <- deprecate_lst_mdl(generate.mdl_lst)
 

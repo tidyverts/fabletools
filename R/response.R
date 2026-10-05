@@ -12,17 +12,13 @@ response <- function(object, ...){
 }
 
 #' @export
-response.mbl_df <- function(object, ...){
-  object <- tidyr::pivot_longer(object, all_of(mable_vars(object)),
-                             names_to = ".model", values_to = ".fit")
-  kv <- c(key_vars(object), ".model")
-  object <- transmute(as_tibble(object),
-                   !!!syms(kv),
-                   !!sym(".model"),
-                   response = map(!!sym(".fit"), response)
-  )
-  unnest_tsbl(object, "response", parent_key = kv)
-}
+response.mbl_df <- mbl_df_method(response, ".response", unnest = "tsibble")
+
+#' @export
+response.mdl_df <- mdl_df_method(response)
+
+#' @export
+response.mdl_lst <- mdl_lst_method(response)
 
 #' @export
 response.mdl_ts <- function(object, ...){

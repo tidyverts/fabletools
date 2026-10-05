@@ -474,22 +474,15 @@ accuracy.mbl_df <- function(object, measures = point_accuracy_measures, ...){
 Hint: A tsibble of future values is only required when computing accuracy of a fable. To compute forecast accuracy, you'll need to compute the forecasts first.")
   }
 
-  mbl_vars <- mable_vars(object)
-
-  # No longer want semantics of a mable
-  object <- as_tibble(object)
-
-  object[mbl_vars] <- lapply(object[mbl_vars], accuracy, measures = measures, ...)
-
-  tidyr::pivot_longer(object, mbl_vars, names_to = ".model", values_to = ".acc") %>% 
-    unnest_tbl(".acc")
+  dispatch_mbl_df(object, measures = measures, ..., .f = accuracy, .values_to = ".acc")
 }
+
+#' @export
+accuracy.mdl_df <- mdl_df_method(accuracy)
 
 #' @rdname accuracy
 #' @export
-accuracy.mdl_lst <- function(object, measures = point_accuracy_measures, ...){
-  lapply(object, accuracy, measures = measures, ...)
-}
+accuracy.mdl_lst <- mdl_lst_method(accuracy)
 
 #' @rdname accuracy
 #' @export

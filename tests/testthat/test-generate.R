@@ -73,3 +73,25 @@ test_that("generate() errors informatively when `.model` or `.rep` is already us
   gen <- generate(model(dt1, naive = fable::NAIVE(y)), new_data = nd)
   expect_equal(NROW(gen), 2)
 })
+test_that("generate() ignores `h` when `new_data` is provided, as forecast() does", {
+  skip_if_not_installed("fable")
+
+  nd <- tsibble::new_data(us_deaths_tr, 3)
+  expect_warning(
+    gen <- generate(mbl, new_data = nd, h = 12),
+    "`h` will be ignored"
+  )
+  expect_equal(NROW(gen), 3)
+})
+
+test_that("generate() works with model columns of different classes (#408)", {
+  skip_if_not_installed("fable")
+
+  fit <- lung_deaths_long %>%
+    aggregate_key(key, value = sum(value)) %>%
+    model(snaive = fable::SNAIVE(value)) %>%
+    mutate(bu = reconcile_bu(snaive), td = reconcile_td(snaive))
+  gen <- generate(fit, h = 2, times = 3)
+  expect_equal(unique(gen$.model), c("snaive", "bu", "td"))
+  expect_equal(NROW(gen), 3 * 3 * 2 * 3)
+})

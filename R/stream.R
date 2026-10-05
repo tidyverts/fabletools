@@ -16,18 +16,13 @@ stream <- function(object, ...){
 #' 
 #' @rdname stream
 #' @export
-stream.mbl_df <- function(object, new_data, ...){
-  mdls <- mable_vars(object)
-  object <- bind_new_data(object, new_data)
-  new_data <- object[["new_data"]]
-  object[["new_data"]] <- NULL
-  dplyr::mutate_at(object, vars(!!!mdls), stream, new_data, ...)
-}
+stream.mbl_df <- mbl_df_method(stream, new_data = "required", modify = TRUE)
 
 #' @export
-stream.mdl_lst <- function(object, new_data, ...){
-  add_class(map2(object, new_data, stream, ...), class(object))
-}
+stream.mdl_df <- mdl_df_method(stream, modify = TRUE)
+
+#' @export
+stream.mdl_lst <- mdl_lst_method(stream, new_data = TRUE, modify = TRUE)
 #' @export
 stream.lst_mdl <- deprecate_lst_mdl(stream.mdl_lst)
 
