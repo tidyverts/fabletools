@@ -36,3 +36,16 @@ test_that("trend() knots and origin must match a mixtime index's resolution", {
     "same time resolution"
   )
 })
+
+test_that("trend() is proportional to elapsed time for irregular data", {
+  x <- xreg_tsbl(c(1, 3, 4, 9), regular = FALSE)
+  expect_equal(fbl_trend(x, origin = 1)$trend, c(1, 3, 4, 9))
+  expect_equal(fbl_trend(x, knots = 4, origin = 1)[[2]], c(0, 0, 0, 5))
+  
+  x <- xreg_tsbl(as.Date("2020-01-01") + c(0, 2, 3, 8), regular = FALSE)
+  expect_equal(fbl_trend(x, origin = x$t[1])$trend, c(1, 3, 4, 9))
+  
+  # A single observation has no known interval
+  x <- xreg_tsbl(as.Date("2020-01-01"))
+  expect_equal(fbl_trend(x, origin = x$t[1])$trend, 1)
+})

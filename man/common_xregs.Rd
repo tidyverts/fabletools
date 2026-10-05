@@ -17,7 +17,7 @@ the model formulae interface.
 
 
 \subsection{trend}{
-The \code{trend} special includes common linear trend regressors in the model. It also supports piecewise linear trend via the \code{knots} argument.
+The \code{trend} special includes common linear trend regressors in the model. It also supports piecewise linear trend via the \code{knots} argument. For irregular time series, the trend is proportional to elapsed time, measured in the units of the time index (e.g. days for \code{Date}, seconds for \code{POSIXct}).
 \preformatted{
 trend(knots = NULL, origin = NULL)
 }

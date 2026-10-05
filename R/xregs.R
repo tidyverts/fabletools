@@ -49,6 +49,11 @@ fbl_trend <- function(x, knots = NULL, origin = NULL) {
     index_time_as_double(x, knots, "knots")
   }
   index_interval <- index_time_units(x)
+  if (!isTRUE(index_interval > 0)) {
+    # Without a known interval (e.g. irregular data), the trend is
+    # proportional to elapsed time in the units of the index
+    index_interval <- 1
+  }
   idx_num <- idx_num / index_interval
   knots_num <- knots_num / index_interval
   if (!is.null(origin)) {
@@ -124,7 +129,7 @@ fbl_fourier <- function(x, period, K) {
 #' @section Specials:
 #'
 #' \subsection{trend}{
-#' The `trend` special includes common linear trend regressors in the model. It also supports piecewise linear trend via the `knots` argument.
+#' The `trend` special includes common linear trend regressors in the model. It also supports piecewise linear trend via the `knots` argument. For irregular time series, the trend is proportional to elapsed time, measured in the units of the time index (e.g. days for `Date`, seconds for `POSIXct`).
 #' \preformatted{
 #' trend(knots = NULL, origin = NULL)
 #' }

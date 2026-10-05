@@ -53,6 +53,8 @@
 
 ## Bug fixes
 
+* `trend()` for irregular time series is now proportional to elapsed time in
+  the units of the time index, instead of `NaN`.
 * `trend()` now converts `knots` and `origin` to the class of the time index,
   and errors if they're incompatible. Previously other classes (e.g. a `Date`
   origin for a `yearmonth` index, or text knots) silently gave wrong trends.
