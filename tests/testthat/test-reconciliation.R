@@ -241,6 +241,44 @@ test_that("middle_out reconciles multi-level hierarchies", {
   expect_equal(total$.mean, total_from_cat$.mean)
 })
 
+test_that("top_down and middle_out reconcile sample paths (#408)", {
+  skip_if_not_installed("fable")
+
+  set.seed(408)
+  sim_hts <- tidyr::expand_grid(
+    index    = tsibble::yearmonth("2020 Jan") + 0:35,
+    category = c("Food", "Tech"),
+    sku      = c("S1", "S2", "S3")
+  ) |>
+    dplyr::mutate(sales = rpois(dplyr::n(), lambda = 50)) |>
+    tsibble::as_tsibble(key = c(category, sku), index = index) |>
+    aggregate_key(category / sku, sales = sum(sales))
+
+  fc_tbl <- sim_hts |>
+    model(snaive = fable::SNAIVE(sales)) |>
+    mutate(snaive = simulate_iid(snaive, times = 100)) |>
+    mutate(td = reconcile_td(snaive), mo = reconcile_mo(snaive)) |>
+    forecast(h = 3) |>
+    dplyr::filter(.model != "snaive") |>
+    as_tibble()
+
+  # Sample paths are kept rather than collapsed to degenerate distributions
+  expect_true(all(distributional::variance(fc_tbl$sales) > 0))
+
+  # Each reconciled sample path is coherent
+  sample_paths <- function(x) do.call(cbind, distributional::parameters(x)$x)
+  for (mdl in c("td", "mo")) {
+    fc <- dplyr::filter(fc_tbl, .model == mdl)
+    total <- dplyr::filter(fc, is_aggregated(category)) |> dplyr::arrange(index)
+    btm <- dplyr::filter(fc, !is_aggregated(sku)) |> dplyr::arrange(index)
+    btm_sum <- Reduce(`+`, lapply(
+      split(btm$sales, interaction(btm$category, btm$sku)), sample_paths
+    ))
+    expect_equal(sample_paths(total$sales), btm_sum)
+    expect_equal(total$.mean, colMeans(btm_sum))
+  }
+})
+
 test_that("reconcile_*() aliases match their underlying functions", {
   skip_if_not_installed("fable")
 

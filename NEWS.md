@@ -47,6 +47,8 @@
 * Fixed `[[<-` not registering model columns in a mable (#402, #323).
 * Fixed `min_trace()` positive definite check not being scale invariant (#358).
 * Improved error for singular covariance matrices in `min_trace()` (#309).
+* Fixed `top_down()` and `middle_out()` reconciliation collapsing sample path
+  forecasts (e.g. from `simulate_iid()`) to degenerate distributions (#408).
 * Fixed parallel estimation not being used when `future::plan()` is set
   without attaching future (#363, #420).
 * Improved error for name clashes with existing `.model` or `.rep` columns in

@@ -346,6 +346,12 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
       fc_var <- fc_prop * fc_var[[top]] * fc_prop
       fc_var <- split(fc_var, col(fc_var))
       fc_dist <- map2(fc_mean, map(fc_var, sqrt), distributional::dist_normal)
+    } else if (all(dist_types(fc_dist[[top]]) == "dist_sample")) {
+      # Disaggregate each sample path of the top level forecasts
+      top_x <- distributional::parameters(fc_dist[[top]])$x
+      fc_dist <- lapply(seq_len(ncol(fc_prop)), function(j) {
+        unname(distributional::dist_sample(map2(top_x, fc_prop[,j], `*`)))
+      })
     } else {
       fc_dist <- lapply(fc_mean, distributional::dist_degenerate)
     }
@@ -541,7 +547,23 @@ forecast.lst_midout_mdl <- function(object, key_data,
       diag(SP%*%diag(map_dbl(fc_var, `[[`, i))%*%t(SP))
     })
     fc_dist <- map2(fc_mean, transpose_dbl(map(fc_var, sqrt)), distributional::dist_normal)
-    
+
+  } else if (all(map_lgl(fc_dist, function(x) all(dist_types(x) == "dist_sample")))) {
+    # Sample paths of the middle level series for each bottom level series
+    fc_pos <- seq_len(nrow(key_data))[-nodes_above]
+    mid_x <- lapply(fc_dist[match(mid_root_nodes, fc_pos)],
+                    function(x) distributional::parameters(x)$x)
+    sample_size <- unique(unlist(lapply(mid_x, lengths)))
+    if(length(sample_size) != 1L) stop("Cannot reconcile sample paths with different replication sizes.")
+    # Disaggregate to bottom level, then aggregate with S: [samples, nodes] per horizon
+    samples <- lapply(seq_len(h), function(i) {
+      btm_x <- do.call(cbind, lapply(mid_x, `[[`, i))
+      btm_x <- btm_x * rep(fc_prop[i,], each = sample_size)
+      btm_x %*% t(S)
+    })
+    fc_dist <- lapply(seq_len(nrow(S)), function(j) {
+      unname(distributional::dist_sample(lapply(samples, function(x) x[,j])))
+    })
   } else {
     fc_dist <- lapply(fc_mean, distributional::dist_degenerate)
   }
