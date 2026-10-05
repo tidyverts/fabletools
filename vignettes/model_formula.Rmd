@@ -1,0 +1,234 @@
+---
+title: "The model formula"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The model formula}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = requireNamespace("fable", quietly = TRUE) &&
+    requireNamespace("tsibbledata", quietly = TRUE) &&
+    requireNamespace("feasts", quietly = TRUE)
+)
+```
+
+```{r setup, message = FALSE}
+library(fabletools)
+library(fable)
+library(tsibble)
+library(dplyr)
+```
+
+Models built with fabletools (such as those in the fable package) are specified with a model formula. Much like `lm()`, the formula has two sides:
+
+```r
+MODEL(response ~ specials + regressors)
+```
+
+* The **left hand side** (LHS) says what is being modelled: the response variable, any transformations of it, and (for multivariate models) several responses.
+* The **right hand side** (RHS) says how it is modelled: model-specific *specials* (like `pdq()` for `ARIMA()`), deterministic terms (like `trend()` and `season()`), and exogenous regressors from the data.
+
+Both sides are optional. If the RHS is omitted, the model uses its default (often automatically selected) specification. If the response is omitted and the data has exactly one measured variable, it is used as the response.
+
+```{r}
+lung_deaths <- as_tsibble(cbind(mdeaths, fdeaths), pivot_longer = TRUE)
+lung_deaths |>
+  model(
+    auto = ETS(value),
+    manual = ETS(value ~ error("A") + trend("N") + season("A"))
+  )
+```
+
+# The left hand side
+
+## Response variables
+
+The simplest LHS is a variable from the data, which is the variable being forecast. Forecasts, fitted values and residuals are all given on the scale of this variable.
+
+## Transformations
+
+Transformations can be written directly in the formula, using the response variable in an expression.
+
+```{r}
+fit <- lung_deaths |>
+  model(ETS(log(value)))
+```
+
+fabletools works out the inverse of the transformation, so the model is estimated on the transformed scale and the results are automatically back-transformed to the original scale of the response. Forecasts are distributions of the back-transformed response, shown as `t(<distribution>)`. The point forecast `.mean` is the mean of this distribution, which is bias-adjusted.
+
+```{r}
+fit |> forecast(h = 3)
+```
+
+Transformations can be combined, for example `log(value + 1)` or `box_cox(value, 0.3) + 10`. Supported functions include arithmetic (`+`, `-`, `*`, `/`, `^`), `log()` and its variants, `exp()`, `sqrt()` and `box_cox()`. Other transformations can be defined with `new_transformation()`, which pairs a function with its inverse.
+
+## Identifying the response with `resp()`
+
+A transformation can involve other values besides the response, such as the `0.3` in `box_cox(value, 0.3)`. fabletools needs to know which of these is the response variable, so it can be back-transformed.
+
+By default, the response is identified as the only argument that is as long as the data. Other arguments must be length 1 (constant), such as `0.3` above. Any constant arguments are saved with the model and reused for back-transforming fitted values and forecasts.
+
+When a transformation uses more than one variable from the data, it is ambiguous which is the response. For example, to forecast GDP per capita, `GDP / Population` could be a model of either variable. When this happens, the whole expression is treated as the response variable (in this case named `GDP/Population`), and it isn't back-transformed.
+
+Wrap the response variable in `resp()` to remove this ambiguity. The other data variables are then treated as **time-varying parameters** of the transformation.
+
+```{r}
+aus_economy <- tsibbledata::global_economy |>
+  filter(Code == "AUS")
+fit <- aus_economy |>
+  model(ETS(resp(GDP) / Population))
+fit
+```
+
+The model is estimated on GDP per capita, while fitted values and forecasts are back-transformed to `GDP`. Since `Population` changes over time, its future values are needed to forecast GDP. These are given with the `new_data` argument of `forecast()`:
+
+```{r}
+future_population <- new_data(aus_economy, 3) |>
+  mutate(Population = last(aus_economy$Population) * 1.015^(1:3))
+fit |> forecast(new_data = future_population)
+```
+
+### Transformation parameters for each series
+
+A common case of this is a transformation parameter that differs between series. The Guerrero method from the feasts package gives a Box-Cox $\lambda$ for each series. After joining these to the data, the `lambda_guerrero` column is as long as `Count`, so `resp()` or a length-1 parameter is needed.
+
+```{r}
+livestock <- tsibbledata::aus_livestock |>
+  filter(State == "Victoria", Animal %in% c("Cows and heifers", "Lambs", "Pigs"))
+lambda <- livestock |>
+  features(Count, features = feasts::guerrero)
+lambda
+livestock <- livestock |>
+  left_join(lambda, by = c("Animal", "State"))
+```
+
+There are two ways to specify this model, depending on whether the parameter should vary over time.
+
+1. **A time-varying parameter**: identify the response with `resp()`. The parameter's future values must be given in `new_data` when forecasting.
+
+    ```{r}
+    fit <- livestock |>
+      model(ETS(box_cox(resp(Count), lambda_guerrero)))
+    future <- new_data(livestock, 12) |>
+      left_join(lambda, by = c("Animal", "State"))
+    fit |> forecast(new_data = future)
+    ```
+
+2. **A time-invariant parameter**: reduce the parameter to length 1, for example with `first()`. Models are estimated for each series separately, so each series uses its own $\lambda$. The value is saved with the model, so `new_data` isn't needed.
+
+    ```{r}
+    fit <- livestock |>
+      model(ETS(box_cox(Count, first(lambda_guerrero))))
+    fit |> forecast(h = 12)
+    ```
+
+The second approach is usually simpler when the parameter is constant within each series.
+
+## Multivariate responses with `vars()`
+
+Multivariate models, such as `VAR()`, model several response variables jointly. These are given on the LHS with `vars()`, and each response can have its own transformation.
+
+```{r}
+lung_deaths_wide <- as_tsibble(cbind(mdeaths, fdeaths), pivot_longer = FALSE)
+fit <- lung_deaths_wide |>
+  model(var = VAR(vars(log(mdeaths), fdeaths)))
+fit
+```
+
+Each response is back-transformed separately. Multivariate forecast distributions can't yet be back-transformed directly, so forecasts from a transformed multivariate model are produced from simulated sample paths using `simulate_iid()`.
+
+```{r}
+fit |>
+  mutate(var = simulate_iid(var)) |>
+  forecast(h = 3)
+```
+
+# The right hand side
+
+## Specials
+
+Specials are functions used in the formula to set the structure of a model. Each model has its own specials, which are documented in the "Specials" section of the model's help file (for example, `?ETS` and `?ARIMA`).
+
+```{r}
+lung_deaths |>
+  model(
+    ets = ETS(value ~ error("M") + trend("Ad") + season("M")),
+    arima = ARIMA(value ~ 1 + pdq(1, 0, 0) + PDQ(0, 1, 1))
+  )
+```
+
+A special that isn't specified uses its default. Many specials search over a set of options by default, so a partially specified formula like `ARIMA(value ~ PDQ(0, 1, 1))` fixes the seasonal part and automatically selects the rest. Some models also use the intercept (`1` or `0`) as part of their specification, such as whether `ARIMA()` includes a constant.
+
+## Deterministic terms
+
+Models that support regressors (such as `TSLM()` and `ARIMA()`) can use deterministic terms of time, which are computed from the time index:
+
+* `trend(knots = NULL, origin = NULL)` gives a linear trend, which is piecewise linear if `knots` are given.
+* `season(period = NULL)` gives seasonal dummy variables.
+* `fourier(period = NULL, K)` gives Fourier terms for smooth seasonal patterns.
+
+```{r}
+lung_deaths |>
+  model(
+    dummy = TSLM(value ~ trend() + season()),
+    harmonic = TSLM(value ~ trend() + fourier(K = 2))
+  ) |>
+  forecast(h = 12)
+```
+
+These terms are computed from the time index, so they can be forecast without extra data.
+
+## Exogenous regressors
+
+Other variables from the data can be used as regressors by adding them to the RHS, in the same way as in `lm()`. This includes transformations of regressors (`log(x)`), polynomials (`I(x^2)`) and interactions (`x:z`). The intercept is controlled with `1` and `0` (or `-1`), and `.` uses all other measured variables in the data.
+
+```{r}
+elec <- tsibbledata::vic_elec |>
+  index_by(Date = as.Date(Time)) |>
+  summarise(
+    Demand = sum(Demand) / 1e3,
+    Temperature = max(Temperature),
+    Holiday = any(Holiday)
+  ) |>
+  mutate(Workday = !Holiday & !(lubridate::wday(Date) %in% c(1, 7)))
+
+fit <- elec |>
+  model(
+    ARIMA(Demand ~ Temperature + I(Temperature^2) + Workday)
+  )
+fit
+```
+
+Regressors given on the RHS are passed to the model's `xreg()` special, which can also be used directly. Some models give `xreg()` extra options; for example, `ARIMA(y ~ xreg(x, fixed = list(x = 1)))` fixes a coefficient's value.
+
+Unlike deterministic terms, the future values of exogenous regressors must be given to `forecast()` with `new_data`. This also allows forecasts under different scenarios.
+
+```{r}
+future_elec <- new_data(elec, 7) |>
+  mutate(
+    Temperature = c(26, 30, 34, 27, 25, 24, 26),
+    Workday = !(lubridate::wday(Date) %in% c(1, 7))
+  )
+fit |>
+  forecast(new_data = future_elec)
+```
+
+# Summary
+
+| Formula | Meaning |
+|---|---|
+| `y` | Model `y` with the default specification |
+| `log(y)` | Model `log(y)`, back-transformed to `y` |
+| `box_cox(y, 0.3)` | A transformation with a constant parameter |
+| `box_cox(y, first(lambda))` | A constant parameter from the data (one per series) |
+| `box_cox(resp(y), lambda)` | A time-varying parameter from the data, `lambda` needed in `new_data` |
+| `resp(y) / x` | The response is `y`, transformed using another variable `x` |
+| `vars(y, log(z))` | A multivariate model of `y` and `z` |
+| `y ~ pdq(1, 0, 0)` | Model-specific specials |
+| `y ~ trend() + season()` | Deterministic terms, no `new_data` needed |
+| `y ~ x + I(x^2)` | Exogenous regressors, `x` needed in `new_data` |
