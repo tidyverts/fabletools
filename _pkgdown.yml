@@ -65,7 +65,6 @@ reference:
     - middle_out
     - top_down
     - aggregate_key
-    - aggregate_index
     - agg_vec
     - is_aggregated
     - coherent_smat
