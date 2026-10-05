@@ -97,8 +97,8 @@ test_that("trend(), season() and fourier() match for mixtime and base indices", 
     expect_equal(fbl_trend(y, origin = mt[1]), fbl_trend(x, origin = base[1]))
     expect_equal(fbl_season(y, period), fbl_season(x, period))
     expect_equal(
-      fbl_fourier(y, period, K = 2, origin = mt[1]),
-      fbl_fourier(x, period, K = 2, origin = base[1])
+      fbl_fourier(y, period, K = 2),
+      fbl_fourier(x, period, K = 2)
     )
   }
   compare_xregs(d0 + 0:30, mixtime::date(d0 + 0:30), period = 7)

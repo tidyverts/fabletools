@@ -54,13 +54,10 @@ fbl_season <- function(x, period) {
   tibble(!!!season_exprs)
 }
 
-fbl_fourier <- function(x, period, K, origin = NULL) {
+fbl_fourier <- function(x, period, K) {
   idx_num <- as.double(x[[index_var(x)]])
   index_interval <- index_time_units(x)
   idx_num <- idx_num / index_interval
-  if (!is.null(origin)) {
-    origin <- as.double(origin) / index_interval
-  }
   period <- get_frequencies(period, x, .auto = "smallest")
   
   if (length(period) != length(K)) {
@@ -127,13 +124,12 @@ fbl_fourier <- function(x, period, K, origin = NULL) {
 #' \subsection{fourier}{
 #' The `fourier` special includes seasonal fourier terms in the model. The maximum order of the fourier terms must be specified using `K`.
 #' \preformatted{
-#' fourier(period = NULL, K, origin = NULL)
+#' fourier(period = NULL, K)
 #' }
 #'
 #' \tabular{ll}{
 #'   `period`   \tab The periodic nature of the seasonality. This can be either a number indicating the number of observations in each seasonal period, or text to indicate the duration of the seasonal window (for example, annual seasonality would be "1 year"). \cr
-#'   `K`        \tab The maximum order of the fourier terms.\cr
-#'   `origin`   \tab An optional time value to act as the starting time for the fourier series.
+#'   `K`        \tab The maximum order of the fourier terms.
 #' }
 #' }
 #'
@@ -154,13 +150,7 @@ common_xregs <- list(
     out <- as_model_matrix(fabletools:::fbl_season(self$data, period))
     stats::model.matrix(~., data = out)[, -1, drop = FALSE]
   },
-  fourier = function(period = NULL, K, origin = NULL) {
-    if (is.null(origin)) {
-      if (is.null(self$origin)) {
-        self$origin <- self$data[[index_var(self$data)]][[1]]
-      }
-      origin <- self$origin
-    }
-    as.matrix(fabletools:::fbl_fourier(self$data, period, K, origin))
+  fourier = function(period = NULL, K) {
+    as.matrix(fabletools:::fbl_fourier(self$data, period, K))
   }
 )

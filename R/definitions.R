@@ -102,7 +102,7 @@ model_definition <- R6::R6Class(NULL,
 #' @param ... Further arguments to [R6::R6Class()]. This can be useful to set up
 #' additional elements used in the other functions. For example, to use 
 #' `common_xregs`, an `origin` element in the model is used to store
-#' the origin for `trend()` and `fourier()` specials. To use these specials, you
+#' the origin for the `trend()` special. To use this special, you
 #' must add an `origin` element to the object (say with `origin = NULL`).
 #' @param .env The environment from which functions should inherit from.
 #' @param .inherit A model class to inherit from.

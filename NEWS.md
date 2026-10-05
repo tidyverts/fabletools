@@ -102,6 +102,9 @@
 
 ## Breaking changes
 
+* Removed the `origin` argument of the `fourier()` special, which had no
+  effect. Fourier terms are anchored to the time index's epoch, consistent
+  with `season()`.
 * `reconcile()` is soft-deprecated in favour of `mutate()` with the
   `reconcile_*()` functions (e.g. `mutate(lm = reconcile_mint(lm))`).
 
