@@ -47,6 +47,9 @@
 * `get_frequencies()` now accepts mixtime durations, so seasonal periods and
   forecast horizons can be given as e.g. `forecast(h = mixtime::years(2L))`
   or `season(period = mixtime::weeks(1L))`.
+* `trend()`, `season()` and `fourier()` now count steps of the interval for
+  mixtime indices whose chronon differs from their interval (e.g. a
+  15-minute index measured in seconds).
 
 ## Bug fixes
 

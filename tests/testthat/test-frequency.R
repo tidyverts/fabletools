@@ -89,6 +89,27 @@ test_that("common_periods() for mixtime indices", {
   )
 })
 
+test_that("trend(), season() and fourier() match for mixtime and base indices", {
+  skip_if_no_granules()
+  compare_xregs <- function(base, mt, period) {
+    x <- freq_tsbl(base)
+    y <- freq_tsbl(mt)
+    expect_equal(fbl_trend(y, origin = mt[1]), fbl_trend(x, origin = base[1]))
+    expect_equal(fbl_season(y, period), fbl_season(x, period))
+    expect_equal(
+      fbl_fourier(y, period, K = 2, origin = mt[1]),
+      fbl_fourier(x, period, K = 2, origin = base[1])
+    )
+  }
+  compare_xregs(d0 + 0:30, mixtime::date(d0 + 0:30), period = 7)
+  compare_xregs(t0 + 3600*(0:60), mixtime::datetime(t0 + 3600*(0:60)), period = 24)
+  compare_xregs(t0 + 900*(0:200), mixtime::datetime(t0 + 900*(0:200)), period = 96)
+
+  # Trend counts interval steps from the origin
+  x <- freq_tsbl(mixtime::datetime(t0 + 900*(0:10)))
+  expect_equal(fbl_trend(x, origin = x$t[1])$trend, 1:11)
+})
+
 test_that("models and forecasts with a mixtime index", {
   skip_if_no_granules()
   skip_if_not_installed("fable")

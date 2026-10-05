@@ -1,3 +1,21 @@
+# The size of one interval step, measured in units of `as.double(index)`.
+index_time_units <- function(x) {
+  idx <- x[[index_var(x)]]
+  itvl <- interval(x)
+  granules <- interval_granules(itvl)
+  if (inherits(idx, "mixtime::mixtime") && !is.null(granules)) {
+    # Count chronons (the units of `as.double()`) per interval step, since the
+    # interval's time unit can differ from the index's chronon.
+    chronon <- mixtime::chronon_glb(idx)
+    n <- tryCatch(
+      sum(map_dbl(granules, function(g) mixtime::chronon_cardinality(chronon, g))),
+      error = function(e) NULL
+    )
+    if (length(n) == 1 && is.finite(n)) return(n)
+  }
+  default_time_units(itvl)
+}
+
 fbl_trend <- function(x, knots = NULL, origin = NULL) {
   idx_num <- as.double(x[[index_var(x)]])
   knots_num <- if (is.null(knots)) {
@@ -5,7 +23,7 @@ fbl_trend <- function(x, knots = NULL, origin = NULL) {
   } else {
     as.double(knots)
   }
-  index_interval <- default_time_units(interval(x))
+  index_interval <- index_time_units(x)
   idx_num <- idx_num / index_interval
   knots_num <- knots_num / index_interval
   if (!is.null(origin)) {
@@ -28,7 +46,7 @@ fbl_trend <- function(x, knots = NULL, origin = NULL) {
 
 fbl_season <- function(x, period) {
   idx_num <- as.double(x[[index_var(x)]])
-  index_interval <- default_time_units(interval(x))
+  index_interval <- index_time_units(x)
   idx_num <- idx_num / index_interval
   period <- get_frequencies(period, x, .auto = "smallest")
   season_exprs <- map(period, function(.x) expr(factor(floor((idx_num %% (!!.x)) + 1), levels = seq_len(!!.x))))
@@ -38,7 +56,7 @@ fbl_season <- function(x, period) {
 
 fbl_fourier <- function(x, period, K, origin = NULL) {
   idx_num <- as.double(x[[index_var(x)]])
-  index_interval <- default_time_units(interval(x))
+  index_interval <- index_time_units(x)
   idx_num <- idx_num / index_interval
   if (!is.null(origin)) {
     origin <- as.double(origin) / index_interval
