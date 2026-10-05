@@ -162,16 +162,18 @@ conformal_cv_errors <- function(object, H) {
 
   # Undo transformations, so refit() (which expects response-scale data) can
   # be given a plain prefix of the original history.
-  bt <- lapply(object$transformation, invert_transformation)
-  mv <- match(measured_vars(dt), names(dt))
-  dt[mv] <- mapply(calc, bt, dt[measured_vars(dt)], SIMPLIFY = FALSE)
+  bt <- lapply(object$transformation, function(x) {
+    invert_transformation(bind_transformation_data(x, dt))
+  })
+  mv <- match(model_response_cols(object), names(dt))
+  dt[mv] <- mapply(calc, bt, dt[mv], SIMPLIFY = FALSE)
   names(dt)[mv] <- resp
 
   actual <- dt[[resp]]
   # Errors are only computed for time points within the history, so each
   # origin's future data is a slice of the history's index (cheaper than
   # constructing it with make_future_data() for every origin).
-  future <- dt[c(key_vars(dt), index_var(dt))]
+  future <- dt[c(key_vars(dt), index_var(dt), model_transformation_params(object))]
   for (i in seq_len(n - 1L)) {
     h <- seq_len(min(H, n - i))
     mdl <- tryCatch(

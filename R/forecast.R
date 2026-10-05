@@ -255,6 +255,7 @@ forecast_mdl_ts_setup <- function(object, new_data, h) {
   if(is.null(new_data)){
     new_data <- make_future_data(object$data, h)
   }
+  check_transformation_data(object, new_data)
 
   # Reseed lag()'s short term memory from this fit's own snapshot.
   object$model$recent_data <- attr(object, "recent_data")

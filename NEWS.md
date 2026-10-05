@@ -53,6 +53,12 @@
 
 ## Bug fixes
 
+* Transformations with time-varying parameters from the data, such as
+  `box_cox(resp(value), lambda)`, now work with `fitted()`, `residuals()`,
+  `refit()`, `stream()` and `min_trace()` reconciliation. The parameters are
+  stored with the model's data, alongside the response. `forecast()`,
+  `generate()`, `refit()` and `stream()` give an informative error if the
+  parameter isn't in `new_data` (#382).
 * `trend()` for irregular time series is now proportional to elapsed time in
   the units of the time index, instead of `NaN`.
 * `trend()` now converts `knots` and `origin` to the class of the time index,

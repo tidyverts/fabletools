@@ -160,6 +160,49 @@ invert_transformation.transformation <- function(x, ...){
   new_transformation(attr(x, "inverse"), `attributes<-`(x, NULL))
 }
 
+# Variables used by a transformation besides its input, such as `lambda` in
+# `box_cox(resp(y), lambda)`. Those found in the data are time-varying
+# parameters of the transformation (#382).
+transformation_params <- function(x) {
+  setdiff(all.vars(body(x)), names(formals(x)))
+}
+
+# Time-varying transformation parameters stored in a model's data
+model_transformation_params <- function(object) {
+  params <- unlist(lapply(object$transformation, transformation_params))
+  intersect(params, measured_vars(object$data))
+}
+
+# Columns of a model's data containing the (transformed) response variables
+model_response_cols <- function(object) {
+  setdiff(measured_vars(object$data), model_transformation_params(object))
+}
+
+# Evaluate a transformation (and its inverse) using time-varying parameters
+# from `data`
+bind_transformation_data <- function(x, data) {
+  bind <- function(f) {
+    vars <- intersect(transformation_params(f), names(data))
+    if (length(vars) == 0) return(f)
+    set_env(f, new_environment(as.list(data)[vars], get_env(f)))
+  }
+  inv <- bind(attr(x, "inverse"))
+  x <- bind(x)
+  attr(x, "inverse") <- inv
+  x
+}
+
+check_transformation_data <- function(object, new_data) {
+  missing_vars <- setdiff(model_transformation_params(object), names(new_data))
+  if (length(missing_vars) > 0) {
+    abort(c(
+      sprintf("The response transformation uses time-varying parameter(s) %s, which must be included in `new_data`.",
+              paste0("`", missing_vars, "`", collapse = ", ")),
+      i = "If the parameter is constant over time, use a length-1 value instead (e.g. `first()`)."
+    ), call = NULL)
+  }
+}
+
 inverse_table <- inverse_table()
 
 map(c("log", "logb"),

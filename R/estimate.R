@@ -28,13 +28,17 @@ estimate.tbl_ts <- function(.data, .model, ...){
   # Compute response data (as attributes shouldn't change, using this approach should be much faster)
   .dt_attr <- attributes(.data)
   resp <- map(parsed$expressions, eval_tidy, data = .data, env = .model$specials)
+  params <- unlist(lapply(parsed$transformation, transformation_params))
+  params <- as.list(.data)[setdiff(intersect(params, names(.data)), index_var(.data))]
   .data <- unclass(.data)[index_var(.data)]
   .data[map_chr(parsed$expressions, expr_name)] <- resp
   attributes(.data) <- c(attributes(.data), .dt_attr[setdiff(names(.dt_attr), names(attributes(.data)))])
-  
+
   fit <- eval_tidy(
     expr(.model$train(.data = .data, specials = parsed$specials, !!!.model$extra))
   )
+  # Store time-varying transformation parameters alongside the response (#382)
+  .data[names(params)] <- params
   # Snapshot lag()'s short term memory onto this fit, not just `.model`.
   recent_data <- .model$recent_data
   .model$remove_data()

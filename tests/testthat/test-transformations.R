@@ -58,3 +58,63 @@ test_that("transformation chains", {
   # Something rediculous
   test_transformation(log(sqrt(sqrt(sqrt(sqrt(sqrt(y)))+3))))
 })
+
+test_that("time-varying transformation parameters (#382)", {
+  skip_if_not_installed("fable")
+  dt <- lung_deaths_long_tr %>% 
+    dplyr::mutate(lambda = ifelse(key == "mdeaths", 0.3, 0.2))
+  new_dt <- new_data(dt, 12) %>% 
+    dplyr::mutate(lambda = ifelse(key == "mdeaths", 0.3, 0.2))
+  
+  # resp() identifies the response, `lambda` is a time-varying parameter
+  mdl <- model(dt, ets = fable::ETS(box_cox(resp(value), lambda)))
+  expect_equal(response_vars(mdl), "value")
+  resp <- response(mdl)
+  expect_equal(
+    resp$.response,
+    dplyr::left_join(resp, dt, by = c("key", "index"))$value
+  )
+  fits <- fitted(mdl)
+  expect_true(all(is.finite(fits$.fitted)))
+  expect_true(all(fits$.fitted > 100))
+  fc <- forecast(mdl, new_data = new_dt)
+  expect_true(all(fc$.mean > 100))
+  expect_error(
+    forecast(mdl, h = 12),
+    "time-varying parameter"
+  )
+  expect_error(
+    generate(mdl, h = 12),
+    "time-varying parameter"
+  )
+  expect_true(all(generate(mdl, new_data = new_dt)$.sim > 0))
+
+  # Parameters are stored alongside the response
+  mdl_ts <- mdl$ets[[1]]
+  expect_equal(fabletools:::model_response_cols(mdl_ts), "box_cox(value, lambda)")
+  expect_true("lambda" %in% names(mdl_ts$data))
+
+  # Multi-step fitted values refit and forecast with the stored parameters
+  fits_h2 <- fitted(mdl[1,], h = 2)
+  expect_true(all(fits_h2$.fitted[-(1:2)] > 100, na.rm = TRUE))
+
+  # refit() and stream() use parameters from new_data
+  full <- lung_deaths_long %>%
+    dplyr::mutate(lambda = ifelse(key == "mdeaths", 0.3, 0.2))
+  mdl_refit <- refit(mdl, full)
+  expect_equal(nrow(mdl_refit$ets[[1]]$data), nrow(dplyr::filter(full, key == "fdeaths")))
+  expect_true(all(fitted(mdl_refit)$.fitted > 100))
+  new_obs <- dplyr::filter(full, index >= tsibble::yearmonth("1979 Jan"))
+  mdl_stream <- stream(mdl, new_obs)
+  expect_equal(mdl_stream$ets[[1]]$data$lambda, rep(0.2, 72))
+  expect_error(stream(mdl, dplyr::select(new_obs, -lambda)), "time-varying parameter")
+
+  # Equivalent to a length-1 (time invariant) parameter
+  mdl_const <- model(dt, ets = fable::ETS(box_cox(value, dplyr::first(lambda))))
+  expect_equal(response_vars(mdl_const), "value")
+  expect_equal(fitted(mdl_const)$.fitted, fits$.fitted)
+  expect_equal(
+    forecast(mdl_const, h = 12)$.mean,
+    fc$.mean
+  )
+})

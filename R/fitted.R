@@ -25,7 +25,9 @@ fitted.mdl_lst <- mdl_lst_method(fitted)
 #' 
 #' @export
 fitted.mdl_ts <- function(object, h = 1, ...){
-  bt <- map(object$transformation, invert_transformation)
+  bt <- map(object$transformation, function(x) {
+    invert_transformation(bind_transformation_data(x, object$data))
+  })
   
   fits <- if(h==1) fitted(object$fit, ...) else hfitted(object, h = h, ...)
   if(h == 1){
@@ -67,23 +69,31 @@ hfitted.mdl_ts <- function(object, h, ...) {
     }
     
     # Undo transformations
-    bt <- lapply(object$transformation, invert_transformation)
-    mv <- match(measured_vars(dt), names(dt))
-    dt[mv] <- mapply(calc, bt, dt[measured_vars(dt)], SIMPLIFY = FALSE)
+    bt <- lapply(object$transformation, function(x) {
+      invert_transformation(bind_transformation_data(x, dt))
+    })
+    mv <- match(model_response_cols(object), names(dt))
+    dt[mv] <- mapply(calc, bt, dt[mv], SIMPLIFY = FALSE)
     names(dt)[mv] <- resp
+    future <- dt[c(index_var(dt), model_transformation_params(object))]
     
     for (i in seq_len(n-h)) {
       mdl <- tryCatch(refit(object, vec_slice(dt, seq_len(i))),
                       error = function(e) NULL)
       if(is.null(mdl)) next
-      fits[i + h] <- mean(forecast(mdl, h = h, point_forecast = NULL)[[resp]][h])
+      # Future data includes time-varying transformation parameters
+      new_data <- vec_slice(future, i + seq_len(h))
+      attr(new_data, "interval") <- interval(future)
+      fits[i + h] <- mean(forecast(mdl, new_data = new_data, point_forecast = NULL)[[resp]][h])
     }
     fits <- list(fits)
   } else {
     # Direct hfitted method is 
     fits <- as.matrix(fn(object[["fit"]], h=h, ...))
     # Backtransform fits from model method
-    bt <- map(object$transformation, invert_transformation)
+    bt <- map(object$transformation, function(x) {
+      invert_transformation(bind_transformation_data(x, object$data))
+    })
     fits <- map2(bt, split(fits, col(fits)), function(bt, fit) bt(fit))
   }
   fits

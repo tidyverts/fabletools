@@ -47,15 +47,20 @@ stream.mdl_ts <- function(object, new_data, ...){
     )
   }
 
+  check_transformation_data(object, new_data)
+  params <- model_transformation_params(object)
   resp <- map2(object$response, object$transformation,
        function(y, t){
+         t <- bind_transformation_data(t, new_data)
          eval_tidy(expr(t(!!y)), new_data)
        }
   )
+  param_data <- as.list(new_data)[params]
   new_data <- new_data[index_var(new_data)]
-  new_data[measured_vars(object$data)] <- resp
+  new_data[model_response_cols(object)] <- resp
 
   object$fit <- stream(object[["fit"]], new_data, specials = specials, ...)
+  new_data[params] <- param_data
   object$data <- bind_rows(object$data, select(new_data, !!!syms(colnames(object$data))))
 
   object

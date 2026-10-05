@@ -49,17 +49,23 @@ refit.mdl_ts <- function(object, new_data, ...){
     attr(object, "recent_data") <- utils::tail(new_data, NROW(recent_data))
   }
 
+  check_transformation_data(object, new_data)
+  params <- model_transformation_params(object)
+  trans <- map(object$transformation, bind_transformation_data, new_data)
   resp <- map2(seq_along(object$response), object$response, function(i, resp){
-    expr(object$transformation[[!!i]](!!resp))
+    expr(trans[[!!i]](!!resp))
   }) %>%
     set_names(map_chr(object$response, as_string))
 
   # Equivalent to transmute(new_data, !!!resp), but much cheaper for the
   # repeated refits in rolling-origin loops (e.g. conformal_scp()).
   resp <- lapply(resp, eval_tidy, data = new_data, env = environment())
+  param_data <- as.list(new_data)[params]
   new_data <- new_data[c(key_vars(new_data), index_var(new_data))]
   new_data[names(resp)] <- resp
   object$fit <- refit(object[["fit"]], new_data, specials = specials, ...)
+  # Store time-varying transformation parameters alongside the response (#382)
+  new_data[params] <- param_data
   object$data <- new_data
   object
 }

@@ -129,6 +129,7 @@ generate_mdl_ts_setup <- function(x, new_data, h, times, seed) {
   if(is.null(new_data)){
     new_data <- make_future_data(x$data, h)
   }
+  check_transformation_data(x, new_data)
 
   # Reseed lag()'s short term memory from this fit's own snapshot.
   x$model$recent_data <- attr(x, "recent_data")
@@ -173,9 +174,7 @@ Does your model require extra variables to produce simulations?", e$message))
 
   # Back-transform forecast distributions
   bt <- map(x$transformation, function(x){
-    bt <- invert_transformation(x)
-    env <- new_environment(new_data, get_env(bt))
-    set_env(bt, env)
+    invert_transformation(bind_transformation_data(x, new_data))
   })
 
   .sim[.sim_cols] <- .mapply(function(f, x) f(x), list(bt, .sim[.sim_cols]), NULL)

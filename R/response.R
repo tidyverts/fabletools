@@ -23,11 +23,13 @@ response.mdl_lst <- mdl_lst_method(response)
 #' @export
 response.mdl_ts <- function(object, ...){
   # Extract response
-  mv <- measured_vars(object$data)
+  mv <- model_response_cols(object)
   resp <- as.list(object$data)[mv]
   
   # Back transform response
-  bt <- map(object$transformation, invert_transformation)
+  bt <- map(object$transformation, function(x) {
+    invert_transformation(bind_transformation_data(x, object$data))
+  })
   resp <- map2(bt, resp, function(bt, fit) bt(fit))
   
   # Create object

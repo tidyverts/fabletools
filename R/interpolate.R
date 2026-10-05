@@ -64,14 +64,16 @@ Does your interpolation data include all variables required by the model?", e$me
   object$model$remove_data()
   object$model$stage <- NULL
   
+  check_transformation_data(object, new_data)
+  trans <- map(object$transformation, bind_transformation_data, new_data)
   resp <- map2(seq_along(object$response), object$response, function(i, resp){
-    expr(object$transformation[[!!i]](!!resp))
+    expr(trans[[!!i]](!!resp))
   }) %>% 
     set_names(map_chr(object$response, as_string))
   
   new_data <- transmute(new_data, !!!resp)
   new_data <- interpolate(object[["fit"]], new_data = new_data, specials = specials, ...)
-  new_data[names(resp)] <- map2(new_data[names(resp)], object$transformation,
+  new_data[names(resp)] <- map2(new_data[names(resp)], trans,
                                 function(x, f) invert_transformation(f)(x))
   new_data
 }

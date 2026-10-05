@@ -30,9 +30,10 @@ residuals.mdl_ts <- function(object, type = "innovation", ...){
     if(is.null(.resid)){
       if(type == "innovation") {
         .resid <- response(object)
-        .resid <- map2(object$transformation, .resid[measured_vars(.resid)], calc)
+        trans <- map(object$transformation, bind_transformation_data, object$data)
+        .resid <- map2(trans, .resid[measured_vars(.resid)], calc)
         .fits <- fitted(object)
-        .fits <- map2(object$transformation, .fits[measured_vars(.fits)], calc)
+        .fits <- map2(trans, .fits[measured_vars(.fits)], calc)
         .resid <- do.call(cbind, .resid) - do.call(cbind, as.matrix(.fits))
       } else {
         warn(sprintf(
