@@ -125,4 +125,6 @@ test_that("models and forecasts with a mixtime index", {
   expect_false(any(vapply(fit$lm, is_null_model, logical(1))))
   expect_equal(nrow(forecast(fit, h = "2 years")), 48)
   expect_equal(nrow(forecast(fit, h = mixtime::years(1L))), 24)
+  # The trend origin keeps the index class
+  expect_identical(fit$lm[[1]]$model$origin, y$t[1])
 })
