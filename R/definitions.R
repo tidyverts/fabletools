@@ -44,8 +44,19 @@ model_definition <- R6::R6Class(NULL,
     recall_lag = function(x, n = 1L, ...){
       start <- NULL
       if(self$stage %in% c("generate", "forecast", "stream")){
-        x_expr <- enexpr(x)
-        start <- eval_tidy(x_expr, self$recent_data)
+        x_quo <- enquo(x)
+        start <- eval_tidy(get_expr(x_quo), self$recent_data)
+        # Variables only used through lag() needn't be in the future data (#318),
+        # treat them as missing and rely on the short term memory.
+        missing_vars <- setdiff(
+          intersect(all.vars(get_expr(x_quo)), names(self$recent_data)),
+          names(self$data)
+        )
+        if(length(missing_vars) > 0){
+          x <- eval_tidy(x_quo, lapply(
+            self$recent_data[missing_vars], vec_init, n = NROW(self$data)
+          ))
+        }
       }
       else if(self$stage == "estimate" && NROW(self$recent_data) < n){
         self$recent_data <- self$data[NROW(self$data) - n + seq_len(n),]

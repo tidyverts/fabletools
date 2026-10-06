@@ -85,3 +85,15 @@ test_that("stream() does not leak recent_data across independent calls sharing a
   expect_equal(streamed_a$fit$x, 50)
   expect_equal(streamed_b$fit$x, 50)
 })
+
+test_that("forecast() doesn't need new_data for variables only used in lag() (#318)", {
+  dt <- lag_test_data(c(10, 20, 30, 40, 50))
+  fit <- model(dt, m = new_lag_test_model(y ~ lagged(x, 2)))
+
+  fc <- forecast(fit, h = 3)
+  expect_equal(mean(fc$y), c(40, 50, NA))
+
+  nd <- tsibble::new_data(dt, 3)
+  nd$x <- NA_real_
+  expect_equal(mean(forecast(fit, new_data = nd)$y), mean(fc$y))
+})
