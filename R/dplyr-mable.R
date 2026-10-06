@@ -20,7 +20,8 @@ dplyr_col_modify.mbl_df <- function(data, cols) {
   # }
   build_mable(res, 
               key = !!key_vars(data), 
-              model = union(mable_vars(data), names(which(is_mdl))))
+              model = union(mable_vars(data), names(which(is_mdl))),
+              response = response_vars(data))
 }
 
 #' @export
@@ -29,7 +30,7 @@ dplyr_reconstruct.mbl_df <- function(data, template) {
   mbl_vars <- names(which(vapply(data, inherits, logical(1L), c("mdl_lst", "mdl_df"))))
   kv <- key_vars(template)
   if(all(kv %in% names(res))) {
-    build_mable(data, key = !!kv, model = mbl_vars)
+    build_mable(data, key = !!kv, model = mbl_vars, response = response_vars(template))
   } else {
     as_tibble(res)
   }

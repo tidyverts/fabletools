@@ -77,6 +77,18 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   p <- progressr::progressor(num_est)
   
   kv <- key_vars(.data)
+  
+  # Without any series to estimate, the mable's response variable(s) are
+  # obtained from the model definitions (#313).
+  resp <- NULL
+  if(num_key == 0){
+    resp <- unique(map(models, model_definition_response, .data = .data))
+    if(length(resp) > 1){
+      abort("A mable can only contain models with the same response variable(s).")
+    }
+    resp <- resp[[1]]
+  }
+  
   .data <- nest_keys(.data, "lst_data")
   
   if(.safely){
@@ -148,7 +160,21 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
       !!!syms(kv),
       !!!fits
     ) %>% 
-    as_mable(key = !!kv, model = names(fits))
+    as_mable(key = !!kv, model = names(fits), response = resp)
+}
+
+# The response variable(s) of a model definition for `.data`, found without
+# estimating the model. The data is set directly as `add_data()` would apply
+# the model's checks, which reject datasets without observations.
+model_definition_response <- function(.model, .data){
+  .model$stage <- "estimate"
+  .model$data <- .data
+  on.exit({
+    .model$remove_data()
+    .model$stage <- NULL
+  })
+  validate_formula(.model, .data)
+  map_chr(parse_model(.model)$response, as_label)
 }
 
 #' Extract the left hand side of a model

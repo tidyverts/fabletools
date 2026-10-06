@@ -32,9 +32,11 @@ is_model_col <- function(x){
   inherits(x, "mdl_lst") || is_mdl_df(x)
 }
 
-# The response variable(s) of a model column
+# The response variable(s) of a model column, or NULL if it contains no models
 model_col_response <- function(x){
-  if(is_mdl_df(x)) response_vars(x) else response_vars(x[[1]])
+  if(is_mdl_df(x)) return(response_vars(x))
+  for(mdl in x) if(!is.null(mdl)) return(response_vars(mdl))
+  NULL
 }
 
 #' @export

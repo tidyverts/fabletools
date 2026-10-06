@@ -7,7 +7,7 @@
 \usage{
 as_mable(x, ...)
 
-\method{as_mable}{data.frame}(x, key = NULL, model = NULL, ...)
+\method{as_mable}{data.frame}(x, key = NULL, model = NULL, response = NULL, ...)
 }
 \arguments{
 \item{x}{A dataset containing a list model column.}
@@ -17,6 +17,10 @@ as_mable(x, ...)
 \item{key}{Structural variable(s) that identify each model.}
 
 \item{model}{Identifiers for the columns containing model(s).}
+
+\item{response}{A character vector of the response variable(s) of the
+models. If \code{NULL}, the response variable(s) are taken from the models (and
+must be provided if the mable contains no models).}
 }
 \description{
 Coerce a dataset to a mable

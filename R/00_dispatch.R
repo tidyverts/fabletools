@@ -108,6 +108,14 @@ mdl_lst_method <- function(generic, new_data = FALSE, modify = FALSE) {
 dispatch_mbl_df <- function(x, ..., .f, .values_to = ".result",
                             .unnest = c("tbl", "tsibble"), .new_data = NULL,
                             .reserved = ".model") {
+  if (NROW(x) == 0) {
+    # The structure of the results (such as the index of a fable) is only
+    # known from the models.
+    abort(sprintf(
+      "Can't compute `%s()` for a mable without any models.",
+      as_label(enexpr(.f))
+    ), call = caller_env())
+  }
   check_reserved_names(x, .new_data, key = .reserved, call = caller_env())
   if (!is.null(.new_data)) {
     x <- bind_new_data(x, .new_data)

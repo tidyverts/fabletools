@@ -39,24 +39,30 @@ as_mable <- function(x, ...){
 #' @rdname as_mable
 #' 
 #' @inheritParams mable
+#' @param response A character vector of the response variable(s) of the
+#' models. If `NULL`, the response variable(s) are taken from the models (and
+#' must be provided if the mable contains no models).
 #' 
 #' @export
-as_mable.data.frame <- function(x, key = NULL, model = NULL, ...){
-  build_mable(x, key = !!enquo(key), model = model)
+as_mable.data.frame <- function(x, key = NULL, model = NULL, response = NULL, ...){
+  build_mable(x, key = !!enquo(key), model = model, response = response)
 }
 
-# TODO - allow empty mbl_df objects to be constructed with a given response variable
-# which is used to check if the models use that response variable. The default
-# response variable would then simply be that of the first model (violating the
-# check if models have different response variables).
-build_mable <- function (x, key = NULL, key_data = NULL, model = NULL) {
+# The mable's `response` attribute is authoritative. If `response` is not
+# provided it is taken from the models, which is not possible for a mable
+# without any estimated models (#313).
+build_mable <- function (x, key = NULL, key_data = NULL, model = NULL, response = NULL) {
   model <- names(tidyselect::eval_select(all_of(model), data = x))
-  
-  if(length(resp_var <- unique(map(x[model], model_col_response))) > 1){
+  if(length(model) == 0) {
+    abort("A mable must contain at least one model.")
+  }
+
+  resp_var <- unique(compact(c(list(response), map(x[model], model_col_response))))
+  if(length(resp_var) > 1){
     abort("A mable can only contain models with the same response variable(s).")
   }
   if(length(resp_var) == 0) {
-    abort("A mable must contain at least one model.")
+    abort("The response variable(s) of a mable without any models must be specified with `response`.")
   }
   
   if (!is_null(key_data)){
@@ -117,7 +123,8 @@ restore_mable <- function(data, template){
   mbl_vars <- setdiff(key_vars(template), data_cols)
   res <- bind_cols(template[mbl_vars], data)
   
-  build_mable(res, key = !!key_vars(template), model = model_vars)
+  build_mable(res, key = !!key_vars(template), model = model_vars,
+              response = response_vars(template))
 }
 
 #' @export
@@ -128,7 +135,7 @@ gather.mbl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE
                 ..., na.rm = na.rm, convert = convert, factor_key = factor_key)
   mdls <- names(which(map_lgl(tbl, inherits, c("mdl_lst", "mdl_df"))))
   kv <- c(key_vars(data), key)
-  build_mable(tbl, key = !!kv, model = mdls)
+  build_mable(tbl, key = !!kv, model = mdls, response = response_vars(data))
 }
 
 # Adapted from tsibble:::pivot_longer.tbl_ts
@@ -144,7 +151,8 @@ pivot_longer.mbl_df <- function (data, ..., names_to = "name") {
   new_key <- c(key_vars(data), names_to)
   tbl <- tidyr::pivot_longer(as_tibble(data), ..., names_to = names_to)
   build_mable(tbl, key = !!new_key,
-              model = which(vapply(tbl, inherits, logical(1L), c("mdl_lst", "mdl_df"))))
+              model = which(vapply(tbl, inherits, logical(1L), c("mdl_lst", "mdl_df"))),
+              response = response_vars(data))
 }
 
 #' @export
@@ -177,7 +185,7 @@ transmute.mbl_df <- function (.data, ...){
 # Rebuild a mable after column assignment, registering any model columns
 restore_mable_assign <- function(tbl, x) {
   mdls <- names(which(map_lgl(tbl, inherits, c("mdl_lst", "mdl_df"))))
-  as_mable(tbl, key = key_vars(x), model = mdls)
+  as_mable(tbl, key = key_vars(x), model = mdls, response = response_vars(x))
 }
 
 #' @export
@@ -216,14 +224,14 @@ restore_mable_assign <- function(tbl, x) {
     if(any(lengths(key_data[[length(key_data)]]) > 1))
       return(out)
     else
-      return(build_mable(out, key_data = key_data, model = mv))
+      return(build_mable(out, key_data = key_data, model = mv, response = response_vars(x)))
   }
   
   # If all models are removed, return a tibble
   if(length(mv) == 0)
     return(out)
   
-  build_mable(out, key = !!old_kv, model = mv)
+  build_mable(out, key = !!old_kv, model = mv, response = response_vars(x))
 }
 
 #' @export

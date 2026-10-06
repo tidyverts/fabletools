@@ -69,7 +69,8 @@ bind_new_data <- function(object, new_data){
     return(
       build_mable(new_data, 
                   key = c(scenario_nm, key_vars(object)), 
-                  model = mable_vars(object))
+                  model = mable_vars(object),
+                  response = response_vars(object))
     )
   }
   if(!is.data.frame(new_data)){

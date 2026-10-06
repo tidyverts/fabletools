@@ -53,6 +53,12 @@
 
 ## Bug fixes
 
+* Modelling a keyed tsibble without any observations now returns a mable with
+  no rows, rather than an error (#313). The response variable(s) of a mable are
+  now retained when it is modified rather than recomputed from its models,
+  which also allows mables with missing (`NULL`) models to be combined (#234).
+  `as_mable()` gains a `response` argument for constructing mables without any
+  models.
 * Transformations with time-varying parameters from the data, such as
   `box_cox(resp(value), lambda)`, now work with `fitted()`, `residuals()`,
   `refit()`, `stream()` and `min_trace()` reconciliation. The parameters are

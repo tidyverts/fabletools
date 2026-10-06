@@ -63,7 +63,8 @@ vec_cast.mbl_df.mbl_df <- function(x, to, ...) {
   build_mable(tbl,
               key = !!key_vars(to), 
               key_data = if (is_identical) key_data(x) else NULL,
-              model = mable_vars(to))
+              model = mable_vars(to),
+              response = response_vars(to))
 }
 
 #' @export
@@ -72,7 +73,8 @@ vec_cast.mbl_df.tbl_df <- function(x, to, ...) {
   build_mable(tbl,
               key = !!key_vars(to), 
               key_data = NULL,
-              model = mable_vars(to))
+              model = mable_vars(to),
+              response = response_vars(to))
 }
 
 #' @export
