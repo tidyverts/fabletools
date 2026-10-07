@@ -102,13 +102,17 @@ forecast.mbl_df <- function(object, new_data = NULL, h = NULL,
   # The data is bound here, rather than by dispatch_mbl_df(), so that joint
   # forecasting methods (such as reconciliation) get the key structure of all
   # the series to forecast.
-  if(!is.null(new_data)){
+  # A mable without any models has no series to bind the data to, so its
+  # structure is passed on instead (#313).
+  if(!is.null(new_data) && NROW(object) > 0){
     object <- bind_new_data(object, new_data)
+    new_data <- NULL
   }
   dispatch_mbl_df(
     object, h = h, point_forecast = point_forecast, ...,
     key_data = key_data(object),
-    .f = forecast, .values_to = ".fc", .unnest = unnest_fable
+    .f = forecast, .values_to = ".fc", .unnest = unnest_fable,
+    .new_data = new_data
   )
 }
 
@@ -148,7 +152,7 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
     return(forecast(object, new_data = new_data, h = h, point_forecast = point_forecast, ...))
   }
 
-  setup <- forecast_mdl_ts_setup(object, new_data, h)
+  setup <- forecast_mdl_ts_setup(object, new_data, h, point_forecast)
   if(!is.null(setup$empty_fbl)) return(setup$empty_fbl)
   new_data <- setup$new_data
   resp_vars <- setup$resp_vars
@@ -218,7 +222,7 @@ Does your model require extra variables to produce forecasts?", e$message))
 #' @export
 forecast.mdl_ts_sim <- function(object, new_data = NULL, h = NULL, times = NULL,
                                 point_forecast = list(.mean = mean), ...){
-  setup <- forecast_mdl_ts_setup(object, new_data, h)
+  setup <- forecast_mdl_ts_setup(object, new_data, h, point_forecast)
   if(!is.null(setup$empty_fbl)) return(setup$empty_fbl)
   new_data <- setup$new_data
   resp_vars <- setup$resp_vars
@@ -246,7 +250,7 @@ forecast_from_generate <- function(new_data, sim, resp_vars, dist_col, point_for
 
 # Shared setup for forecast.mdl_ts()/forecast.mdl_ts_sim(): resolves
 # new_data/h and response/distribution column names.
-forecast_mdl_ts_setup <- function(object, new_data, h) {
+forecast_mdl_ts_setup <- function(object, new_data, h, point_forecast) {
   if(!is.null(h) && !is.null(new_data)){
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
     h <- NULL
@@ -265,8 +269,9 @@ forecast_mdl_ts_setup <- function(object, new_data, h) {
 
   empty_fbl <- NULL
   if(NROW(new_data) == 0){
-    new_data[[dist_col]] <- distributional::new_dist(dimnames = resp_vars)
-    empty_fbl <- build_fable(new_data, response = resp_vars, distribution = dist_col)
+    empty_fbl <- forecast_mdl_ts_assemble(
+      new_data, distributional::new_dist(), resp_vars, dist_col, point_forecast
+    )
   }
 
   list(new_data = new_data, resp_vars = resp_vars, dist_col = dist_col, empty_fbl = empty_fbl)
@@ -318,7 +323,15 @@ construct_fc <- function(point, sd, dist){
 }
 
 compute_point_forecasts <- function(distribution, measures){
-  map(measures, calc, distribution)
+  map(measures, function(f){
+    out <- f(distribution)
+    # Empty distributions give NULL rather than an empty point forecast (#313)
+    if(is.null(out) && length(distribution) == 0){
+      resp <- dimnames(distribution)
+      out <- if(length(resp) > 1) matrix(numeric(), 0, length(resp), dimnames = list(NULL, resp)) else numeric()
+    }
+    out
+  })
 }
 
 #' @export

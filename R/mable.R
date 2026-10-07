@@ -49,9 +49,19 @@ as_mable.data.frame <- function(x, key = NULL, model = NULL, response = NULL, ..
 }
 
 # The mable's `response` attribute is authoritative. If `response` is not
-# provided it is taken from the models, which is not possible for a mable
-# without any estimated models (#313).
-build_mable <- function (x, key = NULL, key_data = NULL, model = NULL, response = NULL) {
+# provided it is taken from the `ptype` model, the `template` mable, or the
+# models of `x` (#313).
+#
+# A mable without any models also keeps a prototype model (`ptype`), which
+# gives the structure of results computed from it (see `mable_ptype()`).
+build_mable <- function (x, key = NULL, key_data = NULL, model = NULL,
+                         response = NULL, ptype = NULL, template = NULL) {
+  if(!is.null(template)) {
+    response <- response %||% response_vars(template)
+    if(NROW(x) == 0) ptype <- ptype %||% mable_ptype(template)
+  }
+  if(!is.null(ptype)) response <- response %||% response_vars(ptype)
+
   model <- names(tidyselect::eval_select(all_of(model), data = x))
   if(length(model) == 0) {
     abort("A mable must contain at least one model.")
@@ -78,20 +88,49 @@ build_mable <- function (x, key = NULL, key_data = NULL, model = NULL, response 
     abort("The result is not a valid mable. The key variables must uniquely identify each row.")
   }
   
-  build_mable_meta(x, key_data, model, response = resp_var[[1]])
+  build_mable_meta(x, key_data, model, response = resp_var[[1]], ptype = ptype)
 }
 
-build_mable_meta <- function(x, key_data, model, response){
+build_mable_meta <- function(x, key_data, model, response, ptype = NULL){
   # "mdl_df" is kept as a trailing class for one more release cycle so old
   # `inherits(x, "mdl_df")` checks in downstream code keep working; it will
   # be dropped in v1.1.0 per the NEWS.md deprecation notice.
   tibble::new_tibble(x, key = key_data, model = model, response = response,
+                     ptype = if(NROW(x) == 0) ptype,
                      nrow = NROW(x), class = c("mbl_df", "mdl_df"), subclass = "mbl_df")
+}
+
+# A model without any data, used to give the structure of the results (such as
+# forecasts) of a mable without any models (#313). It is kept by mables
+# without any models, and otherwise obtained from the first model.
+mable_ptype <- function(x){
+  if(!is.null(ptype <- x%@%"ptype")) return(ptype)
+  mdl <- first_model(as_tibble(x)[mable_vars(x)])
+  if(is.null(mdl)) NULL else model_ptype(mdl)
+}
+
+first_model <- function(x){
+  for(col in x) {
+    mdl <- if(is.data.frame(col)) first_model(col) else detect_model(col)
+    if(!is.null(mdl)) return(mdl)
+  }
+  NULL
+}
+
+detect_model <- function(x){
+  for(mdl in x) if(!is.null(mdl)) return(mdl)
+  NULL
+}
+
+model_ptype <- function(x){
+  data <- x$data[0,]
+  fit <- structure(list(n = 0L, vars = model_response_cols(x)), class = "null_mdl")
+  new_model.default(fit, x$model, data, x$response, x$transformation)
 }
 
 #' @export
 as_tibble.mbl_df <- function(x, ...){
-  attr(x, "key") <- attr(x, "model") <- NULL
+  attr(x, "key") <- attr(x, "model") <- attr(x, "ptype") <- NULL
   class(x) <- c("tbl_df", "tbl", "data.frame")
   as_tibble(x, ...)
 }
@@ -124,7 +163,7 @@ restore_mable <- function(data, template){
   res <- bind_cols(template[mbl_vars], data)
   
   build_mable(res, key = !!key_vars(template), model = model_vars,
-              response = response_vars(template))
+              template = template)
 }
 
 #' @export
@@ -135,7 +174,7 @@ gather.mbl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE
                 ..., na.rm = na.rm, convert = convert, factor_key = factor_key)
   mdls <- names(which(map_lgl(tbl, inherits, c("mdl_lst", "mdl_df"))))
   kv <- c(key_vars(data), key)
-  build_mable(tbl, key = !!kv, model = mdls, response = response_vars(data))
+  build_mable(tbl, key = !!kv, model = mdls, template = data)
 }
 
 # Adapted from tsibble:::pivot_longer.tbl_ts
@@ -152,7 +191,7 @@ pivot_longer.mbl_df <- function (data, ..., names_to = "name") {
   tbl <- tidyr::pivot_longer(as_tibble(data), ..., names_to = names_to)
   build_mable(tbl, key = !!new_key,
               model = which(vapply(tbl, inherits, logical(1L), c("mdl_lst", "mdl_df"))),
-              response = response_vars(data))
+              template = data)
 }
 
 #' @export
@@ -185,7 +224,7 @@ transmute.mbl_df <- function (.data, ...){
 # Rebuild a mable after column assignment, registering any model columns
 restore_mable_assign <- function(tbl, x) {
   mdls <- names(which(map_lgl(tbl, inherits, c("mdl_lst", "mdl_df"))))
-  as_mable(tbl, key = key_vars(x), model = mdls, response = response_vars(x))
+  build_mable(tbl, key = !!key_vars(x), model = mdls, template = x)
 }
 
 #' @export
@@ -207,7 +246,7 @@ restore_mable_assign <- function(tbl, x) {
   mdl_pos <- match(mable_vars(x), nm)
   res <- NextMethod()
   build_mable_meta(res, key_data = kd, model = value[mdl_pos], 
-                   response = response_vars(x))
+                   response = response_vars(x), ptype = x%@%"ptype")
 }
 
 #' @export
@@ -224,14 +263,14 @@ restore_mable_assign <- function(tbl, x) {
     if(any(lengths(key_data[[length(key_data)]]) > 1))
       return(out)
     else
-      return(build_mable(out, key_data = key_data, model = mv, response = response_vars(x)))
+      return(build_mable(out, key_data = key_data, model = mv, template = x))
   }
   
   # If all models are removed, return a tibble
   if(length(mv) == 0)
     return(out)
   
-  build_mable(out, key = !!old_kv, model = mv, response = response_vars(x))
+  build_mable(out, key = !!old_kv, model = mv, template = x)
 }
 
 #' @export

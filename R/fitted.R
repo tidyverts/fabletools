@@ -33,7 +33,7 @@ fitted.mdl_ts <- function(object, h = 1, ...){
   if(h == 1){
     fits <- as.matrix(fits)
     # Backtransformation is required for fitted, but forecast() handles it already.
-    fits <- map2(bt, split(fits, col(fits)), function(bt, fit) bt(fit))
+    fits <- map2(bt, split_cols(fits), function(bt, fit) bt(fit))
   }
   
   nm <- if(length(fits) == 1) ".fitted" else map_chr(object$response, expr_name)
@@ -94,7 +94,7 @@ hfitted.mdl_ts <- function(object, h, ...) {
     bt <- map(object$transformation, function(x) {
       invert_transformation(bind_transformation_data(x, object$data))
     })
-    fits <- map2(bt, split(fits, col(fits)), function(bt, fit) bt(fit))
+    fits <- map2(bt, split_cols(fits), function(bt, fit) bt(fit))
   }
   fits
 }

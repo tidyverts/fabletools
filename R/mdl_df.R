@@ -35,8 +35,8 @@ is_model_col <- function(x){
 # The response variable(s) of a model column, or NULL if it contains no models
 model_col_response <- function(x){
   if(is_mdl_df(x)) return(response_vars(x))
-  for(mdl in x) if(!is.null(mdl)) return(response_vars(mdl))
-  NULL
+  mdl <- detect_model(x)
+  if(is.null(mdl)) NULL else response_vars(mdl)
 }
 
 #' @export

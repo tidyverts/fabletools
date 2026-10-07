@@ -493,8 +493,9 @@ accuracy.mdl_ts <- function(object, measures = point_accuracy_measures, ...){
   aug <- as_tibble(augment(object))
   
   # Compute inputs for each response variable
+  # Empty groups are kept so models without data give a row per response
   if(length(object$response) > 1){
-    aug <- group_by(aug, !!sym(".response"))
+    aug <- group_by(aug, !!sym(".response"), .drop = FALSE)
   }
   
   aug <- aug %>% 
@@ -510,7 +511,7 @@ accuracy.mdl_ts <- function(object, measures = point_accuracy_measures, ...){
   
   # Re-group after summarise
   if(length(object$response) > 1){
-    aug <- group_by(aug, !!sym(".response"))
+    aug <- group_by(aug, !!sym(".response"), .drop = FALSE)
   }
   
   # Add user inputs

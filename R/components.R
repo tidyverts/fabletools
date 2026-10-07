@@ -24,6 +24,9 @@
 #' @rdname components
 #' @export
 components.mbl_df <- function(object, ...){
+  if(NROW(object) == 0) {
+    abort("Can't compute components for a mable without any models, as the structure of the decomposition depends on the models.")
+  }
   dispatch_mbl_df(object, ..., .f = components, .values_to = ".cmp",
                   .unnest = unnest_dable)
 }

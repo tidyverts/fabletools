@@ -54,7 +54,10 @@
 ## Bug fixes
 
 * Modelling a keyed tsibble without any observations now returns a mable with
-  no rows, rather than an error (#313). The response variable(s) of a mable are
+  no rows, rather than an error (#313). Results computed from a mable without
+  any models, such as `forecast()`, `fitted()`, `augment()` and `accuracy()`,
+  are empty with the same structure as for a mable with models (except for
+  `components()`, which depends on the models). The response variable(s) of a mable are
   now retained when it is modified rather than recomputed from its models,
   which also allows mables with missing (`NULL`) models to be combined (#234).
   `as_mable()` gains a `response` argument for constructing mables without any

@@ -23,7 +23,9 @@ residuals.mdl_ts <- function(object, type = "innovation", ...){
   if(type == "response"){
     .resid <- response(object)
     .fits <- fitted(object)
-    .resid <- as.matrix(.resid[measured_vars(.resid)]) - as.matrix(.fits[measured_vars(.fits)])
+    # cbind() keeps the column types of data without any rows, unlike as.matrix()
+    .resid <- do.call(cbind, as.list(.resid)[measured_vars(.resid)]) -
+      do.call(cbind, as.list(.fits)[measured_vars(.fits)])
   }
   else{
     .resid <- residuals(object$fit, type = type, ...)
@@ -45,7 +47,7 @@ Defaulting to `type="response"`', type, model_sum(object)))
   }
   .resid <- as.matrix(.resid)
   
-  .resid <- split(.resid, col(.resid))
+  .resid <- split_cols(.resid)
   nm <- if(length(.resid) == 1) ".resid" else map_chr(object$response, expr_name)
   
   out <- object$data[index_var(object$data)]

@@ -25,14 +25,8 @@ estimate.tbl_ts <- function(.data, .model, ...){
   validate_formula(.model, .data)
   parsed <- parse_model(.model)
   
-  # Compute response data (as attributes shouldn't change, using this approach should be much faster)
-  .dt_attr <- attributes(.data)
-  resp <- map(parsed$expressions, eval_tidy, data = .data, env = .model$specials)
-  params <- unlist(lapply(parsed$transformation, transformation_params))
-  params <- as.list(.data)[setdiff(intersect(params, names(.data)), index_var(.data))]
-  .data <- unclass(.data)[index_var(.data)]
-  .data[map_chr(parsed$expressions, expr_name)] <- resp
-  attributes(.data) <- c(attributes(.data), .dt_attr[setdiff(names(.dt_attr), names(attributes(.data)))])
+  params <- model_data_params(.data, parsed)
+  .data <- model_data(.data, .model, parsed)
 
   fit <- eval_tidy(
     expr(.model$train(.data = .data, specials = parsed$specials, !!!.model$extra))
@@ -44,4 +38,21 @@ estimate.tbl_ts <- function(.data, .model, ...){
   .model$remove_data()
   .model$stage <- NULL
   new_model(fit, .model, .data, parsed$response, parsed$transformation, recent_data)
+}
+
+# The data used to train a model: the index and (transformed) response(s).
+# As attributes shouldn't change, using this approach is much faster.
+model_data <- function(.data, .model, parsed){
+  .dt_attr <- attributes(.data)
+  resp <- map(parsed$expressions, eval_tidy, data = .data, env = .model$specials)
+  .data <- unclass(.data)[index_var(.data)]
+  .data[map_chr(parsed$expressions, expr_name)] <- resp
+  attributes(.data) <- c(attributes(.data), .dt_attr[setdiff(names(.dt_attr), names(attributes(.data)))])
+  .data
+}
+
+# Time-varying transformation parameters from the data
+model_data_params <- function(.data, parsed){
+  params <- unlist(lapply(parsed$transformation, transformation_params))
+  as.list(.data)[setdiff(intersect(params, names(.data)), index_var(.data))]
 }

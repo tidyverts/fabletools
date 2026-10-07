@@ -39,6 +39,11 @@ forecast.NULL <- forecast.null_mdl
 
 #' @export
 generate.null_mdl <- function(x, new_data, ...){
+  # Multivariate simulations are a matrix of each response
+  if(length(x$vars) > 1) {
+    new_data$.sim <- matrix(NA_real_, NROW(new_data), length(x$vars))
+    return(new_data)
+  }
   mutate(new_data, .sim = NA_real_)
 }
 #' @export

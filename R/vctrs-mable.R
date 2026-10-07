@@ -46,7 +46,8 @@ mable_ptype2 <- function(x, y, ...) {
   }
   out <- df_ptype2(x, y, ...)
   build_mable_meta(out, key_data = group_data(group_by(out, !!!syms(key_x))),
-                   model = mdl_x, response = resp_x)
+                   model = mdl_x, response = resp_x,
+                   ptype = mable_ptype(x) %||% if(is_mable(y)) mable_ptype(y))
 }
 
 #' @rdname mable-vctrs
@@ -64,7 +65,7 @@ vec_cast.mbl_df.mbl_df <- function(x, to, ...) {
               key = !!key_vars(to), 
               key_data = if (is_identical) key_data(x) else NULL,
               model = mable_vars(to),
-              response = response_vars(to))
+              template = to)
 }
 
 #' @export
@@ -74,7 +75,7 @@ vec_cast.mbl_df.tbl_df <- function(x, to, ...) {
               key = !!key_vars(to), 
               key_data = NULL,
               model = mable_vars(to),
-              response = response_vars(to))
+              template = to)
 }
 
 #' @export

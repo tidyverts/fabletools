@@ -30,6 +30,9 @@ custom_error <- function(.f, error){
 
 #' @importFrom tibble new_tibble
 make_future_data <- function(.data, h = NULL){
+  # A model without any data (such as the prototype of an empty mable) has no
+  # future time points (#313).
+  if(NROW(.data) == 0) return(.data[0, index_var(.data)])
   n <- get_frequencies(h, .data, .auto = "smallest")
   if(length(n) > 1){
     warn("More than one forecast horizon specified, using the smallest.")
@@ -70,7 +73,7 @@ bind_new_data <- function(object, new_data){
       build_mable(new_data, 
                   key = c(scenario_nm, key_vars(object)), 
                   model = mable_vars(object),
-                  response = response_vars(object))
+                  template = object)
     )
   }
   if(!is.data.frame(new_data)){
@@ -212,6 +215,16 @@ nest_keys <- function(.data, nm = "data"){
     )
   }, x = as_tibble(.data), j = col_nest)
   as_tibble(out)
+}
+
+# Remove the key variables of a tsibble with at most one series
+unkey_tsibble <- function(.data){
+  build_tsibble_meta(
+    as_tibble(.data)[setdiff(names(.data), key_vars(.data))],
+    key_data = as_tibble(list(.rows = list(seq_len(NROW(.data))))),
+    index = index_var(.data), index2 = index2_var(.data),
+    ordered = is_ordered(.data), interval = interval(.data)
+  )
 }
 
 bind_row_attrb <- function(x){
@@ -371,4 +384,9 @@ check_reserved_names <- function(object, new_data = NULL, key = ".model",
     ),
     call = call
   )
+}
+
+# Split a matrix into a list of its columns, keeping columns without any rows
+split_cols <- function(x){
+  lapply(seq_len(NCOL(x)), function(i) x[, i])
 }

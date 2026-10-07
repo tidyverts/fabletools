@@ -5,7 +5,8 @@ dplyr_row_slice.mbl_df <- function(data, i, ..., preserve = FALSE) {
     res,
     key_data = dplyr::group_data(dplyr::group_by(res, !!!syms(key_vars(data)))),
     model = mable_vars(data),
-    response = response_vars(data)
+    response = response_vars(data),
+    ptype = if(NROW(res) == 0) mable_ptype(data)
   )
 }
 
@@ -21,7 +22,7 @@ dplyr_col_modify.mbl_df <- function(data, cols) {
   build_mable(res, 
               key = !!key_vars(data), 
               model = union(mable_vars(data), names(which(is_mdl))),
-              response = response_vars(data))
+              template = data)
 }
 
 #' @export
@@ -30,7 +31,7 @@ dplyr_reconstruct.mbl_df <- function(data, template) {
   mbl_vars <- names(which(vapply(data, inherits, logical(1L), c("mdl_lst", "mdl_df"))))
   kv <- key_vars(template)
   if(all(kv %in% names(res))) {
-    build_mable(data, key = !!kv, model = mbl_vars, response = response_vars(template))
+    build_mable(data, key = !!kv, model = mbl_vars, template = template)
   } else {
     as_tibble(res)
   }

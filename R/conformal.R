@@ -76,7 +76,7 @@ new_model.mdl_defn_conformal_scp <- function(fit = NULL, model, data, response,
 #' @export
 forecast.mdl_conformal_scp <- function(object, new_data = NULL, h = NULL, times = NULL,
                                        point_forecast = list(.mean = mean), ...){
-  setup <- forecast_mdl_ts_setup(object, new_data, h)
+  setup <- forecast_mdl_ts_setup(object, new_data, h, point_forecast)
   if(!is.null(setup$empty_fbl)) return(setup$empty_fbl)
   new_data <- setup$new_data
   resp_vars <- setup$resp_vars

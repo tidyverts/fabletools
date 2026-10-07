@@ -145,20 +145,24 @@ generate_mdl_ts_setup <- function(x, new_data, h, times, seed) {
 # back-transforms the result. Kept as a single shared step so it's never
 # duplicated across model modifiers.
 generate_mdl_ts_assemble <- function(x, new_data, ...) {
-  # Compute specials with new_data
-  x$model$stage <- "generate"
-  x$model$add_data(new_data)
-  specials <- tryCatch(parse_model_rhs(x$model),
-                       error = function(e){
-                         abort(sprintf(
-                           "%s
+  # Compute specials with new_data, which a model's checks would reject if
+  # there is nothing to simulate (such as for an empty mable, #313).
+  specials <- NULL
+  if(NROW(new_data) > 0) {
+    x$model$stage <- "generate"
+    x$model$add_data(new_data)
+    specials <- tryCatch(parse_model_rhs(x$model),
+                         error = function(e){
+                           abort(sprintf(
+                             "%s
 Unable to compute required variables from provided `new_data`.
 Does your model require extra variables to produce simulations?", e$message))
-                       }, interrupt = function(e) {
-                         stop("Terminated by user", call. = FALSE)
-                       })
-  x$model$remove_data()
-  x$model$stage <- NULL
+                         }, interrupt = function(e) {
+                           stop("Terminated by user", call. = FALSE)
+                         })
+    x$model$remove_data()
+    x$model$stage <- NULL
+  }
 
   .sim <- generate(x[["fit"]], new_data = new_data, specials = specials, ...)
   .sim_cols <- setdiff(names(.sim), names(new_data))
@@ -168,7 +172,7 @@ Does your model require extra variables to produce simulations?", e$message))
   resp_vars <- vapply(x$response, expr_name, character(1L), USE.NAMES = FALSE)
   if (length(resp_vars) > 1) {
     .sim_cols <- resp_vars
-    .sim[resp_vars] <- split(.sim$.sim, col(.sim$.sim))
+    .sim[resp_vars] <- split_cols(.sim$.sim)
     .sim$.sim <- NULL
   }
 

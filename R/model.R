@@ -78,15 +78,15 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   
   kv <- key_vars(.data)
   
-  # Without any series to estimate, the mable's response variable(s) are
-  # obtained from the model definitions (#313).
-  resp <- NULL
+  # Without any series to estimate, the structure of the mable (and its
+  # results) is obtained from the model definitions (#313).
+  ptype <- NULL
   if(num_key == 0){
-    resp <- unique(map(models, model_definition_response, .data = .data))
-    if(length(resp) > 1){
+    ptype <- map(models, model_definition_ptype, .data = .data)
+    if(length(unique(map(ptype, response_vars))) > 1){
       abort("A mable can only contain models with the same response variable(s).")
     }
-    resp <- resp[[1]]
+    ptype <- ptype[[1]]
   }
   
   .data <- nest_keys(.data, "lst_data")
@@ -160,13 +160,15 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
       !!!syms(kv),
       !!!fits
     ) %>% 
-    as_mable(key = !!kv, model = names(fits), response = resp)
+    build_mable(key = !!kv, model = names(fits), ptype = ptype)
 }
 
-# The response variable(s) of a model definition for `.data`, found without
-# estimating the model. The data is set directly as `add_data()` would apply
-# the model's checks, which reject datasets without observations.
-model_definition_response <- function(.model, .data){
+# A model without any data (see `mable_ptype()`) for a model definition and
+# dataset without any series, found without estimating the model. The data is
+# set directly as `add_data()` would apply the model's checks, which reject
+# datasets without observations.
+model_definition_ptype <- function(.model, .data){
+  .data <- unkey_tsibble(.data)
   .model$stage <- "estimate"
   .model$data <- .data
   on.exit({
@@ -174,7 +176,15 @@ model_definition_response <- function(.model, .data){
     .model$stage <- NULL
   })
   validate_formula(.model, .data)
-  map_chr(parse_model(.model)$response, as_label)
+  parsed <- parse_model(.model)
+  params <- model_data_params(.data, parsed)
+  .data <- model_data(.data, .model, parsed)
+  .data[names(params)] <- params
+  fit <- structure(
+    list(n = 0L, vars = map_chr(parsed$expressions, expr_name)),
+    class = "null_mdl"
+  )
+  new_model.default(fit, .model, .data, parsed$response, parsed$transformation)
 }
 
 #' Extract the left hand side of a model

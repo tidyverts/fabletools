@@ -114,7 +114,7 @@ test_that("Assigning model columns registers them as models (#402, #323)", {
 })
 test_that("Modelling data without any series gives an empty mable (#313)", {
   skip_if_not_installed("fable")
-  empty <- tsibble::tsibble(i = 1:12, k = 1, y = 1, index = "i", key = "k")[0,]
+  empty <- tsibble::tsibble(i = 1:12, k = 1, y = 1, z = 1, index = "i", key = "k")[0,]
 
   mbl <- model(empty, mean = fable::MEAN(y), naive = fable::NAIVE(log(y)))
   expect_s3_class(mbl, "mbl_df")
@@ -137,12 +137,13 @@ test_that("Modelling data without any series gives an empty mable (#313)", {
 
   # Models of an empty mable must still share a response
   expect_error(
-    model(empty, fable::MEAN(y), fable::MEAN(log(k))),
+    model(empty, fable::MEAN(y), fable::MEAN(log(z))),
     "same response"
   )
 
-  # Results can't be structured without any models
-  expect_error(forecast(mbl, h = 1), "without any models")
+  # Mables without models built by as_mable() have no structure for results
+  no_mdl <- as_mable(tibble::tibble(m = new_mdl_lst()), model = "m", response = "y")
+  expect_error(forecast(no_mdl, h = 1), "structure of its models is unknown")
 
   expect_error(as_mable(tibble::tibble(m = new_mdl_lst()), model = "m"), "must be specified")
   expect_identical(
@@ -160,4 +161,56 @@ test_that("Mables can be combined with missing models (#234)", {
   res <- bind_rows(mbl[2, c("key", "a")], mbl[1,])
   expect_identical(response_vars(res), "value")
   expect_null(res[["b"]][[1]])
+})
+
+test_that("Results of an empty mable have the structure of non-empty results (#313)", {
+  skip_if_not_installed("fable")
+  expect_same_structure <- function(empty, full) {
+    expect_identical(NROW(empty), 0L)
+    expect_identical(class(empty), class(full))
+    # Column order can depend on the model, and future integer time indices
+    # are doubles (from tsibble::new_data())
+    expect_setequal(names(empty), names(full))
+    expect_equal(vec_ptype(as_tibble(empty))[names(full)], vec_ptype(as_tibble(full)[0,]))
+    if (tsibble::is_tsibble(full)) {
+      expect_identical(key_vars(empty), key_vars(full))
+      expect_identical(index_var(empty), index_var(full))
+    }
+    if (inherits(full, "fbl_ts")) {
+      expect_identical(response_vars(empty), response_vars(full))
+      expect_identical(distribution_var(empty), distribution_var(full))
+    }
+  }
+  check_results <- function(empty, full, generate = TRUE) {
+    expect_same_structure(forecast(empty, h = 2), forecast(full, h = 2))
+    expect_same_structure(fitted(empty), fitted(full))
+    expect_same_structure(residuals(empty), residuals(full))
+    expect_same_structure(augment(empty), augment(full))
+    expect_same_structure(accuracy(empty), accuracy(full))
+    expect_same_structure(response(empty), response(full))
+    if (generate) {
+      expect_same_structure(generate(empty, h = 2, times = 2), generate(full, h = 2, times = 2))
+    }
+  }
+
+  # Empty mables from model()
+  dt <- tsibble::tsibble(i = 1:12, k = 1, y = 1:12 + 0, index = "i", key = "k")
+  full <- model(dt, mean = fable::MEAN(y), naive = fable::NAIVE(log(y)))
+  empty <- model(dt[0,], mean = fable::MEAN(y), naive = fable::NAIVE(log(y)))
+  check_results(empty, full)
+
+  # Empty mables from filtering
+  check_results(filter(mbl_multi, key == "none"), mbl_multi)
+  # Model specific columns (such as VAR's `.innov`) aren't simulated
+  check_results(mbl_mv[0,], mbl_mv, generate = FALSE)
+  expect_identical(NROW(generate(mbl_mv[0,], h = 2)), 0L)
+
+  # new_data is used for structuring empty forecasts
+  fc <- forecast(filter(mbl_multi, key == "none"),
+                 new_data = mutate(new_data(lung_deaths_long_tr, 2), x = 1))
+  expect_identical(NROW(fc), 0L)
+  expect_true("x" %in% names(fc))
+
+  # Components depend on the model, so can't be structured
+  expect_error(components(empty), "without any models")
 })

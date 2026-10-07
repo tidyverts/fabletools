@@ -109,12 +109,10 @@ dispatch_mbl_df <- function(x, ..., .f, .values_to = ".result",
                             .unnest = c("tbl", "tsibble"), .new_data = NULL,
                             .reserved = ".model") {
   if (NROW(x) == 0) {
-    # The structure of the results (such as the index of a fable) is only
-    # known from the models.
-    abort(sprintf(
-      "Can't compute `%s()` for a mable without any models.",
-      as_label(enexpr(.f))
-    ), call = caller_env())
+    return(dispatch_mbl_df_empty(
+      x, ..., .f = .f, .values_to = .values_to, .unnest = .unnest,
+      .new_data = .new_data, .reserved = .reserved
+    ))
   }
   check_reserved_names(x, .new_data, key = .reserved, call = caller_env())
   if (!is.null(.new_data)) {
@@ -138,6 +136,40 @@ dispatch_mbl_df <- function(x, ..., .f, .values_to = ".result",
     tbl = unnest_tbl(x, .values_to),
     tsibble = unnest_tsbl(x, .values_to, parent_key = kv)
   )
+}
+
+# The results of a mable without any models are structured by applying `.f` to
+# its prototype model (see `mable_ptype()`) for a placeholder series, which is
+# then removed from the results (#313).
+dispatch_mbl_df_empty <- function(x, ..., .new_data = NULL) {
+  ptype <- mable_ptype(x)
+  if (is.null(ptype)) {
+    abort(
+      "Can't compute results for a mable without any models, as the structure of its models is unknown.",
+      call = caller_env(2)
+    )
+  }
+  mdls <- mable_vars(x)
+  kv <- key_vars(x)
+  tbl <- vec_init(as_tibble(x)[setdiff(names(x), "new_data")], 1L)
+  tbl[mdls] <- lapply(tbl[mdls], placeholder_model_col, ptype)
+  if (!is.null(.new_data)) {
+    tbl[["new_data"]] <- list(unkey_tsibble(.new_data[0, setdiff(names(.new_data), kv)]))
+  }
+  x <- build_mable_meta(
+    tbl, key_data = dplyr::group_data(dplyr::group_by(tbl, !!!syms(kv))),
+    model = mdls, response = response_vars(x)
+  )
+  vec_slice(dispatch_mbl_df(x, ...), 0L)
+}
+
+# Replace the models of a model column with `ptype`. Subclasses of `mdl_lst`
+# (such as reconciliation) are dropped as they apply to the models it replaces.
+placeholder_model_col <- function(x, ptype) {
+  if (is_mdl_df(x)) {
+    return(new_mdl_df(lapply(as.list(x), placeholder_model_col, ptype)))
+  }
+  new_mdl_lst(rep(list(ptype), vec_size(x)))
 }
 
 # Apply `.f` to each model column of a mable, replacing them with the results.
