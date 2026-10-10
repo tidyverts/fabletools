@@ -53,6 +53,10 @@
 
 ## Bug fixes
 
+* Adding models with arithmetic operators (e.g. `(ets + stlf + arima)/3`) no
+  longer unpacks a `decomposition_model()` into its components, which dropped
+  the back-transformation of a transformed decomposition and gave forecasts
+  on the wrong scale.
 * Modelling a keyed tsibble without any observations now returns a mable with
   no rows, rather than an error (#313). Results computed from a mable without
   any models, such as `forecast()`, `fitted()`, `augment()` and `accuracy()`,
