@@ -121,6 +121,28 @@ test_that("Joint combination: weighted.mean weight length mismatch errors", {
   )
 })
 
+test_that("Joint combination: transformed decomposition models are not flattened", {
+  skip_if_not_installed("fable")
+  skip_if_not_installed("feasts")
+
+  mbl <- us_deaths_tr |>
+    model(
+      ets = fable::ETS(value),
+      dcmp = decomposition_model(
+        feasts::STL(log(value)), fable::ETS(season_adjust ~ season("N"))
+      )
+    ) |>
+    mutate(ops = (ets + dcmp) / 2, avg = mean(ets, dcmp))
+
+  expect_length(mbl$ops[[1]]$fit$weights, 2)
+
+  fc <- forecast(mbl, h = 6)
+  expect_equal(
+    mean(fc$value[fc$.model == "ops"]),
+    mean(fc$value[fc$.model == "avg"])
+  )
+})
+
 test_that("Combination modelling", {
   skip_if_not_installed("fable")
   

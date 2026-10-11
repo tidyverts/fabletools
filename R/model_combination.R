@@ -153,9 +153,12 @@ Ops.mdl_spec <- function(e1, e2){
 }
 
 # Extract the component models and weights from any mdl_ts, treating a
-# non-joint model as a single-element joint with weight 1.
+# non-joint model as a single-element joint with weight 1. Decomposition models
+# are not flattened, as their components may be on a transformed scale
+# (https://github.com/orgs/OTexts/discussions/164).
 .cj_parts <- function(m) {
-  if(inherits(m[["fit"]], "model_combination")) {
+  if(inherits(m[["fit"]], "model_combination") &&
+     !inherits(m[["fit"]], "decomposition_model")) {
     list(models = m[["fit"]]$models, weights = m[["fit"]]$weights)
   } else {
     list(models = list(m), weights = 1)
