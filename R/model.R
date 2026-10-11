@@ -66,7 +66,7 @@ model.tbl_ts <- function(.data, ..., .safely = TRUE){
   if(length(models) == 0){
     abort("At least one model must be specified.")
   }
-  if(!all(is_mdl <- map_lgl(models, inherits, "mdl_defn"))){
+  if(!all(is_mdl <- map_lgl(models, inherits, "mdl_spec"))){
     abort(sprintf("Model definition(s) incorrectly created: %s
 Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   }

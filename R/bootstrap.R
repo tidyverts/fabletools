@@ -70,13 +70,13 @@ bootstrap_iid.mdl_lst <- function(model, times = 5000) {
 }
 
 #' @export
-bootstrap_iid.mdl_defn <- function(model, times = 5000) {
-  mdl_wrap(model, "mdl_defn_bootstrap_iid", times = times)
+bootstrap_iid.mdl_spec <- function(model, times = 5000) {
+  mdl_wrap(model, "mdl_spec_bootstrap_iid", times = times)
 }
 
 # Wrap the mdl_ts produced by estimate() when the spec was itself wrapped
 # (model(ets = bootstrap_iid(ETS(y)))). Dispatches on `model` (see new_model()).
-new_model.mdl_defn_bootstrap_iid <- function(fit = NULL, model, data, response,
+new_model.mdl_spec_bootstrap_iid <- function(fit = NULL, model, data, response,
                                              transformation, recent_data = NULL){
   bootstrap_iid(NextMethod(), times = model %@% "times")
 }
@@ -102,11 +102,11 @@ bootstrap_block.mdl_ts <- function(model, times = 5000, block_size = NULL) {
 }
 
 #' @export
-bootstrap_block.mdl_defn <- function(model, times = 5000, block_size = NULL) {
-  mdl_wrap(model, "mdl_defn_bootstrap_block", times = times, block_size = block_size)
+bootstrap_block.mdl_spec <- function(model, times = 5000, block_size = NULL) {
+  mdl_wrap(model, "mdl_spec_bootstrap_block", times = times, block_size = block_size)
 }
 
-new_model.mdl_defn_bootstrap_block <- function(fit = NULL, model, data, response,
+new_model.mdl_spec_bootstrap_block <- function(fit = NULL, model, data, response,
                                                transformation, recent_data = NULL){
   bootstrap_block(NextMethod(), times = model %@% "times", block_size = model %@% "block_size")
 }

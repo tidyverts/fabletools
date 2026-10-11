@@ -144,10 +144,11 @@
   fable data frame), for consistency with the mable (`mbl_df`) class. Fables
   now have the `fbl_df` class before `fbl_ts`, and all of the fable's S3
   methods now dispatch on `fbl_df`. The `fbl_ts` class is kept for this
-  release so old `inherits(x, "fbl_ts")` checks and methods in downstream code
-  keep working, but packages defining their own methods for fables (rather
-  than relying on `is_fable()`) should dispatch on `fbl_df` to keep working
-  once `fbl_ts` is removed in the next minor release.
+  release so old `inherits(x, "fbl_ts")` checks continue working, but it is
+  recommended to use `is_fable()` instead.
+* The `mdl_defn` class for model specifications is renamed to `mdl_spec`.
+  The `mdl_defn` class is kept for this release, and will be removed in the
+  next minor release.
 
 # fabletools 0.8.0
 

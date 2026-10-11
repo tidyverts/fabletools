@@ -52,11 +52,11 @@ simulate_iid.mdl_lst <- function(model, times = 5000) {
 }
 
 #' @export
-simulate_iid.mdl_defn <- function(model, times = 5000) {
-  mdl_wrap(model, "mdl_defn_sim", times = times)
+simulate_iid.mdl_spec <- function(model, times = 5000) {
+  mdl_wrap(model, "mdl_spec_sim", times = times)
 }
 
-new_model.mdl_defn_sim <- function(fit = NULL, model, data, response,
+new_model.mdl_spec_sim <- function(fit = NULL, model, data, response,
                                    transformation, recent_data = NULL){
   simulate_iid(NextMethod(), times = model %@% "times")
 }

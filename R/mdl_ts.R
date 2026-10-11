@@ -1,8 +1,8 @@
 new_model <- function(fit = NULL, model, data, response, transformation,
                        recent_data = NULL){
-  # Dispatch on `model` (the mdl_defn), not `fit`, so that a modifier applied
+  # Dispatch on `model` (the mdl_spec), not `fit`, so that a modifier applied
   # to a model specification (bootstrap_iid()/bootstrap_block()/
-  # simulate_iid() on an unfitted `mdl_defn`) can wrap the resulting mdl_ts
+  # simulate_iid() on an unfitted `mdl_spec`) can wrap the resulting mdl_ts
   # by providing a new_model() method for the class it adds to the spec.
   UseMethod("new_model", model)
 }

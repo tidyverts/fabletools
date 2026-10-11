@@ -148,5 +148,5 @@ new_model_class <- function(model = "Unknown model",
 #' @param .class A model class (typically created with [new_model_class()]).
 #' @export
 new_model_definition <- function(.class, formula, ..., .env = caller_env(n = 2)){
-  add_class(.class$new({{formula}}, ..., .env = .env), "mdl_defn")
+  add_class(.class$new({{formula}}, ..., .env = .env), c("mdl_spec", "mdl_defn"))
 }

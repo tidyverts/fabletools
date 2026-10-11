@@ -2,7 +2,7 @@ train_combination <- function(.data, specials, ..., cmbn_fn, cmbn_args){
   mdls <- dots_list(...)
   
   # Estimate model definitions
-  mdl_def <- map_lgl(mdls, inherits, "mdl_defn")
+  mdl_def <- map_lgl(mdls, inherits, "mdl_spec")
   mdls[mdl_def] <- mdls[mdl_def] %>% 
     map(function(x) estimate(self$data, x))
   
@@ -46,12 +46,12 @@ train_combination <- function(.data, specials, ..., cmbn_fn, cmbn_args){
 combination_model <- function(..., cmbn_fn = combination_ensemble,
                               cmbn_args = list()){
   mdls <- dots_list(...)
-  if(!any(map_lgl(mdls, inherits, "mdl_defn"))){
+  if(!any(map_lgl(mdls, inherits, "mdl_spec"))){
     abort("`combination_model()` must contain at least one valid model definition.")
   }
   
   # Guess the response variable without transformations
-  resp <- Reduce(intersect, lapply(Filter(function(x) inherits(x, "mdl_defn"), mdls), function(x) all.vars(model_lhs(x))))
+  resp <- Reduce(intersect, lapply(Filter(function(x) inherits(x, "mdl_spec"), mdls), function(x) all.vars(model_lhs(x))))
   if(length(resp) == 0) abort("`combination_model()` must use component models with the same response variable.")
   
   cmbn_model <- new_model_class("cmbn_mdl", train = train_combination, 
@@ -73,7 +73,7 @@ combination_model <- function(..., cmbn_fn = combination_ensemble,
 combination_ensemble <- function(..., weights = c("equal", "inv_var")){
   mdls <- dots_list(...)
   
-  if(all(map_lgl(mdls, inherits, "mdl_defn"))){
+  if(all(map_lgl(mdls, inherits, "mdl_spec"))){
     return(combination_model(..., cmbn_args = list(weights = weights)))
   }
   
@@ -123,7 +123,7 @@ combination_weighted <- function(..., weights = NULL){
   mdls <- dots_list(...)
   resp_var <- mdls[[1]]$response
   
-  if(all(map_lgl(mdls, inherits, "mdl_defn"))){
+  if(all(map_lgl(mdls, inherits, "mdl_spec"))){
     return(combination_model(..., cmbn_fn = combination_weighted,
                              cmbn_args = list(weights = weights)))
   }
@@ -136,7 +136,7 @@ combination_weighted <- function(..., weights = NULL){
 }
 
 #' @export
-Ops.mdl_defn <- function(e1, e2){
+Ops.mdl_spec <- function(e1, e2){
   e1_expr <- enexpr(e1)
   e2_expr <- enexpr(e2)
   ok <- switch(.Generic, `+` = , `-` = , `*` = , `/` = TRUE, FALSE)
