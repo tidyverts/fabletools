@@ -366,7 +366,7 @@ distribution_accuracy_measures <- list(percentile = percentile_score, CRPS = CRP
 #' This function converts other error metrics such as `MSE` into a skill score.
 #' The reference or benchmark forecasting method is the Naive method for
 #' non-seasonal data, and the seasonal naive method for seasonal data.
-#' When used within \code{\link{accuracy.fbl_ts}}, it is important that the data
+#' When used within \code{\link{accuracy.fbl_df}}, it is important that the data
 #' contains both the training and test data, as the training data is used to
 #' compute the benchmark forecasts.
 #'
@@ -555,7 +555,7 @@ accuracy.mdl_ts <- function(object, measures = point_accuracy_measures, ...){
 #' 
 #' @rdname accuracy
 #' @export
-accuracy.fbl_ts <- function(object, data, measures = point_accuracy_measures, ..., 
+accuracy.fbl_df <- function(object, data, measures = point_accuracy_measures, ..., 
                             by = NULL){
   resp <- response_vars(object)
   dist <- sym(distribution_var(object))

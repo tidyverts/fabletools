@@ -1,23 +1,23 @@
 #' @export
-dplyr_row_slice.fbl_ts <- function(data, i, ..., preserve = FALSE) {
+dplyr_row_slice.fbl_df <- function(data, i, ..., preserve = FALSE) {
   res <- NextMethod()
   build_fable(res, response = response_vars(data), distribution = distribution_var(data))
 }
 
 #' @export
-dplyr_row_slice.grouped_fbl <- dplyr_row_slice.fbl_ts
+dplyr_row_slice.grouped_fbl <- dplyr_row_slice.fbl_df
 
 #' @export
-dplyr_col_modify.fbl_ts <- function(data, cols) {
+dplyr_col_modify.fbl_df <- function(data, cols) {
   res <- NextMethod()
   build_fable(res, response = response_vars(data), distribution = distribution_var(data))
 }
 
 #' @export
-dplyr_col_modify.grouped_fbl <- dplyr_col_modify.fbl_ts
+dplyr_col_modify.grouped_fbl <- dplyr_col_modify.fbl_df
 
 #' @export
-dplyr_reconstruct.fbl_ts <- function(data, template) {
+dplyr_reconstruct.fbl_df <- function(data, template) {
   res <- NextMethod()
   dist <- distribution_var(template)
   if(dist %in% names(res)) {
@@ -28,10 +28,10 @@ dplyr_reconstruct.fbl_ts <- function(data, template) {
 }
 
 #' @export
-dplyr_reconstruct.grouped_fbl <- dplyr_reconstruct.fbl_ts
+dplyr_reconstruct.grouped_fbl <- dplyr_reconstruct.fbl_df
 
 #' @export
-summarise.fbl_ts <- function(.data, ..., .groups = NULL) { 
+summarise.fbl_df <- function(.data, ..., .groups = NULL) { 
   dist_var <- distribution_var(.data)
   dist_ptype <- vec_ptype(.data[[dist_var]])
   resp_var <- response_vars(.data)
@@ -48,4 +48,4 @@ summarise.fbl_ts <- function(.data, ..., .groups = NULL) {
 }
 
 #' @export
-summarise.grouped_fbl <- summarise.fbl_ts
+summarise.grouped_fbl <- summarise.fbl_df

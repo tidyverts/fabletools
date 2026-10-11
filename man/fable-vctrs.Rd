@@ -2,13 +2,13 @@
 % Please edit documentation in R/vctrs-fable.R
 \name{fable-vctrs}
 \alias{fable-vctrs}
-\alias{vec_ptype2.fbl_ts}
-\alias{vec_cast.fbl_ts}
+\alias{vec_ptype2.fbl_df}
+\alias{vec_cast.fbl_df}
 \title{Internal vctrs methods}
 \usage{
-\method{vec_ptype2}{fbl_ts}(x, y, ...)
+\method{vec_ptype2}{fbl_df}(x, y, ...)
 
-\method{vec_cast}{fbl_ts}(x, to, ...)
+\method{vec_cast}{fbl_df}(x, to, ...)
 }
 \description{
 These methods are the extensions that allow fable objects to

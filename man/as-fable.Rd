@@ -5,7 +5,7 @@
 \alias{as_fable.tbl_ts}
 \alias{as_fable.grouped_ts}
 \alias{as_fable.tbl_df}
-\alias{as_fable.fbl_ts}
+\alias{as_fable.fbl_df}
 \alias{as_fable.grouped_df}
 \alias{as_fable.forecast}
 \title{Coerce to a fable object}
@@ -18,14 +18,14 @@ as_fable(x, ...)
 
 \method{as_fable}{tbl_df}(x, response, distribution, ...)
 
-\method{as_fable}{fbl_ts}(x, response, distribution, ...)
+\method{as_fable}{fbl_df}(x, response, distribution, ...)
 
 \method{as_fable}{grouped_df}(x, response, distribution, ...)
 
 \method{as_fable}{forecast}(x, ..., point_forecast = list(.mean = mean))
 }
 \arguments{
-\item{x}{Object to be coerced to a fable (\code{fbl_ts})}
+\item{x}{Object to be coerced to a fable (\code{fbl_df})}
 
 \item{...}{Additional arguments passed to methods}
 

@@ -10,7 +10,7 @@ response_vars <- function(x){
 }
 
 #' @export
-response_vars.fbl_ts <- function(x){
+response_vars.fbl_df <- function(x){
   x%@%"response"
 }
 #' @export
@@ -37,7 +37,7 @@ distribution_var <- function(x){
   UseMethod("distribution_var")
 }
 #' @export
-distribution_var.fbl_ts <- function(x){
+distribution_var.fbl_df <- function(x){
   x%@%"dist"
 }
 

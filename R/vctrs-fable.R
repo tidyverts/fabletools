@@ -8,30 +8,30 @@
 NULL
 
 #' @rdname fable-vctrs
-#' @method vec_ptype2 fbl_ts
+#' @method vec_ptype2 fbl_df
 #' @export
-vec_ptype2.fbl_ts <- function(x, y, ...) {
-  UseMethod("vec_ptype2.fbl_ts", y)
+vec_ptype2.fbl_df <- function(x, y, ...) {
+  UseMethod("vec_ptype2.fbl_df", y)
 }
 
 #' @export
-vec_ptype2.fbl_ts.fbl_ts <- function(x, y, ...) {
+vec_ptype2.fbl_df.fbl_df <- function(x, y, ...) {
   fable_ptype2(x, y, ...)
 }
 
 #' @export
-vec_ptype2.data.frame.fbl_ts <- function(x, y, ...) {
+vec_ptype2.data.frame.fbl_df <- function(x, y, ...) {
   fable_ptype2(y, x, ...)
 }
 
 #' @export
-vec_ptype2.fbl_ts.data.frame <- vec_ptype2.fbl_ts.fbl_ts
+vec_ptype2.fbl_df.data.frame <- vec_ptype2.fbl_df.fbl_df
 
 #' @export
-vec_ptype2.tbl_df.fbl_ts <- vec_ptype2.data.frame.fbl_ts
+vec_ptype2.tbl_df.fbl_df <- vec_ptype2.data.frame.fbl_df
 
 #' @export
-vec_ptype2.fbl_ts.tbl_df <- vec_ptype2.fbl_ts.fbl_ts
+vec_ptype2.fbl_df.tbl_df <- vec_ptype2.fbl_df.fbl_df
 
 fable_ptype2 <- function(x, y, ...) {
   idx_x <- index_var(x)
@@ -59,14 +59,14 @@ fable_ptype2 <- function(x, y, ...) {
 }
 
 #' @rdname fable-vctrs
-#' @method vec_cast fbl_ts
+#' @method vec_cast fbl_df
 #' @export
-vec_cast.fbl_ts <- function(x, to, ...) {
-  UseMethod("vec_cast.fbl_ts")
+vec_cast.fbl_df <- function(x, to, ...) {
+  UseMethod("vec_cast.fbl_df")
 }
 
 #' @export
-vec_cast.fbl_ts.fbl_ts <- function(x, to, ...) {
+vec_cast.fbl_df.fbl_df <- function(x, to, ...) {
   is_identical <- identical(x, to)
   tbl <- tib_cast(x, to, ...)
   tsbl <- build_tsibble(
@@ -79,7 +79,7 @@ vec_cast.fbl_ts.fbl_ts <- function(x, to, ...) {
 }
 
 #' @export
-vec_cast.fbl_ts.tbl_df <- function(x, to, ...) {
+vec_cast.fbl_df.tbl_df <- function(x, to, ...) {
   tbl <- tib_cast(x, to, ...)
   tsbl <- build_tsibble(
     tbl, key = key_vars(to), index = index_var(to), index2 = index2_var(to),
@@ -88,7 +88,7 @@ vec_cast.fbl_ts.tbl_df <- function(x, to, ...) {
 }
 
 #' @export
-vec_cast.tbl_ts.fbl_ts <- function(x, to, ...) {
+vec_cast.tbl_ts.fbl_df <- function(x, to, ...) {
   tbl <- tib_cast(x, to, ...)
   build_tsibble(
     tbl, key = key_vars(to), index = index_var(to), index2 = index2_var(to),
@@ -97,20 +97,20 @@ vec_cast.tbl_ts.fbl_ts <- function(x, to, ...) {
 }
 
 #' @export
-vec_cast.fbl_ts.data.frame <- vec_cast.fbl_ts.tbl_df
+vec_cast.fbl_df.data.frame <- vec_cast.fbl_df.tbl_df
 
 #' @export
-vec_cast.tbl_df.fbl_ts <- function(x, to, ...) {
+vec_cast.tbl_df.fbl_df <- function(x, to, ...) {
   tib_cast(x, to, ...)
 }
 
 #' @export
-vec_cast.data.frame.fbl_ts <- function(x, to, ...) {
+vec_cast.data.frame.fbl_df <- function(x, to, ...) {
   df_cast(x, to, ...)
 }
 
 #' @export
-vec_restore.fbl_ts <- function(x, to, ..., n = NULL) {
+vec_restore.fbl_df <- function(x, to, ..., n = NULL) {
   if(!is_tsibble(x)){
     x <- build_tsibble(
       x, key = key_vars(to), index = index_var(to), index2 = index2_var(to),

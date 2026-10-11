@@ -131,7 +131,6 @@
   with `season()`.
 * `reconcile()` is soft-deprecated in favour of `mutate()` with the
   `reconcile_*()` functions (e.g. `mutate(lm = reconcile_mint(lm))`).
-
 * All of the mable's S3 methods (`forecast()`, `generate()`, `accuracy()`,
   `report()`, `augment()`, `glance()`, `tidy()`, and others) now dispatch on
   `mbl_df` rather than `mdl_df`, completing the class rename announced in
@@ -141,6 +140,14 @@
   relying on `is_mable()`) need to dispatch on `mbl_df` to keep working once
   `mdl_df` is dropped in the next minor release. `mdl_df` itself remains
   reserved for an upcoming joint-model group class.
+* The `fbl_ts` class for fable data frames will be renamed to `fbl_df` (a
+  fable data frame), for consistency with the mable (`mbl_df`) class. Fables
+  now have the `fbl_df` class before `fbl_ts`, and all of the fable's S3
+  methods now dispatch on `fbl_df`. The `fbl_ts` class is kept for this
+  release so old `inherits(x, "fbl_ts")` checks and methods in downstream code
+  keep working, but packages defining their own methods for fables (rather
+  than relying on `is_fable()`) should dispatch on `fbl_df` to keep working
+  once `fbl_ts` is removed in the next minor release.
 
 # fabletools 0.8.0
 

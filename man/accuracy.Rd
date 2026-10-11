@@ -4,7 +4,7 @@
 \alias{accuracy.mbl_df}
 \alias{accuracy.mdl_lst}
 \alias{accuracy.mdl_ts}
-\alias{accuracy.fbl_ts}
+\alias{accuracy.fbl_df}
 \title{Evaluate accuracy of a forecast or model}
 \usage{
 \method{accuracy}{mbl_df}(object, measures = point_accuracy_measures, ...)
@@ -13,7 +13,7 @@
 
 \method{accuracy}{mdl_ts}(object, measures = point_accuracy_measures, ...)
 
-\method{accuracy}{fbl_ts}(object, data, measures = point_accuracy_measures, ..., by = NULL)
+\method{accuracy}{fbl_df}(object, data, measures = point_accuracy_measures, ..., by = NULL)
 }
 \arguments{
 \item{object}{A model or forecast object}

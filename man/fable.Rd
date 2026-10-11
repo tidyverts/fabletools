@@ -15,8 +15,8 @@ fable(..., response, distribution)
 using a bare expression).}
 }
 \description{
-A fable (forecast table) data class (\code{fbl_ts}) which is a tsibble-like data
+A fable (forecast table) data class (\code{fbl_df}) which is a tsibble-like data
 structure for representing forecasts. In extension to the key and index from
-the tsibble (\code{tbl_ts}) class, a fable (\code{fbl_ts}) must also contain a single
+the tsibble (\code{tbl_ts}) class, a fable (\code{fbl_df}) must also contain a single
 distribution column that uses values from the distributional package.
 }

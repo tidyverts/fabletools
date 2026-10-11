@@ -335,7 +335,7 @@ compute_point_forecasts <- function(distribution, measures){
 }
 
 #' @export
-forecast.fbl_ts <- function(object, ...){
+forecast.fbl_df <- function(object, ...){
   abort("Did you try to forecast a fable? Forecasts can only be computed from model objects (such as a mable).")
 }
 

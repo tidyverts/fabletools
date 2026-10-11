@@ -1,8 +1,8 @@
 #' Create a fable object
 #'
-#' A fable (forecast table) data class (`fbl_ts`) which is a tsibble-like data
+#' A fable (forecast table) data class (`fbl_df`) which is a tsibble-like data
 #' structure for representing forecasts. In extension to the key and index from 
-#' the tsibble (`tbl_ts`) class, a fable (`fbl_ts`) must also contain a single
+#' the tsibble (`tbl_ts`) class, a fable (`fbl_df`) must also contain a single
 #' distribution column that uses values from the distributional package.
 #'
 #' @param ... Arguments passed to [tsibble::tsibble()].
@@ -28,13 +28,13 @@ fable <- function(..., response, distribution){
 #' 
 #' @export
 is_fable <- function(x){
-  inherits(x, "fbl_ts")
+  inherits(x, "fbl_df")
 }
 
 #' Coerce to a fable object
 #' 
 #' @inheritParams fable
-#' @param x Object to be coerced to a fable (`fbl_ts`)
+#' @param x Object to be coerced to a fable (`fbl_df`)
 #' @param ... Additional arguments passed to methods
 #' 
 #' @rdname as-fable
@@ -69,7 +69,7 @@ as_fable.tbl_df <- function(x, response, distribution, ...){
 
 #' @rdname as-fable
 #' @export
-as_fable.fbl_ts <- function(x, response, distribution, ...){
+as_fable.fbl_df <- function(x, response, distribution, ...){
   if(missing(response)){
     response <- response_vars(x)
   }
@@ -134,13 +134,13 @@ as_fable.forecast <- function(x, ..., point_forecast = list(.mean = mean)){
 build_fable <- function (x, response, distribution) {
   if(is_grouped_ts(x)){
     fbl <- structure(x, class = c("grouped_fbl", "grouped_ts", "grouped_df", 
-                                  "fbl_ts", "tbl_ts", "tbl_df", "tbl", "data.frame"),
+                                  "fbl_df", "fbl_ts", "tbl_ts", "tbl_df", "tbl", "data.frame"),
                      response = response, dist = distribution,
                      model_cn = ".model")
   } else {
     fbl <- tsibble::new_tsibble(
       x, response = response, dist = distribution, model_cn = ".model",
-      class = "fbl_ts")
+      class = c("fbl_df", "fbl_ts"))
   }
   if(is.null(dimnames(fbl[[distribution]]))) {
     warn("The dimnames of the fable's distribution are missing and have been set to match the response variables.")
@@ -154,18 +154,18 @@ build_fable <- function (x, response, distribution) {
 }
 
 #' @export
-as_tsibble.fbl_ts <- function(x, ...){
+as_tsibble.fbl_df <- function(x, ...){
   new_tsibble(x)
 }
 
 #' @export
 as_tsibble.grouped_fbl <- function(x, ...){
-  structure(x, class=setdiff(class(x), c("grouped_fbl", "fbl_ts")),
+  structure(x, class=setdiff(class(x), c("grouped_fbl", "fbl_df", "fbl_ts")),
             response = NULL, dist = NULL, model_cn = NULL)
 }
 
 #' @export
-as_tibble.fbl_ts <- function(x, ...) {
+as_tibble.fbl_df <- function(x, ...) {
   new_tibble(vec_data(x), nrow = nrow(x))
 }
 
@@ -175,7 +175,7 @@ as_tibble.grouped_fbl <- function(x, ...) {
 }
 
 validate_fable <- function(fbl){
-  stopifnot(inherits(fbl, "fbl_ts"))
+  stopifnot(inherits(fbl, "fbl_df"))
   chr_dist <- distribution_var(fbl)
   if (!(chr_dist %in% names(fbl))){
     abort(sprintf("Could not find distribution variable `%s` in the fable. A fable must contain a distribution, if you want to remove it convert to a tsibble with `as_tsibble()`.",
@@ -184,7 +184,7 @@ validate_fable <- function(fbl){
   vec_assert(fbl[[chr_dist]], distributional::new_dist(dimnames = response_vars(fbl)))
 }
 
-tbl_sum.fbl_ts <- function(x){
+tbl_sum.fbl_df <- function(x){
   out <- NextMethod()
   names(out)[1] <- "A fable"
   out
@@ -192,7 +192,7 @@ tbl_sum.fbl_ts <- function(x){
 
 #' @importFrom distributional hilo
 #' @export
-hilo.fbl_ts <- function(x, level = c(80, 95), ...){
+hilo.fbl_df <- function(x, level = c(80, 95), ...){
   hilo_exprs <- map(level,function(.x) expr(hilo(!!sym(distribution_var(x)), !!.x)))
   names(hilo_exprs) <- paste0(level, "%")
   as_tsibble(x) %>%
@@ -220,17 +220,17 @@ renamed_distribution_var <- function(.data, loc) {
 }
 
 #' @export
-select.fbl_ts <- function (.data, ...){
+select.fbl_df <- function (.data, ...){
   loc <- tidyselect::eval_select(expr(c(...)), .data)
   res <- select(as_tsibble(.data), ...)
   restore_fable(res, .data, renamed_distribution_var(.data, loc))
 }
 
 #' @export
-select.grouped_fbl <- select.fbl_ts
+select.grouped_fbl <- select.fbl_df
 
 #' @export
-rename.fbl_ts <- function (.data, ...){
+rename.fbl_df <- function (.data, ...){
   loc <- tidyselect::eval_rename(expr(c(...)), .data)
   res <- rename(as_tsibble(.data), ...)
   build_fable(res, response = response_vars(.data),
@@ -238,11 +238,11 @@ rename.fbl_ts <- function (.data, ...){
 }
 
 #' @export
-rename.grouped_fbl <- rename.fbl_ts
+rename.grouped_fbl <- rename.fbl_df
 
 #' @importFrom dplyr relocate
 #' @export
-relocate.fbl_ts <- function (.data, ..., .before = NULL, .after = NULL){
+relocate.fbl_df <- function (.data, ..., .before = NULL, .after = NULL){
   loc <- tidyselect::eval_select(expr(c(...)), .data)
   res <- relocate(as_tsibble(.data), ..., .before = {{ .before }}, .after = {{ .after }})
   build_fable(res, response = response_vars(.data),
@@ -250,27 +250,27 @@ relocate.fbl_ts <- function (.data, ..., .before = NULL, .after = NULL){
 }
 
 #' @export
-relocate.grouped_fbl <- relocate.fbl_ts
+relocate.grouped_fbl <- relocate.fbl_df
 
 #' @export
-transmute.fbl_ts <- function (.data, ...) {
+transmute.fbl_df <- function (.data, ...) {
   res <- transmute(as_tsibble(.data), ...)
   restore_fable(res, .data)
 }
 
 #' @export
-transmute.grouped_fbl <- transmute.fbl_ts
+transmute.grouped_fbl <- transmute.fbl_df
 
 #' @export
-group_by.fbl_ts <- function(.data, ...) {
+group_by.fbl_df <- function(.data, ...) {
   build_fable(NextMethod(), response_vars(.data), distribution_var(.data))
 }
 
 #' @export
-group_by.grouped_fbl <- group_by.fbl_ts
+group_by.grouped_fbl <- group_by.fbl_df
 
 #' @export
-ungroup.fbl_ts <- function(x, ...) {
+ungroup.fbl_df <- function(x, ...) {
   build_fable(NextMethod(), response_vars(x), distribution_var(x))
 }
 
@@ -280,12 +280,12 @@ ungroup.grouped_fbl <- function(x, ...) {
 }
 
 #' @export
-fill_gaps.fbl_ts <- function(.data, ..., .full = FALSE) {
+fill_gaps.fbl_df <- function(.data, ..., .full = FALSE) {
   vec_restore(NextMethod(.data), .data)
 }
 
 #' @export
-rbind.fbl_ts <- function(...){
+rbind.fbl_df <- function(...){
   deprecate_warn("0.2.0", "rbind.fbl_ts()", "bind_rows()")
   fbls <- dots_list(...)
   response <- map(fbls, response_vars)
@@ -301,7 +301,7 @@ rbind.fbl_ts <- function(...){
 }
 
 #' @export
-`[.fbl_ts` <- function (x, i, j, drop = FALSE){
+`[.fbl_df` <- function (x, i, j, drop = FALSE){
   out <- NextMethod()
   # Drop fable if tsibble is dropped
   
@@ -314,6 +314,6 @@ rbind.fbl_ts <- function(...){
     build_fable(out, response_vars(x), distribution_var(x))
 }
 
-type_sum.fbl_ts <- function(x){
+type_sum.fbl_df <- function(x){
   "fable"
 }
