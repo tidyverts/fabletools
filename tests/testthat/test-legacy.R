@@ -80,3 +80,22 @@ test_that("fables saved with fabletools <= 0.8.0 are used as fables", {
   expect_s3_class(dplyr::group_by(old, .model, .drop = FALSE), "grouped_fbl")
   expect_s3_class(tibble::as_tibble(old), "tbl_df")
 })
+
+test_that("fables saved with fabletools <= 0.8.0 forward named tidy-eval arguments", {
+  skip_if_not_installed("fable")
+
+  old <- as_legacy_fable(fbl_complex)
+  expect_equal(
+    names(dplyr::relocate(old, .mean, .before = key)),
+    names(dplyr::relocate(fbl_complex, .mean, .before = key))
+  )
+  # Arguments forwarded through dots of another function
+  relocate_fc <- function(x, ...) dplyr::relocate(x, ...)
+  expect_equal(
+    names(relocate_fc(old, .model, .after = .mean)),
+    names(dplyr::relocate(fbl_complex, .model, .after = .mean))
+  )
+  # Standard arguments are evaluated in the caller's environment
+  hilo_level <- function(level) hilo(old, level = level)
+  expect_equal(hilo_level(90), hilo(fbl_complex, level = 90))
+})

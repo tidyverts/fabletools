@@ -35,23 +35,38 @@ legacy_fable_method <- function(generic, env = caller_env()){
   fmls <- formals(args(eval(generic, env)))
   x <- sym(names(fmls)[1L])
   opts <- setdiff(names(fmls)[-1L], "...")
-  dots <- if ("..." %in% names(fmls)) list(quote(...))
-  upgrade <- call("<-", x, call("upgrade_fable", x))
   # Omit defaults so that the generic evaluates its own for unsupplied arguments
   fmls[names(fmls) != "..."] <- list(missing_arg())
   new_function(
     fmls,
     expr({
       if(inherits(!!x, "fbl_df")) return(NextMethod())
-      !!upgrade
-      # Forward only the supplied arguments
-      frame <- environment()
-      opts <- !!opts
-      opts <- opts[!vapply(opts, function(a) eval(call("missing", as.name(a)), frame), logical(1L))]
-      eval(as.call(c(quote(!!generic), quote(!!x), !!dots, set_names(syms(opts), opts))), frame)
+      legacy_fable_dispatch(
+        !!as_string(generic), !!generic, upgrade_fable(!!x), !!opts, environment(),
+        dots = !!("..." %in% names(fmls))
+      )
     }),
     env = env
   )
+}
+
+# Call `fn` on the upgraded fable `x` with the arguments supplied to `frame`,
+# forwarding their expressions unevaluated so that tidy evaluation still works.
+legacy_fable_dispatch <- function(name, fn, x, opts, frame, dots){
+  opts <- opts[!vapply(opts, function(a) eval(call("missing", as.name(a)), frame), logical(1L))]
+  quos <- lapply(opts, function(a) eval(call("enquo", as.name(a)), frame))
+  args <- set_names(lapply(quos, quo_get_expr), opts)
+  envs <- unique(lapply(quos[!vapply(args, is_syntactic_literal, logical(1L))], quo_get_env))
+  if(length(envs) > 1) {
+    # Arguments from different environments are evaluated instead
+    args <- set_names(syms(opts), opts)
+    envs <- list(frame)
+  }
+  mask <- env(if(length(envs)) envs[[1]] else frame, .legacy_fable = x)
+  mask[[name]] <- fn
+  call <- as.call(c(sym(name), quote(.legacy_fable), if(dots) quote(...), args))
+  forward <- new_function(if(dots) alist(... = ), call, mask)
+  eval(if(dots) call2(forward, quote(...)) else call2(forward), frame)
 }
 
 #' @export
