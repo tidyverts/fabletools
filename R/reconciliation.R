@@ -171,11 +171,16 @@ forecast.lst_mint_mdl <- function(object, key_data,
     abort("Unknown reconciliation method")
   }
   
-  # Check positive definiteness of weights, using a tolerance relative to the
-  # largest eigenvalue so that the check does not depend on the scale of the
-  # data (#358).
-  eigenvalues <- eigen(W, only.values = TRUE)[["values"]]
-  if (any(eigenvalues <= max(eigenvalues) * sqrt(.Machine$double.eps))) {
+  # The weights must be symmetric positive definite: diagonal weights must be
+  # positive, and full matrices are checked on the correlation scale so the
+  # check doesn't depend on the scale of each series (#358).
+  w_diag <- diag(W)
+  is_pd <- all(is.finite(w_diag) & w_diag > 0)
+  if (is_pd && method %in% c("mint_cov", "mint_shrink")) {
+    eigenvalues <- eigen(stats::cov2cor(as.matrix(W)), symmetric = TRUE, only.values = TRUE)[["values"]]
+    is_pd <- min(eigenvalues) > length(eigenvalues) * .Machine$double.eps * max(eigenvalues)
+  }
+  if (!is_pd) {
     abort(c(
       sprintf("`min_trace(method = \"%s\")` requires a positive definite covariance matrix, but the estimated matrix is (near) singular.", method),
       i = "This commonly occurs when two series in the hierarchy are identical, such as an aggregate with a single child series (e.g. a state containing only one region).",

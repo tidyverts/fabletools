@@ -79,6 +79,9 @@
   fable class or distribution column (#324, #348, #403).
 * Fixed `[[<-` not registering model columns in a mable (#402, #323).
 * Fixed `min_trace()` positive definite check not being scale invariant (#358).
+  Diagonal weights are checked to be positive, and covariance matrices are
+  checked on the correlation scale, so series with very different scales are
+  accepted.
 * Improved error for singular covariance matrices in `min_trace()` (#309).
 * Fixed `top_down()` and `middle_out()` reconciliation collapsing sample path
   forecasts (e.g. from `simulate_iid()`) to degenerate distributions (#408).

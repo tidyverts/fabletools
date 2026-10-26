@@ -134,6 +134,30 @@ test_that("min_trace positive definite check is scale invariant (#358)", {
   }
 })
 
+test_that("min_trace accepts series with very different scales", {
+  skip_if_not_installed("fable")
+
+  # Series standard deviations differ by a factor of about 1e5
+  lung_deaths_scaled <- lung_deaths_long %>%
+    dplyr::mutate(value = ifelse(key == "fdeaths", value / 1e5, value)) %>%
+    aggregate_key(key, value = sum(value))
+  fit <- lung_deaths_scaled %>%
+    model(ets = fable::ETS(value ~ error("A") + trend("N") + season("A")))
+
+  for (method in c("ols", "wls_var", "wls_struct", "mint_cov", "mint_shrink")) {
+    expect_no_error(
+      fc <- fit %>%
+        mutate(ets = reconcile_mint(ets, method = !!method)) %>%
+        forecast(h = 6)
+    )
+    fc <- tidyr::pivot_wider(
+      tibble::as_tibble(fc)[c("key", "index", ".mean")],
+      names_from = key, values_from = .mean
+    )
+    expect_equal(fc[["<aggregated>"]], fc[["mdeaths"]] + fc[["fdeaths"]])
+  }
+})
+
 test_that("min_trace errors informatively for singular covariance matrices", {
   skip_if_not_installed("fable")
 
