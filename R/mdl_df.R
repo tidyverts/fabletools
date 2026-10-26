@@ -39,6 +39,76 @@ model_col_response <- function(x){
   if(is.null(mdl)) NULL else response_vars(mdl)
 }
 
+#' Model groups
+#'
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
+#' Model columns of a mable can be combined with `cbind()` into a model group:
+#' a data frame of model columns (with the `mdl_df` class) holding several
+#' models for each series. A model group is created within [dplyr::mutate()]
+#' (e.g. `mutate(fit, grp = cbind(ets, arima))`), and is stored in the mable
+#' as a single model column. `rbind()` stacks the rows of model groups with
+#' the same model columns, which are matched by name.
+#'
+#' @details
+#' Unnamed model columns are named after their expression, with `fit$ets`
+#' named `ets`. Unnamed model groups are extended with their model columns,
+#' while named model groups are nested within the new group, so
+#' `cbind(grp, arima)` adds `arima` to the models of `grp`, and
+#' `cbind(grp = grp, arima)` gives a group containing `grp` and `arima`. The
+#' model columns must all contain the same number of models (one for each
+#' series in the mable).
+#'
+#' When printed within a mable, a model group is shown as a column for each of
+#' its models, under the name of the group (such as `grp$ets` followed by
+#' `$arima`).
+#'
+#' Results computed from a mable include each model of a group, with a
+#' `.model` of `<group>$<model>` (e.g. `grp$ets`). This applies to
+#' [forecast()], [generate()], [accuracy()], [fitted()], [residuals()],
+#' [augment()], [glance()], [tidy()], [components()] and [hypothesize()].
+#' Generics that modify the models, such as [refit()] and [stream()], return
+#' the model group with its models replaced. Model groups can also be used
+#' with:
+#'
+#' * [report()] and [equation()], for a mable with a single model.
+#' * [tidyr::pivot_longer()] and [tidyr::gather()], which replace the model
+#'   groups being pivoted with their models (named `<group>$<model>`).
+#' * [simulate_iid()] and [conformal_scp()], which are applied to each model of
+#'   the group.
+#'
+#' The bootstrap modifiers ([bootstrap_iid()] and [bootstrap_block()]) and the
+#' reconciliation functions (such as [reconcile_mint()]) can't be applied to a
+#' model group. Instead apply them to the model columns before grouping them.
+#' [interpolate()] requires a mable with a single model column, which can't be
+#' a model group.
+#'
+#' @param ... Model columns (`mdl_lst`) or model groups (`mdl_df`) to combine.
+#' @param deparse.level For `cbind()`, how unnamed arguments are named. With
+#' `1` (the default) unnamed symbols (or `fit$model`) are used as names, and
+#' with `2` other expressions are also deparsed into names. With `0`, unnamed
+#' model columns aren't allowed. Unused by `rbind()`.
+#'
+#' @return A model group, with the `mdl_df` class.
+#'
+#' @examplesIf requireNamespace("fable", quietly = TRUE)
+#' library(fable)
+#' library(dplyr)
+#' fit <- as_tsibble(cbind(mdeaths, fdeaths), pivot_longer = TRUE) %>%
+#'   model(ets = ETS(value), arima = ARIMA(value))
+#'
+#' # Group the models of each series
+#' fit_grp <- fit %>%
+#'   transmute(grp = cbind(ets, arima))
+#' fit_grp
+#'
+#' # The results include each model of the group
+#' fit_grp %>%
+#'   forecast(h = "1 year")
+#' accuracy(fit_grp)
+#'
+#' @name model_groups
 #' @export
 cbind.mdl_lst <- function(..., deparse.level = 1){
   dots <- list(...)
@@ -81,9 +151,11 @@ cbind.mdl_lst <- function(..., deparse.level = 1){
   new_mdl_df(cols)
 }
 
+#' @rdname model_groups
 #' @export
 cbind.mdl_df <- cbind.mdl_lst
 
+#' @rdname model_groups
 #' @export
 rbind.mdl_df <- function(..., deparse.level = 1){
   dots <- list(...)

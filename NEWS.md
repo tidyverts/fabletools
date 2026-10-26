@@ -3,13 +3,15 @@
 ## New features
 
 * Model columns from the same mable can now be grouped with `cbind()` (e.g.
-  `mutate(fit, joint = cbind(ets, arima))`) into a model group (the new
-  `mdl_df` class): a data frame of model columns for the same series, which
-  can be stacked with `rbind()`. Model groups are printed compactly within a
-  mable (`<ets+arima>`), and `forecast()` and `generate()` label their models
-  as `joint$ets` and `joint$arima`. This is scaffolding for modifiers applied
-  jointly across a series' models (e.g. joint bootstrapping). Other mable
-  verbs don't support model groups yet.
+  `mutate(fit, joint = cbind(ets, arima))`) into an experimental model group
+  (the `mdl_df` class, see `?model_groups`): a data frame of model columns for
+  the same series, which can be stacked with `rbind()`. Model groups are
+  printed as a column for each of their models, and results computed from the
+  mable (such as `forecast()`, `generate()`, `accuracy()` and `tidy()`) label
+  their models as `joint$ets` and `joint$arima`. `simulate_iid()` and
+  `conformal_scp()` can be applied to model groups, while the bootstrap
+  modifiers and reconciliation are applied to model columns before grouping
+  them.
 * Added `bootstrap_iid()`, `bootstrap_block()`, and `simulate_iid()`, which
   wrap a fitted model (via `mutate()`) so that `forecast()`/`generate()`
   produce forecasts from bootstrapped or simulated sample paths instead of
@@ -127,7 +129,7 @@
   that are only used through `lag()`, e.g. `ARIMA(y ~ lag(x, 3))` can now be
   forecast with `h = 3`. Missing regressors are treated as `NA`, so forecasts
   beyond the lag use the short-term memory and are `NA` after that (#318).
-* Fixed `autolayer()` for tsibbles using the fable method when ggtime isn't
+* Fixed `autolayer()` for tsibble data using the fable method when ggtime isn't
   installed.
 
 ## Improvements
@@ -156,17 +158,17 @@
   release so old `inherits(x, "mdl_df")` checks in downstream code keep
   working, but packages defining their own methods for mables (rather than
   relying on `is_mable()`) need to dispatch on `mbl_df` to keep working once
-  `mdl_df` is dropped in the next minor release. `mdl_df` itself remains
-  reserved for an upcoming joint-model group class.
+  the trailing `mdl_df` class is removed from mables in v1.1.0. The `mdl_df`
+  class is now used for model groups.
 * The `fbl_ts` class for fable data frames will be renamed to `fbl_df` (a
   fable data frame), for consistency with the mable (`mbl_df`) class. Fables
   now have the `fbl_df` class before `fbl_ts`, and all of the fable's S3
-  methods now dispatch on `fbl_df`. The `fbl_ts` class is kept for this
-  release so old `inherits(x, "fbl_ts")` checks continue working, but it is
-  recommended to use `is_fable()` instead.
+  methods now dispatch on `fbl_df`. The `fbl_ts` class is kept for now so
+  old `inherits(x, "fbl_ts")` checks continue working, but it is recommended
+  to use `is_fable()` instead.
 * The `mdl_defn` class for model specifications is renamed to `mdl_spec`.
-  The `mdl_defn` class is kept for this release, and will be removed in the
-  next minor release.
+  The `mdl_defn` class is kept for this release, and will be removed in
+  v1.1.0.
 * Mables, fables and model specifications saved with fabletools 0.8.0 or
   earlier (with the `mdl_df`, `fbl_ts` and `mdl_defn` classes) are upgraded to
   the new classes when they are used, so they keep working with all methods.
