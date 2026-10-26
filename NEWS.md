@@ -138,6 +138,9 @@
 * Increased the minimum required versions of rlang to 1.0.0 and vctrs to 0.3.0,
   matching the functionality used by fabletools.
 * Documentation improvements (#281, #371, #389, #410).
+* The reconciliation functions (`reconcile_*()`, `min_trace()`, etc.) now
+  give an informative error when they aren't applied to a column of models,
+  rather than failing later in `forecast()`.
 
 ## Breaking changes
 

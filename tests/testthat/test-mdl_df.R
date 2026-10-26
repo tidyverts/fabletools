@@ -219,3 +219,37 @@ test_that("pivot_longer() and gather() unpack model groups", {
   expect_equal(mable_vars(gathered), c("lm", "fit"))
   expect_equal(unique(tidyr::gather(mbl_grp, ".model", "fit", -key)$.model), mdl_names)
 })
+
+test_that("modifiers applied to model groups", {
+  skip_if_not_installed("fable")
+
+  mbl_grp <- mbl_complex %>%
+    mutate(grp = cbind(ets, lm))
+
+  # Independent modifiers are applied to each model of the group
+  sim <- mutate(mbl_grp, grp = simulate_iid(grp, times = 10))
+  expect_true(is_mdl_df(sim$grp))
+  expect_s3_class(sim$grp$ets[[1]], "mdl_ts_sim")
+  expect_s3_class(sim$grp$lm[[1]], "mdl_ts_sim")
+  fc <- forecast(sim, h = 2)
+  expect_true(all(dist_types(dplyr::filter(fc, .model == "grp$lm")$value) == "dist_sample"))
+
+  cnf <- mutate(mbl_grp, grp = conformal_scp(grp))
+  expect_s3_class(cnf$grp$ets[[1]], "mdl_conformal_scp")
+  expect_s3_class(cnf$grp$lm[[1]], "mdl_conformal_scp")
+
+  # Joint bootstrapping across a group's models isn't supported yet
+  expect_error(mutate(mbl_grp, grp = bootstrap_iid(grp)), "can't be applied to a model group")
+  expect_error(mutate(mbl_grp, grp = bootstrap_block(grp)), "can't be applied to a model group")
+  boot <- mutate(mbl_grp, grp = cbind(ets = bootstrap_iid(ets, times = 10), lm))
+  expect_s3_class(boot$grp$ets, "mdl_lst_bootstrap_iid")
+  expect_equal(NROW(forecast(boot, h = 2)), 2 * 4 * 2)
+
+  # Reconciliation applies to a column of models across the hierarchy
+  expect_error(mutate(mbl_grp, grp = reconcile_bu(grp)), "can't be applied to a model group")
+  expect_error(mutate(mbl_grp, grp = min_trace(grp)), "can't be applied to a model group")
+  expect_error(reconcile_mint(mbl_complex), "must be applied to a column of models")
+
+  # Modifiers can't be applied to a mable
+  expect_error(simulate_iid(mbl_complex), "not to a mable")
+})

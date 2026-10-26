@@ -43,25 +43,45 @@ reconcile.mbl_df <- function(.data, ...){
 #' @export
 reconcile_mint <- function(models, method = c("wls_var", "ols", "wls_struct", "mint_cov", "mint_shrink"),
                            sparse = NULL){
+  check_reconcile_models(models, "reconcile_mint")
   min_trace(models, method = method, sparse = sparse)
 }
 
 #' @rdname bottom_up
 #' @export
 reconcile_bu <- function(models){
+  check_reconcile_models(models, "reconcile_bu")
   bottom_up(models)
 }
 
 #' @rdname top_down
 #' @export
 reconcile_td <- function(models, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
+  check_reconcile_models(models, "reconcile_td")
   top_down(models, method = method)
 }
 
 #' @rdname middle_out
 #' @export
 reconcile_mo <- function(models, split = 1){
+  check_reconcile_models(models, "reconcile_mo")
   middle_out(models, split = split)
+}
+
+# Reconciliation applies to a column of models across the series of a hierarchy
+check_reconcile_models <- function(models, fn, call = caller_env()) {
+  if(is_mdl_df(models)) {
+    abort(c(
+      sprintf("`%s()` can't be applied to a model group.", fn),
+      "i" = "Reconcile each model column before grouping them with `cbind()`."
+    ), call = call)
+  }
+  if(!inherits(models, c("mdl_lst", "lst_mdl"))) {
+    abort(sprintf(
+      "`%s()` must be applied to a column of models (<mdl_lst>), not <%s>.",
+      fn, vctrs::vec_ptype_full(models)
+    ), call = call)
+  }
 }
 
 #' Minimum trace forecast reconciliation
@@ -99,6 +119,7 @@ min_trace <- function(models, method = c("wls_var", "ols", "wls_struct", "mint_c
   if(is.null(sparse)){
     sparse <- requireNamespace("Matrix", quietly = TRUE)
   }
+  check_reconcile_models(models, "min_trace")
   structure(models, class = union("lst_mint_mdl", class(models)),
             method = match.arg(method), sparse = sparse)
 }
@@ -242,6 +263,7 @@ forecast.lst_mint_mdl <- function(object, key_data,
 #' [*Forecasting: Principles and Practice* - Bottom-up approach](https://otexts.com/fpp3/hierarchical-forecasting.html#sec-single-level)
 #' @export
 bottom_up <- function(models){
+  check_reconcile_models(models, "bottom_up")
   structure(models, class = union("lst_btmup_mdl", class(models)))
 }
 
@@ -300,6 +322,7 @@ forecast.lst_btmup_mdl <- function(object, key_data,
 #'
 #' @export
 top_down <- function(models, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
+  check_reconcile_models(models, "top_down")
   structure(models, class = union("lst_topdwn_mdl", class(models)),
             method = match.arg(method))
 }
@@ -466,6 +489,7 @@ propagate_forecast_proportions <- function(fc_mean, key_data, agg_order,
 #' 
 #' @export
 middle_out <- function(models, split = 1){
+  check_reconcile_models(models, "middle_out")
   structure(models, class = union("lst_midout_mdl", class(models)),
             split = split)
 }

@@ -53,6 +53,11 @@ simulate_iid.mdl_lst <- function(model, times = 5000) {
 }
 
 #' @export
+simulate_iid.mdl_df <- function(model, times = 5000) {
+  modify_model_group(model, simulate_iid, times = times)
+}
+
+#' @export
 simulate_iid.mdl_spec <- function(model, times = 5000) {
   mdl_wrap(model, "mdl_spec_sim", times = times)
 }

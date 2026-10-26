@@ -64,6 +64,11 @@ conformal_scp.mdl_lst <- function(model, times = 5000, min_calibration = 20) {
 }
 
 #' @export
+conformal_scp.mdl_df <- function(model, times = 5000, min_calibration = 20) {
+  modify_model_group(model, conformal_scp, times = times, min_calibration = min_calibration)
+}
+
+#' @export
 conformal_scp.mdl_spec <- function(model, times = 5000, min_calibration = 20) {
   mdl_wrap(model, "mdl_spec_conformal_scp", times = times, min_calibration = min_calibration)
 }

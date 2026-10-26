@@ -150,6 +150,22 @@ tbl_sum.mdl_df <- function(x){
   c(`A model group` = paste(map_chr(dim(x), big_mark), collapse = " x "))
 }
 
+# Modifiers only apply to model groups, not to mables (which can also have
+# the `mdl_df` class)
+check_model_group <- function(model, fn, call = caller_env()) {
+  if(!is_mdl_df(model)) {
+    abort(sprintf(
+      "`%s()` must be applied to a model column, such as within `mutate()`, not to a mable.", fn
+    ), call = call)
+  }
+}
+
+# Apply a modifier to each model column of a model group
+modify_model_group <- function(model, .f, ..., call = caller_env()) {
+  check_model_group(model, as_string(substitute(.f)), call = call)
+  new_mdl_df(lapply(unclass(model), .f, ...))
+}
+
 # The model columns of a mable, with model groups replaced by their columns
 mable_model_cols <- function(x){
   unpack_model_results(as.list(x)[mable_vars(x)])

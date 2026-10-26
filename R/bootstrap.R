@@ -71,6 +71,11 @@ bootstrap_iid.mdl_lst <- function(model, times = 5000) {
 }
 
 #' @export
+bootstrap_iid.mdl_df <- function(model, times = 5000) {
+  abort_bootstrap_model_group(model, "bootstrap_iid")
+}
+
+#' @export
 bootstrap_iid.mdl_spec <- function(model, times = 5000) {
   mdl_wrap(model, "mdl_spec_bootstrap_iid", times = times)
 }
@@ -101,6 +106,23 @@ bootstrap_block.mdl_ts <- function(model, times = 5000, block_size = NULL) {
     model, c("mdl_bootstrap_block", "mdl_ts_sim"),
     times = times, block_size = block_size
   )
+}
+
+#' @export
+bootstrap_block.mdl_df <- function(model, times = 5000, block_size = NULL) {
+  abort_bootstrap_model_group(model, "bootstrap_block")
+}
+
+# Joint bootstrapping across the models of a group isn't supported yet
+abort_bootstrap_model_group <- function(model, fn, call = caller_env()) {
+  check_model_group(model, fn, call = call)
+  abort(c(
+    sprintf("`%s()` can't be applied to a model group.", fn),
+    "i" = sprintf(
+      "Apply it to each model column before grouping them, e.g. `cbind(%s(ets), %s(arima))`.",
+      fn, fn
+    )
+  ), call = call)
 }
 
 #' @export
