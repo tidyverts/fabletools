@@ -203,7 +203,7 @@ format.agg_vec <- function(x, ..., agg_chr = "<aggregated>"){
 }
 
 pillar_shaft.agg_vec <- function(x, ...) {
-  if(requireNamespace("crayon")){
+  if(requireNamespace("crayon", quietly = TRUE)){
     agg_chr <- crayon::style("<aggregated>", crayon::make_style("#999999", grey = TRUE))
   }
   else{
