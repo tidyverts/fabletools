@@ -17,6 +17,7 @@
 #'  autoplot(vars(Close, log(Close)))
 #' 
 #' @importFrom ggplot2 ggplot aes geom_line guides guide_legend xlab
+#' @exportS3Method NULL
 autoplot.tbl_ts <- function(object, .vars = NULL, ...){
   lifecycle::deprecate_soft(
     when = "0.6.0",
@@ -81,6 +82,7 @@ autoplot.tbl_ts <- function(object, .vars = NULL, ...){
 
 #' @rdname autoplot.tbl_ts
 #' @importFrom ggplot2 ggplot aes geom_line guides guide_legend xlab
+#' @exportS3Method NULL
 autolayer.tbl_ts <- function(object, .vars = NULL, ...){
   lifecycle::deprecate_soft(
     when = "0.6.0",
@@ -131,6 +133,7 @@ autolayer.tbl_ts <- function(object, .vars = NULL, ...){
 }
 
 #' @importFrom ggplot2 fortify
+#' @exportS3Method NULL
 fortify.fbl_ts <- function(model, data = NULL, level = c(80, 95), ...){
   return(as_tibble(model))
 }
@@ -161,6 +164,7 @@ fortify.fbl_ts <- function(model, data = NULL, level = c(80, 95), ...){
 #'   autoplot(aus_production)
 #' 
 #' @importFrom ggplot2 facet_wrap
+#' @exportS3Method NULL
 autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = TRUE, ...){
   lifecycle::deprecate_soft(
     when = "0.6.0",
@@ -234,6 +238,7 @@ autoplot.fbl_ts <- function(object, data = NULL, level = c(80, 95), show_gap = T
 #' aus_production %>% 
 #'   autoplot(Beer) + 
 #'   autolayer(fc)
+#' @exportS3Method NULL
 autolayer.fbl_ts <- function(object, data = NULL, level = c(80, 95), 
                              point_forecast = list(mean = mean), show_gap = TRUE, ...){
   lifecycle::deprecate_soft(
@@ -489,6 +494,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
 #'   autoplot()
 #' 
 #' @importFrom ggplot2 ggplot geom_line geom_rect facet_grid vars ylab labs after_stat
+#' @exportS3Method NULL
 autoplot.dcmp_ts <- function(object, .vars = NULL, scale_bars = TRUE, 
                              level = c(80, 95), ...){
   lifecycle::deprecate_soft(

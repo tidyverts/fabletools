@@ -70,6 +70,7 @@ conformal_scp.mdl_spec <- function(model, times = 5000, min_calibration = 20) {
 
 # Wrap the mdl_ts produced by estimate() when the spec was itself wrapped
 # (model(ets = conformal_scp(ETS(y)))). Dispatches on `model` (see new_model()).
+#' @export
 new_model.mdl_spec_conformal_scp <- function(fit = NULL, model, data, response,
                                              transformation, recent_data = NULL){
   conformal_scp(NextMethod(), times = model %@% "times", min_calibration = model %@% "min_calibration")

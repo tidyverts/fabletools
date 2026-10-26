@@ -7,6 +7,7 @@ new_model <- function(fit = NULL, model, data, response, transformation,
   UseMethod("new_model", model)
 }
 
+#' @export
 new_model.default <- function(fit = NULL, model, data, response, transformation,
                                recent_data = NULL){
   structure(list(fit = fit, model = model, data = data,
