@@ -73,6 +73,11 @@
 * `trend()` now converts `knots` and `origin` to the class of the time index,
   and errors if they're incompatible. Previously other classes (e.g. a `Date`
   origin for a `yearmonth` index, or text knots) silently gave wrong trends.
+* The default origin of `trend()` is now the first time point of each series.
+  Previously the origin of the first series estimated was reused for every
+  other series, dataset and `model()` call using the same model
+  specification, which gave wrong forecasts for series starting at different
+  times and errors for datasets with a different index class.
 * Fixed `common_periods()` giving incorrect frequencies for sub-daily
   intervals made of several units (e.g. 1 hour 30 minutes).
 * Fixed `select()`, `transmute()`, `rename()` and `relocate()` dropping the

@@ -15,6 +15,15 @@ new_model.default <- function(fit = NULL, model, data, response, transformation,
             class = "mdl_ts")
 }
 
+# Restore a fit's lag() short term memory and trend() origin to its model
+# definition, which is shared by the fits of every series.
+restore_model_state <- function(object){
+  object$model$recent_data <- attr(object, "recent_data")
+  origin <- attr(object, "origin")
+  if(!is.null(origin)) object$model$origin <- origin
+  invisible(object)
+}
+
 #' @export
 format.mdl_ts <-  function(x, ...){
   model_sum(x)

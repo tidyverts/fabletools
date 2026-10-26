@@ -131,8 +131,8 @@ generate_mdl_ts_setup <- function(x, new_data, h, times, seed) {
   }
   check_transformation_data(x, new_data)
 
-  # Reseed lag()'s short term memory from this fit's own snapshot.
-  x$model$recent_data <- attr(x, "recent_data")
+  # Reseed lag()'s short term memory and trend()'s origin from this fit.
+  restore_model_state(x)
 
   new_data <- replicate_new_data(new_data, times)
 

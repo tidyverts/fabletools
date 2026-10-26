@@ -261,8 +261,8 @@ forecast_mdl_ts_setup <- function(object, new_data, h, point_forecast) {
   }
   check_transformation_data(object, new_data)
 
-  # Reseed lag()'s short term memory from this fit's own snapshot.
-  object$model$recent_data <- attr(object, "recent_data")
+  # Reseed lag()'s short term memory and trend()'s origin from this fit.
+  restore_model_state(object)
 
   resp_vars <- vapply(object$response, expr_name, character(1L), USE.NAMES = FALSE)
   dist_col <- if(length(resp_vars) > 1) ".distribution" else resp_vars

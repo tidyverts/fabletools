@@ -21,9 +21,11 @@ estimate.tbl_ts <- function(.data, .model, ...){
     abort("Model definition incorrectly created. Check that specified model(s) are model definitions.")
   }
   .model$stage <- "estimate"
-  .model$add_data(.data)
-  # Clear any leftover lag() memory from a prior estimate() reusing `.model`.
+  # Clear any leftover lag() memory and trend() origin from a prior estimate()
+  # reusing `.model`.
   .model$recent_data <- NULL
+  .model$origin <- NULL
+  .model$add_data(.data)
   validate_formula(.model, .data)
   parsed <- parse_model(.model)
   
@@ -35,11 +37,15 @@ estimate.tbl_ts <- function(.data, .model, ...){
   )
   # Store time-varying transformation parameters alongside the response (#382)
   .data[names(params)] <- params
-  # Snapshot lag()'s short term memory onto this fit, not just `.model`.
+  # Snapshot lag()'s short term memory and trend()'s origin onto this fit,
+  # not just `.model`.
   recent_data <- .model$recent_data
+  origin <- .model$origin
   .model$remove_data()
   .model$stage <- NULL
-  new_model(fit, .model, .data, parsed$response, parsed$transformation, recent_data)
+  out <- new_model(fit, .model, .data, parsed$response, parsed$transformation, recent_data)
+  attr(out, "origin") <- origin
+  out
 }
 
 # The data used to train a model: the index and (transformed) response(s).

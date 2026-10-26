@@ -49,3 +49,31 @@ test_that("trend() is proportional to elapsed time for irregular data", {
   x <- xreg_tsbl(as.Date("2020-01-01"))
   expect_equal(fbl_trend(x, origin = x$t[1])$trend, 1)
 })
+
+test_that("trend() origin is set for each series and dataset", {
+  skip_if_not_installed("fable")
+
+  spec <- fable::TSLM(value ~ trend())
+  annual <- tsibble::tsibble(year = 2001:2020, value = 2 * (1:20), index = year)
+  fit_month <- model(us_deaths, spec)
+  # A later dataset with a different index class uses its own origin
+  expect_no_error(fit_year <- model(annual, spec))
+  expect_identical(attr(fit_year[[1]][[1]], "origin"), 2001L)
+  expect_identical(attr(fit_month[[1]][[1]], "origin"), us_deaths$index[1])
+  expect_equal(tidy(fit_year)$estimate, c(0, 2))
+
+  # Series starting at different times are each forecast with their own origin
+  lung_deaths_ragged <- lung_deaths_long_tr %>%
+    dplyr::filter(key == "mdeaths" | index >= tsibble::yearmonth("1975 Jan"))
+  fit <- model(lung_deaths_ragged, lm = spec)
+  fc <- forecast(fit, h = 6)
+  for (k in c("mdeaths", "fdeaths")) {
+    series <- dplyr::filter(lung_deaths_ragged, key == k)
+    fc_k <- forecast(model(series, lm = fable::TSLM(value ~ trend())), h = 6)
+    expect_equal(dplyr::filter(fc, key == k)$.mean, fc_k$.mean)
+    expect_equal(
+      attr(dplyr::filter(fit, key == k)$lm[[1]], "origin"),
+      series$index[1]
+    )
+  }
+})

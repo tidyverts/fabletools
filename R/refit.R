@@ -33,9 +33,9 @@ refit.lst_mdl <- deprecate_lst_mdl(refit.mdl_lst)
 #' @rdname refit
 #' @export
 refit.mdl_ts <- function(object, new_data, ...){
-  # Reseed lag()'s short term memory from this fit's own snapshot.
+  # Reseed lag()'s short term memory and trend()'s origin from this fit.
+  restore_model_state(object)
   recent_data <- attr(object, "recent_data")
-  object$model$recent_data <- recent_data
 
   # Compute specials with new_data
   object$model$stage <- "refit"
