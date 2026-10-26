@@ -33,15 +33,22 @@ upgrade_fable <- function(x){
 legacy_fable_method <- function(generic, env = caller_env()){
   generic <- ensym(generic)
   fmls <- formals(args(eval(generic, env)))
-  args <- set_names(syms(names(fmls)), names(fmls))
-  names(args)[c(1L, match("...", names(args), 0L))] <- ""
   x <- sym(names(fmls)[1L])
-  args[[1L]] <- expr(upgrade_fable(!!x))
+  opts <- setdiff(names(fmls)[-1L], "...")
+  dots <- if ("..." %in% names(fmls)) list(quote(...))
+  upgrade <- call("<-", x, call("upgrade_fable", x))
+  # Omit defaults so that the generic evaluates its own for unsupplied arguments
+  fmls[names(fmls) != "..."] <- list(missing_arg())
   new_function(
     fmls,
     expr({
       if(inherits(!!x, "fbl_df")) return(NextMethod())
-      (!!generic)(!!!args)
+      !!upgrade
+      # Forward only the supplied arguments
+      frame <- environment()
+      opts <- !!opts
+      opts <- opts[!vapply(opts, function(a) eval(call("missing", as.name(a)), frame), logical(1L))]
+      eval(as.call(c(quote(!!generic), quote(!!x), !!dots, set_names(syms(opts), opts))), frame)
     }),
     env = env
   )

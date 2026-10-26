@@ -76,4 +76,7 @@ test_that("fables saved with fabletools <= 0.8.0 are used as fables", {
   expect_s3_class(dplyr::filter(old, .model == "ets"), "fbl_df")
   expect_s3_class(dplyr::select(old, -.mean), "fbl_df")
   expect_s3_class(dplyr::mutate(old, .mean = .mean + 1), "fbl_df")
+  expect_s3_class(dplyr::group_by(old, .model), "grouped_fbl")
+  expect_s3_class(dplyr::group_by(old, .model, .drop = FALSE), "grouped_fbl")
+  expect_s3_class(tibble::as_tibble(old), "tbl_df")
 })
