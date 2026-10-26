@@ -3,7 +3,7 @@
 #' @description 
 #' `r lifecycle::badge('superseded')`
 #' 
-#' This function is superceded. It is recommended that you use the functionality
+#' This function is superseded. It is recommended that you use the functionality
 #' from the [distributional](https://pkg.mitchelloharawild.com/distributional/)
 #' package to extract elements from a `<hilo>` object. For example, you can access
 #' the lower bound with `<hilo>$lower`.

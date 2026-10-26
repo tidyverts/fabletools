@@ -350,7 +350,7 @@ CRPS <- function(.dist, .actual, n_quantiles = 1000, na.rm = TRUE, ...){
 #' 
 #' Calculating the CRPS accuracy measure is computationally difficult for many
 #' distributions, however it can be computed quickly and exactly for Normal and
-#' emperical (sample) distributions. For other distributions the CRPS is 
+#' empirical (sample) distributions. For other distributions the CRPS is 
 #' approximated using the quantile score of many quantiles (using the number of 
 #' quantiles specified in the `n_quantiles` argument).
 #' 

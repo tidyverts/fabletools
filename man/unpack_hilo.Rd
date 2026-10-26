@@ -40,7 +40,7 @@ strategies used to enforce them.}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}
 
-This function is superceded. It is recommended that you use the functionality
+This function is superseded. It is recommended that you use the functionality
 from the \href{https://pkg.mitchelloharawild.com/distributional/}{distributional}
 package to extract elements from a \verb{<hilo>} object. For example, you can access
 the lower bound with \verb{<hilo>$lower}.

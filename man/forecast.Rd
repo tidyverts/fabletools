@@ -40,7 +40,7 @@
 
 \item{new_data}{A \code{tsibble} containing future information used to forecast.}
 
-\item{h}{The forecast horison (can be used instead of \code{new_data} for regular
+\item{h}{The forecast horizon (can be used instead of \code{new_data} for regular
 time series with no exogenous regressors).}
 
 \item{point_forecast}{The point forecast measure(s) which should be returned

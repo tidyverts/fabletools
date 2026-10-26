@@ -84,7 +84,7 @@ For some forecast distribution \eqn{F} and actual value \eqn{y}.
 
 Calculating the CRPS accuracy measure is computationally difficult for many
 distributions, however it can be computed quickly and exactly for Normal and
-emperical (sample) distributions. For other distributions the CRPS is
+empirical (sample) distributions. For other distributions the CRPS is
 approximated using the quantile score of many quantiles (using the number of
 quantiles specified in the \code{n_quantiles} argument).
 }
