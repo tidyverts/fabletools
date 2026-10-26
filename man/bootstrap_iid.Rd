@@ -55,8 +55,9 @@ If the series don't all share the same historical time domain, sampling is
 restricted to their overlapping period and a warning is raised.
 }
 \examples{
-\dontshow{if (requireNamespace("fable", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(fable)
+library(tsibbledata)
 library(dplyr)
 aus_production \%>\%
   model(ets = ETS(Beer)) \%>\%

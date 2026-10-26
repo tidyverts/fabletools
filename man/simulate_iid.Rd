@@ -30,8 +30,9 @@ that are directly comparable to \code{\link[=bootstrap_iid]{bootstrap_iid()}}/\c
 (which only differ in how innovations are drawn).
 }
 \examples{
-\dontshow{if (requireNamespace("fable", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(fable)
+library(tsibbledata)
 library(dplyr)
 aus_production \%>\%
   model(ets = ETS(Beer)) \%>\%

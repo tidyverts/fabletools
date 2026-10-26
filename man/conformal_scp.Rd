@@ -36,13 +36,15 @@ forecast to give the forecast distribution.
 }
 }
 \examples{
-\dontshow{if (requireNamespace("fable", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(fable)
+library(tsibbledata)
 library(dplyr)
 aus_production \%>\%
-  model(ets = ETS(Beer)) \%>\%
-  mutate(ets = conformal_scp(ets)) \%>\%
-  forecast()
+  slice_tail(n = 44) \%>\%
+  model(snaive = SNAIVE(Beer)) \%>\%
+  mutate(snaive = conformal_scp(snaive)) \%>\%
+  forecast(h = 4)
 \dontshow{\}) # examplesIf}
 }
 \references{

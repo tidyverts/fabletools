@@ -39,8 +39,9 @@
 #'
 #' @seealso [simulate_iid()], [forecast()], [generate()]
 #'
-#' @examplesIf requireNamespace("fable", quietly = TRUE)
+#' @examplesIf requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)
 #' library(fable)
+#' library(tsibbledata)
 #' library(dplyr)
 #' aus_production %>%
 #'   model(ets = ETS(Beer)) %>%

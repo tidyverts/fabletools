@@ -32,13 +32,15 @@
 #' Prediction for Time Series Forecasting.
 #' \url{https://github.com/xqnwang/conformalForecast}
 #'
-#' @examplesIf requireNamespace("fable", quietly = TRUE)
+#' @examplesIf requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)
 #' library(fable)
+#' library(tsibbledata)
 #' library(dplyr)
 #' aus_production %>%
-#'   model(ets = ETS(Beer)) %>%
-#'   mutate(ets = conformal_scp(ets)) %>%
-#'   forecast()
+#'   slice_tail(n = 44) %>%
+#'   model(snaive = SNAIVE(Beer)) %>%
+#'   mutate(snaive = conformal_scp(snaive)) %>%
+#'   forecast(h = 4)
 #'
 #' @export
 conformal_scp <- function(model, times = 5000, min_calibration = 20) {
