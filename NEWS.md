@@ -133,6 +133,8 @@
 * Increased the minimum required version of distributional to 0.6.0 for upstream
   improvements to statistics on transformed distributions (#442).
 * fabletools now requires R 4.1.0 or later.
+* Increased the minimum required versions of rlang to 1.0.0 and vctrs to 0.3.0,
+  matching the functionality used by fabletools.
 * Documentation improvements (#281, #371, #389, #410).
 
 ## Breaking changes
