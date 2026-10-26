@@ -187,10 +187,12 @@ dispatch_mbl_df_modify <- function(x, ..., .f, .new_data = NULL) {
 }
 
 dispatch_mdl_df <- function(x, ..., .f) {
+  if (is_legacy_mable(x)) return(.f(upgrade_mable(x), ...))
   tibble::new_tibble(lapply(unclass(x), .f, ...), nrow = NROW(x))
 }
 
 dispatch_mdl_df_modify <- function(x, ..., .f) {
+  if (is_legacy_mable(x)) return(.f(upgrade_mable(x), ...))
   new_mdl_df(lapply(unclass(x), .f, ...))
 }
 

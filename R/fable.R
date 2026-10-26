@@ -28,7 +28,7 @@ fable <- function(..., response, distribution){
 #' 
 #' @export
 is_fable <- function(x){
-  inherits(x, "fbl_df")
+  inherits(x, c("fbl_df", "fbl_ts"))
 }
 
 #' Coerce to a fable object

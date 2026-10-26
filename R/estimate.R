@@ -15,6 +15,8 @@ estimate <- function(.data, ...){
 #' @rdname estimate
 #' @export
 estimate.tbl_ts <- function(.data, .model, ...){
+  # Model specifications saved with fabletools <= 0.8.0 have the `mdl_defn` class
+  if(inherits(.model, "mdl_defn")) .model <- add_class(.model, "mdl_spec")
   if(!inherits(.model, "mdl_spec")){
     abort("Model definition incorrectly created. Check that specified model(s) are model definitions.")
   }

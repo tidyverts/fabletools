@@ -151,6 +151,10 @@
 * The `mdl_defn` class for model specifications is renamed to `mdl_spec`.
   The `mdl_defn` class is kept for this release, and will be removed in the
   next minor release.
+* Mables, fables and model specifications saved with fabletools 0.8.0 or
+  earlier (with the `mdl_df`, `fbl_ts` and `mdl_defn` classes) are upgraded to
+  the new classes when they are used, so they keep working with all methods.
+  `is_fable()` also recognises fables with only the `fbl_ts` class.
 
 # fabletools 0.8.0
 

@@ -4,8 +4,8 @@
 # identity is positional, inherited from the mable it came from.
 #
 # While mables still carry "mdl_df" as a trailing class (dropped in v1.1.0),
-# any `.mdl_df` method without a `.mbl_df` counterpart would also catch
-# mables, so those methods defer to `NextMethod()` for mables.
+# and mables saved with fabletools <= 0.8.0 lead with it, `.mdl_df` methods
+# can also catch mables. These are dispatched again as mables instead.
 new_mdl_df <- function(x = list()){
   x <- as.list(x)
   if(any(names2(x) == "")) {
@@ -25,7 +25,7 @@ new_mdl_df <- function(x = list()){
 }
 
 is_mdl_df <- function(x){
-  inherits(x, "mdl_df") && !is_mable(x)
+  inherits(x, "mdl_df") && !is_mable(x) && !is_mable_shaped(x)
 }
 
 is_model_col <- function(x){
@@ -87,7 +87,7 @@ cbind.mdl_df <- cbind.mdl_lst
 #' @export
 rbind.mdl_df <- function(..., deparse.level = 1){
   dots <- list(...)
-  if(any(map_lgl(dots, is_mable))) {
+  if(any(map_lgl(dots, is_mable_shaped))) {
     return(base::rbind.data.frame(..., deparse.level = deparse.level))
   }
   vec_rbind(!!!unname(dots))
@@ -95,6 +95,7 @@ rbind.mdl_df <- function(..., deparse.level = 1){
 
 #' @export
 vec_ptype2.mdl_df.mdl_df <- function(x, y, ...){
+  if(is_legacy_mable(x) || is_legacy_mable(y)) return(vec_ptype2(upgrade_mable(x), upgrade_mable(y), ...))
   if(!setequal(names(x), names(y))) {
     abort("Can't combine model groups with different model columns.")
   }
@@ -103,6 +104,7 @@ vec_ptype2.mdl_df.mdl_df <- function(x, y, ...){
 
 #' @export
 vec_cast.mdl_df.mdl_df <- function(x, to, ...){
+  if(is_legacy_mable(x) || is_legacy_mable(to)) return(vec_cast(upgrade_mable(x), upgrade_mable(to), ...))
   if(!setequal(names(x), names(to))) {
     abort("Can't convert between model groups with different model columns.")
   }
@@ -111,17 +113,22 @@ vec_cast.mdl_df.mdl_df <- function(x, to, ...){
 
 #' @export
 mable_vars.mdl_df <- function(x){
+  if(is_legacy_mable(x)) return(mable_vars(upgrade_mable(x)))
+  if(is_mable(x)) return(NextMethod())
   names(x)
 }
 
 #' @export
 response_vars.mdl_df <- function(x){
+  if(is_legacy_mable(x)) return(response_vars(upgrade_mable(x)))
+  if(is_mable(x)) return(NextMethod())
   # Unlike a mable, a model group's models needn't share a response.
   unique(unlist(map(unclass(x), model_col_response), use.names = FALSE))
 }
 
 #' @export
 model_sum.mdl_df <- function(x){
+  if(is_legacy_mable(x)) return(model_sum(upgrade_mable(x)))
   if(is_mable(x)) return(NextMethod())
   # One summary per row, combining the summaries of each model in the group.
   row_sum <- map(unclass(x), function(col) {
@@ -132,11 +139,13 @@ model_sum.mdl_df <- function(x){
 }
 
 type_sum.mdl_df <- function(x){
+  if(is_legacy_mable(x)) return(pillar::type_sum(upgrade_mable(x)))
   if(is_mable(x)) return(NextMethod())
   "models"
 }
 
 tbl_sum.mdl_df <- function(x){
+  if(is_legacy_mable(x)) return(tibble::tbl_sum(upgrade_mable(x)))
   if(is_mable(x)) return(NextMethod())
   c(`A model group` = paste(map_chr(dim(x), big_mark), collapse = " x "))
 }
