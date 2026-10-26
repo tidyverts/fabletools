@@ -12,30 +12,7 @@ model_definition <- R6::R6Class(NULL,
     },
     initialize = function(formula, ..., .env){
       self$formula <- enquo(formula)
-
-      # Snapshot global values so they survive to future::multisession workers (#412)
-      if(identical(.env, global_env())){
-        used_vars <- all.vars(get_expr(self$formula))
-        used_vars <- used_vars[map_lgl(used_vars, exists, envir = .env, inherits = FALSE)]
-        .env <- new_environment(mget(used_vars, envir = .env), parent = parent.env(.env))
-        self$formula <- set_env(self$formula, .env)
-      }
-
-      # self$env <- .env
-      # Create specials environment with user's scoping
-      specials_env <- new_environment(parent = .env)
-      # Set `self` `super`, and `specials` in eval env for special functions
-      fn_env <- new_environment(as.list(self$.__enclos_env__), self$env)
-      env_bind(specials_env, !!!assign_func_envs(self$specials, fn_env))
-      self$specials <- structure(
-        specials_env,
-        required_specials = self$specials%@%"required_specials",
-        xreg_specials = self$specials%@%"xreg_specials"
-      )
-      
-      # Define custom lag() xreg special for short term memory
-      xreg_env <- get_env(self$specials$xreg)
-      xreg_env$lag <- self$recall_lag
+      self$specials <- bind_model_specials(self, self$specials, .env)
       
       self$prepare(formula, ...)
       
@@ -86,6 +63,47 @@ model_definition <- R6::R6Class(NULL,
   ),
   lock_objects = FALSE
 )
+
+# Bind a model definition's specials to `self`, scoped within `env`
+bind_model_specials <- function(self, specials, env){
+  # Create specials environment with user's scoping
+  specials_env <- new_environment(parent = env)
+  # Set `self` `super`, and `specials` in eval env for special functions
+  fn_env <- new_environment(as.list(self$.__enclos_env__), self$env)
+  env_bind(specials_env, !!!assign_func_envs(as.list(specials), fn_env))
+  specials_env <- structure(
+    specials_env,
+    required_specials = specials%@%"required_specials",
+    xreg_specials = specials%@%"xreg_specials"
+  )
+  
+  # Define custom lag() xreg special for short term memory
+  xreg_env <- get_env(specials_env$xreg)
+  xreg_env$lag <- self$recall_lag
+  specials_env
+}
+
+# Copy a model definition, with specials bound to the copy and scoped within `env`
+clone_model_definition <- function(x, env = parent.env(x$specials)){
+  out <- x$clone()
+  out$specials <- bind_model_specials(out, x$specials, env)
+  attributes(out) <- attributes(x)
+  out
+}
+
+# Snapshot the global variables used by a model's formula, as the global
+# environment isn't available to future workers (#412)
+snapshot_model_globals <- function(x, data_cols = character()){
+  f_env <- get_env(x$formula)
+  if(!identical(f_env, global_env())) return(x)
+  used <- setdiff(all.names(get_expr(x$formula)), data_cols)
+  used <- used[map_lgl(used, exists, envir = f_env, inherits = FALSE)]
+  if(is_empty(used)) return(x)
+  env <- new_environment(mget(used, envir = f_env), parent = f_env)
+  x <- clone_model_definition(x, env)
+  x$formula <- set_env(x$formula, env)
+  x
+}
 
 #' Create a new class of models
 #' 

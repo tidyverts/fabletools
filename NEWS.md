@@ -95,7 +95,9 @@
   integer vector" warnings on the next seeded call). `generate(seed = )` is
   now deprecated in favour of calling `set.seed()` before `generate()`.
 * Fixed misleading "object not found" errors when estimating models with
-  `future::plan(multisession)` that reference global variables (#412).
+  `future::plan(multisession)` that reference global variables or functions
+  (#412). The global values used in a model's formula are now sent to the
+  workers when the model is estimated.
 * Fixed `stream()` failing for every model with an "argument is of length
   zero" error, caused by `stream.mdl_ts()` not setting the model definition's
   `stage` before evaluating specials on the new data (unlike `forecast()`,

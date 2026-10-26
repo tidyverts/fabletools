@@ -89,6 +89,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
     ptype <- ptype[[1]]
   }
   
+  data_cols <- names(.data)
   .data <- nest_keys(.data, "lst_data")
   
   if(.safely){
@@ -111,6 +112,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   
   if(use_future()){
     check_installed("future.apply")
+    models <- map(models, snapshot_model_globals, data_cols = data_cols)
     eval_models <- function(models, lst_data){
       out <- future.apply::future_mapply(
         rep(lst_data, length(models)),

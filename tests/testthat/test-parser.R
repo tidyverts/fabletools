@@ -124,20 +124,58 @@ test_that("Model parsing scope", {
 test_that("Model formulas from the global environment snapshot values (#412)", {
   # Global values must be snapshotted, since .GlobalEnv isn't transported to future workers
   assign("test_412_val", 1:72, envir = globalenv())
+  assign("value", 0, envir = globalenv())
   assign("specials", specials, envir = globalenv())
-  on.exit(rm(list = c("test_412_val", "specials"), envir = globalenv()))
+  on.exit(rm(list = c("test_412_val", "value", "specials"), envir = globalenv()))
 
   mdl <- eval(
     quote(specials(value ~ log5(test_412_val))),
     envir = globalenv()
   )
+  snap <- snapshot_model_globals(mdl, data_cols = c("index", "value"))
 
-  formula_env <- rlang::get_env(mdl$formula)
-  expect_false(identical(formula_env, globalenv()))
+  # The snapshot only adds values (skipping data columns) to the global scope
+  formula_env <- rlang::get_env(snap$formula)
+  expect_identical(parent.env(formula_env), globalenv())
   expect_equal(formula_env$test_412_val, 1:72)
+  expect_false(exists("value", formula_env, inherits = FALSE))
+  expect_identical(parent.env(snap$specials), formula_env)
 
-  fit <- model(us_deaths, mdl)
+  # The original model definition is unchanged
+  expect_identical(rlang::get_env(mdl$formula), globalenv())
+  expect_identical(parent.env(mdl$specials), globalenv())
+
+  fit <- model(us_deaths, snap)
   expect_equal(fit[[1]][[1]]$fit[[1]][[1]], log(1:72, 5))
+  expect_equal(model(us_deaths, mdl)[[1]][[1]]$fit[[1]][[1]], log(1:72, 5))
+})
+
+test_that("Model formulas can use global functions and late-bound values", {
+  skip_if_not_installed("fable")
+  env <- globalenv()
+  assign("test_reg_fn", function(x) as.numeric(x) %% 12, envir = env)
+  assign("test_scale", 1, envir = env)
+  assign("test_logit", new_transformation(
+    function(x) log(x / (1e5 - x)), function(x) 1e5 * exp(x) / (1 + exp(x))
+  ), envir = env)
+  assign("test_data", us_deaths, envir = env)
+  on.exit(rm(list = c("test_reg_fn", "test_scale", "test_logit", "test_data"), envir = env))
+
+  fit <- eval(quote(model(
+    test_data,
+    fn = fable::TSLM(value ~ test_reg_fn(index)),
+    trans = fable::TSLM(test_logit(value) ~ trend())
+  )), envir = env)
+  expect_s3_class(fit$fn[[1]]$fit, "TSLM")
+  expect_s3_class(fit$trans[[1]]$fit, "TSLM")
+
+  # Global values are found when the model is estimated, not when it is specified
+  spec <- eval(quote(fable::TSLM(value ~ I(test_scale * trend()))), envir = env)
+  assign("test_scale", 2, envir = env)
+  coef_2 <- tidy(model(us_deaths, spec))$estimate[2]
+  assign("test_scale", 1, envir = env)
+  coef_1 <- tidy(model(us_deaths, spec))$estimate[2]
+  expect_equal(coef_2, coef_1 / 2)
 })
 
 
