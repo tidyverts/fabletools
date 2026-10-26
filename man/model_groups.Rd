@@ -73,11 +73,11 @@ a model group.
 library(fable)
 library(dplyr)
 fit <- as_tsibble(cbind(mdeaths, fdeaths), pivot_longer = TRUE) \%>\%
-  model(ets = ETS(value), arima = ARIMA(value))
+  model(ets = ETS(value), lm = TSLM(value ~ trend() + season()))
 
 # Group the models of each series
 fit_grp <- fit \%>\%
-  transmute(grp = cbind(ets, arima))
+  transmute(grp = cbind(ets, lm))
 fit_grp
 
 # The results include each model of the group
