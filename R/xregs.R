@@ -154,12 +154,13 @@ fbl_fourier <- function(x, period, K) {
 #' \subsection{fourier}{
 #' The `fourier` special includes seasonal fourier terms in the model. The maximum order of the fourier terms must be specified using `K`.
 #' \preformatted{
-#' fourier(period = NULL, K)
+#' fourier(period = NULL, K, origin = NULL)
 #' }
 #'
 #' \tabular{ll}{
 #'   `period`   \tab The periodic nature of the seasonality. This can be either a number indicating the number of observations in each seasonal period, or text to indicate the duration of the seasonal window (for example, annual seasonality would be "1 year"). \cr
-#'   `K`        \tab The maximum order of the fourier terms.
+#'   `K`        \tab The maximum order of the fourier terms.\cr
+#'   `origin`   \tab `r lifecycle::badge("deprecated")` This argument had no effect and is ignored. Fourier terms are anchored to the time index's epoch.
 #' }
 #' }
 #'
@@ -180,7 +181,13 @@ common_xregs <- list(
     out <- as_model_matrix(fabletools:::fbl_season(self$data, period))
     stats::model.matrix(~., data = out)[, -1, drop = FALSE]
   },
-  fourier = function(period = NULL, K) {
+  fourier = function(period = NULL, K, origin = NULL) {
+    if (!is.null(origin)) {
+      lifecycle::deprecate_warn(
+        "1.0.0", "fourier(origin)",
+        details = "The `origin` argument had no effect and is ignored."
+      )
+    }
     as.matrix(fabletools:::fbl_fourier(self$data, period, K))
   }
 )

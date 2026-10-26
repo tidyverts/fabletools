@@ -42,12 +42,13 @@ season(period = NULL)
 \subsection{fourier}{
 The \code{fourier} special includes seasonal fourier terms in the model. The maximum order of the fourier terms must be specified using \code{K}.
 \preformatted{
-fourier(period = NULL, K)
+fourier(period = NULL, K, origin = NULL)
 }
 
 \tabular{ll}{
 \code{period}   \tab The periodic nature of the seasonality. This can be either a number indicating the number of observations in each seasonal period, or text to indicate the duration of the seasonal window (for example, annual seasonality would be "1 year"). \cr
-\code{K}        \tab The maximum order of the fourier terms.
+\code{K}        \tab The maximum order of the fourier terms.\cr
+\code{origin}   \tab \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} This argument had no effect and is ignored. Fourier terms are anchored to the time index's epoch.
 }
 }
 }

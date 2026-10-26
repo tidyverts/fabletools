@@ -77,3 +77,14 @@ test_that("trend() origin is set for each series and dataset", {
     )
   }
 })
+
+test_that("fourier(origin) is deprecated and ignored", {
+  x <- xreg_tsbl(as.Date("2020-01-01") + 0:13)
+  fourier <- common_xregs$fourier
+  environment(fourier) <- list2env(list(self = list(data = x)), parent = environment(fourier))
+  expected <- fourier(period = 7, K = 2)
+  lifecycle::expect_deprecated(
+    res <- fourier(period = 7, K = 2, origin = x$t[3])
+  )
+  expect_equal(res, expected)
+})
