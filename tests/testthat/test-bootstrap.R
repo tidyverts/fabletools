@@ -163,6 +163,26 @@ test_that("bootstrap_iid/bootstrap_block/simulate_iid apply to a model specifica
   expect_false(inherits(fit_plain$ets[[1]], "mdl_ts_sim"))
 })
 
+test_that("wrapping a model specification leaves the original unchanged", {
+  skip_if_not_installed("fable")
+
+  spec <- fable::TSLM(value ~ trend() + season())
+  spec_class <- class(spec)
+  wrapped_20 <- bootstrap_iid(spec, times = 20)
+  wrapped_30 <- simulate_iid(spec, times = 30)
+  expect_identical(class(spec), spec_class)
+  expect_null(attr(spec, "times"))
+  expect_identical(wrapped_20 %@% "times", 20)
+  expect_identical(wrapped_30 %@% "times", 30)
+  expect_false(inherits(wrapped_30, "mdl_spec_bootstrap_iid"))
+
+  fit <- model(lung_deaths_long_tr, a = wrapped_20, b = spec)
+  expect_true(inherits(fit$a[[1]], "mdl_bootstrap_iid"))
+  expect_false(inherits(fit$b[[1]], "mdl_ts_sim"))
+  # Specials of the copied specification are evaluated for the copy.
+  expect_equal(fit$a[[1]]$fit$coef, fit$b[[1]]$fit$coef)
+})
+
 test_that("deprecated forecast()/generate() bootstrap/simulate arguments still work", {
   skip_if_not_installed("fable")
 
