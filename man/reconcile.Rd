@@ -37,5 +37,5 @@ lung_deaths_agg \%>\%
 \seealso{
 \code{\link[=aggregate_key]{aggregate_key()}}
 
-\href{https://otexts.com/fpp3/hierarchical.html}{\emph{Forecasting: Principles and Practice} - Forecasting hierarchical and grouped time series}
+\href{https://otexts.com/fpp3/hierarchical-forecasting.html}{\emph{Forecasting: Principles and Practice} - Forecasting hierarchical and grouped time series}
 }

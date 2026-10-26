@@ -435,7 +435,7 @@ skill_score <- function(measure) {
 #' @param ... Additional arguments to be passed to measures that use it.
 #' 
 #' @seealso 
-#' [Evaluating forecast accuracy](https://otexts.com/fpp3/accuracy.html)
+#' [Evaluating forecast accuracy](https://otexts.com/fpp3/toolbox.html#sec-accuracy)
 #' 
 #' @examplesIf requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)
 #' library(fable)

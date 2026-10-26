@@ -47,5 +47,5 @@ Wickramasuriya, S. L., Athanasopoulos, G., & Hyndman, R. J. (2019). Optimal fore
 \seealso{
 \code{\link[=reconcile_bu]{reconcile_bu()}}, \code{\link[=reconcile_td]{reconcile_td()}}, \code{\link[=reconcile_mo]{reconcile_mo()}}, \code{\link[=aggregate_key]{aggregate_key()}}
 
-\href{https://otexts.com/fpp3/reconciliation.html}{\emph{Forecasting: Principles and Practice} - Forecast reconciliation}
+\href{https://otexts.com/fpp3/hierarchical-forecasting.html#sec-reconciliation}{\emph{Forecasting: Principles and Practice} - Forecast reconciliation}
 }

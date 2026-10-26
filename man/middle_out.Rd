@@ -27,5 +27,5 @@ forecasted time points must match for all series in the hierarchy.
 }
 \seealso{
 \code{\link[=reconcile_bu]{reconcile_bu()}}, \code{\link[=reconcile_td]{reconcile_td()}}, \code{\link[=reconcile_mint]{reconcile_mint()}}, \code{\link[=aggregate_key]{aggregate_key()}}
-\href{https://otexts.com/fpp3/single-level.html#middle-out-approach}{\emph{Forecasting: Principles and Practice} - Middle-out approach}
+\href{https://otexts.com/fpp3/hierarchical-forecasting.html#sec-single-level}{\emph{Forecasting: Principles and Practice} - Middle-out approach}
 }

@@ -125,7 +125,7 @@ Please check that you have specified the decomposition models appropriately.")
 #'   autoplot(vic_food)
 #' 
 #' @seealso 
-#' [*Forecasting: Principles and Practice* - Forecasting Decomposition](https://otexts.com/fpp3/forecasting-decomposition.html)
+#' [*Forecasting: Principles and Practice* - Forecasting Decomposition](https://otexts.com/fpp3/toolbox.html#sec-forecasting-decomposition)
 #' 
 #' @export
 decomposition_model <- function(dcmp, ...){

@@ -65,5 +65,5 @@ fc \%>\%
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\href{https://otexts.com/fpp3/accuracy.html}{Evaluating forecast accuracy}
+\href{https://otexts.com/fpp3/toolbox.html#sec-accuracy}{Evaluating forecast accuracy}
 }

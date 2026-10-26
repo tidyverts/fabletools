@@ -53,5 +53,5 @@ vic_food \%>\%
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\href{https://otexts.com/fpp3/forecasting-decomposition.html}{\emph{Forecasting: Principles and Practice} - Forecasting Decomposition}
+\href{https://otexts.com/fpp3/toolbox.html#sec-forecasting-decomposition}{\emph{Forecasting: Principles and Practice} - Forecasting Decomposition}
 }

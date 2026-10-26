@@ -12,7 +12,7 @@
 #' @seealso
 #' [`aggregate_key()`]
 #'
-#' [*Forecasting: Principles and Practice* - Forecasting hierarchical and grouped time series](https://otexts.com/fpp3/hierarchical.html)
+#' [*Forecasting: Principles and Practice* - Forecasting hierarchical and grouped time series](https://otexts.com/fpp3/hierarchical-forecasting.html)
 #'
 #' @examplesIf requireNamespace("fable", quietly = TRUE)
 #' library(fable)
@@ -88,7 +88,7 @@ reconcile_mo <- function(models, split = 1){
 #' @seealso
 #' [`reconcile_bu()`], [`reconcile_td()`], [`reconcile_mo()`], [`aggregate_key()`]
 #'
-#' [*Forecasting: Principles and Practice* - Forecast reconciliation](https://otexts.com/fpp3/reconciliation.html)
+#' [*Forecasting: Principles and Practice* - Forecast reconciliation](https://otexts.com/fpp3/hierarchical-forecasting.html#sec-reconciliation)
 #'
 #' @references 
 #' Wickramasuriya, S. L., Athanasopoulos, G., & Hyndman, R. J. (2019). Optimal forecast reconciliation for hierarchical and grouped time series through trace minimization. Journal of the American Statistical Association, 1-45. https://doi.org/10.1080/01621459.2018.1448825 
@@ -239,7 +239,7 @@ forecast.lst_mint_mdl <- function(object, key_data,
 #' @seealso
 #' [`reconcile_td()`], [`reconcile_mo()`], [`reconcile_mint()`], [`aggregate_key()`]
 #'
-#' [*Forecasting: Principles and Practice* - Bottom-up approach](https://otexts.com/fpp3/single-level.html#bottom-up-approach)
+#' [*Forecasting: Principles and Practice* - Bottom-up approach](https://otexts.com/fpp3/hierarchical-forecasting.html#sec-single-level)
 #' @export
 bottom_up <- function(models){
   structure(models, class = union("lst_btmup_mdl", class(models)))
@@ -296,7 +296,7 @@ forecast.lst_btmup_mdl <- function(object, key_data,
 #' @seealso
 #' [`reconcile_bu()`], [`reconcile_mo()`], [`reconcile_mint()`], [`aggregate_key()`]
 #'
-#' [*Forecasting: Principles and Practice* - Top-down approaches](https://otexts.com/fpp3/single-level.html#top-down-approaches)
+#' [*Forecasting: Principles and Practice* - Top-down approaches](https://otexts.com/fpp3/hierarchical-forecasting.html#sec-single-level)
 #'
 #' @export
 top_down <- function(models, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
@@ -462,7 +462,7 @@ propagate_forecast_proportions <- function(fc_mean, key_data, agg_order,
 #' 
 #' @seealso 
 #' [`reconcile_bu()`], [`reconcile_td()`], [`reconcile_mint()`], [`aggregate_key()`]
-#' [*Forecasting: Principles and Practice* - Middle-out approach](https://otexts.com/fpp3/single-level.html#middle-out-approach)
+#' [*Forecasting: Principles and Practice* - Middle-out approach](https://otexts.com/fpp3/hierarchical-forecasting.html#sec-single-level)
 #' 
 #' @export
 middle_out <- function(models, split = 1){
