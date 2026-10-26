@@ -127,6 +127,8 @@
   that are only used through `lag()`, e.g. `ARIMA(y ~ lag(x, 3))` can now be
   forecast with `h = 3`. Missing regressors are treated as `NA`, so forecasts
   beyond the lag use the short-term memory and are `NA` after that (#318).
+* Fixed `autolayer()` for tsibbles using the fable method when ggtime isn't
+  installed.
 
 ## Improvements
 

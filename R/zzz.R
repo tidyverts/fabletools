@@ -29,6 +29,11 @@
   ggtime_version <- as.character(suppressWarnings(
     utils::packageDescription("ggtime", fields = "Version")
   ))
+  register_plot_methods(ggtime_version)
+}
+
+# Register ggtime's plot methods if installed, otherwise fabletools' own
+register_plot_methods <- function(ggtime_version) {
   if (!is.na(ggtime_version)) {
     ggtime_ns <- getNamespace("ggtime")
     register_s3_method("ggplot2", "autoplot", "tbl_ts", utils::getS3method("autoplot", "tbl_ts", envir = ggtime_ns))
@@ -48,7 +53,7 @@
     register_s3_method("ggplot2", "autoplot", "tbl_ts", autoplot.tbl_ts)
     register_s3_method("ggplot2", "autoplot", "dcmp_ts", autoplot.dcmp_ts)
     register_s3_method("ggplot2", "autolayer", "fbl_ts", autolayer.fbl_ts)
-    register_s3_method("ggplot2", "autolayer", "tbl_ts", autolayer.fbl_ts)
+    register_s3_method("ggplot2", "autolayer", "tbl_ts", autolayer.tbl_ts)
     register_s3_method("ggplot2", "fortify", "fbl_ts", fortify.fbl_ts)
   }
 }
