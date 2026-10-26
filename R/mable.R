@@ -170,8 +170,11 @@ restore_mable <- function(data, template){
 gather.mbl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE,
                           convert = FALSE, factor_key = FALSE){
   value <- enexpr(value)
-  tbl <- gather(as_tibble(data), key = !!key, value = !!value, 
-                ..., na.rm = na.rm, convert = convert, factor_key = factor_key)
+  tbl <- as_tibble(data)
+  cols <- if(...length() > 0) names(tidyselect::eval_select(expr(c(...)), tbl)) else names(tbl)
+  tbl <- unpack_model_groups(tbl, cols)
+  tbl <- gather(tbl, key = !!key, value = !!value, all_of(tbl %@% "unpacked"),
+                na.rm = na.rm, convert = convert, factor_key = factor_key)
   mdls <- names(which(map_lgl(tbl, inherits, c("mdl_lst", "mdl_df"))))
   kv <- c(key_vars(data), key)
   build_mable(tbl, key = !!kv, model = mdls, template = data)
@@ -180,7 +183,7 @@ gather.mbl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE
 # Adapted from tsibble:::pivot_longer.tbl_ts
 #' @importFrom tidyr pivot_longer
 #' @export
-pivot_longer.mbl_df <- function (data, ..., names_to = "name") {
+pivot_longer.mbl_df <- function (data, cols, ..., names_to = "name") {
   if (!has_length(names_to)) {
     abort("`pivot_longer(<mable>)` can't accept zero-length `names_to`.")
   }
@@ -188,10 +191,23 @@ pivot_longer.mbl_df <- function (data, ..., names_to = "name") {
     abort("`pivot_longer(<mable>)` can't accept the special \".value\" in `names_to`.")
   }
   new_key <- c(key_vars(data), names_to)
-  tbl <- tidyr::pivot_longer(as_tibble(data), ..., names_to = names_to)
+  tbl <- as_tibble(data)
+  tbl <- unpack_model_groups(tbl, names(tidyselect::eval_select(enquo(cols), tbl)))
+  tbl <- tidyr::pivot_longer(tbl, all_of(tbl %@% "unpacked"), ..., names_to = names_to)
   build_mable(tbl, key = !!new_key,
               model = which(vapply(tbl, inherits, logical(1L), c("mdl_lst", "mdl_df"))),
               template = data)
+}
+
+# Replace the model groups among `cols` with their model columns, named
+# `<group>$<model>`. The resulting names of `cols` are kept as "unpacked".
+unpack_model_groups <- function(x, cols){
+  unpacked <- map(set_names(names(x)), function(nm) {
+    col <- x[[nm]]
+    if (nm %in% cols && is_mdl_df(col)) unpack_model_results(list2(!!nm := col)) else list2(!!nm := col)
+  })
+  out <- tibble::new_tibble(unlist(unname(unpacked), recursive = FALSE), nrow = NROW(x))
+  structure(out, unpacked = unlist(map(unpacked[cols], names), use.names = FALSE))
 }
 
 #' @export

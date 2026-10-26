@@ -194,3 +194,28 @@ test_that("equation() requires a model in a mable without models", {
     "only supported for individual models"
   )
 })
+
+test_that("pivot_longer() and gather() unpack model groups", {
+  skip_if_not_installed("fable")
+
+  mbl_grp <- mbl_complex %>%
+    mutate(grp = cbind(ets, lm))
+  mdl_names <- c("ets", "lm", "grp$ets", "grp$lm")
+
+  long <- tidyr::pivot_longer(mbl_grp, -key, names_to = ".model", values_to = "fit")
+  expect_true(is_mable(long))
+  expect_equal(unique(long$.model), mdl_names)
+  expect_equal(mable_vars(long), "fit")
+  expect_s3_class(long$fit, "mdl_lst")
+
+  # Unselected model groups are kept
+  long <- tidyr::pivot_longer(mbl_grp, c(ets, lm))
+  expect_equal(mable_vars(long), c("grp", "value"))
+  expect_true(is_mdl_df(long$grp))
+
+  gathered <- tidyr::gather(mbl_grp, ".model", "fit", ets, grp)
+  expect_true(is_mable(gathered))
+  expect_equal(unique(gathered$.model), c("ets", "grp$ets", "grp$lm"))
+  expect_equal(mable_vars(gathered), c("lm", "fit"))
+  expect_equal(unique(tidyr::gather(mbl_grp, ".model", "fit", -key)$.model), mdl_names)
+})
