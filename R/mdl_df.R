@@ -150,6 +150,11 @@ tbl_sum.mdl_df <- function(x){
   c(`A model group` = paste(map_chr(dim(x), big_mark), collapse = " x "))
 }
 
+# The model columns of a mable, with model groups replaced by their columns
+mable_model_cols <- function(x){
+  unpack_model_results(as.list(x)[mable_vars(x)])
+}
+
 # Splice the data frame results of `mdl_df` columns (from `dispatch_mdl_df()`)
 # into top-level columns named `<group>$<model>`, so
 # every model's results can be pivoted into a single `.model` column.

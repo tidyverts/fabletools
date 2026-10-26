@@ -165,3 +165,32 @@ test_that("accuracy(), residuals(), fitted(), components() and refit() with mdl_
     dplyr::select(dplyr::filter(tidy(refitted), .model == "lm"), -.model)
   )
 })
+
+test_that("report() and equation() with a single model in a model group", {
+  skip_if_not_installed("fable")
+
+  mbl_one <- mbl_complex %>%
+    dplyr::filter(key == "mdeaths") %>%
+    transmute(grp = cbind(ets = cbind(ets)))
+  expect_equal(
+    capture.output(report(mbl_one)),
+    capture.output(report(dplyr::filter(mbl_complex, key == "mdeaths")$ets[[1]]))
+  )
+  # The equation is requested from the model itself
+  expect_error(equation(mbl_one), "class \"ETS\"")
+
+  mbl_two <- mbl_complex %>%
+    dplyr::filter(key == "mdeaths") %>%
+    transmute(grp = cbind(ets, lm))
+  expect_warning(report(mbl_two), "only supported for individual models")
+  expect_error(equation(mbl_two), "only supported for individual models")
+})
+
+test_that("equation() requires a model in a mable without models", {
+  skip_if_not_installed("fable")
+
+  expect_error(
+    equation(select(mbl_complex[0, ], key, ets)),
+    "only supported for individual models"
+  )
+})
