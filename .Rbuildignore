@@ -16,3 +16,5 @@ Makefile
 ^\.github$
 ^CRAN-RELEASE$
 ^CRAN-SUBMISSION$
+^_dev$
+^\.claude$
