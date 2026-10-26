@@ -98,16 +98,12 @@ test_that("time-varying transformation parameters (#382)", {
   fits_h2 <- fitted(mdl[1,], h = 2)
   expect_true(all(fits_h2$.fitted[-(1:2)] > 100, na.rm = TRUE))
 
-  # refit() and stream() use parameters from new_data
+  # refit() uses parameters from new_data
   full <- lung_deaths_long %>%
     dplyr::mutate(lambda = ifelse(key == "mdeaths", 0.3, 0.2))
   mdl_refit <- refit(mdl, full)
   expect_equal(nrow(mdl_refit$ets[[1]]$data), nrow(dplyr::filter(full, key == "fdeaths")))
   expect_true(all(fitted(mdl_refit)$.fitted > 100))
-  new_obs <- dplyr::filter(full, index >= tsibble::yearmonth("1979 Jan"))
-  mdl_stream <- stream(mdl, new_obs)
-  expect_equal(mdl_stream$ets[[1]]$data$lambda, rep(0.2, 72))
-  expect_error(stream(mdl, dplyr::select(new_obs, -lambda)), "time-varying parameter")
 
   # Equivalent to a length-1 (time invariant) parameter
   mdl_const <- model(dt, ets = fable::ETS(box_cox(value, dplyr::first(lambda))))
@@ -117,4 +113,17 @@ test_that("time-varying transformation parameters (#382)", {
     forecast(mdl_const, h = 12)$.mean,
     fc$.mean
   )
+})
+
+test_that("stream() uses time-varying transformation parameters from new_data", {
+  skip_if_not_installed("fable", "0.5.0.9000")
+  dt <- lung_deaths_long_tr %>%
+    dplyr::mutate(lambda = ifelse(key == "mdeaths", 0.3, 0.2))
+  mdl <- model(dt, ets = fable::ETS(box_cox(resp(value), lambda)))
+  new_obs <- lung_deaths_long %>%
+    dplyr::mutate(lambda = ifelse(key == "mdeaths", 0.3, 0.2)) %>%
+    dplyr::filter(index >= tsibble::yearmonth("1979 Jan"))
+  mdl_stream <- stream(mdl, new_obs)
+  expect_equal(mdl_stream$ets[[1]]$data$lambda, rep(0.2, 72))
+  expect_error(stream(mdl, dplyr::select(new_obs, -lambda)), "time-varying parameter")
 })
