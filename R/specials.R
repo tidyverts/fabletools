@@ -68,6 +68,9 @@ fable_xreg_matrix <- function(..., .data, default_intercept = TRUE) {
   env <- map(enquos(...), get_env)
   env[map_lgl(env, compose(is_empty, env_parents))] <- NULL
   env <- if (!is_empty(env)) get_env(env[[1]]) else base_env()
+  # Mask lag() with the model's lag() special for short term memory
+  lag_fn <- env_get(caller_env(), "lag", inherit = TRUE, default = NULL)
+  if (!is.null(lag_fn)) env <- new_environment(list(lag = lag_fn), parent = env)
   
   # Produce xreg matrix
   xreg <- model.frame(model_formula, data = env, na.action = stats::na.pass)

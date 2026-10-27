@@ -97,3 +97,36 @@ test_that("forecast() doesn't need new_data for variables only used in lag() (#3
   nd$x <- NA_real_
   expect_equal(mean(forecast(fit, new_data = nd)$y), mean(fc$y))
 })
+
+# Minimal model using special_xreg(), which returns its regressors
+new_xreg_test_model <- function(formula, ...){
+  cls <- new_model_class(
+    model = "xreg test model",
+    train = function(.data, specials, ...){
+      structure(list(xreg = specials$xreg[[1]]), class = "xreg_test_fit")
+    },
+    specials = new_specials(xreg = special_xreg(default_intercept = FALSE))
+  )
+  new_model_definition(cls, !!enquo(formula), ...)
+}
+
+forecast.xreg_test_fit <- function(object, new_data, specials, ...){
+  distributional::dist_degenerate(specials$xreg[[1]][, 1])
+}
+registerS3method("forecast", "xreg_test_fit", forecast.xreg_test_fit)
+
+test_that("lag() in special_xreg() regressors uses short term memory", {
+  dt <- lag_test_data(c(10, 20, 30, 40, 50))
+  fit <- estimate(dt, new_xreg_test_model(y ~ lag(x, 2)))
+
+  # The regressor is lagged when estimating
+  expect_equal(unname(fit$fit$xreg[, 1]), c(NA, NA, 10, 20, 30))
+
+  # Forecasts without new_data use the recent data, then are missing
+  fc <- forecast(fit, h = 3)
+  expect_equal(fc$.mean, c(40, 50, NA))
+
+  # Forecasts with new_data bridge from the recent data
+  fc <- forecast(fit, lag_test_data(c(60, 70, 80), from = 6))
+  expect_equal(fc$.mean, c(40, 50, 60))
+})

@@ -170,9 +170,13 @@
   object (#318, #326). The short-term memory is now snapshotted onto each
   fitted model individually, rather than only ever living on the shared,
   mutable model definition.
+* Fixed `lag()` not lagging the regressors of models using `special_xreg()`
+  (such as fable's `TSLM()`), which used the unlagged regressor. Lagged
+  regressors of these models now also use the short-term memory of the model
+  when forecasting.
 * `forecast()` and `generate()` no longer require `new_data` for regressors
-  that are only used through `lag()`, e.g. `ARIMA(y ~ lag(x, 3))` can now be
-  forecast with `h = 3`. Missing regressors are treated as `NA`, so forecasts
+  that are only used through `lag()`, e.g. `ARIMA(y ~ lag(x, 3))` and
+  `TSLM(y ~ lag(x, 3))` can now be forecast with `h = 3`. Missing regressors are treated as `NA`, so forecasts
   beyond the lag use the short-term memory and are `NA` after that (#318).
 * Fixed `autolayer()` for tsibble data using the fable method when ggtime isn't
   installed.
