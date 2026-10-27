@@ -56,11 +56,9 @@ model's own point forecast when its errors are biased.
 Calibration refits the model for every origin of its history, which can be
 slow for long series or slow to estimate models. Refits of the first,
 shortest windows which fail are left out, and warnings from the refits
-aren't shown. A model with regressors can only
-be refit with their historical values, which are kept when
-\code{conformal_scp()} is applied to the model specification (e.g.
-\code{model(fit = conformal_scp(ARIMA(y ~ x)))}), but not to an already
-estimated model.
+aren't shown. Fitted models only keep their response, so models that use
+other data (such as exogenous regressors) can't be refit to calibrate them,
+and aren't supported yet.
 
 \code{conformal_scp()} only changes forecasts. It uses the point forecasts of
 the model it wraps (without any simulation from \code{\link[=simulate_iid]{simulate_iid()}} or

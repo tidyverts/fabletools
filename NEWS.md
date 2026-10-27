@@ -63,8 +63,7 @@ fitted model, and groundwork has been laid for mixtime-based tsibbles.
   `fit %>% mutate(ets = conformal_scp(ets))`. Each forecast horizon is
   calibrated with the out-of-sample errors of rolling-origin refits of the
   model, and horizons with too few errors give `NA` forecasts. Models with
-  regressors can be calibrated when `conformal_scp()` is applied to their
-  specification, e.g. `model(fit = conformal_scp(ARIMA(y ~ x)))` (#411).
+  exogenous regressors aren't supported yet, and give an error (#411).
 * Added `reconcile_mint()`, `reconcile_bu()`, `reconcile_td()`, and
   `reconcile_mo()` for reconciling forecasts, bringing reconciliation into the
   same `<family>_<variant>` naming used by `bootstrap_*()`/`simulate_*()`.

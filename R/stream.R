@@ -48,11 +48,6 @@ stream.mdl_ts <- function(object, new_data, ...){
   }
 
   check_transformation_data(object, new_data)
-  # Regressors kept for conformal_scp() are extended with those of new_data
-  xreg <- attr(object, "conformal_regressors")
-  if (length(xreg) > 0) {
-    attr(object, "conformal_regressors") <- map2(xreg, as.list(new_data)[names(xreg)], vec_c)
-  }
   params <- model_transformation_params(object)
   resp <- map2(object$response, object$transformation,
        function(y, t){

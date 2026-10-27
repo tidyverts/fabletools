@@ -100,31 +100,31 @@ test_that("conformal_scp() errors sensibly when there isn't enough data to calib
   )
 })
 
-test_that("conformal_scp() refits models with regressors from their specification", {
+test_that("conformal_scp() errors for models with regressors", {
   skip_if_not_installed("fable")
 
   set.seed(1)
   dt <- tsibble::tsibble(t = 1:40, x = rnorm(40), index = t)
   dt$y <- 2 * dt$x + cumsum(rnorm(40))
-  future <- dplyr::mutate(tsibble::new_data(dt, 3), x = 0)
 
-  fit <- model(dt, lm = conformal_scp(fable::TSLM(y ~ x), n_quantiles = 50, min_calibration = 10))
-  expect_named(attr(fit$lm[[1]], "conformal_regressors"), "x")
-  fc <- forecast(fit, new_data = future)
-  expect_true(all(dist_types(fc$y) == "dist_sample"))
-  expect_true(all(is.finite(fc$.mean)))
-
-  # The regressors are updated by refit() and stream()
-  expect_length(attr(refit(fit, dt[1:30, ])$lm[[1]], "conformal_regressors")$x, 30)
-  streamed <- stream(refit(fit, dt[1:30, ]), dt[31:40, ])
-  expect_equal(attr(streamed$lm[[1]], "conformal_regressors")$x, dt$x)
-
-  # An estimated model doesn't keep its regressors
-  fit <- model(dt, lm = fable::TSLM(y ~ x))
+  fit <- model(dt, lm = fable::TSLM(y ~ x), trend = fable::TSLM(y ~ trend()))
   expect_error(
-    forecast(mutate(fit, lm = conformal_scp(lm, min_calibration = 10)), new_data = future),
-    "apply `conformal_scp\\(\\)` to the model specification"
+    mutate(fit, lm = conformal_scp(lm)),
+    "exogenous regressors\\) aren't supported yet"
   )
+  # Specials computed from the response's history are fine
+  expect_s3_class(mutate(fit, trend = conformal_scp(trend))$trend[[1]], "mdl_conformal_scp")
+
+  # Applied to the specification, estimation fails with the same error
+  expect_error(
+    model(dt, lm = conformal_scp(fable::TSLM(y ~ x)), .safely = FALSE),
+    "exogenous regressors\\) aren't supported yet"
+  )
+  expect_warning(
+    fit <- model(dt, lm = conformal_scp(fable::TSLM(y ~ x))),
+    "aren't supported yet"
+  )
+  expect_true(is_null_model(fit$lm[[1]]))
 })
 
 test_that("conformal_scp() calibrates each horizon with enough errors", {

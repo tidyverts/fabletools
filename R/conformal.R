@@ -38,11 +38,9 @@
 #' Calibration refits the model for every origin of its history, which can be
 #' slow for long series or slow to estimate models. Refits of the first,
 #' shortest windows which fail are left out, and warnings from the refits
-#' aren't shown. A model with regressors can only
-#' be refit with their historical values, which are kept when
-#' `conformal_scp()` is applied to the model specification (e.g.
-#' `model(fit = conformal_scp(ARIMA(y ~ x)))`), but not to an already
-#' estimated model.
+#' aren't shown. Fitted models only keep their response, so models that use
+#' other data (such as exogenous regressors) can't be refit to calibrate them,
+#' and aren't supported yet.
 #'
 #' `conformal_scp()` only changes forecasts. It uses the point forecasts of
 #' the model it wraps (without any simulation from [simulate_iid()] or
@@ -86,6 +84,7 @@ conformal_scp.default <- function(model, n_quantiles = 5000, min_calibration = 2
 
 #' @export
 conformal_scp.mdl_ts <- function(model, n_quantiles = 5000, min_calibration = 20) {
+  if (!is_null_model(model)) check_conformal_refit(model)
   mdl_wrap(model, "mdl_conformal_scp", n_quantiles = n_quantiles, min_calibration = min_calibration)
 }
 
@@ -110,17 +109,30 @@ conformal_scp.mdl_spec <- function(model, n_quantiles = 5000, min_calibration = 
 #' @export
 new_model.mdl_spec_conformal_scp <- function(fit = NULL, model, data, response,
                                              transformation, recent_data = NULL){
-  out <- conformal_scp(NextMethod(), n_quantiles = model %@% "n_quantiles", min_calibration = model %@% "min_calibration")
-  # Keep the regressors used by the model, for refitting it to calibrate
-  if(!is.null(model$data) && !is_null_model(out)) {
-    dt <- model$data
-    xreg <- setdiff(
-      intersect(all.vars(get_expr(model$formula)), names(dt)),
-      c(index_var(dt), key_vars(dt), all.vars(model_lhs(model)), names(out$data))
-    )
-    if(length(xreg) > 0L) attr(out, "conformal_regressors") <- as.list(dt)[xreg]
-  }
-  out
+  conformal_scp(NextMethod(), n_quantiles = model %@% "n_quantiles", min_calibration = model %@% "min_calibration")
+}
+
+# Models are refit on their own history to calibrate, so the specials must be
+# computable from it (this fails for models using regressors).
+check_conformal_refit <- function(object, call = caller_env()) {
+  dt <- conformal_history(object)
+  mdl <- object$model
+  restore_model_state(object)
+  mdl$stage <- "refit"
+  on.exit({
+    mdl$remove_data()
+    mdl$stage <- NULL
+  })
+  tryCatch({
+    mdl$add_data(dt)
+    parse_model_rhs(mdl)
+  }, error = function(e) {
+    abort(c(
+      "`conformal_scp()` can't refit this model to calibrate it.",
+      "i" = "Models that use data other than their response (such as exogenous regressors) aren't supported yet."
+    ), parent = e, call = call)
+  })
+  invisible(object)
 }
 
 #' @export
@@ -171,10 +183,7 @@ conformal_scp_calibration <- function(object, H, min_calibration, call = caller_
   n <- lengths(pools)
 
   if(cv$n_refits == 0L && !is.null(cv$error)) {
-    abort(c(
-      "Can't refit the model to calibrate `conformal_scp()`.",
-      "i" = "For models with regressors, apply `conformal_scp()` to the model specification (e.g. `model(fit = conformal_scp(ARIMA(y ~ x)))`), which keeps the regressors' historical values."
-    ), parent = cv$error, call = call)
+    abort("Can't refit the model to calibrate `conformal_scp()`.", parent = cv$error, call = call)
   }
   if(sum(n) < min_calibration){
     abort(c(
@@ -237,30 +246,16 @@ conformal_scp_quantile <- function(errors, n_quantiles) {
 # exists), with the number of successful and failed refits, the first error
 # and the last failure after a successful refit.
 conformal_cv_errors <- function(object, H) {
-  dt <- object$data
+  dt <- conformal_history(object)
   resp <- response_vars(object)
   n <- nrow(dt)
   errors <- matrix(NA_real_, nrow = n, ncol = H)
-
-  # Undo transformations, so refit() (which expects response-scale data) can
-  # be given a plain prefix of the original history.
-  bt <- lapply(object$transformation, function(x) {
-    invert_transformation(bind_transformation_data(x, dt))
-  })
-  mv <- match(model_response_cols(object), names(dt))
-  dt[mv] <- mapply(calc, bt, dt[mv], SIMPLIFY = FALSE)
-  names(dt)[mv] <- resp
-
-  # Regressors kept from estimating a wrapped model specification
-  xreg <- attr(object, "conformal_regressors")
-  xreg <- xreg[setdiff(names(xreg), names(dt))]
-  dt[names(xreg)] <- xreg
 
   actual <- dt[[resp]]
   # Errors are only computed for time points within the history, so each
   # origin's future data is a slice of the history's index (cheaper than
   # constructing it with make_future_data() for every origin).
-  future <- dt[c(key_vars(dt), index_var(dt), model_transformation_params(object), names(xreg))]
+  future <- dt[c(key_vars(dt), index_var(dt), model_transformation_params(object))]
   n_refits <- n_failed <- 0L
   error <- failure <- NULL
   for (i in seq_len(n - 1L)) {
@@ -288,4 +283,16 @@ conformal_cv_errors <- function(object, H) {
     errors[cbind(i + h, h)] <- actual[i + h] - fc$.mean
   }
   list(errors = errors, n_refits = n_refits, n_failed = n_failed, error = error, failure = failure)
+}
+
+# The model's history on the response scale, as refit() expects
+conformal_history <- function(object) {
+  dt <- object$data
+  bt <- lapply(object$transformation, function(x) {
+    invert_transformation(bind_transformation_data(x, dt))
+  })
+  mv <- match(model_response_cols(object), names(dt))
+  dt[mv] <- mapply(calc, bt, dt[mv], SIMPLIFY = FALSE)
+  names(dt)[mv] <- response_vars(object)
+  dt
 }
