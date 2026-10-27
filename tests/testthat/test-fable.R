@@ -168,3 +168,8 @@ test_that("forecast() errors informatively when `.model` is already used (#275)"
 test_that("forecast() errors for the removed `bias_adjust` argument", {
   expect_error(forecast(mbl, h = 1, bias_adjust = TRUE), "`bias_adjust` argument")
 })
+
+test_that("rbind() of fables is defunct in favour of bind_rows()", {
+  skip_if_not_installed("fable")
+  expect_error(rbind(fbl, fbl), class = "defunctError")
+})

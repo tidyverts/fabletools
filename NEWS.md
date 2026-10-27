@@ -253,6 +253,8 @@ fitted model, and groundwork has been laid for mixtime-based tsibbles.
 * The `type` argument of `augment()`, deprecated since fabletools 0.2.1, is
   now defunct and errors. Response residuals are in the `.resid` column, and
   innovation residuals are in the `.innov` column.
+* `rbind()` of fables and dables, deprecated since fabletools 0.2.0, is now
+  defunct and errors. Please use `bind_rows()` instead.
 * The defunct `construct_fc()` has been removed. `forecast()` methods for a
   model should return a vector of distributions from the distributional
   package.

@@ -313,18 +313,7 @@ fill_gaps.fbl_df <- function(.data, ..., .full = FALSE) {
 
 #' @export
 rbind.fbl_df <- function(...){
-  deprecate_warn("0.2.0", "rbind.fbl_ts()", "bind_rows()")
-  fbls <- dots_list(...)
-  response <- map(fbls, response_vars)
-  dist <- map(fbls, distribution_var)
-  if(length(response <- unique(response)) > 1){
-    abort("Cannot combine fables with different response variables.")
-  }
-  if(length(dist <- unique(dist)) > 1){
-    abort("Cannot combine fables with different distribution names.")
-  }
-  out <- suppressWarnings(invoke(bind_rows, map(fbls, as_tsibble)))
-  build_fable(out, response[[1]], dist[[1]])
+  lifecycle::deprecate_stop("0.2.0", "rbind.fbl_df()", "bind_rows()")
 }
 
 #' @export

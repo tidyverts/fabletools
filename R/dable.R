@@ -98,14 +98,7 @@ tbl_sum.dcmp_ts <- function(x){
 
 #' @export
 rbind.dcmp_ts <- function(...){
-  deprecate_warn("0.2.0", "rbind.fbl_ts()", "bind_rows()")
-  dots <- dots_list(...)
-  
-  attrs <- combine_dcmp_attr(dots)
-  
-  as_dable(invoke("rbind", map(dots, as_tsibble)), 
-           method = attrs[["method"]], response = !!attrs[["response"]], 
-           seasons = attrs[["seasons"]], aliases = attrs[["aliases"]])
+  lifecycle::deprecate_stop("0.2.0", "rbind.dcmp_ts()", "bind_rows()")
 }
 
 combine_dcmp_attr <- function(lst_dcmp){
