@@ -1,5 +1,15 @@
 # fabletools (development version)
 
+This major release introduces model modifiers, which change how forecasts are
+produced from a fitted model: `bootstrap_iid()`, `bootstrap_block()` and
+`simulate_iid()` give forecasts from bootstrapped or simulated sample paths,
+and the experimental `conformal_scp()` gives split conformal prediction
+intervals. Reconciliation is now done with `mutate()` and the stable
+`reconcile_*()` functions, model columns can be combined into experimental
+model groups, and fables gain the `fbl_df` class. Mables without any models
+or series are now supported, `lag()` keeps the short-term memory of each
+fitted model, and groundwork has been laid for mixtime-based tsibbles.
+
 ## New features
 
 * Model columns from the same mable can now be grouped with `cbind()` (e.g.
