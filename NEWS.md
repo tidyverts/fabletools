@@ -122,6 +122,9 @@
   checked on the correlation scale, so series with very different scales are
   accepted.
 * Improved error for singular covariance matrices in `min_trace()` (#309).
+* Fixed `accuracy()` spreading extra arguments with more than one value (such
+  as `level = c(80, 95)`) across the series and models, which is now an
+  error. The interval accuracy measures also require a single `level`.
 * Fixed `reconcile_td()` with `method = "average_proportions"` or
   `"proportion_averages"` forecasting the top series with the `new_data` of
   another series, and `reconcile_mo()` erroring when forecasting with

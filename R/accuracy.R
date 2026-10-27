@@ -174,6 +174,7 @@ directional_accuracy_measures <- list(MDA = MDA, MDV = MDV, MDPV = MDPV)
 #' @rdname interval_accuracy_measures
 #' @export
 winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
+  check_interval_level(level)
   interval <- hilo(.dist, level)
   if(!inherits(interval, "hilo")) abort("Winkler scores are not supported for multivariate distributions.")
   alpha <- 1-level/100
@@ -195,6 +196,7 @@ winkler_score <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
 #' @importFrom stats quantile
 #' @export
 pinball_loss <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
+  check_interval_level(level)
   q <- stats::quantile(.dist, level/100)
   loss <- ifelse(.actual>=q, level/100 * (.actual-q), (1-level/100) * (q-.actual))
   2*mean(loss, na.rm = na.rm)
@@ -205,6 +207,7 @@ pinball_loss <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
 scaled_pinball_loss <- function(.dist, .actual, .train, level = 95, na.rm = TRUE,
                                 demean = FALSE, .period, d = .period == 1, 
                                 D = .period > 1, ...){
+  check_interval_level(level)
   if (D > 0) { # seasonal differencing
     .train <- diff(.train, lag = .period, differences = D)
   }
@@ -224,10 +227,36 @@ scaled_pinball_loss <- function(.dist, .actual, .train, level = 95, na.rm = TRUE
 #' @rdname interval_accuracy_measures
 #' @export
 interval_coverage <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
+  check_interval_level(level)
   interval <- hilo(.dist, level)
   if(!inherits(interval, "hilo")) abort("Interval coverage is not supported for multivariate distributions.")
   within <- (.actual >= interval$lower) & (.actual <= interval$upper)
   mean(within, na.rm = na.rm)
+}
+
+# Interval measures are computed for a single interval
+check_interval_level <- function(level, call = caller_env()) {
+  if(!is.numeric(level) || length(level) != 1L) {
+    abort(sprintf(
+      "`level` must be a single number, not a vector of length %i.", length(level)
+    ), call = call)
+  }
+}
+
+# Extra arguments for the measures are the same for every series and model, so
+# vectors aren't spread across them.
+check_accuracy_dots <- function(..., call = caller_env()) {
+  dots <- enquos(...)
+  for(nm in names(dots)) {
+    # Arguments using the data can't be evaluated here, and are left as is
+    val <- tryCatch(eval_tidy(dots[[nm]]), error = function(e) NULL)
+    if((is.atomic(val) || is.list(val)) && length(val) > 1L) {
+      abort(c(
+        sprintf("Extra arguments to accuracy measures must have length 1, but `%s` has length %i.", nm, length(val)),
+        i = "Wrap measures needing other arguments in a function, e.g. `measures = list(coverage_80 = function(...) interval_coverage(..., level = 80))`."
+      ), call = call)
+    }
+  }
 }
 
 #' Interval estimate accuracy measures
@@ -516,6 +545,7 @@ accuracy.mdl_ts <- function(object, measures = point_accuracy_measures, ...){
   }
   
   # Add user inputs
+  check_accuracy_dots(...)
   aug <- mutate(aug, ...)
   
   if(is.null(aug[[".period"]])){
@@ -628,6 +658,7 @@ accuracy.fbl_df <- function(object, data, measures = point_accuracy_measures, ..
   aug <- left_join(aug, .train, by = map_chr(grp, as_string))
 
   # Add user inputs
+  check_accuracy_dots(...)
   aug <- mutate(aug, ...)
   
   if(is.null(aug[[".period"]])){

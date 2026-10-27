@@ -140,3 +140,21 @@ test_that("interval_coverage()", {
   expect_equal(acc_int$coverage, acc$coverage)
 })
 
+
+test_that("Extra arguments to accuracy measures must have length 1", {
+  dist <- distributional::dist_normal(0, 1)
+  expect_error(interval_coverage(dist, 0, level = c(80, 95)), "single number")
+  expect_error(winkler_score(dist, 0, level = c(80, 95)), "single number")
+
+  skip_if_not_installed("fable")
+  expect_error(
+    accuracy(fbl_multi, lung_deaths_long, measures = interval_accuracy_measures, level = c(80, 95)),
+    "`level` has length 2"
+  )
+  expect_error(
+    accuracy(mbl, measures = interval_accuracy_measures, level = c(80, 95)),
+    "`level` has length 2"
+  )
+  acc <- accuracy(fbl_multi, lung_deaths_long, measures = list(coverage = interval_coverage), level = 80)
+  expect_identical(NROW(acc), 2L)
+})
