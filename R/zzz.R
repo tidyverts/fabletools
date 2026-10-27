@@ -13,6 +13,12 @@
   register_s3_method("tibble", "tbl_sum", "fbl_df")
   
   register_s3_method("ggplot2", "scale_type", "agg_vec")
+
+  # Share tsibble's aggregate_key() generic if it has one, using this method
+  if ("aggregate_key" %in% getNamespaceExports("tsibble")) {
+    assign("aggregate_key", getExportedValue("tsibble", "aggregate_key"), envir = topenv())
+    register_s3_method("tsibble", "aggregate_key", "tbl_ts", aggregate_key.tbl_ts)
+  }
   
   op <- options()
   op.fable <- list(

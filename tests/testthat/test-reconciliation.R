@@ -1,5 +1,13 @@
 context("test-reconciliation")
 
+test_that("aggregate_key() shares tsibble's generic when it has one", {
+  skip_if_not("aggregate_key" %in% getNamespaceExports("tsibble"))
+  expect_identical(aggregate_key, tsibble::aggregate_key)
+  agg <- tsibble::aggregate_key(lung_deaths_long, key, value = sum(value))
+  expect_s3_class(agg$key, "agg_vec")
+  expect_equal(sum(is_aggregated(agg$key)), 72)
+})
+
 test_that("reconciliation", {
   lung_deaths_agg <- lung_deaths_long %>% 
     aggregate_key(key, value = sum(value))

@@ -88,7 +88,9 @@ fitted model, and groundwork has been laid for mixtime-based tsibbles.
   `h = "1 year"`) cover that calendar period for mixtime indices, as they do
   for `Date` and `POSIXct` indices. Results for multi-year, numeric and
   irregular intervals match those with current tsibble releases, which are
-  still supported.
+  still supported. If tsibble provides an `aggregate_key()` generic,
+  fabletools uses it with its own method, so the two packages no longer mask
+  each other's `aggregate_key()`.
 * `get_frequencies()` now accepts mixtime durations, so seasonal periods and
   forecast horizons can be given as e.g. `forecast(h = mixtime::years(2L))`
   or `season(period = mixtime::weeks(1L))`.
