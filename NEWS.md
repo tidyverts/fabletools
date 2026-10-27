@@ -213,6 +213,10 @@
 * The models of a mable (from `mable_vars()`) are now always in the order of
   their columns, so the models of results such as `forecast()` follow the
   column order (e.g. after `relocate()`).
+* Added the "The model formula" vignette (`vignette("model_formula",
+  package = "fabletools")`), which describes the response and transformations
+  on the left hand side of a model formula (including `resp()` and `vars()`),
+  and the specials and regressors on the right hand side.
 * Documentation improvements (#281, #371, #389, #410).
 * The reconciliation functions (`reconcile_*()`) now give an informative
   error when they aren't applied to a column of models, rather than failing
