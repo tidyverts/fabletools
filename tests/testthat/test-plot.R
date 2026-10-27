@@ -5,7 +5,8 @@ test_that("fabletools' plot methods are registered without ggtime", {
   s3_table <- asNamespace("ggplot2")[[".__S3MethodsTable__."]]
   methods <- c(
     "autoplot.tbl_ts", "autoplot.fbl_ts", "autoplot.dcmp_ts",
-    "autolayer.tbl_ts", "autolayer.fbl_ts", "fortify.fbl_ts"
+    "autolayer.tbl_ts", "autolayer.fbl_ts", "fortify.fbl_ts",
+    "autoplot.fbl_df", "autolayer.fbl_df", "fortify.fbl_df"
   )
   # Restore the previously registered methods afterwards
   registered <- mget(methods, envir = s3_table, ifnotfound = list(NULL))
@@ -20,5 +21,8 @@ test_that("fabletools' plot methods are registered without ggtime", {
   register_plot_methods(NA_character_)
   expect_identical(s3_table[["autolayer.tbl_ts"]], autolayer.tbl_ts)
   expect_identical(s3_table[["autolayer.fbl_ts"]], autolayer.fbl_ts)
+  expect_identical(s3_table[["autoplot.fbl_df"]], autoplot.fbl_ts)
+  expect_identical(s3_table[["autolayer.fbl_df"]], autolayer.fbl_ts)
+  expect_identical(s3_table[["fortify.fbl_df"]], fortify.fbl_ts)
   expect_identical(s3_table[["autoplot.tbl_ts"]], autoplot.tbl_ts)
 })

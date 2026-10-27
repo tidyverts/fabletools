@@ -212,7 +212,9 @@
 * The `fbl_ts` class for fable data frames will be renamed to `fbl_df` (a
   fable data frame), for consistency with the mable (`mbl_df`) class. Fables
   now have the `fbl_df` class before `fbl_ts`, and all of the fable's S3
-  methods now dispatch on `fbl_df`. The `fbl_ts` class is kept for now so
+  methods now dispatch on `fbl_df` (the `autoplot()`, `autolayer()` and
+  `fortify()` methods, including those from ggtime, are registered for both
+  classes). The `fbl_ts` class is kept for now so
   old `inherits(x, "fbl_ts")` checks continue working, but it is recommended
   to use `is_fable()` instead.
 * The `mdl_defn` class for model specifications is renamed to `mdl_spec`.
