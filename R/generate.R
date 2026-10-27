@@ -75,16 +75,7 @@ generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
 generate.mdl_bootstrap_iid <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   setup <- generate_mdl_ts_setup(x, new_data, h, times, seed)
   if (!is.null(seed)) on.exit(assign(".Random.seed", setup$RNGstate, envir = .GlobalEnv))
-  new_data <- setup$new_data
-
-  # Respect an already-populated .innov (set by joint
-  # bootstrap_joint_new_data()) rather than resampling.
-  if (is.null(new_data[[".innov"]])) {
-    res <- bootstrap_residual_index(x)$resid
-    i <- sample.int(NROW(res), nrow(new_data), replace = TRUE)
-    new_data$.innov <- if(length(x$response) == 1) res[i] else res[i,]
-  }
-
+  new_data <- bootstrap_innovations(x, setup$new_data)
   generate_mdl_ts_assemble(x, new_data, ...)
 }
 
@@ -93,19 +84,23 @@ generate.mdl_bootstrap_iid <- function(x, new_data = NULL, h = NULL, times = 1, 
 generate.mdl_bootstrap_block <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   setup <- generate_mdl_ts_setup(x, new_data, h, times, seed)
   if (!is.null(seed)) on.exit(assign(".Random.seed", setup$RNGstate, envir = .GlobalEnv))
-  new_data <- setup$new_data
-
-  if (is.null(new_data[[".innov"]])) {
-    if(any(has_gaps(x$data)$.gaps)) abort("Residuals must be regularly spaced without gaps to use a block bootstrap method.")
-    res <- bootstrap_residual_index(x)$resid
-    block_size <- x%@%"block_size"
-    kr <- tsibble::key_rows(new_data)
-    ki <- lapply(lengths(kr), function(n) block_bootstrap(NROW(res), block_size, size = n))
-    i <- vec_c(!!!ki)
-    new_data$.innov <- if(length(x$response) == 1) res[i] else res[i,]
-  }
-
+  new_data <- bootstrap_innovations(x, setup$new_data, block_size = x%@%"block_size")
   generate_mdl_ts_assemble(x, new_data, ...)
+}
+
+# Add innovations resampled from the model's residuals to the replicated
+# new_data, using the time points drawn jointly with other models if given.
+# Innovations already in new_data are kept.
+bootstrap_innovations <- function(x, new_data, block_size = NULL) {
+  if (!is.null(new_data[[".innov"]]) || is_null_model(x)) return(new_data)
+  draws <- attr(x, "bootstrap_draws") %||% bootstrap_draw_times(list(x), new_data, block_size)
+  if (length(draws) != NROW(new_data)) {
+    abort("The jointly bootstrapped time points don't match the data being simulated.")
+  }
+  res <- bootstrap_residuals(x)
+  pos <- vec_match(draws, res$index)
+  new_data$.innov <- if (is.matrix(res$resid)) res$resid[pos, , drop = FALSE] else res$resid[pos]
+  new_data
 }
 
 # Shared setup for generate.mdl_ts()/generate.mdl_bootstrap_iid()/
@@ -185,15 +180,84 @@ Does your model require extra variables to produce simulations?", e$message))
   .sim
 }
 
-# Demeaned innovation residuals paired with their calendar time index.
-bootstrap_residual_index <- function(x) {
+# Demeaned innovation residuals for each time point of the model's data (NA
+# where unavailable).
+bootstrap_residuals <- function(x) {
   res <- residuals(x$fit, type = "innovation")
-  idx <- x$data[[index_var(x$data)]]
-  keep <- if (is.matrix(res)) stats::complete.cases(res) else !is.na(res)
-  res <- if (is.matrix(res)) res[keep, , drop = FALSE] else res[keep]
-  idx <- idx[keep]
-  f_mean <- if(length(x$response) == 1) mean else colMeans
-  list(index = idx, resid = res - f_mean(res))
+  res <- if (is.matrix(res)) {
+    sweep(res, 2L, colMeans(res, na.rm = TRUE))
+  } else {
+    res - mean(res, na.rm = TRUE)
+  }
+  list(index = x$data[[index_var(x$data)]], resid = res)
+}
+
+# Draw the time points whose residuals are used as innovations for each row of
+# the replicated `new_data`, shared by all `models`. Only time points with
+# residuals for every model are drawn, and a block bootstrap draws blocks of
+# `block_size` consecutive observed time points (not joined across gaps).
+bootstrap_draw_times <- function(models, new_data, block_size = NULL, call = caller_env()) {
+  res <- lapply(models, bootstrap_residuals)
+  idx <- lapply(res, `[[`, "index")
+  if (length(unique(lapply(idx, vec_ptype))) > 1L) {
+    abort("Models bootstrapped jointly must have the same type of time index.", call = call)
+  }
+  observed <- lapply(res, function(r) {
+    if (is.matrix(r$resid)) stats::complete.cases(r$resid) else !is.na(r$resid)
+  })
+  times <- Reduce(function(a, b) vec_slice(a, vec_in(a, b)), idx)
+  ok <- Reduce(`&`, Map(function(i, o) o[vec_match(times, i)], idx, observed))
+
+  if (length(models) > 1L) {
+    shared <- vec_slice(times, ok)
+    differs <- !all(map2_lgl(idx, observed, function(i, o) vec_size(i[o]) == vec_size(shared)))
+    if (!any(ok)) {
+      abort(c(
+        "Models being bootstrapped jointly have no time points with residuals in common.",
+        "i" = "Joint bootstrap sampling draws the same historical time point for every model."
+      ), call = call)
+    }
+    if (differs) {
+      warn(c(
+        "Series being bootstrapped jointly have different residual time domains.",
+        "i" = "Joint bootstrap sampling has been restricted to their overlapping period."
+      ))
+    }
+  } else if (!any(ok)) {
+    abort("The model has no residuals to bootstrap.", call = call)
+  }
+
+  pos <- if (is.null(block_size)) {
+    valid <- which(ok)
+    valid[sample.int(length(valid), NROW(new_data), replace = TRUE)]
+  } else {
+    if (any(vapply(models, function(x) any(has_gaps(x$data)$.gaps), logical(1L)))) {
+      abort("Residuals must be regularly spaced without gaps to use a block bootstrap method.", call = call)
+    }
+    if (length(unique(lapply(models, function(x) interval(x$data)))) > 1L) {
+      abort("Models bootstrapped jointly with blocks must have the same time interval.", call = call)
+    }
+    # Blocks can start where the next `block_size` time points are all observed
+    n_missing <- c(0L, cumsum(!ok))
+    m <- length(ok)
+    starts <- which(n_missing[seq_len(max(m - block_size + 1L, 0L)) + block_size] ==
+                      n_missing[seq_len(max(m - block_size + 1L, 0L))])
+    if (length(starts) == 0L) {
+      runs <- rle(ok)
+      abort(c(
+        sprintf("Can't draw blocks of %d consecutive residuals for the block bootstrap.", block_size),
+        "i" = sprintf(
+          "There are at most %d consecutive time points with residuals%s.",
+          max(c(0L, runs$lengths[runs$values])),
+          if (length(models) > 1L) " for every model" else ""
+        ),
+        "i" = "Use a smaller `block_size`."
+      ), call = call)
+    }
+    kr <- tsibble::key_rows(new_data)
+    vec_c(!!!lapply(lengths(kr), function(n) block_bootstrap(starts, block_size, size = n)), .ptype = integer())
+  }
+  vec_slice(times, pos)
 }
 
 # Replicate new_data into times copies stacked with a .rep key column;
@@ -210,13 +274,11 @@ replicate_new_data <- function(new_data, times) {
   build_tsibble(new_data, index = !!idx, key = !!kv, interval = intvl)
 }
 
-block_bootstrap <- function (n, window_size, size = n) {
+# Resample positions in blocks of `window_size`, starting from any of `starts`.
+block_bootstrap <- function(starts, window_size, size) {
   n_blocks <- size%/%window_size + 2
-  bx <- numeric(n_blocks * window_size)
-  for (i in seq_len(n_blocks)) {
-    block_pos <- sample(seq_len(n - window_size + 1), 1)
-    bx[((i - 1) * window_size + 1):(i * window_size)] <- block_pos:(block_pos + window_size - 1)
-  }
+  block_pos <- starts[sample.int(length(starts), n_blocks, replace = TRUE)]
+  bx <- as.vector(outer(seq_len(window_size) - 1L, block_pos, `+`))
   start_from <- sample.int(window_size, 1)
   bx[seq(start_from, length.out = size)]
 }

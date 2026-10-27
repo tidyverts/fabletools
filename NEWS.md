@@ -28,6 +28,10 @@
   historical cross-sectional relationship carries over into the simulated
   forecasts; if the series don't share the same historical time domain,
   sampling is restricted to the overlapping period and a warning is raised.
+  Models that couldn't be estimated (`NULL` models) are left out of the joint
+  sampling and give `NA` forecasts, and an informative error is given when the
+  series have no residuals at the same time points (or too few in a row for
+  the blocks of `bootstrap_block()`).
   They can also be applied directly to a model specification inside
   `model()`, e.g. `model(ets = bootstrap_iid(ETS(value)))`, in which case
   each series is fitted and wrapped independently (not jointly).
@@ -131,6 +135,10 @@
   beyond the lag use the short-term memory and are `NA` after that (#318).
 * Fixed `autolayer()` for tsibble data using the fable method when ggtime isn't
   installed.
+* Block bootstrapped innovations (from `generate(bootstrap_block_size = )`,
+  now `bootstrap_block()`) no longer join residuals across missing values, and
+  bootstrapped innovations for multivariate models are now centred on the mean
+  residual of each response.
 
 ## Improvements
 

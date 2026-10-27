@@ -129,6 +129,83 @@ test_that("joint bootstrap warns and restricts to the overlapping time domain", 
   expect_equal(nrow(fc), 12)
 })
 
+test_that("joint bootstrap leaves out NULL models", {
+  skip_if_not_installed("fable")
+
+  # Too few observations to estimate ETS for "B", giving a NULL model
+  dt <- dplyr::bind_rows(
+    dplyr::mutate(as_tibble(us_deaths_tr), id = "A"),
+    dplyr::mutate(as_tibble(us_deaths_tr), id = "B")
+  ) %>%
+    dplyr::filter(id == "A" | index < tsibble::yearmonth("1973 Mar")) %>%
+    as_tsibble(index = index, key = id)
+  fit <- suppressWarnings(model(dt, ets = fable::ETS(value)))
+  expect_equal(is_null_model(fit$ets), c(FALSE, TRUE))
+
+  for (modifier in list(bootstrap_iid, bootstrap_block, conformal_scp)) {
+    fc <- fit %>%
+      mutate(ets = modifier(ets, 10)) %>%
+      forecast(h = 3)
+    expect_equal(nrow(fc), 6)
+    expect_true(all(is.na(fc$.mean[fc$id == "B"])))
+    expect_true(all(is.finite(fc$.mean[fc$id == "A"])))
+  }
+})
+
+test_that("joint bootstrap aborts without enough shared residuals", {
+  skip_if_not_installed("fable")
+
+  split_series <- function(a_end, b_start) {
+    dplyr::bind_rows(
+      dplyr::mutate(as_tibble(dplyr::filter(us_deaths_tr, index < tsibble::yearmonth(a_end))), id = "A"),
+      dplyr::mutate(as_tibble(dplyr::filter(us_deaths_tr, index >= tsibble::yearmonth(b_start))), id = "B")
+    ) %>%
+      as_tsibble(index = index, key = id) %>%
+      model(ets = fable::ETS(value))
+  }
+
+  # No time points in common
+  fit <- split_series("1975 Jan", "1975 Jan")
+  expect_error(
+    fit %>% mutate(ets = bootstrap_iid(ets, times = 10)) %>% forecast(h = 3),
+    "no time points with residuals in common"
+  )
+
+  # 14 time points in common
+  fit <- split_series("1975 Mar", "1974 Jan")
+  expect_warning(
+    fc <- fit %>% mutate(ets = bootstrap_block(ets, times = 10, block_size = 12)) %>% forecast(h = 3),
+    "overlapping period"
+  )
+  expect_true(all(dist_types(fc$value) == "dist_sample"))
+  expect_error(
+    suppressWarnings(
+      fit %>% mutate(ets = bootstrap_block(ets, times = 10, block_size = 24)) %>% forecast(h = 3)
+    ),
+    "at most 14 consecutive time points"
+  )
+})
+
+test_that("block bootstrap doesn't join residuals across missing values", {
+  skip_if_not_installed("fable")
+
+  dt <- tsibble::tsibble(t = 1:10, y = c(1, 3, 2, 5, NA, 4, 6, 5, 8, 7), index = t)
+  fit <- model(dt, naive = fable::NAIVE(y))
+  # Residuals are missing at times 1 and 5, so blocks of 4 residuals are only
+  # within times 6 to 10.
+  mdl <- bootstrap_block(fit$naive[[1]], times = 50, block_size = 4)
+  new_data <- fabletools:::replicate_new_data(new_data(dt, 6), 50)
+  set.seed(1)
+  draws <- fabletools:::bootstrap_draw_times(list(mdl), new_data, block_size = 4)
+  expect_length(draws, 300)
+  expect_true(all(draws %in% 6:10))
+
+  expect_error(
+    forecast(bootstrap_block(fit$naive[[1]], times = 5, block_size = 6), h = 2),
+    "at most 5 consecutive time points"
+  )
+})
+
 test_that("bootstrap_iid/bootstrap_block/simulate_iid apply to a model specification, fitting each series independently", {
   skip_if_not_installed("fable")
 

@@ -147,104 +147,55 @@ bootstrap_block.mdl_lst <- function(model, times = 5000, block_size = NULL) {
 
 # --- Joint (mdl_lst-level) bootstrap sampling -------------------------------
 # Draws the same historical time point for every series at a given position,
-# preserving cross-sectional correlation.
+# preserving cross-sectional correlation. The shared draws are attached to each
+# model, which then dispatches as usual (through any reconciliation).
 
 #' @export
-forecast.mdl_lst_bootstrap_iid <- function(object, new_data = NULL, key_data, h = NULL,
-                                           times = NULL, point_forecast = list(.mean = mean), ...) {
-  times <- times %||% (object%@%"times") %||% 5000
-  elements <- vctrs::vec_data(object)
-  new_data <- resolve_new_data_list(elements, new_data, h)
-  sims <- generate(object, new_data = new_data, times = times, ...)
-  forecast_from_joint_generate(elements, new_data, sims, point_forecast)
+forecast.mdl_lst_bootstrap_iid <- function(object, new_data = NULL, h = NULL, ...) {
+  object <- bootstrap_joint(object, new_data, h)
+  NextMethod()
 }
 
 #' @export
-forecast.mdl_lst_bootstrap_block <- function(object, new_data = NULL, key_data, h = NULL,
-                                             times = NULL, point_forecast = list(.mean = mean), ...) {
-  times <- times %||% (object%@%"times") %||% 5000
-  elements <- vctrs::vec_data(object)
-  new_data <- resolve_new_data_list(elements, new_data, h)
-  sims <- generate(object, new_data = new_data, times = times, ...)
-  forecast_from_joint_generate(elements, new_data, sims, point_forecast)
-}
-
-# Resolve a new_data list per element (filling NULLs via
-# make_future_data()), without replicating into times copies.
-resolve_new_data_list <- function(elements, new_data, h) {
-  new_data <- new_data %||% rep(list(NULL), length.out = length(elements))
-  .mapply(function(el, nd) nd %||% make_future_data(el$data, h), list(elements, new_data), NULL)
-}
-
-# Turn each element's generate() output into a forecast fable via
-# forecast_from_generate().
-forecast_from_joint_generate <- function(elements, new_data, sims, point_forecast) {
-  Map(function(el, nd, sim) {
-    resp_vars <- vapply(el$response, expr_name, character(1L), USE.NAMES = FALSE)
-    dist_col <- if (length(resp_vars) > 1) ".distribution" else resp_vars
-    forecast_from_generate(nd, sim, resp_vars, dist_col, point_forecast)
-  }, elements, new_data, sims)
+forecast.mdl_lst_bootstrap_block <- function(object, new_data = NULL, h = NULL, ...) {
+  object <- bootstrap_joint(object, new_data, h, block_size = object%@%"block_size")
+  NextMethod()
 }
 
 #' @export
-generate.mdl_lst_bootstrap_iid <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...) {
-  elements <- vctrs::vec_data(x)
-  new_data <- bootstrap_joint_new_data(elements, new_data, h, times)
-  map2(elements, new_data, generate, times = times, seed = seed, ...)
+generate.mdl_lst_bootstrap_iid <- function(x, new_data = NULL, h = NULL, times = 1, ...) {
+  x <- bootstrap_joint(x, new_data, h, times = times)
+  NextMethod()
 }
 
 #' @export
-generate.mdl_lst_bootstrap_block <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...) {
-  elements <- vctrs::vec_data(x)
-  new_data <- bootstrap_joint_new_data(elements, new_data, h, times, block_size = x%@%"block_size")
-  map2(elements, new_data, generate, times = times, seed = seed, ...)
+generate.mdl_lst_bootstrap_block <- function(x, new_data = NULL, h = NULL, times = 1, ...) {
+  x <- bootstrap_joint(x, new_data, h, times = times, block_size = x%@%"block_size")
+  NextMethod()
 }
 
-# Align models' residuals onto their overlapping time domain (warning if
-# they differ), so index i means the same calendar time for all.
-bootstrap_joint_residuals <- function(models) {
-  res <- lapply(models, bootstrap_residual_index)
-  overlap <- sort(Reduce(intersect, lapply(res, `[[`, "index")))
-  full_match <- all(vapply(res, function(r) identical(sort(r$index), overlap), logical(1L)))
-  if (!full_match) {
-    warn(c(
-      "Series being bootstrapped jointly have different residual time domains.",
-      "i" = "Joint bootstrap sampling has been restricted to their overlapping period."
-    ))
+# Draw the time points to bootstrap from jointly for the models of a column,
+# and attach them to each model. NULL models are left out (and give NA), and
+# models already given joint draws (by an outer modifier) are kept as is.
+# `times` is the number of paths, defaulting to each model's own.
+bootstrap_joint <- function(x, new_data, h, times = NULL, block_size = NULL) {
+  models <- vec_data(x)
+  new_data <- new_data %||% rep(list(NULL), length.out = length(models))
+  use <- !vapply(models, is_null_model, logical(1L))
+  if (!any(use) || all(vapply(models[use], has_bootstrap_draws, logical(1L)))) {
+    return(x)
   }
-  lapply(res, function(r) {
-    pos <- vctrs::vec_match(overlap, r$index)
-    if (is.matrix(r$resid)) r$resid[pos, , drop = FALSE] else r$resid[pos]
-  })
-}
-
-# Build each element's replicated new_data with a shared .innov draw so
-# innovations preserve cross-series correlation.
-bootstrap_joint_new_data <- function(elements, new_data, h, times, block_size = NULL) {
-  new_data_list <- new_data %||% rep(list(NULL), length.out = length(elements))
-  new_data_list <- .mapply(function(el, nd) {
-    replicate_new_data(nd %||% make_future_data(el$data, h), times)
-  }, list(elements, new_data_list), NULL)
-
-  n <- vapply(new_data_list, nrow, integer(1L))
-  if (length(unique(n)) > 1L) {
+  new_data <- .mapply(function(m, nd) {
+    replicate_new_data(nd %||% make_future_data(m$data, h), times %||% (m%@%"times") %||% 1)
+  }, list(models[use], new_data[use]), NULL)
+  shape <- unique(lapply(new_data, function(nd) lengths(tsibble::key_rows(nd))))
+  if (length(shape) > 1L) {
     abort("Joint bootstrap sampling requires all series to share the same forecast horizon and number of paths.")
   }
-
-  res_pool <- bootstrap_joint_residuals(elements)
-  n_overlap <- NROW(res_pool[[1]])
-  draws <- if (is.null(block_size)) {
-    sample.int(n_overlap, n[[1]], replace = TRUE)
-  } else {
-    if (any(vapply(elements, function(x) any(has_gaps(x$data)$.gaps), logical(1L)))) {
-      abort("Residuals must be regularly spaced without gaps to use a block bootstrap method.")
-    }
-    kr <- tsibble::key_rows(new_data_list[[1]])
-    vec_c(!!!lapply(lengths(kr), function(sz) block_bootstrap(n_overlap, block_size, size = sz)))
-  }
-
-  Map(function(nd, res) {
-    nd$.innov <- if (is.matrix(res)) res[draws, , drop = FALSE] else res[draws]
-    nd
-  }, new_data_list, res_pool)
+  draws <- bootstrap_draw_times(models[use], new_data[[1]], block_size)
+  models[use] <- lapply(models[use], `attr<-`, "bootstrap_draws", draws)
+  attributes(models) <- attributes(x)
+  models
 }
+
+has_bootstrap_draws <- function(x) !is.null(attr(x, "bootstrap_draws"))
