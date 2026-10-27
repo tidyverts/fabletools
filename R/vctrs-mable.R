@@ -90,3 +90,22 @@ vec_cast.tbl_df.mbl_df <- function(x, to, ...) {
 vec_cast.data.frame.mbl_df <- function(x, to, ...) {
   df_cast(x, to, ...)
 }
+
+#' @export
+vec_restore.mbl_df <- function(x, to, ...) {
+  # Rows may be duplicated while combining, so the keys aren't validated here
+  x <- tibble::new_tibble(x)
+  kv <- key_vars(to)
+  build_mable_meta(
+    x, key_data = group_data(group_by(x, !!!syms(kv))),
+    model = mable_vars(to), response = response_vars(to),
+    ptype = if(NROW(x) == 0) mable_ptype(to)
+  )
+}
+
+#' @export
+rbind.mbl_df <- function(..., deparse.level = 1) {
+  res <- vec_rbind(!!!unname(list(...)))
+  if(!is_mable(res)) return(res)
+  build_mable(res, key = !!key_vars(res), model = mable_vars(res), template = res)
+}

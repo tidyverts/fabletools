@@ -252,3 +252,22 @@ test_that("Results of an empty mable have the structure of non-empty results (#3
   expect_identical(names(fc), names(forecast(full, h = 2)))
   expect_same_structure(fitted(empty), fitted(full))
 })
+
+test_that("Combining mables with rbind() and vec_rbind() gives valid keys", {
+  skip_if_not_installed("fable")
+  mbl <- model(lung_deaths_long, snaive = fable::SNAIVE(value))
+  res <- rbind(mbl[1,], mbl[2,])
+  expect_s3_class(res, "mbl_df")
+  expect_identical(n_keys(res), 2L)
+  expect_identical(key_data(res), key_data(mbl))
+  expect_error(rbind(mbl, mbl), "uniquely identify")
+
+  res <- vctrs::vec_rbind(mbl[1,], mbl[2,])
+  expect_identical(key_data(res), key_data(mbl))
+  expect_identical(mable_vars(res), "snaive")
+
+  # Slicing keeps the structure of the models
+  empty <- vctrs::vec_slice(mbl, 0)
+  expect_identical(n_keys(empty), 0L)
+  expect_identical(NROW(forecast(empty, h = 1)), 0L)
+})

@@ -50,7 +50,7 @@ test_that("rbind() stacks mdl_df rows", {
 test_that("mables with trailing mdl_df class are unaffected by mdl_df methods", {
   skip_if_not_installed("fable")
 
-  expect_true(is_mable(rbind(mbl_complex, mbl_complex)))
+  expect_true(is_mable(rbind(mbl_complex[1,], mbl_complex[2,])))
   expect_equal(model_sum(mbl_complex), model_sum.default(mbl_complex))
 })
 

@@ -109,6 +109,10 @@
   intervals made of several units (e.g. 1 hour 30 minutes).
 * Fixed `select()`, `transmute()`, `rename()` and `relocate()` dropping the
   fable class or distribution column (#324, #348, #403).
+* Fixed `rbind()` and `vctrs::vec_rbind()` of mables giving incorrect keys.
+  `rbind()` now errors if the combined mables have the same series, like
+  `bind_rows()`. Slicing a mable to no rows (e.g. with `vctrs::vec_slice()`)
+  keeps the structure of its models.
 * Fixed `[[<-` and `[<-` not registering model columns in a mable (#402,
   #323), and removed model columns (e.g. with `mutate(fit, ets = NULL)`)
   still being registered as models.
