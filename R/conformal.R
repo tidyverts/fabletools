@@ -54,10 +54,7 @@ conformal_scp.mdl_ts <- function(model, times = 5000, min_calibration = 20) {
 
 #' @export
 conformal_scp.mdl_lst <- function(model, times = 5000, min_calibration = 20) {
-  # Independent (mdl_ts) dispatch level only - each series in the column is
-  # calibrated on its own history, with no joint mdl_lst-level calibration
-  # across series (unlike bootstrap_iid()'s joint sampling). See design notes
-  # in _dev/model-modifiers.md.
+  # Each series is calibrated on its own history, not jointly across series.
   new_mdl_lst(lapply(
     vctrs::vec_data(model), conformal_scp, times = times, min_calibration = min_calibration
   ))
