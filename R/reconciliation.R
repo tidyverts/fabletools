@@ -43,8 +43,8 @@ reconcile.mbl_df <- function(.data, ...){
 check_reconcile_models <- function(models, fn, call = caller_env()) {
   if(is_mdl_df(models)) {
     abort(c(
-      sprintf("`%s()` can't be applied to a model group.", fn),
-      "i" = "Reconcile each model column before grouping them with `cbind()`."
+      sprintf("`%s()` can't be applied to a model data frame.", fn),
+      "i" = "Reconcile each model column before combining them with `cbind()`."
     ), call = call)
   }
   if(!inherits(models, c("mdl_lst", "lst_mdl"))) {

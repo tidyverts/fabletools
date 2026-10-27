@@ -174,7 +174,7 @@ gather.mbl_df <- function(data, key = "key", value = "value", ..., na.rm = FALSE
   value <- enexpr(value)
   tbl <- as_tibble(data)
   cols <- if(...length() > 0) names(tidyselect::eval_select(expr(c(...)), tbl)) else names(tbl)
-  tbl <- unpack_model_groups(tbl, cols)
+  tbl <- unpack_mdl_df_cols(tbl, cols)
   tbl <- gather(tbl, key = !!key, value = !!value, all_of(tbl %@% "unpacked"),
                 na.rm = na.rm, convert = convert, factor_key = factor_key)
   mdls <- names(which(map_lgl(tbl, inherits, c("mdl_lst", "mdl_df"))))
@@ -194,16 +194,16 @@ pivot_longer.mbl_df <- function (data, cols, ..., names_to = "name") {
   }
   new_key <- c(key_vars(data), names_to)
   tbl <- as_tibble(data)
-  tbl <- unpack_model_groups(tbl, names(tidyselect::eval_select(enquo(cols), tbl)))
+  tbl <- unpack_mdl_df_cols(tbl, names(tidyselect::eval_select(enquo(cols), tbl)))
   tbl <- tidyr::pivot_longer(tbl, all_of(tbl %@% "unpacked"), ..., names_to = names_to)
   build_mable(tbl, key = !!new_key,
               model = which(vapply(tbl, inherits, logical(1L), c("mdl_lst", "mdl_df"))),
               template = data)
 }
 
-# Replace the model groups among `cols` with their model columns, named
-# `<group>$<model>`. The resulting names of `cols` are kept as "unpacked".
-unpack_model_groups <- function(x, cols, call = caller_env()){
+# Replace the model data frames among `cols` with their model columns, named
+# `<name>$<model>`. The resulting names of `cols` are kept as "unpacked".
+unpack_mdl_df_cols <- function(x, cols, call = caller_env()){
   unpacked <- map(set_names(names(x)), function(nm) {
     col <- x[[nm]]
     if (nm %in% cols && is_mdl_df(col)) unpack_model_results(list2(!!nm := col)) else list2(!!nm := col)

@@ -1,4 +1,4 @@
-# A `mdl_df` is a joint group of models: a data frame whose rows are series
+# A `mdl_df` is a model data frame: a data frame whose rows are series
 # and whose columns are model columns (`mdl_lst`, or nested `mdl_df`), cut
 # from the same mable. Unlike a mable (`mbl_df`) it has no key of its own; row
 # identity is positional, inherited from the mable it came from.
@@ -9,17 +9,17 @@
 new_mdl_df <- function(x = list()){
   x <- as.list(x)
   if(any(names2(x) == "")) {
-    abort("All model columns of a model group must be named.")
+    abort("All model columns of a model data frame must be named.")
   }
   if(anyDuplicated(names(x))) {
-    abort("Model columns of a model group must have unique names.")
+    abort("Model columns of a model data frame must have unique names.")
   }
   if(!all(map_lgl(x, is_model_col))) {
-    abort("A model group can only contain model columns (`mdl_lst` or `mdl_df`).")
+    abort("A model data frame can only contain model columns (`mdl_lst` or `mdl_df`).")
   }
   n <- unique(map_int(x, vec_size))
   if(length(n) > 1) {
-    abort("Model columns of a model group must contain the same number of models.")
+    abort("Model columns of a model data frame must contain the same number of models.")
   }
   tibble::new_tibble(x, nrow = if(length(n)) n else 0L, class = "mdl_df")
 }
@@ -39,66 +39,67 @@ model_col_response <- function(x){
   if(is.null(mdl)) NULL else response_vars(mdl)
 }
 
-#' Model groups
+#' Model data frames
 #'
 #' @description
 #' `r lifecycle::badge('experimental')`
 #'
-#' Model columns of a mable can be combined with `cbind()` into a model group:
-#' a data frame of model columns (with the `mdl_df` class) holding several
-#' models for each series. A model group is created within [dplyr::mutate()]
-#' (e.g. `mutate(fit, grp = cbind(ets, arima))`), and is stored in the mable
-#' as a single model column. `rbind()` stacks the rows of model groups with
-#' the same model columns, which are matched by name.
+#' Model columns of a mable can be combined with `cbind()` into a model data
+#' frame: a data frame of model columns (with the `mdl_df` class) holding
+#' several models for each series. A model data frame is created within
+#' [dplyr::mutate()] (e.g. `mutate(fit, grp = cbind(ets, arima))`), and is
+#' stored in the mable as a single model column. `rbind()` stacks the rows of
+#' model data frames with the same model columns, which are matched by name.
 #'
 #' @details
 #' Unnamed model columns are named after their expression, with `fit$ets`
-#' named `ets`. Unnamed model groups are extended with their model columns,
-#' while named model groups are nested within the new group, so
+#' named `ets`. Unnamed model data frames are extended with their model
+#' columns, while named model data frames are nested within the new one, so
 #' `cbind(grp, arima)` adds `arima` to the models of `grp`, and
-#' `cbind(grp = grp, arima)` gives a group containing `grp` and `arima`. The
-#' model columns must all contain the same number of models (one for each
-#' series in the mable).
+#' `cbind(grp = grp, arima)` gives a model data frame containing `grp` and
+#' `arima`. The model columns must all contain the same number of models (one
+#' for each series in the mable).
 #'
-#' When printed within a mable, a model group is shown as a column for each of
-#' its models, under the name of the group (such as `grp$ets` followed by
-#' `$arima`).
+#' When printed within a mable, a model data frame is shown as a column for
+#' each of its models, under the name of its column (such as `grp$ets`
+#' followed by `$arima`).
 #'
-#' Results computed from a mable include each model of a group, labelled in
-#' the `.model` column by the string `"<group>$<model>"` (e.g. `"grp$ets"`).
-#' This applies to
+#' Results computed from a mable include each model of a model data frame,
+#' labelled in the `.model` column by the string `"<name>$<model>"` (e.g.
+#' `"grp$ets"`). This applies to
 #' [forecast()], [generate()], [accuracy()], [fitted()], [residuals()],
 #' [augment()], [glance()], [tidy()], [components()] and [hypothesize()].
 #' These labels must be unique, so results can't be computed from a mable that
 #' also has a model column named `grp$ets`.
 #' Generics that modify the models, such as [refit()] and [stream()], return
-#' the model group with its models replaced. Model groups can also be used
-#' with:
+#' the model data frame with its models replaced. Model data frames can also
+#' be used with:
 #'
 #' * [report()] and [equation()], for a mable with a single model.
 #' * [tidyr::pivot_longer()] and [tidyr::gather()], which replace the model
-#'   groups being pivoted with their models (named `<group>$<model>`).
-#' * [simulate_iid()] and [conformal_scp()], which are applied to each model of
-#'   the group.
+#'   data frames being pivoted with their models (named `<name>$<model>`).
+#' * [simulate_iid()] and [conformal_scp()], which are applied to each of its
+#'   models.
 #' * [bootstrap_iid()] and [bootstrap_block()], which sample jointly across
-#'   every model of the group: the same historical time point (or block) is
+#'   all of its models: the same historical time point (or block) is
 #'   drawn for each model and series at a given step of each path, so their
 #'   forecasts share the same resampled residuals. This includes the models of
-#'   bootstrapped or reconciled columns within the group.
+#'   bootstrapped or reconciled columns within the model data frame.
 #'
 #' The reconciliation functions (such as [reconcile_mint()]) can't be applied
-#' to a model group. Instead apply them to the model columns before grouping
-#' them.
+#' to a model data frame. Instead apply them to the model columns before
+#' combining them.
 #' [interpolate()] requires a mable with a single model column, which can't be
-#' a model group.
+#' a model data frame.
 #'
-#' @param ... Model columns (`mdl_lst`) or model groups (`mdl_df`) to combine.
+#' @param ... Model columns (`mdl_lst`) or model data frames (`mdl_df`) to
+#' combine.
 #' @param deparse.level For `cbind()`, how unnamed arguments are named. With
 #' `1` (the default) unnamed symbols (or `fit$model`) are used as names, and
 #' with `2` other expressions are also deparsed into names. With `0`, unnamed
 #' model columns aren't allowed. Unused by `rbind()`.
 #'
-#' @return A model group, with the `mdl_df` class.
+#' @return A model data frame, with the `mdl_df` class.
 #'
 #' @examplesIf requireNamespace("fable", quietly = TRUE)
 #' library(fable)
@@ -106,17 +107,17 @@ model_col_response <- function(x){
 #' fit <- as_tsibble(cbind(mdeaths, fdeaths), pivot_longer = TRUE) %>%
 #'   model(ets = ETS(value), lm = TSLM(value ~ trend() + season()))
 #'
-#' # Group the models of each series
+#' # Combine the models of each series
 #' fit_grp <- fit %>%
 #'   transmute(grp = cbind(ets, lm))
 #' fit_grp
 #'
-#' # The results include each model of the group
+#' # The results include each model of the model data frame
 #' fit_grp %>%
 #'   forecast(h = "1 year")
 #' accuracy(fit_grp)
 #'
-#' @name model_groups
+#' @name model_data_frame
 #' @export
 cbind.mdl_lst <- function(..., deparse.level = 1){
   dots <- list(...)
@@ -139,12 +140,12 @@ cbind.mdl_lst <- function(..., deparse.level = 1){
     x <- dots[[i]]
     if(!is_model_col(x)) {
       abort(sprintf(
-        "Only model columns (`mdl_lst` or `mdl_df`) can be combined into a model group, not <%s>.",
+        "Only model columns (`mdl_lst` or `mdl_df`) can be combined into a model data frame, not <%s>.",
         vec_ptype_full(x)
       ))
     }
     if(nms[i] == "" && is_mdl_df(x)) {
-      # Unnamed model groups are extended with their component columns
+      # Unnamed model data frames are extended with their component columns
       cols <- c(cols, as.list(x))
       next
     }
@@ -157,7 +158,7 @@ cbind.mdl_lst <- function(..., deparse.level = 1){
       } else if(deparse.level == 2) {
         paste(deparse(exprs[[i]]), collapse = " ")
       } else {
-        abort("All model columns being combined into a model group must be named.")
+        abort("All model columns being combined into a model data frame must be named.")
       }
     }
     cols <- c(cols, set_names(list(x), nms[i]))
@@ -165,11 +166,11 @@ cbind.mdl_lst <- function(..., deparse.level = 1){
   new_mdl_df(cols)
 }
 
-#' @rdname model_groups
+#' @rdname model_data_frame
 #' @export
 cbind.mdl_df <- cbind.mdl_lst
 
-#' @rdname model_groups
+#' @rdname model_data_frame
 #' @export
 rbind.mdl_df <- function(..., deparse.level = 1){
   dots <- list(...)
@@ -183,7 +184,7 @@ rbind.mdl_df <- function(..., deparse.level = 1){
 vec_ptype2.mdl_df.mdl_df <- function(x, y, ...){
   if(is_legacy_mable(x) || is_legacy_mable(y)) return(vec_ptype2(upgrade_mable(x), upgrade_mable(y), ...))
   if(!setequal(names(x), names(y))) {
-    abort("Can't combine model groups with different model columns.")
+    abort("Can't combine model data frames with different model columns.")
   }
   new_mdl_df(vctrs::tib_ptype2(x, y, ...))
 }
@@ -192,13 +193,13 @@ vec_ptype2.mdl_df.mdl_df <- function(x, y, ...){
 vec_cast.mdl_df.mdl_df <- function(x, to, ...){
   if(is_legacy_mable(x) || is_legacy_mable(to)) return(vec_cast(upgrade_mable(x), upgrade_mable(to), ...))
   if(!setequal(names(x), names(to))) {
-    abort("Can't convert between model groups with different model columns.")
+    abort("Can't convert between model data frames with different model columns.")
   }
   new_mdl_df(vctrs::tib_cast(x, to, ...))
 }
 
-# Model groups modified jointly (by the bootstrap modifiers) can only be
-# combined with groups modified in the same way.
+# Model data frames modified jointly (by the bootstrap modifiers) can only be
+# combined with those modified in the same way.
 #' @rawNamespace S3method(vec_ptype2, mdl_df.mdl_df_bootstrap_iid, vec_ptype2_mdl_df_modified)
 #' @rawNamespace S3method(vec_ptype2, mdl_df.mdl_df_bootstrap_block, vec_ptype2_mdl_df_modified)
 #' @rawNamespace S3method(vec_ptype2, mdl_df_bootstrap_iid.mdl_df, vec_ptype2_mdl_df_modified)
@@ -219,14 +220,14 @@ NULL
 
 vec_ptype2_mdl_df_modified <- function(x, y, ...){
   if(!identical(class(x), class(y))) {
-    vctrs::stop_incompatible_type(x, y, ..., details = "Model groups with different modifiers can't be combined.")
+    vctrs::stop_incompatible_type(x, y, ..., details = "Model data frames with different modifiers can't be combined.")
   }
   restore_mdl_df_modifier(vec_ptype2.mdl_df.mdl_df(x, y, ...), x)
 }
 
 vec_cast_mdl_df_modified <- function(x, to, ...){
   if(!identical(class(x), class(to))) {
-    vctrs::stop_incompatible_cast(x, to, ..., details = "Model groups with different modifiers can't be combined.")
+    vctrs::stop_incompatible_cast(x, to, ..., details = "Model data frames with different modifiers can't be combined.")
   }
   restore_mdl_df_modifier(vec_cast.mdl_df.mdl_df(x, to, ...), to)
 }
@@ -248,7 +249,7 @@ mable_vars.mdl_df <- function(x){
 response_vars.mdl_df <- function(x){
   if(is_legacy_mable(x)) return(response_vars(upgrade_mable(x)))
   if(is_mable(x)) return(NextMethod())
-  # Unlike a mable, a model group's models needn't share a response.
+  # Unlike a mable, a model data frame's models needn't share a response.
   unique(unlist(map(unclass(x), model_col_response), use.names = FALSE))
 }
 
@@ -256,7 +257,7 @@ response_vars.mdl_df <- function(x){
 model_sum.mdl_df <- function(x){
   if(is_legacy_mable(x)) return(model_sum(upgrade_mable(x)))
   if(is_mable(x)) return(NextMethod())
-  # One summary per row, combining the summaries of each model in the group.
+  # One summary per row, combining the summaries of each model in the model data frame.
   row_sum <- map(unclass(x), function(col) {
     if(is_mdl_df(col)) paste0("<", model_sum(col), ">") else map_chr(col, model_sum)
   })
@@ -273,12 +274,12 @@ type_sum.mdl_df <- function(x){
 tbl_sum.mdl_df <- function(x){
   if(is_legacy_mable(x)) return(tibble::tbl_sum(upgrade_mable(x)))
   if(is_mable(x)) return(NextMethod())
-  c(`A model group` = paste(map_chr(dim(x), big_mark), collapse = " x "))
+  c(`A model data frame` = paste(map_chr(dim(x), big_mark), collapse = " x "))
 }
 
-# Modifiers only apply to model groups, not to mables (which can also have
+# Modifiers only apply to model data frames, not to mables (which can also have
 # the `mdl_df` class)
-check_model_group <- function(model, fn, call = caller_env()) {
+check_mdl_df <- function(model, fn, call = caller_env()) {
   if(!is_mdl_df(model)) {
     abort(sprintf(
       "`%s()` must be applied to a model column, such as within `mutate()`, not to a mable.", fn
@@ -286,21 +287,21 @@ check_model_group <- function(model, fn, call = caller_env()) {
   }
 }
 
-# Apply a modifier to each model column of a model group
-modify_model_group <- function(model, .f, ..., call = caller_env()) {
-  check_model_group(model, as_string(substitute(.f)), call = call)
+# Apply a modifier to each model column of a model data frame
+modify_mdl_df <- function(model, .f, ..., call = caller_env()) {
+  check_mdl_df(model, as_string(substitute(.f)), call = call)
   out <- lapply(unclass(model), .f, ...)
   attributes(out) <- attributes(model)
   out
 }
 
-# The model columns of a mable, with model groups replaced by their columns
+# The model columns of a mable, with model data frames replaced by their columns
 mable_model_cols <- function(x){
   unpack_model_results(as.list(x)[mable_vars(x)])
 }
 
 # Splice the data frame results of `mdl_df` columns (from `dispatch_mdl_df()`)
-# into top-level columns named `<group>$<model>`, so
+# into top-level columns named `<name>$<model>`, so
 # every model's results can be pivoted into a single `.model` column.
 unpack_model_results <- function(x, call = caller_env()){
   unpack <- function(x) {
@@ -316,7 +317,7 @@ unpack_model_results <- function(x, call = caller_env()){
   out
 }
 
-# Models of a group are labelled `<group>$<model>`, which can match the name
+# Models of a model data frame column are labelled `<name>$<model>`, which can match the name
 # of another model column.
 check_model_labels <- function(labels, cols, call = caller_env()){
   dup <- unique(labels[duplicated(labels)])
@@ -324,7 +325,7 @@ check_model_labels <- function(labels, cols, call = caller_env()){
   dup <- dup[1]
   grp <- sub("\\$.*", "", dup)
   abort(if(dup %in% cols && grp %in% cols) {
-    sprintf("Model labels must be unique; `%s` is both a column and a model of group `%s`.", dup, grp)
+    sprintf("Model labels must be unique; `%s` is both a column and a model of `%s`.", dup, grp)
   } else {
     sprintf("Model labels must be unique; `%s` labels more than one model.", dup)
   }, call = call)

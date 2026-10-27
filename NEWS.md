@@ -6,25 +6,25 @@ produced from a fitted model: `bootstrap_iid()`, `bootstrap_block()` and
 and the experimental `conformal_scp()` gives split conformal prediction
 intervals. Reconciliation is now done with `mutate()` and the stable
 `reconcile_*()` functions, model columns can be combined into experimental
-model groups, and fables gain the `fbl_df` class. Mables without any models
+model data frames, and fables gain the `fbl_df` class. Mables without any models
 or series are now supported, `lag()` keeps the short-term memory of each
 fitted model, and groundwork has been laid for mixtime-based tsibbles.
 
 ## New features
 
-* Model columns from the same mable can now be grouped with `cbind()` (e.g.
-  `mutate(fit, joint = cbind(ets, arima))`) into an experimental model group
-  (the `mdl_df` class, see `?model_groups`): a data frame of model columns for
-  the same series, which can be stacked with `rbind()`. Model groups are
-  printed as a column for each of their models, and results computed from the
-  mable (such as `forecast()`, `generate()`, `accuracy()` and `tidy()`) label
-  their models as `joint$ets` and `joint$arima` (an error is given if these
-  labels aren't unique, such as for a mable that also has a model column
-  named `joint$ets`). `simulate_iid()` and
-  `conformal_scp()` modify each model of a group, while `bootstrap_iid()` and
-  `bootstrap_block()` sample jointly across every model of the group (using
-  the same resampled time points). Reconciliation is applied to model columns
-  before grouping them.
+* Model columns from the same mable can now be combined with `cbind()` (e.g.
+  `mutate(fit, joint = cbind(ets, arima))`) into an experimental model data
+  frame (the `mdl_df` class, see `?model_data_frame`): a data frame of model
+  columns for the same series, which can be stacked with `rbind()`. Model data
+  frames are printed as a column for each of their models, and results
+  computed from the mable (such as `forecast()`, `generate()`, `accuracy()` and
+  `tidy()`) label their models as `joint$ets` and `joint$arima` (an error is
+  given if these labels aren't unique, such as for a mable that also has a
+  model column named `joint$ets`). `simulate_iid()` and `conformal_scp()`
+  modify each model of a model data frame, while `bootstrap_iid()` and
+  `bootstrap_block()` sample jointly across all of its models (using the same
+  resampled time points). Reconciliation is applied to model columns before
+  combining them.
 * Added `bootstrap_iid()`, `bootstrap_block()`, and `simulate_iid()`, which
   wrap a fitted model (via `mutate()`) so that `forecast()`/`generate()`
   produce forecasts from bootstrapped or simulated sample paths instead of
@@ -286,7 +286,7 @@ fitted model, and groundwork has been laid for mixtime-based tsibbles.
   working, but packages defining their own methods for mables (rather than
   relying on `is_mable()`) need to dispatch on `mbl_df` to keep working once
   the trailing `mdl_df` class is removed from mables in v1.1.0. The `mdl_df`
-  class is now used for model groups.
+  class is now used for model data frames.
 * The `fbl_ts` class for fable data frames will be renamed to `fbl_df` (a
   fable data frame), for consistency with the mable (`mbl_df`) class. Fables
   now have the `fbl_df` class before `fbl_ts`, and all of the fable's S3

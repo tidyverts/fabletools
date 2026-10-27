@@ -28,10 +28,10 @@
 #' If the series don't all share the same historical time domain, sampling is
 #' restricted to their overlapping period and a warning is raised.
 #'
-#' Applied to a model group (see [model_groups]), sampling is joint across
-#' every model of the group, for all of its series. The innovations of each
-#' model are then its own residuals at the same historical time points, which
-#' keeps the relationship between the models' (and series') errors.
+#' Applied to a model data frame (see [model_data_frame]), sampling is joint
+#' across all of its models and series. The innovations of each model are then
+#' its own residuals at the same historical time points, which keeps the
+#' relationship between the models' (and series') errors.
 #'
 #' @param model A fitted model, typically a model column from a mable
 #' modified with [dplyr::mutate()] (e.g. `mutate(ets = bootstrap_iid(ets))`).
@@ -82,7 +82,7 @@ bootstrap_iid.mdl_lst <- function(model, times = 5000) {
 
 #' @export
 bootstrap_iid.mdl_df <- function(model, times = 5000) {
-  check_model_group(model, "bootstrap_iid")
+  check_mdl_df(model, "bootstrap_iid")
   mdl_wrap_col(map_models(model, bootstrap_iid, times = times), "mdl_df_bootstrap_iid")
 }
 
@@ -128,7 +128,7 @@ bootstrap_block.mdl_ts <- function(model, times = 5000, block_size = NULL) {
 
 #' @export
 bootstrap_block.mdl_df <- function(model, times = 5000, block_size = NULL) {
-  check_model_group(model, "bootstrap_block")
+  check_mdl_df(model, "bootstrap_block")
   block_size <- block_size %||% default_block_size(model)
   model <- map_models(model, bootstrap_block, times = times, block_size = block_size)
   mdl_wrap_col(model, "mdl_df_bootstrap_block", block_size = block_size)
@@ -160,8 +160,8 @@ bootstrap_block.mdl_lst <- function(model, times = 5000, block_size = NULL) {
 
 # --- Joint bootstrap sampling ----------------------------------------------
 # Draws the same historical time point for every model of a column (across
-# series) or group (across series and models) at a given position, preserving
-# their correlation. The shared draws are attached to each model, which then
+# series) or model data frame (across series and models) at a given position,
+# preserving their correlation. The shared draws are attached to each model, which then
 # dispatches as usual (through any reconciliation).
 
 #' @export
@@ -209,13 +209,14 @@ generate.mdl_df_bootstrap_iid <- generate.mdl_lst_bootstrap_iid
 generate.mdl_df_bootstrap_block <- generate.mdl_lst_bootstrap_block
 
 # Draw the time points to bootstrap from jointly for the models of a column or
-# group, and attach them to each model. `new_data` has the data for each row.
+# model data frame, and attach them to each model. `new_data` has the data for
+# each row.
 # NULL models are left out (and give NA), and models already given joint draws
 # (by an outer modifier) are kept as is. `times` is the number of paths,
 # defaulting to each model's own.
 bootstrap_joint <- function(x, new_data, h, times = NULL, block_size = NULL, call = caller_env()) {
   models <- model_list(x)
-  # The models of a group are listed by column, each with a model for every row
+  # A model data frame's models are listed by column, with one for every row
   new_data <- rep_len(new_data %||% list(NULL), length(models))
   use <- !vapply(models, is_null_model, logical(1L))
   if (!any(use) || all(vapply(models[use], has_bootstrap_draws, logical(1L)))) {

@@ -1,6 +1,6 @@
 context("test-mdl_df")
 
-test_that("cbind() groups model columns into a mdl_df", {
+test_that("cbind() combines model columns into a mdl_df", {
   skip_if_not_installed("fable")
 
   grp <- cbind(mbl_complex$ets, mbl_complex$lm)
@@ -19,7 +19,7 @@ test_that("cbind() groups model columns into a mdl_df", {
   ets <- mbl_complex$ets
   expect_equal(names(cbind(ets, trend = mbl_complex$lm)), c("ets", "trend"))
 
-  # Unnamed groups are extended, named groups are nested
+  # Unnamed model data frames are extended, named ones are nested
   expect_equal(names(cbind(grp, ets2 = ets)), c("ets", "lm", "ets2"))
   nested <- cbind(grp = grp, ets2 = ets)
   expect_equal(names(nested), c("grp", "ets2"))
@@ -156,7 +156,7 @@ test_that("accuracy(), residuals(), fitted(), components() and refit() with mdl_
   expect_s3_class(cmp, "dcmp_ts")
   expect_equal(unique(cmp$.model), c("grp$ets", "grp$ets2"))
 
-  # Modifying generics return the model group with its models replaced
+  # Modifying generics return the model data frame with its models replaced
   refitted <- refit(mbl_grp, lung_deaths_long)
   expect_true(is_mable(refitted))
   expect_true(is_mdl_df(refitted$grp))
@@ -166,7 +166,7 @@ test_that("accuracy(), residuals(), fitted(), components() and refit() with mdl_
   )
 })
 
-test_that("report() and equation() with a single model in a model group", {
+test_that("report() and equation() with a single model in a model data frame", {
   skip_if_not_installed("fable")
 
   mbl_one <- mbl_complex %>%
@@ -195,7 +195,7 @@ test_that("equation() requires a model in a mable without models", {
   )
 })
 
-test_that("pivot_longer() and gather() unpack model groups", {
+test_that("pivot_longer() and gather() unpack model data frames", {
   skip_if_not_installed("fable")
 
   mbl_grp <- mbl_complex %>%
@@ -208,7 +208,7 @@ test_that("pivot_longer() and gather() unpack model groups", {
   expect_equal(mable_vars(long), "fit")
   expect_s3_class(long$fit, "mdl_lst")
 
-  # Unselected model groups are kept
+  # Unselected model data frames are kept
   long <- tidyr::pivot_longer(mbl_grp, c(ets, lm))
   expect_equal(mable_vars(long), c("grp", "value"))
   expect_true(is_mdl_df(long$grp))
@@ -220,12 +220,12 @@ test_that("pivot_longer() and gather() unpack model groups", {
   expect_equal(unique(tidyr::gather(mbl_grp, ".model", "fit", -key)$.model), mdl_names)
 })
 
-test_that("model group labels must be unique", {
+test_that("model data frame labels must be unique", {
   skip_if_not_installed("fable")
 
-  # A model column named like a model of a group
+  # A model column named like a model of a model data frame
   mbl_dup <- mutate(mbl_complex, grp = cbind(ets, lm), `grp$ets` = lm)
-  msg <- "`grp\\$ets` is both a column and a model of group `grp`"
+  msg <- "`grp\\$ets` is both a column and a model of `grp`"
   expect_error(forecast(mbl_dup, h = 1), msg)
   expect_error(accuracy(mbl_dup), msg)
   expect_error(glance(mbl_dup), msg)
@@ -233,19 +233,19 @@ test_that("model group labels must be unique", {
   expect_error(augment(mbl_dup), msg)
   expect_error(tidyr::pivot_longer(mbl_dup, -key), msg)
 
-  # A model of a group named like a model of a nested group
+  # A model named like a model of a nested model data frame
   grp <- cbind(a = cbind(b = mbl_complex$ets), `a$b` = mbl_complex$lm)
   mbl_dup <- mutate(mbl_complex, grp = grp)
   expect_error(glance(mbl_dup), "`grp\\$a\\$b` labels more than one model")
 })
 
-test_that("modifiers applied to model groups", {
+test_that("modifiers applied to model data frames", {
   skip_if_not_installed("fable")
 
   mbl_grp <- mbl_complex %>%
     mutate(grp = cbind(ets, lm))
 
-  # Independent modifiers are applied to each model of the group
+  # Independent modifiers are applied to each model of the model data frame
   sim <- mutate(mbl_grp, grp = simulate_iid(grp, times = 10))
   expect_true(is_mdl_df(sim$grp))
   expect_s3_class(sim$grp$ets[[1]], "mdl_ts_sim")
@@ -262,20 +262,20 @@ test_that("modifiers applied to model groups", {
   expect_equal(NROW(forecast(boot, h = 2)), 2 * 4 * 2)
 
   # Reconciliation applies to a column of models across the hierarchy
-  expect_error(mutate(mbl_grp, grp = reconcile_bu(grp)), "can't be applied to a model group")
-  expect_error(mutate(mbl_grp, grp = min_trace(grp)), "can't be applied to a model group")
+  expect_error(mutate(mbl_grp, grp = reconcile_bu(grp)), "can't be applied to a model data frame")
+  expect_error(mutate(mbl_grp, grp = min_trace(grp)), "can't be applied to a model data frame")
   expect_error(reconcile_mint(mbl_complex), "must be applied to a column of models")
 
   # Modifiers can't be applied to a mable
   expect_error(simulate_iid(mbl_complex), "not to a mable")
 })
 
-test_that("bootstrapping a model group samples jointly across all of its models", {
+test_that("bootstrapping a model data frame samples jointly across all of its models", {
   skip_if_not_installed("fable")
 
   mbl_grp <- mbl_complex %>%
     mutate(grp = cbind(ets, lm))
-  # The time points drawn for every model of the group
+  # The time points drawn for every model of the model data frame
   group_draws <- function(grp, ...) {
     grp <- fabletools:::bootstrap_joint(grp, NULL, h = 3, times = 2, ...)
     lapply(fabletools:::model_list(grp), attr, "bootstrap_draws")
@@ -308,7 +308,7 @@ test_that("bootstrapping a model group samples jointly across all of its models"
   sims <- split(gen$.sim, list(gen$id, gen$.model))
   expect_true(all(vapply(sims, identical, logical(1L), sims[[1]])))
 
-  # The group's draws are used by jointly bootstrapped and reconciled columns
+  # The model data frame's draws are used by jointly bootstrapped and reconciled columns
   # within it
   fit <- lung_deaths_long_tr %>%
     aggregate_key(key, value = sum(value)) %>%
@@ -329,7 +329,7 @@ test_that("bootstrapping a model group samples jointly across all of its models"
   btm <- tapply(fc$.mean[!is_aggregated(fc$key)], fc$index[!is_aggregated(fc$key)], sum)
   expect_equal(tot, as.numeric(btm))
 
-  # Groups modified differently can't be combined
+  # Model data frames modified differently can't be combined
   boot <- mutate(mbl_grp, grp = bootstrap_iid(grp))
   expect_s3_class(vctrs::vec_rbind(boot$grp[1, ], boot$grp[2, ]), "mdl_df_bootstrap_iid")
   expect_error(vctrs::vec_rbind(boot$grp[1, ], mbl_grp$grp[2, ]), "different modifiers")

@@ -1,7 +1,7 @@
 # Method factories for generics that dispatch through the model containers. A
-# mable (`mbl_df`) holds model columns, each either a model group (`mdl_df`) or
-# a list of models (`mdl_lst`), whose elements are the models (`mdl_ts`). The
-# `mdl_ts` method holds the model specific logic and is written by hand, while
+# mable (`mbl_df`) holds model columns, each either a model data frame
+# (`mdl_df`) or a list of models (`mdl_lst`), whose elements are the models
+# (`mdl_ts`). The `mdl_ts` method holds the model specific logic and is written by hand, while
 # the container methods above it are created here so that every generic
 # traverses the containers in the same way:
 #
@@ -10,8 +10,8 @@
 # * `mdl_df`: the generic is applied to each model column, giving a tibble of
 #   per-model results.
 # * `mbl_df`: the generic is applied to each model column, and the results are
-#   returned in long form with a `.model` column. Models of a group are named
-#   `<group>$<model>`.
+#   returned in long form with a `.model` column. Models of a model data frame
+#   column are named `<name>$<model>`.
 #
 # Generics which modify the models (`modify = TRUE`, such as refit()) instead
 # return the same container with its models replaced by the results.

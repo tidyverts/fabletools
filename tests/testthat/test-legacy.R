@@ -46,7 +46,7 @@ test_that("model specifications saved with fabletools <= 0.8.0 can be refitted",
   expect_s3_class(refit(old, us_deaths)$ets[[1]]$fit, "ETS")
 })
 
-test_that("model groups aren't treated as saved mables", {
+test_that("model data frames aren't treated as saved mables", {
   skip_if_not_installed("fable")
 
   grp <- cbind(mbl_complex$ets, mbl_complex$lm)

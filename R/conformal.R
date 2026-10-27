@@ -106,7 +106,7 @@ conformal_scp.mdl_lst <- function(model, n_quantiles = 5000, min_calibration = 2
 
 #' @export
 conformal_scp.mdl_df <- function(model, n_quantiles = 5000, min_calibration = 20, initial = 10) {
-  modify_model_group(model, conformal_scp, n_quantiles = n_quantiles, min_calibration = min_calibration, initial = initial)
+  modify_mdl_df(model, conformal_scp, n_quantiles = n_quantiles, min_calibration = min_calibration, initial = initial)
 }
 
 #' @export

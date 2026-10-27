@@ -1,11 +1,11 @@
 # A data frame with the attributes of a mable (its keys and model columns), as
-# opposed to a model group, which has neither.
+# opposed to a model data frame, which has neither.
 is_mable_shaped <- function(x){
   is.data.frame(x) && is.data.frame(attr(x, "key")) && !is.null(attr(x, "model"))
 }
 
 # Mables saved with fabletools <= 0.8.0 lead with the `mdl_df` class, which is
-# now used for model groups.
+# now used for model data frames.
 is_legacy_mable <- function(x){
   cls <- class(x)
   is_mable_shaped(x) && inherits(x, "mdl_df") &&

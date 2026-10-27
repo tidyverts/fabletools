@@ -29,15 +29,16 @@ mdl_wrap_col <- function(x, .class, ...) {
   x
 }
 
-# Apply `.f` to each model of a model column or group, keeping the classes and
-# attributes of the column (and of each column of a group).
+# Apply `.f` to each model of a model column or model data frame, keeping the
+# classes and attributes of the column (and of each of its columns).
 map_models <- function(x, .f, ...) {
   out <- if (is_mdl_df(x)) lapply(unclass(x), map_models, .f, ...) else lapply(vec_data(x), .f, ...)
   attributes(out) <- attributes(x)
   out
 }
 
-# The models of a model column or group (listed by column), or a list of models
+# The models of a model column or model data frame (listed by column), or a
+# list of models.
 model_list <- function(x) {
   if (is_mdl_df(x)) return(unlist(lapply(unname(unclass(x)), model_list), recursive = FALSE) %||% list())
   if (inherits(x, "mdl_lst")) return(vec_data(x))
@@ -46,7 +47,7 @@ model_list <- function(x) {
 
 abort_invalid_modifier <- function(model, fn, call = caller_env()) {
   abort(sprintf(
-    "`%s()` must be applied to a model column (such as within `mutate()`), a model group, or a model specification, not <%s>.",
+    "`%s()` must be applied to a model column (such as within `mutate()`), a model data frame, or a model specification, not <%s>.",
     fn, class(model)[1]
   ), call = call)
 }

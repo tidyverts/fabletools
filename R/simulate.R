@@ -60,7 +60,7 @@ simulate_iid.mdl_lst <- function(model, times = 5000) {
 
 #' @export
 simulate_iid.mdl_df <- function(model, times = 5000) {
-  modify_model_group(model, simulate_iid, times = times)
+  modify_mdl_df(model, simulate_iid, times = times)
 }
 
 #' @export

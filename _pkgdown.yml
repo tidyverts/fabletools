@@ -43,7 +43,7 @@ reference:
     - dable
     - as_dable
     - is_dable
-    - model_groups
+    - model_data_frame
     - mable_vars
     - response_vars
     - distribution_var
