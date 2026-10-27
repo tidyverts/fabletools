@@ -54,7 +54,7 @@
   calibrated with the out-of-sample errors of rolling-origin refits of the
   model, and horizons with too few errors give `NA` forecasts. Models with
   regressors can be calibrated when `conformal_scp()` is applied to their
-  specification, e.g. `model(fit = conformal_scp(ARIMA(y ~ x)))`.
+  specification, e.g. `model(fit = conformal_scp(ARIMA(y ~ x)))` (#411).
 * Added `reconcile_mint()`, `reconcile_bu()`, `reconcile_td()`, and
   `reconcile_mo()` for reconciling forecasts, bringing reconciliation into the
   same `<family>_<variant>` naming used by `bootstrap_*()`/`simulate_*()`.
@@ -95,10 +95,10 @@
   models.
 * Transformations with time-varying parameters from the data, such as
   `box_cox(resp(value), lambda)`, now work with `fitted()`, `residuals()`,
-  `refit()`, `stream()` and `reconcile_mint()` reconciliation. The parameters are
-  stored with the model's data, alongside the response. `forecast()`,
-  `generate()`, `refit()` and `stream()` give an informative error if the
-  parameter isn't in `new_data` (#382).
+  `response()`, `refit()`, `stream()` and `reconcile_mint()` reconciliation
+  (#301, #382). The parameters are stored with the model's data, alongside the
+  response. `forecast()`, `generate()`, `refit()` and `stream()` give an
+  informative error if the parameter isn't in `new_data`.
 * The `trend()` special of `common_xregs` (not used by fable's models, which
   have their own) for irregular time series is now proportional to elapsed
   time in the units of the time index, instead of `NaN`.
@@ -162,8 +162,8 @@
   now deprecated in favour of calling `set.seed()` before `generate()`.
 * Fixed misleading "object not found" errors when estimating models with
   `future::plan(multisession)` that reference global variables or functions
-  (#412). The global values used in a model's formula are now sent to the
-  workers when the model is estimated.
+  (#146, #405, #412). The global values used in a model's formula are now
+  sent to the workers when the model is estimated.
 * Fixed `stream()` failing for every model with an "argument is of length
   zero" error, caused by `stream.mdl_ts()` not setting the model definition's
   `stage` before evaluating specials on the new data (unlike `forecast()`,
