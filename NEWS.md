@@ -59,8 +59,11 @@
   `reconcile_mo()` for reconciling forecasts, bringing reconciliation into the
   same `<family>_<variant>` naming used by `bootstrap_*()`/`simulate_*()`.
   These are now the documented, stable reconciliation functions, and are no
-  longer experimental. The original names (`min_trace()`, `bottom_up()`,
-  `top_down()` and `middle_out()`) are superseded, but will continue to work.
+  longer experimental. They are applied to model columns with `mutate()`, e.g.
+  `mutate(fit, lm = reconcile_mint(lm))`, as `reconcile()` is now
+  soft-deprecated. The original names (`min_trace()`, `bottom_up()`,
+  `top_down()` and `middle_out()`) are superseded, but will continue to work
+  without warnings.
 * Added the `interval_coverage()` interval accuracy measure for the
   proportion of actual values within the prediction interval, which is
   included in `interval_accuracy_measures` (#368).
