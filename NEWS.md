@@ -117,7 +117,8 @@ fitted model, and groundwork has been laid for mixtime-based tsibbles.
   have their own) for irregular time series is now proportional to elapsed
   time in the units of the time index, instead of `NaN`.
 * The `trend()` special of `common_xregs` now converts `knots` and `origin` to
-  the class of the time index, and errors if they're incompatible.
+  the class of the time index, and errors if they're incompatible. Numeric
+  times can still be fractional for integer indices (e.g. `knots = 2005.5`).
   Previously other classes (e.g. a `Date` origin for a `yearmonth` index, or
   text knots) silently gave wrong trends.
 * The default origin of the `trend()` special of `common_xregs` is now the

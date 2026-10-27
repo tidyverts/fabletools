@@ -19,6 +19,15 @@ test_that("trend() knots and origin must match the index", {
   expect_equal(fbl_trend(x, origin = as.Date("2020-01-01"))$trend, 1:10)
 })
 
+test_that("trend() accepts fractional knots for integer indices", {
+  x <- xreg_tsbl(2000:2005)
+  expect_equal(
+    fbl_trend(x, knots = 2002.5, origin = x$t[1])[[2]],
+    c(0, 0, 0, 0.5, 1.5, 2.5)
+  )
+  expect_equal(fbl_trend(x, origin = 1999.5)$trend, 1.5:6.5)
+})
+
 test_that("trend() knots and origin must match a mixtime index's resolution", {
   skip_if_not_installed("mixtime")
   x <- xreg_tsbl(mixtime::yearmonth(600:611))

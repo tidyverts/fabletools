@@ -20,7 +20,10 @@ index_time_units <- function(x) {
 # `as.double()` of the index, after checking they are compatible with it.
 index_time_as_double <- function(x, time, arg) {
   idx <- x[[index_var(x)]]
-  time <- vctrs::vec_cast(time, vctrs::vec_ptype(idx), x_arg = arg)
+  ptype <- vctrs::vec_ptype(idx)
+  # Allow fractional times (e.g. knots between years) for integer indices
+  if (is.integer(ptype) && !is.object(ptype)) ptype <- double()
+  time <- vctrs::vec_cast(time, ptype, x_arg = arg)
   if (inherits(idx, "mixtime::mixtime") && length(time) > 0) {
     # mixtime values of the same class can have a different chronon (e.g. a
     # date cast to a year-month), which changes the scale of `as.double()`
