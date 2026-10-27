@@ -142,6 +142,7 @@ build_fable <- function (x, response, distribution) {
       x, response = response, dist = distribution, model_cn = ".model",
       class = c("fbl_df", "fbl_ts"))
   }
+  check_fable_distribution(fbl)
   if(is.null(dimnames(fbl[[distribution]]))) {
     warn("The dimnames of the fable's distribution are missing and have been set to match the response variables.")
     dimnames(fbl[[distribution]]) <- response
@@ -176,12 +177,17 @@ as_tibble.grouped_fbl <- function(x, ...) {
 
 validate_fable <- function(fbl){
   stopifnot(inherits(fbl, "fbl_df"))
+  chr_dist <- check_fable_distribution(fbl)
+  vec_assert(fbl[[chr_dist]], distributional::new_dist(dimnames = response_vars(fbl)))
+}
+
+check_fable_distribution <- function(fbl){
   chr_dist <- distribution_var(fbl)
   if (!(chr_dist %in% names(fbl))){
     abort(sprintf("Could not find distribution variable `%s` in the fable. A fable must contain a distribution, if you want to remove it convert to a tsibble with `as_tsibble()`.",
-                  chr_dist))
+                  chr_dist), call = NULL)
   }
-  vec_assert(fbl[[chr_dist]], distributional::new_dist(dimnames = response_vars(fbl)))
+  chr_dist
 }
 
 tbl_sum.fbl_df <- function(x){
@@ -254,12 +260,33 @@ relocate.grouped_fbl <- relocate.fbl_df
 
 #' @export
 transmute.fbl_df <- function (.data, ...) {
-  res <- transmute(as_tsibble(.data), ...)
-  restore_fable(res, .data)
+  dots <- enquos(..., .named = TRUE)
+  res <- transmute(as_tsibble(.data), !!!dots)
+  # Follow the distribution if it is renamed, e.g. `transmute(fc, d = value)`
+  dist_var <- distribution_var(.data)
+  is_dist <- vapply(dots, function(x) identical(quo_get_expr(x), sym(dist_var)), logical(1L))
+  restore_fable(res, .data, if(any(is_dist)) names(dots)[is_dist][[1L]] else dist_var)
 }
 
 #' @export
 transmute.grouped_fbl <- transmute.fbl_df
+
+#' @importFrom dplyr rename_with
+#' @export
+rename_with.fbl_df <- function (.data, .fn, .cols = dplyr::everything(), ...){
+  res <- rename_with(as_tsibble(.data), .fn, {{ .cols }}, ...)
+  build_fable(res, response = response_vars(.data),
+              distribution = names(res)[match(distribution_var(.data), names(.data))])
+}
+
+#' @export
+rename_with.grouped_fbl <- rename_with.fbl_df
+
+#' @export
+`names<-.fbl_df` <- function(x, value) {
+  dist <- value[match(distribution_var(x), names(x))]
+  build_fable(NextMethod(), response = response_vars(x), distribution = dist)
+}
 
 #' @export
 group_by.fbl_df <- function(.data, ...) {

@@ -106,6 +106,27 @@ test_that("rename() and relocate() keep the fable class (#348, #403)", {
   res <- relocate(grp, .mean)
   expect_s3_class(res, "grouped_fbl")
   expect_identical(names(res)[1], ".mean")
+  res <- dplyr::rename_with(grp, toupper, c(value, .mean))
+  expect_s3_class(res, "grouped_fbl")
+  expect_identical(distribution_var(res), "VALUE")
+
+  # rename_with() and names<-
+  res <- dplyr::rename_with(fbl_complex, toupper)
+  expect_s3_class(res, "fbl_df")
+  expect_identical(distribution_var(res), "VALUE")
+  expect_identical(response_vars(res), "value")
+  res <- fbl_complex
+  names(res)[names(res) == "value"] <- "dist"
+  expect_s3_class(res, "fbl_df")
+  expect_identical(distribution_var(res), "dist")
+
+  # transmute() follows a renamed distribution
+  res <- transmute(fbl_complex, dist = value)
+  expect_identical(distribution_var(res), "dist")
+  expect_false("value" %in% names(res))
+
+  # The distribution can't be removed
+  expect_error(mutate(fbl_complex, value = NULL), "must contain a distribution")
 })
 
 test_that("forecast() errors informatively when `.model` is already used (#275)", {
