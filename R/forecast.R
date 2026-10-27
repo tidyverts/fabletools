@@ -2,9 +2,9 @@
 #' 
 #' The forecast function allows you to produce future predictions of a time series
 #' from fitted models. If the response variable has been transformed in the
-#' model formula, the transformation will be automatically back-transformed
-#' (and bias adjusted if `bias_adjust` is `TRUE`). More details about 
-#' transformations in the fable framework can be found in
+#' model formula, the forecast distribution will be automatically
+#' back-transformed, and the point forecasts are computed from it. More details
+#' about transformations in the fable framework can be found in
 #' `vignette("transformations", package = "fable")`.
 #' 
 #' The forecasts returned contain both point forecasts and their distribution.
@@ -27,8 +27,6 @@
 #' in the resulting fable. Specified as a named list of functions which accept
 #' a distribution and return a vector. To compute forecast medians, you can use
 #' `list(.median = median)`.
-#' @param bias_adjust Deprecated. Please use `point_forecast` to specify the 
-#' desired point forecast method.
 #' @param ... Additional arguments for forecast model methods.
 #' 
 #' @return
@@ -94,15 +92,15 @@
 forecast.mbl_df <- function(object, new_data = NULL, h = NULL, 
                             point_forecast = list(.mean = mean), ...){
   h <- check_horizon(new_data, h)
-
-  # Deprecated bias adjustment
-  if (!is.null(match.call()$bias_adjust)) {
-    lifecycle::deprecate_stop("0.2.0", "forecast(bias_adjust = )", "forecast(point_forecast = )")
-    point_forecast <- if(match.call()$bias_adjust) list(.mean = mean) else list(.median = stats::median)
-  }
-
   check_reserved_names(object, new_data, key = ".model")
   dots <- list2(...)
+  # The removed `bias_adjust` argument would otherwise be silently ignored
+  if ("bias_adjust" %in% names(dots)) {
+    abort(c(
+      "The `bias_adjust` argument of `forecast()` has been removed.",
+      i = "Use `point_forecast` to choose the point forecasts, e.g. `point_forecast = list(.median = median)`."
+    ))
+  }
   object <- modify_each_model(object, deprecated_sim_modifier(dots, "forecast", user_env = caller_env()))
   if (!is.null(dots$times)) {
     if (!isTRUE(dots$simulate) && !isTRUE(dots$bootstrap)) {
@@ -196,7 +194,7 @@ forecast.lst_mdl <- deprecate_lst_mdl(forecast.mdl_lst)
 
 #' @rdname forecast
 #' @export
-forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NULL,
+forecast.mdl_ts <- function(object, new_data = NULL, h = NULL,
                             simulate = FALSE, bootstrap = FALSE, times = 5000,
                             point_forecast = list(.mean = mean), ...){
   if(!isFALSE(simulate) || !isFALSE(bootstrap)) {

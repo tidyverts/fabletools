@@ -164,3 +164,7 @@ test_that("forecast() errors informatively when `.model` is already used (#275)"
     "key variable named `.model`"
   )
 })
+
+test_that("forecast() errors for the removed `bias_adjust` argument", {
+  expect_error(forecast(mbl, h = 1, bias_adjust = TRUE), "`bias_adjust` argument")
+})

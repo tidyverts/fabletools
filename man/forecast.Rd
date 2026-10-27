@@ -17,7 +17,6 @@
   object,
   new_data = NULL,
   h = NULL,
-  bias_adjust = NULL,
   simulate = FALSE,
   bootstrap = FALSE,
   times = 5000,
@@ -39,9 +38,6 @@ a distribution and return a vector. To compute forecast medians, you can use
 \code{list(.median = median)}.}
 
 \item{...}{Additional arguments for forecast model methods.}
-
-\item{bias_adjust}{Deprecated. Please use \code{point_forecast} to specify the
-desired point forecast method.}
 
 \item{simulate}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{\link[=simulate_iid]{simulate_iid()}} to wrap the model instead.}
 
@@ -69,9 +65,9 @@ above.
 \description{
 The forecast function allows you to produce future predictions of a time series
 from fitted models. If the response variable has been transformed in the
-model formula, the transformation will be automatically back-transformed
-(and bias adjusted if \code{bias_adjust} is \code{TRUE}). More details about
-transformations in the fable framework can be found in
+model formula, the forecast distribution will be automatically
+back-transformed, and the point forecasts are computed from it. More details
+about transformations in the fable framework can be found in
 \code{vignette("transformations", package = "fable")}.
 }
 \details{

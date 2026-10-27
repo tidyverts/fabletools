@@ -247,6 +247,9 @@ fitted model, and groundwork has been laid for mixtime-based tsibbles.
   index's epoch, consistent with `season()`.
 * `reconcile()` is soft-deprecated in favour of `mutate()` with the
   `reconcile_*()` functions (e.g. `mutate(lm = reconcile_mint(lm))`).
+* The `bias_adjust` argument of `forecast()`, defunct since fabletools 0.2.0,
+  has been removed. Using it is an error, rather than being silently ignored;
+  please use `point_forecast` instead.
 * The superseded internal utility function `bias_adjust()` has been deprecated.
   The forecast mean has been correctly calculated (including 'bias adjustments')
   in the `mean()` function of distributional objects for a long time. The 
