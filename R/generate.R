@@ -29,10 +29,20 @@ generate.mbl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
   h <- check_horizon(new_data, h)
   # A `.rep` column is allowed in `new_data`, where it identifies replications.
   check_reserved_names(x, new_data, key = c(".model", ".rep"), data = ".model")
-  dispatch_mbl_df(
-    x, h = h, times = times, seed = seed, ...,
+  if (!is.null(seed)) {
+    lifecycle::deprecate_warn(
+      "1.0.0", "generate(seed = )",
+      details = "Call `set.seed()` before `generate()` instead of passing `seed`.",
+      user_env = caller_env()
+    )
+  }
+  dots <- list2(...)
+  x <- modify_each_model(x, deprecated_sim_modifier(dots, "generate", user_env = caller_env()))
+  dots[c("bootstrap", "bootstrap_block_size")] <- NULL
+  inject(dispatch_mbl_df(
+    x, h = h, times = times, seed = seed, !!!dots,
     .f = generate, .new_data = new_data, .values_to = ".sim", .unnest = "tsibble"
-  )
+  ))
 }
 
 #' @export
@@ -52,16 +62,11 @@ generate.lst_mdl <- deprecate_lst_mdl(generate.mdl_lst)
 generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL,
                             bootstrap = FALSE, bootstrap_block_size = 1, ...){
   if(isTRUE(bootstrap)) {
-    lifecycle::deprecate_warn(
-      "1.0.0", "generate(bootstrap = )", "bootstrap_iid()",
-      details = "Wrap the model with `bootstrap_iid()` or `bootstrap_block()` (via `mutate()`) instead of passing `bootstrap = TRUE` to `generate()`."
+    modifier <- deprecated_sim_modifier(
+      list(bootstrap = bootstrap, bootstrap_block_size = bootstrap_block_size),
+      "generate", user_env = caller_env()
     )
-    x <- if(bootstrap_block_size > 1) {
-      bootstrap_block(x, block_size = bootstrap_block_size)
-    } else {
-      bootstrap_iid(x)
-    }
-    return(generate(x, new_data = new_data, h = h, times = times, seed = seed, ...))
+    return(generate(modifier(x), new_data = new_data, h = h, times = times, seed = seed, ...))
   }
 
   setup <- generate_mdl_ts_setup(x, new_data, h, times, seed)
@@ -111,10 +116,6 @@ bootstrap_innovations <- function(x, new_data, block_size = NULL) {
 generate_mdl_ts_setup <- function(x, new_data, h, times, seed) {
   RNGstate <- NULL
   if (!is.null(seed)) {
-    lifecycle::deprecate_warn(
-      "1.0.0", "generate(seed = )",
-      details = "Call `set.seed()` before `generate()` instead of passing `seed=`."
-    )
     RNGstate <- use_seed(seed)
   }
 

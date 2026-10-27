@@ -30,7 +30,6 @@
   object,
   new_data = NULL,
   h = NULL,
-  times = NULL,
   point_forecast = list(.mean = mean),
   ...
 )
@@ -57,7 +56,10 @@ desired point forecast method.}
 
 \item{bootstrap}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{\link[=bootstrap_iid]{bootstrap_iid()}} or \code{\link[=bootstrap_block]{bootstrap_block()}} to wrap the model instead.}
 
-\item{times}{The number of future paths for simulations if \code{simulate = TRUE}.}
+\item{times}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} The number of sample paths
+for the deprecated \code{simulate} and \code{bootstrap} arguments. Please use the
+\code{times} argument of \code{\link[=simulate_iid]{simulate_iid()}}, \code{\link[=bootstrap_iid]{bootstrap_iid()}} or
+\code{\link[=bootstrap_block]{bootstrap_block()}} instead, which this doesn't change.}
 }
 \value{
 A fable containing the following columns:

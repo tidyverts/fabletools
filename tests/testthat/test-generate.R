@@ -23,11 +23,7 @@ test_that("generate seed setting", {
   skip_if_not_installed("fable")
 
   seed <- rnorm(1)
-  expect_warning(
-    gen1 <- mbl %>% generate(seed = seed),
-    "deprecated"
-  )
-  # lifecycle only warns once per session for a given deprecation.
+  lifecycle::expect_deprecated(gen1 <- mbl %>% generate(seed = seed), "set.seed")
   gen2 <- suppressWarnings(mbl %>% generate(seed = seed))
   expect_equal(gen1, gen2)
 

@@ -20,7 +20,8 @@
   `simulate=`/`bootstrap=`/`times=` arguments and `generate()`'s `bootstrap=`/
   `bootstrap_block_size=` arguments, which are now deprecated in favour of
   wrapping the model directly, e.g.
-  `fit %>% mutate(ets = bootstrap_iid(ets)) %>% forecast()`. Modifiers can
+  `fit %>% mutate(ets = bootstrap_iid(ets)) %>% forecast()`. The deprecated
+  `times` argument doesn't change the number of paths of a modified model. Modifiers can
   be nested in either order, and keep the reconciliation of the model column
   they wrap, so `bootstrap_iid(reconcile_mint(ets))` and
   `reconcile_mint(bootstrap_iid(ets))` both give bootstrapped coherent
@@ -150,8 +151,8 @@
 * Increased the minimum required version of distributional to 0.6.0 for upstream
   improvements to statistics on transformed distributions (#442).
 * fabletools now requires R 4.1.0 or later.
-* Increased the minimum required versions of rlang to 1.0.0 and vctrs to 0.3.0,
-  matching the functionality used by fabletools.
+* Increased the minimum required versions of rlang to 1.0.0, vctrs to 0.3.0
+  and lifecycle to 1.0.0, matching the functionality used by fabletools.
 * Documentation improvements (#281, #371, #389, #410).
 * The reconciliation functions (`reconcile_*()`, `min_trace()`, etc.) now
   give an informative error when they aren't applied to a column of models,

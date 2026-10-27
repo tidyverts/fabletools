@@ -48,7 +48,7 @@ Imports:
     vctrs (>= 0.3.0),
     distributional (>= 0.6.0),
     progressr,
-    lifecycle,
+    lifecycle (>= 1.0.0),
     ggdist,
     scales,
     cli

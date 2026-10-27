@@ -354,23 +354,92 @@ test_that("wrapping a model specification leaves the original unchanged", {
 test_that("deprecated forecast()/generate() bootstrap/simulate arguments still work", {
   skip_if_not_installed("fable")
 
-  expect_warning(
+  lifecycle::expect_deprecated(
     fc <- mbl %>% forecast(h = 12, bootstrap = TRUE, times = 50),
-    "deprecated"
+    "bootstrap_iid"
   )
   expect_true(all(dist_types(fc$value) == "dist_sample"))
+  expect_equal(unique(lengths(distributional::parameters(fc$value)$x)), 50)
 
-  expect_warning(
+  lifecycle::expect_deprecated(
     fc <- mbl %>% forecast(h = 12, simulate = TRUE, times = 50),
-    "deprecated"
+    "simulate_iid"
   )
   expect_true(all(dist_types(fc$value) == "dist_sample"))
 
-  expect_warning(
+  lifecycle::expect_deprecated(
     gen <- generate(mbl$ets[[1]], h = 12, times = 3, bootstrap = TRUE),
-    "deprecated"
+    "bootstrap_iid"
   )
   expect_equal(NROW(gen), 12 * 3)
+
+  # Models of a column are bootstrapped independently, as before
+  set.seed(1)
+  lifecycle::expect_deprecated(fc <- forecast(mbl_multi, h = 3, bootstrap = TRUE, times = 20))
+  set.seed(1)
+  fc_each <- forecast(model(lung_deaths_long_tr, ets = bootstrap_iid(fable::ETS(value), times = 20)), h = 3)
+  expect_equal(fc, fc_each)
+})
+
+test_that("deprecated bootstrap_block_size uses a block bootstrap as in fabletools 0.8.0", {
+  skip_if_not_installed("fable")
+
+  m <- mbl$ets[[1]]
+  set.seed(1)
+  lifecycle::expect_deprecated(
+    gen <- generate(mbl, h = 6, times = 4, bootstrap = TRUE, bootstrap_block_size = 3),
+    "bootstrap_block"
+  )
+
+  # The block bootstrap of fabletools 0.8.0
+  set.seed(1)
+  res <- stats::na.omit(residuals(m$fit, type = "innovation"))
+  res <- res - mean(res)
+  new_data <- fabletools:::replicate_new_data(tsibble::new_data(us_deaths_tr, 6), 4)
+  i <- unlist(lapply(lengths(tsibble::key_rows(new_data)), function(n) {
+    bx <- numeric()
+    for (b in seq_len(n %/% 3 + 2)) {
+      pos <- sample(seq_len(length(res) - 3 + 1), 1)
+      bx <- c(bx, pos:(pos + 2))
+    }
+    bx[seq(sample.int(3, 1), length.out = n)]
+  }))
+  new_data$.innov <- as.numeric(res[i])
+  expect_equal(gen$.sim, generate(m, new_data)$.sim)
+
+  set.seed(1)
+  lifecycle::expect_deprecated(
+    fc <- forecast(mbl, h = 6, bootstrap = TRUE, times = 20, bootstrap_block_size = 3)
+  )
+  set.seed(1)
+  expect_equal(fc, forecast(model(us_deaths_tr, ets = bootstrap_block(fable::ETS(value), 20, 3)), h = 6))
+})
+
+test_that("deprecated arguments are reported as used by the caller", {
+  skip_if_not_installed("fable")
+  rlang::local_options(lifecycle_verbosity = "warning")
+
+  env <- rlang::new_environment(list(fit = mbl), parent = globalenv())
+  calls <- rlang::exprs(
+    forecast(fit, h = 2, bootstrap = TRUE, times = 5),
+    forecast(fit, h = 2, simulate = TRUE, times = 5),
+    forecast(fit, h = 2, times = 5),
+    generate(fit, h = 2, bootstrap = TRUE),
+    generate(fit, h = 2, seed = 1)
+  )
+  for (call in calls) {
+    w <- tryCatch(eval(call, env), lifecycle_warning_deprecated = function(w) w)
+    expect_s3_class(w, "lifecycle_warning_deprecated")
+    expect_false(grepl("fabletools package", conditionMessage(w)))
+  }
+})
+
+test_that("forecast(times = ) is deprecated and doesn't change a modifier's number of paths", {
+  skip_if_not_installed("fable")
+
+  fit <- mutate(mbl, ets = bootstrap_iid(ets, times = 30))
+  lifecycle::expect_deprecated(fc <- forecast(fit, h = 2, times = 10), "times")
+  expect_equal(unique(lengths(distributional::parameters(fc$value)$x)), 30)
 })
 
 test_that("modifier arguments are checked", {

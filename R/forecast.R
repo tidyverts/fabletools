@@ -19,7 +19,10 @@
 #' time series with no exogenous regressors).
 #' @param simulate `r lifecycle::badge('deprecated')` Please use [simulate_iid()] to wrap the model instead.
 #' @param bootstrap `r lifecycle::badge('deprecated')` Please use [bootstrap_iid()] or [bootstrap_block()] to wrap the model instead.
-#' @param times The number of future paths for simulations if `simulate = TRUE`.
+#' @param times `r lifecycle::badge('deprecated')` The number of sample paths
+#' for the deprecated `simulate` and `bootstrap` arguments. Please use the
+#' `times` argument of [simulate_iid()], [bootstrap_iid()] or
+#' [bootstrap_block()] instead, which this doesn't change.
 #' @param point_forecast The point forecast measure(s) which should be returned 
 #' in the resulting fable. Specified as a named list of functions which accept
 #' a distribution and return a vector. To compute forecast medians, you can use
@@ -99,6 +102,21 @@ forecast.mbl_df <- function(object, new_data = NULL, h = NULL,
   }
 
   check_reserved_names(object, new_data, key = ".model")
+  dots <- list2(...)
+  object <- modify_each_model(object, deprecated_sim_modifier(dots, "forecast", user_env = caller_env()))
+  if (!is.null(dots$times)) {
+    if (!isTRUE(dots$simulate) && !isTRUE(dots$bootstrap)) {
+      lifecycle::deprecate_warn(
+        "1.0.0", "forecast(times = )",
+        details = "Set the number of sample paths with the `times` argument of `simulate_iid()`, `bootstrap_iid()` or `bootstrap_block()`, which `times` doesn't change.",
+        user_env = caller_env()
+      )
+    } else {
+      dots$times <- NULL
+    }
+  }
+  dots[c("simulate", "bootstrap", "bootstrap_block_size")] <- NULL
+
   # The data is bound here, rather than by dispatch_mbl_df(), so that joint
   # forecasting methods (such as reconciliation) get the key structure of all
   # the series to forecast.
@@ -108,12 +126,47 @@ forecast.mbl_df <- function(object, new_data = NULL, h = NULL,
     object <- bind_new_data(object, new_data)
     new_data <- NULL
   }
-  dispatch_mbl_df(
-    object, h = h, point_forecast = point_forecast, ...,
+  inject(dispatch_mbl_df(
+    object, h = h, point_forecast = point_forecast, !!!dots,
     key_data = key_data(object),
     .f = forecast, .values_to = ".fc", .unnest = unnest_fable,
     .new_data = new_data
+  ))
+}
+
+# The modifier replacing the deprecated `simulate`/`bootstrap` arguments of
+# forecast() and generate() (with a deprecation warning), or NULL if unused.
+deprecated_sim_modifier <- function(dots, fn, user_env = caller_env(2)) {
+  simulate <- isTRUE(dots$simulate) && fn == "forecast"
+  bootstrap <- isTRUE(dots$bootstrap)
+  if (!simulate && !bootstrap) return(NULL)
+  block_size <- dots$bootstrap_block_size %||% 1
+  lifecycle::deprecate_warn(
+    "1.0.0",
+    sprintf("%s(%s = )", fn, if (bootstrap) "bootstrap" else "simulate"),
+    if (!bootstrap) "simulate_iid()" else if (block_size > 1) "bootstrap_block()" else "bootstrap_iid()",
+    details = sprintf(
+      "Modify the model within `mutate()` instead, e.g. `mutate(fit, ets = %s(ets))`.",
+      if (!bootstrap) "simulate_iid" else if (block_size > 1) "bootstrap_block" else "bootstrap_iid"
+    ),
+    user_env = user_env
   )
+  times <- if (fn == "forecast") dots$times %||% 5000 else 5000
+  if (!bootstrap) {
+    function(x) simulate_iid(x, times = times)
+  } else if (block_size > 1) {
+    function(x) bootstrap_block(x, times = times, block_size = block_size)
+  } else {
+    function(x) bootstrap_iid(x, times = times)
+  }
+}
+
+# Apply the modifier replacing deprecated arguments to each model of a mable,
+# independently as the deprecated arguments did.
+modify_each_model <- function(object, modifier) {
+  if (is.null(modifier)) return(object)
+  mdls <- mable_vars(object)
+  dplyr::dplyr_col_modify(object, lapply(as_tibble(object)[mdls], map_models, modifier))
 }
 
 # Combine the nested forecasts of each model into a fable
@@ -142,14 +195,14 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NUL
                             simulate = FALSE, bootstrap = FALSE, times = 5000,
                             point_forecast = list(.mean = mean), ...){
   if(isTRUE(simulate) || isTRUE(bootstrap)) {
-    lifecycle::deprecate_warn(
-      "1.0.0",
-      if(bootstrap) "forecast(bootstrap = )" else "forecast(simulate = )",
-      if(bootstrap) "bootstrap_iid()" else "simulate_iid()",
-      details = "Wrap the model with `bootstrap_iid()`/`bootstrap_block()`/`simulate_iid()` (via `mutate()`) instead of passing `simulate=`/`bootstrap=` to `forecast()`."
+    dots <- list2(...)
+    modifier <- deprecated_sim_modifier(
+      list(simulate = simulate, bootstrap = bootstrap, times = times, bootstrap_block_size = dots$bootstrap_block_size),
+      "forecast", user_env = caller_env()
     )
-    object <- if(bootstrap) bootstrap_iid(object, times = times) else simulate_iid(object, times = times)
-    return(forecast(object, new_data = new_data, h = h, point_forecast = point_forecast, ...))
+    object <- modifier(object)
+    dots$bootstrap_block_size <- NULL
+    return(exec(forecast, object, new_data = new_data, h = h, point_forecast = point_forecast, !!!dots))
   }
 
   setup <- forecast_mdl_ts_setup(object, new_data, h, point_forecast)
@@ -220,7 +273,7 @@ Does your model require extra variables to produce forecasts?", e$message))
 
 #' @rdname forecast
 #' @export
-forecast.mdl_ts_sim <- function(object, new_data = NULL, h = NULL, times = NULL,
+forecast.mdl_ts_sim <- function(object, new_data = NULL, h = NULL,
                                 point_forecast = list(.mean = mean), ...){
   setup <- forecast_mdl_ts_setup(object, new_data, h, point_forecast)
   if(!is.null(setup$empty_fbl)) return(setup$empty_fbl)
@@ -228,9 +281,10 @@ forecast.mdl_ts_sim <- function(object, new_data = NULL, h = NULL, times = NULL,
   resp_vars <- setup$resp_vars
   dist_col <- setup$dist_col
 
-  times <- times %||% (object%@%"times") %||% 5000
-
-  sim <- generate(object, new_data, times = times, ...)
+  # The modifier's number of paths is used, rather than the deprecated `times`
+  dots <- list2(...)
+  dots$times <- NULL
+  sim <- exec(generate, object, new_data, times = object%@%"times", !!!dots)
   forecast_from_generate(new_data, sim, resp_vars, dist_col, point_forecast)
 }
 
