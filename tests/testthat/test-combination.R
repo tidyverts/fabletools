@@ -172,3 +172,41 @@ test_that("Combination modelling", {
     )
   )
 })
+
+test_that("model combinations with modified models", {
+  skip_if_not_installed("fable")
+
+  fit <- us_deaths_tr %>%
+    model(
+      a = fable::SNAIVE(value),
+      a_spec = bootstrap_iid(fable::SNAIVE(value), times = 50),
+      b = fable::RW(value ~ drift())
+    )
+
+  # A combination isn't modified by the modifiers of its models
+  cmbn <- mutate(fit, c1 = (a_spec + b) / 2, c2 = (b + a_spec) / 2)
+  expect_identical(class(cmbn$c1[[1]]), "mdl_ts")
+  expect_identical(class(cmbn$c2[[1]]), "mdl_ts")
+
+  # Combinations with a simulated model are combined from sample paths
+  cmbn <- fit %>%
+    mutate(a = bootstrap_iid(a, times = 50)) %>%
+    mutate(c1 = (a + b) / 2, c2 = (b + a) / 2, c3 = (a_spec + b) / 2)
+  fc <- forecast(select(cmbn, c1, c2, c3), h = 3)
+  expect_true(all(dist_types(fc$value) == "dist_sample"))
+  expect_equal(unique(lengths(distributional::parameters(fc$value)$x)), 50)
+  expect_equal(fc$.mean[fc$.model == "c1"], fc$.mean[fc$.model == "c2"], tolerance = 0.05)
+
+  # Bootstrapping a combination resamples its models' residuals at the same
+  # time points
+  cmbn <- mutate(fit, c = bootstrap_iid(a - a, times = 10))
+  gen <- generate(select(cmbn, c), h = 3, times = 5)
+  expect_equal(gen$.sim, rep(0, 15))
+  cmbn <- mutate(fit, c = bootstrap_block(a - a, times = 10, block_size = 3))
+  gen <- generate(select(cmbn, c), h = 3, times = 5)
+  expect_equal(gen$.sim, rep(0, 15))
+
+  # Combinations draw their own innovations
+  new_data <- dplyr::mutate(tsibble::new_data(us_deaths_tr, 3), .innov = 0)
+  expect_error(generate(mutate(fit, c = a + b)$c[[1]], new_data), "can't be given for a combination")
+})

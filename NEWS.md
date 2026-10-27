@@ -41,6 +41,12 @@
   They can also be applied directly to a model specification inside
   `model()`, e.g. `model(ets = bootstrap_iid(ETS(value)))`, in which case
   each series is fitted and wrapped independently (not jointly).
+* Model combinations work with the modifiers. Combinations of simulated or
+  bootstrapped models are forecast from the combined sample paths (rather
+  than a degenerate distribution), and bootstrapping a combination (e.g.
+  `bootstrap_iid((ets + arima)/2)`) resamples the residuals of each of its
+  models at the same time points. A combination is no longer modified by the
+  modifiers of its first model.
 * Added `conformal_scp()` for producing forecast distributions using split
   conformal prediction, e.g. `fit %>% mutate(ets = conformal_scp(ets))`.
 * Added `reconcile_mint()`, `reconcile_bu()`, `reconcile_td()`, and

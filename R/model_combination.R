@@ -225,12 +225,19 @@ new_model_combination <- function(models, weights) {
   
   comb_response <- models[[1]][["response"]]
   
+  # The combination uses the first model's specification, without any of its
+  # modifiers (which apply to that model, not the combination).
+  spec <- models[[1]][["model"]]
+  if (any(grepl("^mdl_spec_", class(spec)))) {
+    spec <- clone_model_definition(spec)
+    class(spec) <- class(spec)[!grepl("^mdl_spec_", class(spec))]
+  }
   new_model(
     structure(
       list(models = models, weights = weights),
       class = "model_combination"
     ),
-    model = models[[1]][["model"]],
+    model = spec,
     data = transmute(
       models[[1]][["data"]],
       !!expr_name(comb_response[[1]]) := resp
@@ -250,7 +257,16 @@ model_sum.model_combination <- function(x) {
 forecast.model_combination <- function(object, new_data, specials, ...) {
   models  <- object$models
   weights <- object$weights
-  
+
+  # Combine the sample paths of models forecast from them (such as with
+  # bootstrap_iid()), as their forecast distributions can't be combined.
+  is_sim <- map_lgl(models, inherits, "mdl_ts_sim")
+  if(any(is_sim)) {
+    times <- max(map_dbl(models[is_sim], function(m) m%@%"times"))
+    sim <- generate(object, new_data = replicate_new_data(new_data, times), ...)
+    return(distributional::dist_sample(vctrs::vec_split(sim[[".sim"]], sim[[index_var(sim)]])$val))
+  }
+
   fcs   <- map(models, forecast, new_data = new_data, ...)
   dists <- map(fcs, function(x) x[[distribution_var(x)]])
   
@@ -290,12 +306,14 @@ forecast.model_combination <- function(object, new_data, specials, ...) {
 }
 
 #' @export
-generate.model_combination <- function(x, new_data, specials, bootstrap = FALSE, ...) {
+generate.model_combination <- function(x, new_data, specials, ...) {
   if(".innov" %in% names(new_data)) {
-    bootstrap <- TRUE
-    new_data[[".innov"]] <- NULL
+    abort(c(
+      "Innovations can't be given for a combination of models.",
+      "i" = "Each model of the combination is simulated with its own innovations."
+    ))
   }
-  gens <- map(x$models, generate, new_data = new_data, bootstrap = bootstrap, ...)
+  gens <- map(x$models, generate, new_data = new_data, ...)
   out  <- gens[[1]]
   sims <- map(gens, function(g) if(is_tsibble(g)) g[[".sim"]] else g)
   out[[".sim"]] <- Reduce(`+`, map2(sims, x$weights, `*`))

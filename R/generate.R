@@ -80,6 +80,7 @@ generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
 generate.mdl_bootstrap_iid <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   setup <- generate_mdl_ts_setup(x, new_data, h, times, seed)
   if (!is.null(seed)) on.exit(assign(".Random.seed", setup$RNGstate, envir = .GlobalEnv))
+  x <- bootstrap_combination(x, setup$new_data)
   new_data <- bootstrap_innovations(x, setup$new_data)
   generate_mdl_ts_assemble(x, new_data, ...)
 }
@@ -89,15 +90,30 @@ generate.mdl_bootstrap_iid <- function(x, new_data = NULL, h = NULL, times = 1, 
 generate.mdl_bootstrap_block <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   setup <- generate_mdl_ts_setup(x, new_data, h, times, seed)
   if (!is.null(seed)) on.exit(assign(".Random.seed", setup$RNGstate, envir = .GlobalEnv))
+  x <- bootstrap_combination(x, setup$new_data, block_size = x%@%"block_size")
   new_data <- bootstrap_innovations(x, setup$new_data, block_size = x%@%"block_size")
   generate_mdl_ts_assemble(x, new_data, ...)
+}
+
+# Bootstrap each model of a combination from the same time points, as the
+# combination's own innovations can't be given to them.
+bootstrap_combination <- function(x, new_data, block_size = NULL) {
+  if (!inherits(x$fit, "model_combination") || !is.null(new_data[[".innov"]])) return(x)
+  models <- x$fit$models
+  draws <- attr(x, "bootstrap_draws") %||% bootstrap_draw_times(models, new_data, block_size)
+  x$fit$models <- lapply(models, function(m) {
+    structure(mdl_wrap(m, c("mdl_bootstrap_iid", "mdl_ts_sim")), bootstrap_draws = draws)
+  })
+  x
 }
 
 # Add innovations resampled from the model's residuals to the replicated
 # new_data, using the time points drawn jointly with other models if given.
 # Innovations already in new_data are kept.
 bootstrap_innovations <- function(x, new_data, block_size = NULL) {
-  if (!is.null(new_data[[".innov"]]) || is_null_model(x)) return(new_data)
+  if (!is.null(new_data[[".innov"]]) || is_null_model(x) || inherits(x$fit, "model_combination")) {
+    return(new_data)
+  }
   draws <- attr(x, "bootstrap_draws") %||% bootstrap_draw_times(list(x), new_data, block_size)
   if (length(draws) != NROW(new_data)) {
     abort("The jointly bootstrapped time points don't match the data being simulated.")
