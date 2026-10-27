@@ -281,3 +281,23 @@ test_that("deprecated forecast()/generate() bootstrap/simulate arguments still w
   )
   expect_equal(NROW(gen), 12 * 3)
 })
+
+test_that("modifier arguments are checked", {
+  skip_if_not_installed("fable")
+
+  for (times in list(0, -1, 1.5, NA, c(10, 20), "10")) {
+    expect_error(bootstrap_iid(mbl$ets, times = times), "`times` must be a single positive whole number")
+    expect_error(simulate_iid(mbl$ets, times = times), "`times` must be a single positive whole number")
+  }
+  expect_error(bootstrap_block(mbl$ets, block_size = 0), "`block_size` must be a single positive whole number")
+  expect_error(bootstrap_block(fable::ETS(value), block_size = 2.5), "`block_size` must be a single positive whole number")
+
+  # The default block size (the seasonal period) is longer than a short series
+  fit_short <- model(utils::head(us_deaths_tr, 10), naive = fable::NAIVE(value))
+  expect_error(
+    fit_short %>% mutate(naive = bootstrap_block(naive, times = 5)) %>% forecast(h = 2),
+    "Can't draw blocks of 12 consecutive residuals"
+  )
+  fc <- fit_short %>% mutate(naive = bootstrap_block(naive, times = 5, block_size = 3)) %>% forecast(h = 2)
+  expect_true(all(dist_types(fc$value) == "dist_sample"))
+})

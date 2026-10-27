@@ -10,3 +10,12 @@ mdl_wrap <- function(x, .class, ...) {
   for (nm in names(attrs)) attr(x, nm) <- attrs[[nm]]
   x
 }
+
+# Check that a modifier's argument is a single positive whole number
+check_count <- function(x, arg = caller_arg(x), call = caller_env(), allow_null = FALSE) {
+  if (allow_null && is.null(x)) return(invisible(x))
+  if (!is.numeric(x) || length(x) != 1L || is.na(x) || x < 1 || x != trunc(x)) {
+    abort(sprintf("`%s` must be a single positive whole number.", arg), call = call)
+  }
+  invisible(x)
+}

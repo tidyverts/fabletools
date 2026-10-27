@@ -56,6 +56,7 @@
 #'
 #' @export
 bootstrap_iid <- function(model, times = 5000) {
+  check_count(times)
   UseMethod("bootstrap_iid")
 }
 
@@ -96,6 +97,8 @@ new_model.mdl_spec_bootstrap_iid <- function(fit = NULL, model, data, response,
 #' @rdname bootstrap_iid
 #' @export
 bootstrap_block <- function(model, times = 5000, block_size = NULL) {
+  check_count(times)
+  check_count(block_size, allow_null = TRUE)
   UseMethod("bootstrap_block")
 }
 

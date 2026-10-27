@@ -44,6 +44,8 @@
 #'
 #' @export
 conformal_scp <- function(model, times = 5000, min_calibration = 20) {
+  check_count(times)
+  check_count(min_calibration)
   UseMethod("conformal_scp")
 }
 

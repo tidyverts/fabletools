@@ -39,6 +39,7 @@
 #'
 #' @export
 simulate_iid <- function(model, times = 5000) {
+  check_count(times)
   UseMethod("simulate_iid")
 }
 
