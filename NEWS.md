@@ -27,7 +27,8 @@
   `reconcile_mint(bootstrap_iid(ets))` both give bootstrapped coherent
   forecasts. `conformal_scp()` adjusts the forecasts of the model whichever is
   applied first, and wrapping a model with the same modifier again replaces
-  its settings. When
+  its settings. Modified models are printed with their modifiers, e.g.
+  `<bootstrap_iid(ETS(A,N,N))>`. When
   applied to a `mdl_lst` column spanning multiple series, `bootstrap_iid()`/
   `bootstrap_block()` sample jointly across the series (the same historical
   time point is drawn for every series at a given replicate/step), so their

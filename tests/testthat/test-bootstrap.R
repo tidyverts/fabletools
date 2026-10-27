@@ -470,3 +470,14 @@ test_that("modifier arguments are checked", {
   fc <- fit_short %>% mutate(naive = bootstrap_block(naive, times = 5, block_size = 3)) %>% forecast(h = 2)
   expect_true(all(dist_types(fc$value) == "dist_sample"))
 })
+
+test_that("model summaries show the modifiers of a model", {
+  skip_if_not_installed("fable")
+
+  m <- mbl$ets[[1]]
+  expect_identical(model_sum(simulate_iid(m)), "simulate_iid(ETS(M,N,M))")
+  expect_identical(model_sum(bootstrap_iid(m)), "bootstrap_iid(ETS(M,N,M))")
+  expect_identical(model_sum(bootstrap_block(simulate_iid(m))), "bootstrap_block(ETS(M,N,M))")
+  expect_identical(model_sum(conformal_scp(bootstrap_iid(m))), "conformal_scp(bootstrap_iid(ETS(M,N,M)))")
+  expect_identical(format(bootstrap_iid(mbl$ets)), "<bootstrap_iid(ETS(M,N,M))>")
+})

@@ -59,3 +59,17 @@ check_count <- function(x, arg = caller_arg(x), call = caller_env(), allow_null 
   }
   invisible(x)
 }
+
+# Summaries of modified models name the modifier (the outermost bootstrap
+# modifier decides how innovations are drawn).
+#' @export
+model_sum.mdl_ts_sim <- function(x){
+  boot <- intersect(class(x), c("mdl_bootstrap_iid", "mdl_bootstrap_block"))
+  fn <- if (length(boot)) sub("^mdl_", "", boot[1]) else "simulate_iid"
+  paste0(fn, "(", model_sum(x[["fit"]]), ")")
+}
+
+#' @export
+model_sum.mdl_conformal_scp <- function(x){
+  paste0("conformal_scp(", NextMethod(), ")")
+}
