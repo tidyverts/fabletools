@@ -115,10 +115,7 @@ generate_mdl_ts_setup <- function(x, new_data, h, times, seed) {
       "1.0.0", "generate(seed = )",
       details = "Call `set.seed()` before `generate()` instead of passing `seed=`."
     )
-    if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
-      stats::runif(1)
-    RNGstate <- get(".Random.seed", envir = .GlobalEnv)
-    set.seed(seed)
+    RNGstate <- use_seed(seed)
   }
 
   if(is.null(new_data)){
@@ -258,6 +255,15 @@ bootstrap_draw_times <- function(models, new_data, block_size = NULL, call = cal
     vec_c(!!!lapply(lengths(kr), function(n) block_bootstrap(starts, block_size, size = n)), .ptype = integer())
   }
   vec_slice(times, pos)
+}
+
+# Set the (deprecated) `seed` argument, returning the prior RNG state to be
+# restored on exit.
+use_seed <- function(seed) {
+  if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) stats::runif(1)
+  RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+  set.seed(seed)
+  RNGstate
 }
 
 # Replicate new_data into times copies stacked with a .rep key column;

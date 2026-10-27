@@ -166,13 +166,21 @@ forecast.mdl_lst_bootstrap_block <- function(object, new_data = NULL, h = NULL, 
 }
 
 #' @export
-generate.mdl_lst_bootstrap_iid <- function(x, new_data = NULL, h = NULL, times = 1, ...) {
+generate.mdl_lst_bootstrap_iid <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...) {
+  if (!is.null(seed)) {
+    RNGstate <- use_seed(seed)
+    on.exit(assign(".Random.seed", RNGstate, envir = .GlobalEnv))
+  }
   x <- bootstrap_joint(x, new_data, h, times = times)
   NextMethod()
 }
 
 #' @export
-generate.mdl_lst_bootstrap_block <- function(x, new_data = NULL, h = NULL, times = 1, ...) {
+generate.mdl_lst_bootstrap_block <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...) {
+  if (!is.null(seed)) {
+    RNGstate <- use_seed(seed)
+    on.exit(assign(".Random.seed", RNGstate, envir = .GlobalEnv))
+  }
   x <- bootstrap_joint(x, new_data, h, times = times, block_size = x%@%"block_size")
   NextMethod()
 }

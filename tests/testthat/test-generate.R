@@ -39,6 +39,22 @@ test_that("generate seed setting", {
   )
 })
 
+test_that("generate(seed = ) is reproducible for jointly bootstrapped models", {
+  skip_if_not_installed("fable")
+
+  fit <- mutate(mbl_multi, ets = bootstrap_iid(ets))
+  gen1 <- suppressWarnings(generate(fit, h = 6, times = 3, seed = 42))
+  gen2 <- suppressWarnings(generate(fit, h = 6, times = 3, seed = 42))
+  expect_equal(gen1, gen2)
+
+  fit <- mutate(mbl_multi, ets = bootstrap_block(ets, block_size = 3))
+  before <- .GlobalEnv$.Random.seed
+  gen1 <- suppressWarnings(generate(fit, h = 6, times = 3, seed = 42))
+  expect_identical(before, .GlobalEnv$.Random.seed)
+  gen2 <- suppressWarnings(generate(fit, h = 6, times = 3, seed = 42))
+  expect_equal(gen1, gen2)
+})
+
 test_that("generate(seed = ) restores the global RNG state on exit", {
   skip_if_not_installed("fable")
 
