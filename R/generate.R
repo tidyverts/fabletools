@@ -4,10 +4,11 @@
 #' behaviour to the response. This is a tidy implementation of 
 #' [stats::simulate()].
 #' 
-#' Innovations are sampled by the model's assumed error distribution. 
-#' If `bootstrap` is `TRUE`, innovations will be sampled from the model's 
-#' residuals. If `new_data` contains the `.innov` column, those values will be
-#' treated as innovations for the simulated paths.
+#' Innovations are sampled by the model's assumed error distribution, or
+#' resampled from the model's residuals for models modified with
+#' [bootstrap_iid()] or [bootstrap_block()]. If `new_data` contains the
+#' `.innov` column, those values will be treated as innovations for the
+#' simulated paths.
 #' 
 #' @param x A mable.
 #' @param new_data The data to be generated (time index and exogenous regressors)
@@ -75,7 +76,6 @@ generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL
   generate_mdl_ts_assemble(x, setup$new_data, ...)
 }
 
-#' @rdname generate.mbl_df
 #' @export
 generate.mdl_bootstrap_iid <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   setup <- generate_mdl_ts_setup(x, new_data, h, times, seed)
@@ -85,7 +85,6 @@ generate.mdl_bootstrap_iid <- function(x, new_data = NULL, h = NULL, times = 1, 
   generate_mdl_ts_assemble(x, new_data, ...)
 }
 
-#' @rdname generate.mbl_df
 #' @export
 generate.mdl_bootstrap_block <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
   setup <- generate_mdl_ts_setup(x, new_data, h, times, seed)

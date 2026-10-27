@@ -3,8 +3,6 @@
 \name{generate.mbl_df}
 \alias{generate.mbl_df}
 \alias{generate.mdl_ts}
-\alias{generate.mdl_bootstrap_iid}
-\alias{generate.mdl_bootstrap_block}
 \title{Generate responses from a mable}
 \usage{
 \method{generate}{mbl_df}(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...)
@@ -19,10 +17,6 @@
   bootstrap_block_size = 1,
   ...
 )
-
-\method{generate}{mdl_bootstrap_iid}(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...)
-
-\method{generate}{mdl_bootstrap_block}(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...)
 }
 \arguments{
 \item{x}{A mable.}
@@ -48,10 +42,11 @@ behaviour to the response. This is a tidy implementation of
 \code{\link[stats:simulate]{stats::simulate()}}.
 }
 \details{
-Innovations are sampled by the model's assumed error distribution.
-If \code{bootstrap} is \code{TRUE}, innovations will be sampled from the model's
-residuals. If \code{new_data} contains the \code{.innov} column, those values will be
-treated as innovations for the simulated paths.
+Innovations are sampled by the model's assumed error distribution, or
+resampled from the model's residuals for models modified with
+\code{\link[=bootstrap_iid]{bootstrap_iid()}} or \code{\link[=bootstrap_block]{bootstrap_block()}}. If \code{new_data} contains the
+\code{.innov} column, those values will be treated as innovations for the
+simulated paths.
 }
 \examples{
 \dontshow{if (requireNamespace("fable", quietly = TRUE)) withAutoprint(\{ # examplesIf}

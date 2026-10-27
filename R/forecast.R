@@ -271,7 +271,6 @@ Does your model require extra variables to produce forecasts?", e$message))
   forecast_mdl_ts_assemble(new_data, fc, resp_vars, dist_col, point_forecast)
 }
 
-#' @rdname forecast
 #' @export
 forecast.mdl_ts_sim <- function(object, new_data = NULL, h = NULL,
                                 point_forecast = list(.mean = mean), ...){

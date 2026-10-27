@@ -3,7 +3,6 @@
 \name{forecast.mbl_df}
 \alias{forecast.mbl_df}
 \alias{forecast.mdl_ts}
-\alias{forecast.mdl_ts_sim}
 \title{Produce forecasts}
 \usage{
 \method{forecast}{mbl_df}(
@@ -22,14 +21,6 @@
   simulate = FALSE,
   bootstrap = FALSE,
   times = 5000,
-  point_forecast = list(.mean = mean),
-  ...
-)
-
-\method{forecast}{mdl_ts_sim}(
-  object,
-  new_data = NULL,
-  h = NULL,
   point_forecast = list(.mean = mean),
   ...
 )
