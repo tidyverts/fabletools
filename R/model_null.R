@@ -70,6 +70,12 @@ refit.NULL <- function(object, new_data, ...) {
 }
 
 #' @export
+interpolate.null_mdl <- function(object, new_data, ...){
+  # Missing values can't be interpolated without a model
+  new_data
+}
+
+#' @export
 residuals.null_mdl <- function(object, ...){
   matrix(NA_real_, nrow = object$n, ncol = length(object$vars), 
          dimnames = list(NULL, object$vars))

@@ -46,7 +46,7 @@ model_definition <- R6::R6Class(NULL,
     add_data = function(.data){
       self$check(.data)
       # Add data origin if not yet known (fitting model)
-      if(is.null(self$origin)) {
+      if(is.null(self$origin) && NROW(.data) > 0) {
         self$origin <- .data[[index_var(.data)]][1]
       }
       self$data <- .data

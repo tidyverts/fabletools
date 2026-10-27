@@ -178,7 +178,12 @@ model_definition_ptype <- function(.model, .data){
     .model$stage <- NULL
   })
   validate_formula(.model, .data)
-  parsed <- parse_model(.model)
+  # Specials which need observations (such as trend()) aren't needed for the
+  # structure of the model, so only the response is parsed if they fail.
+  parsed <- tryCatch(
+    parse_model(.model),
+    error = function(e) list2(model = .model, !!!parse_model_lhs(.model))
+  )
   params <- model_data_params(.data, parsed)
   .data <- model_data(.data, .model, parsed)
   .data[names(params)] <- params

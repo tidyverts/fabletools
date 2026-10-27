@@ -224,4 +224,16 @@ test_that("Results of an empty mable have the structure of non-empty results (#3
 
   # Components depend on the model, so can't be structured
   expect_error(components(empty), "without any models")
+
+  # Interpolation gives the empty data
+  expect_identical(NROW(interpolate(select(empty, k, mean), dt[0,])), 0L)
+
+  # Specials which need observations are only used for the structure
+  dt <- tsibble::tsibble(i = tsibble::yearquarter("2020 Q1") + 0:11, k = 1, y = 1:12 + 0, index = "i", key = "k")
+  full <- model(dt, a = fable::TSLM(y ~ trend() + season()), b = fable::TSLM(y ~ fourier(K = 1)))
+  empty <- model(dt[0,], a = fable::TSLM(y ~ trend() + season()), b = fable::TSLM(y ~ fourier(K = 1)))
+  fc <- forecast(empty, h = 2)
+  expect_identical(NROW(fc), 0L)
+  expect_identical(names(fc), names(forecast(full, h = 2)))
+  expect_same_structure(fitted(empty), fitted(full))
 })
