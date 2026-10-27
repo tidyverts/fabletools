@@ -321,3 +321,44 @@ test_that("reconcile_*() aliases match their underlying functions", {
   expect_equal(reconcile_mo(snaive), middle_out(snaive))
   expect_equal(reconcile_mo(snaive, split = 2), middle_out(snaive, split = 2))
 })
+
+test_that("top_down and middle_out reconcile forecasts using new_data", {
+  skip_if_not_installed("fable")
+
+  set.seed(382)
+  sim_hts <- tidyr::expand_grid(
+    index    = tsibble::yearmonth("2020 Jan") + 0:23,
+    category = c("A", "B"),
+    sku      = c("S1", "S2")
+  ) |>
+    dplyr::mutate(x = rnorm(dplyr::n()), sales = 50 + 3 * x + rnorm(dplyr::n())) |>
+    tsibble::as_tsibble(key = c(category, sku), index = index) |>
+    aggregate_key(category / sku, sales = sum(sales), x = sum(x))
+  future <- tsibble::new_data(sim_hts, 3) |>
+    dplyr::mutate(x = seq_len(dplyr::n()))
+
+  fc <- sim_hts |>
+    model(lm = fable::TSLM(sales ~ x)) |>
+    mutate(
+      td_avg = reconcile_td(lm, method = "average_proportions"),
+      td_prop = reconcile_td(lm, method = "proportion_averages"),
+      mo = reconcile_mo(lm, split = 1)
+    ) |>
+    forecast(new_data = future) |>
+    as_tibble()
+  base <- dplyr::filter(fc, .model == "lm")
+
+  # The top level is forecast with its own new_data
+  base_top <- dplyr::filter(base, is_aggregated(category))$.mean
+  for (mdl in c("td_avg", "td_prop")) {
+    expect_equal(dplyr::filter(fc, .model == mdl, is_aggregated(category))$.mean, base_top)
+  }
+
+  # The split level is forecast with its own new_data
+  split_level <- function(x) dplyr::filter(x, !is_aggregated(category), is_aggregated(sku))
+  expect_equal(split_level(dplyr::filter(fc, .model == "mo"))$.mean, split_level(base)$.mean)
+  expect_equal(
+    dplyr::filter(fc, .model == "mo", is_aggregated(category))$.mean,
+    as.numeric(tapply(split_level(base)$.mean, split_level(base)$index, sum))
+  )
+})

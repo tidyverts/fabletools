@@ -329,7 +329,8 @@ top_down <- function(models, method = c("forecast_proportions", "average_proport
 
 #' @export
 forecast.lst_topdwn_mdl <- function(object, key_data, 
-                                    point_forecast = list(.mean = mean), ...){
+                                    point_forecast = list(.mean = mean),
+                                    new_data = NULL, ...){
   method <- object%@%"method"
   point_method <- point_forecast
   point_forecast <- list()
@@ -408,6 +409,9 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
     
     # Keep only top layer
     object <- object[top]
+    if(!is.null(new_data)){
+      new_data <- new_data[top]
+    }
     
     # Get base forecasts
     fc <- vector("list", nrow(S))
@@ -513,7 +517,7 @@ forecast.lst_midout_mdl <- function(object, key_data,
   key_data <- key_data[order(vec_c(!!!key_data$.rows)),]
   object <- object[order(vec_c(!!!key_data$.rows))]
   if(!is.null(new_data)){
-    new_data <- new_data[order(vec_c(!!!key_data$.rows)),]
+    new_data <- new_data[order(vec_c(!!!key_data$.rows))]
   }
   
   kv <- names(key_data)[-ncol(key_data)]

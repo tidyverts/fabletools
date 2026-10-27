@@ -121,6 +121,10 @@
   checked on the correlation scale, so series with very different scales are
   accepted.
 * Improved error for singular covariance matrices in `min_trace()` (#309).
+* Fixed `reconcile_td()` with `method = "average_proportions"` or
+  `"proportion_averages"` forecasting the top series with the `new_data` of
+  another series, and `reconcile_mo()` erroring when forecasting with
+  `new_data`.
 * Fixed `top_down()` and `middle_out()` reconciliation collapsing sample path
   forecasts (e.g. from `simulate_iid()`) to degenerate distributions (#408).
 * Fixed `generate()` erroring for mables with model columns of different
