@@ -44,13 +44,18 @@ simulate_iid <- function(model, times = 5000) {
 }
 
 #' @export
+simulate_iid.default <- function(model, times = 5000) {
+  abort_invalid_modifier(model, "simulate_iid")
+}
+
+#' @export
 simulate_iid.mdl_ts <- function(model, times = 5000) {
   mdl_wrap(model, "mdl_ts_sim", times = times)
 }
 
 #' @export
 simulate_iid.mdl_lst <- function(model, times = 5000) {
-  new_mdl_lst(lapply(vctrs::vec_data(model), simulate_iid, times = times))
+  map_models(model, simulate_iid, times = times)
 }
 
 #' @export

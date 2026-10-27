@@ -50,6 +50,11 @@ conformal_scp <- function(model, n_quantiles = 5000, min_calibration = 20) {
 }
 
 #' @export
+conformal_scp.default <- function(model, n_quantiles = 5000, min_calibration = 20) {
+  abort_invalid_modifier(model, "conformal_scp")
+}
+
+#' @export
 conformal_scp.mdl_ts <- function(model, n_quantiles = 5000, min_calibration = 20) {
   mdl_wrap(model, "mdl_conformal_scp", n_quantiles = n_quantiles, min_calibration = min_calibration)
 }
@@ -57,9 +62,7 @@ conformal_scp.mdl_ts <- function(model, n_quantiles = 5000, min_calibration = 20
 #' @export
 conformal_scp.mdl_lst <- function(model, n_quantiles = 5000, min_calibration = 20) {
   # Each series is calibrated on its own history, not jointly across series.
-  new_mdl_lst(lapply(
-    vctrs::vec_data(model), conformal_scp, n_quantiles = n_quantiles, min_calibration = min_calibration
-  ))
+  map_models(model, conformal_scp, n_quantiles = n_quantiles, min_calibration = min_calibration)
 }
 
 #' @export
@@ -102,7 +105,7 @@ forecast.mdl_conformal_scp <- function(object, new_data = NULL, h = NULL,
   # rolling-origin refits in conformal_scp_calibration() would otherwise
   # try to conformally-calibrate every refit sub-model too).
   base_object <- object
-  class(base_object) <- setdiff(class(object), "mdl_conformal_scp")
+  class(base_object) <- setdiff(class(object), c("mdl_conformal_scp", mdl_sim_classes))
 
   anchor <- forecast(base_object, new_data = new_data, point_forecast = list(.mean = mean), ...)$.mean
 

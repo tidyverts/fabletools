@@ -61,14 +61,18 @@ bootstrap_iid <- function(model, times = 5000) {
 }
 
 #' @export
+bootstrap_iid.default <- function(model, times = 5000) {
+  abort_invalid_modifier(model, "bootstrap_iid")
+}
+
+#' @export
 bootstrap_iid.mdl_ts <- function(model, times = 5000) {
   mdl_wrap(model, c("mdl_bootstrap_iid", "mdl_ts_sim"), times = times)
 }
 
 #' @export
 bootstrap_iid.mdl_lst <- function(model, times = 5000) {
-  wrapped <- new_mdl_lst(lapply(vctrs::vec_data(model), bootstrap_iid, times = times))
-  structure(wrapped, class = c("mdl_lst_bootstrap_iid", class(wrapped)), times = times)
+  mdl_wrap_col(map_models(model, bootstrap_iid, times = times), "mdl_lst_bootstrap_iid")
 }
 
 #' @export
@@ -100,6 +104,11 @@ bootstrap_block <- function(model, times = 5000, block_size = NULL) {
   check_count(times)
   check_count(block_size, allow_null = TRUE)
   UseMethod("bootstrap_block")
+}
+
+#' @export
+bootstrap_block.default <- function(model, times = 5000, block_size = NULL) {
+  abort_invalid_modifier(model, "bootstrap_block")
 }
 
 #' @export
@@ -144,8 +153,8 @@ bootstrap_block.mdl_lst <- function(model, times = 5000, block_size = NULL) {
   elements <- vctrs::vec_data(model)
   block_size <- block_size %||%
     max(1L, as.integer(round(max(vapply(elements, function(m) stats::frequency(m$data), double(1L))))))
-  wrapped <- new_mdl_lst(lapply(elements, bootstrap_block, times = times, block_size = block_size))
-  structure(wrapped, class = c("mdl_lst_bootstrap_block", class(wrapped)), times = times, block_size = block_size)
+  model <- map_models(model, bootstrap_block, times = times, block_size = block_size)
+  mdl_wrap_col(model, "mdl_lst_bootstrap_block", block_size = block_size)
 }
 
 # --- Joint (mdl_lst-level) bootstrap sampling -------------------------------

@@ -77,6 +77,97 @@ test_that("bootstrapped forecasts reconcile jointly (dist_sample branch)", {
   expect_equal(tot, comp)
 })
 
+test_that("modifiers keep the reconciliation of a model column, in either order", {
+  skip_if_not_installed("fable")
+
+  fit_agg <- lung_deaths_long_tr %>%
+    aggregate_key(key, value = sum(value)) %>%
+    model(
+      ses = fable::ETS(value ~ error("A") + trend("N") + season("N")),
+      snaive = fable::SNAIVE(value)
+    )
+  is_coherent <- function(fc) {
+    tot <- fc$.mean[is_aggregated(fc$key)]
+    btm <- tapply(fc$.mean[!is_aggregated(fc$key)], fc$index[!is_aggregated(fc$key)], sum)
+    isTRUE(all.equal(tot, as.numeric(btm)))
+  }
+  # Base bootstrapped forecasts aren't coherent
+  set.seed(1)
+  fc_base <- forecast(select(fit_agg, -snaive) %>% mutate(ses = bootstrap_iid(ses, times = 50)), h = 3)
+  expect_false(is_coherent(fc_base))
+  fc_base <- forecast(select(fit_agg, -ses) %>% mutate(snaive = conformal_scp(snaive, 50, 10)), h = 3)
+  expect_false(is_coherent(fc_base))
+
+  modifiers <- list(
+    ses = function(x) bootstrap_iid(reconcile_mint(x), times = 50),
+    ses = function(x) reconcile_mint(bootstrap_iid(x, times = 50)),
+    ses = function(x) bootstrap_block(reconcile_bu(x), times = 50, block_size = 3),
+    ses = function(x) simulate_iid(reconcile_mint(x), times = 50),
+    snaive = function(x) conformal_scp(reconcile_bu(x), n_quantiles = 50, min_calibration = 10)
+  )
+  for (i in seq_along(modifiers)) {
+    col <- names(modifiers)[i]
+    fit <- select(fit_agg, key, !!col)
+    fit[[col]] <- modifiers[[i]](fit[[col]])
+    expect_true(inherits(fit[[col]], c("lst_mint_mdl", "lst_btmup_mdl")))
+    fc <- forecast(fit, h = 3)
+    expect_true(all(dist_types(fc$value) == "dist_sample"))
+    expect_true(is_coherent(fc))
+  }
+
+  # The same draws are used for either order
+  fit <- select(fit_agg, -snaive)
+  set.seed(1)
+  fc1 <- forecast(mutate(fit, ses = bootstrap_iid(reconcile_mint(ses), times = 50)), h = 3)
+  set.seed(1)
+  fc2 <- forecast(mutate(fit, ses = reconcile_mint(bootstrap_iid(ses, times = 50))), h = 3)
+  expect_equal(fc1, fc2)
+})
+
+test_that("modifiers can be nested", {
+  skip_if_not_installed("fable")
+
+  m <- mbl$ets[[1]]
+  # Wrapping again with the same modifier replaces its settings
+  expect_identical(class(simulate_iid(simulate_iid(m, times = 10), times = 20)), c("mdl_ts_sim", "mdl_ts"))
+  expect_identical(simulate_iid(simulate_iid(m, times = 10), times = 20) %@% "times", 20)
+  expect_identical(
+    class(bootstrap_iid(bootstrap_iid(mbl$ets))),
+    class(bootstrap_iid(mbl$ets))
+  )
+
+  # The outer simulation modifier sets the number of paths, and the outermost
+  # bootstrap modifier how innovations are drawn
+  set.seed(1)
+  fc <- forecast(simulate_iid(bootstrap_iid(m, times = 10), times = 20), h = 2)
+  expect_equal(unique(lengths(distributional::parameters(fc$value)$x)), 20)
+  set.seed(1)
+  fc_boot <- forecast(bootstrap_iid(m, times = 20), h = 2)
+  expect_equal(fc, fc_boot)
+  set.seed(1)
+  fc <- forecast(bootstrap_iid(bootstrap_block(m, times = 10, block_size = 3), times = 20), h = 2)
+  expect_equal(fc, fc_boot)
+
+  # Conformal prediction adjusts the forecasts of the model it wraps, whichever
+  # is wrapped first, while bootstrapping still applies to generate().
+  short <- model(utils::head(us_deaths_tr, 36), naive = fable::NAIVE(value))$naive[[1]]
+  fc_cnf <- forecast(conformal_scp(short, n_quantiles = 50, min_calibration = 10), h = 2)
+  cnf_boot <- conformal_scp(bootstrap_iid(short), n_quantiles = 50, min_calibration = 10)
+  boot_cnf <- bootstrap_iid(conformal_scp(short, n_quantiles = 50, min_calibration = 10))
+  expect_identical(class(cnf_boot), class(boot_cnf))
+  expect_equal(forecast(cnf_boot, h = 2), fc_cnf)
+  expect_equal(forecast(boot_cnf, h = 2), fc_cnf)
+  set.seed(1)
+  gen <- generate(boot_cnf, h = 2, times = 3)
+  set.seed(1)
+  expect_equal(gen, generate(bootstrap_iid(short), h = 2, times = 3))
+
+  # Modifiers wrap models
+  expect_error(bootstrap_iid(1), "must be applied to a model column")
+  expect_error(simulate_iid(list()), "must be applied to a model column")
+  expect_error(conformal_scp("ets"), "must be applied to a model column")
+})
+
 test_that("bootstrap_iid/bootstrap_block sample jointly across series in a mdl_lst", {
   skip_if_not_installed("fable")
 

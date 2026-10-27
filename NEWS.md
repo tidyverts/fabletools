@@ -19,9 +19,13 @@
   `simulate=`/`bootstrap=`/`times=` arguments and `generate()`'s `bootstrap=`/
   `bootstrap_block_size=` arguments, which are now deprecated in favour of
   wrapping the model directly, e.g.
-  `fit %>% mutate(ets = bootstrap_iid(ets)) %>% forecast()`. These modifiers
-  compose with `reconcile()`/`min_trace()` (and each other, across model
-  columns) since they only add an extra class to the wrapped model. When
+  `fit %>% mutate(ets = bootstrap_iid(ets)) %>% forecast()`. Modifiers can
+  be nested in either order, and keep the reconciliation of the model column
+  they wrap, so `bootstrap_iid(reconcile_mint(ets))` and
+  `reconcile_mint(bootstrap_iid(ets))` both give bootstrapped coherent
+  forecasts. `conformal_scp()` adjusts the forecasts of the model whichever is
+  applied first, and wrapping a model with the same modifier again replaces
+  its settings. When
   applied to a `mdl_lst` column spanning multiple series, `bootstrap_iid()`/
   `bootstrap_block()` sample jointly across the series (the same historical
   time point is drawn for every series at a given replicate/step), so their

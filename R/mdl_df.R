@@ -235,7 +235,9 @@ check_model_group <- function(model, fn, call = caller_env()) {
 # Apply a modifier to each model column of a model group
 modify_model_group <- function(model, .f, ..., call = caller_env()) {
   check_model_group(model, as_string(substitute(.f)), call = call)
-  new_mdl_df(lapply(unclass(model), .f, ...))
+  out <- lapply(unclass(model), .f, ...)
+  attributes(out) <- attributes(model)
+  out
 }
 
 # The model columns of a mable, with model groups replaced by their columns
