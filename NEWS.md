@@ -253,8 +253,9 @@ fitted model, and groundwork has been laid for mixtime-based tsibbles.
 * `reconcile()` is soft-deprecated in favour of `mutate()` with the
   `reconcile_*()` functions (e.g. `mutate(lm = reconcile_mint(lm))`).
 * The `bias_adjust` argument of `forecast()`, defunct since fabletools 0.2.0,
-  has been removed. Using it is an error, rather than being silently ignored;
-  please use `point_forecast` instead.
+  has been removed. Using it is an error (including when forecasting a single
+  fitted model), rather than being silently ignored; please use
+  `point_forecast` instead.
 * The `type` argument of `augment()`, deprecated since fabletools 0.2.1, is
   now defunct and errors. Response residuals are in the `.resid` column, and
   innovation residuals are in the `.innov` column.

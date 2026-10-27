@@ -167,6 +167,13 @@ test_that("forecast() errors informatively when `.model` is already used (#275)"
 
 test_that("forecast() errors for the removed `bias_adjust` argument", {
   expect_error(forecast(mbl, h = 1, bias_adjust = TRUE), "`bias_adjust` argument")
+  # Including for a single fitted model
+  mdl <- mbl[[attr(mbl, "model")[1]]][[1]]
+  expect_error(forecast(mdl, h = 1, bias_adjust = TRUE), "`bias_adjust` argument")
+  expect_error(
+    forecast(simulate_iid(mdl, times = 2), h = 1, bias_adjust = TRUE),
+    "`bias_adjust` argument"
+  )
 })
 
 test_that("rbind() of fables is defunct in favour of bind_rows()", {

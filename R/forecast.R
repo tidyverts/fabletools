@@ -96,13 +96,7 @@ forecast.mbl_df <- function(object, new_data = NULL, h = NULL,
   h <- check_horizon(new_data, h)
   check_reserved_names(object, new_data, key = ".model")
   dots <- list2(...)
-  # The removed `bias_adjust` argument would otherwise be silently ignored
-  if ("bias_adjust" %in% names(dots)) {
-    abort(c(
-      "The `bias_adjust` argument of `forecast()` has been removed.",
-      i = "Use `point_forecast` to choose the point forecasts, e.g. `point_forecast = list(.median = median)`."
-    ))
-  }
+  check_removed_bias_adjust(dots)
   object <- modify_each_model(object, deprecated_sim_modifier(dots, "forecast", user_env = caller_env()))
   if (!is.null(dots$times)) {
     if (!isTRUE(dots$simulate) && !isTRUE(dots$bootstrap)) {
@@ -194,11 +188,22 @@ forecast.mdl_lst <- function(object, new_data = NULL, key_data, ...){
 #' @export
 forecast.lst_mdl <- deprecate_lst_mdl(forecast.mdl_lst)
 
+# The removed `bias_adjust` argument would otherwise be silently ignored
+check_removed_bias_adjust <- function(dots, call = caller_env()) {
+  if ("bias_adjust" %in% names(dots)) {
+    abort(c(
+      "The `bias_adjust` argument of `forecast()` has been removed.",
+      i = "Use `point_forecast` to choose the point forecasts, e.g. `point_forecast = list(.median = median)`."
+    ), call = call)
+  }
+}
+
 #' @rdname forecast
 #' @export
 forecast.mdl_ts <- function(object, new_data = NULL, h = NULL,
                             simulate = FALSE, bootstrap = FALSE, times = 5000,
                             point_forecast = list(.mean = mean), ...){
+  check_removed_bias_adjust(list2(...))
   if(!isFALSE(simulate) || !isFALSE(bootstrap)) {
     dots <- list2(...)
     modifier <- deprecated_sim_modifier(
@@ -279,6 +284,7 @@ Does your model require extra variables to produce forecasts?", e$message))
 #' @export
 forecast.mdl_ts_sim <- function(object, new_data = NULL, h = NULL,
                                 point_forecast = list(.mean = mean), ...){
+  check_removed_bias_adjust(list2(...))
   setup <- forecast_mdl_ts_setup(object, new_data, h, point_forecast)
   if(!is.null(setup$empty_fbl)) return(setup$empty_fbl)
   new_data <- setup$new_data
