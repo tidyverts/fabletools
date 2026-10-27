@@ -127,6 +127,11 @@ test_that("Assigning model columns registers them as models (#402, #323)", {
   expect_identical(mable_vars(m_dol), "b")
   expect_identical(mable_vars(mutate(m_dbl, a = 1)), "b")
 
+  # Models are in the order of their columns
+  m_rel <- relocate(m_dbl, b, .before = a)
+  expect_identical(mable_vars(m_rel), c("b", "a"))
+  expect_identical(unique(forecast(m_rel, h = 1)[[".model"]]), c("b", "a"))
+
   # Model columns are added with mutate(), not cbind()
   expect_error(cbind(m1, b = m2$b), "can't be added to a mable")
 

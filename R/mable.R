@@ -92,6 +92,8 @@ build_mable <- function (x, key = NULL, key_data = NULL, model = NULL,
 }
 
 build_mable_meta <- function(x, key_data, model, response, ptype = NULL){
+  # The models are kept in the order of their columns
+  model <- intersect(names(x), model)
   # "mdl_df" is kept as a trailing class for one more release cycle so old
   # `inherits(x, "mdl_df")` checks in downstream code keep working; it will
   # be dropped in v1.1.0 per the NEWS.md deprecation notice.

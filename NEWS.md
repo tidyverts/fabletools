@@ -206,6 +206,9 @@
 * fabletools now requires R 4.1.0 or later.
 * Increased the minimum required versions of rlang to 1.0.0, vctrs to 0.3.0
   and lifecycle to 1.0.0, matching the functionality used by fabletools.
+* The models of a mable (from `mable_vars()`) are now always in the order of
+  their columns, so the models of results such as `forecast()` follow the
+  column order (e.g. after `relocate()`).
 * Documentation improvements (#281, #371, #389, #410).
 * The reconciliation functions (`reconcile_*()`) now give an informative
   error when they aren't applied to a column of models, rather than failing
