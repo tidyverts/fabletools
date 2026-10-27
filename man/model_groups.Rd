@@ -60,11 +60,16 @@ with:
 groups being pivoted with their models (named \verb{<group>$<model>}).
 \item \code{\link[=simulate_iid]{simulate_iid()}} and \code{\link[=conformal_scp]{conformal_scp()}}, which are applied to each model of
 the group.
+\item \code{\link[=bootstrap_iid]{bootstrap_iid()}} and \code{\link[=bootstrap_block]{bootstrap_block()}}, which sample jointly across
+every model of the group: the same historical time point (or block) is
+drawn for each model and series at a given step of each path, so their
+forecasts share the same resampled residuals. This includes the models of
+bootstrapped or reconciled columns within the group.
 }
 
-The bootstrap modifiers (\code{\link[=bootstrap_iid]{bootstrap_iid()}} and \code{\link[=bootstrap_block]{bootstrap_block()}}) and the
-reconciliation functions (such as \code{\link[=reconcile_mint]{reconcile_mint()}}) can't be applied to a
-model group. Instead apply them to the model columns before grouping them.
+The reconciliation functions (such as \code{\link[=reconcile_mint]{reconcile_mint()}}) can't be applied
+to a model group. Instead apply them to the model columns before grouping
+them.
 \code{\link[=interpolate]{interpolate()}} requires a mable with a single model column, which can't be
 a model group.
 }

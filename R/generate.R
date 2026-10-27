@@ -216,7 +216,7 @@ bootstrap_draw_times <- function(models, new_data, block_size = NULL, call = cal
     }
     if (differs) {
       warn(c(
-        "Series being bootstrapped jointly have different residual time domains.",
+        "Models being bootstrapped jointly have residuals for different time points.",
         "i" = "Joint bootstrap sampling has been restricted to their overlapping period."
       ))
     }

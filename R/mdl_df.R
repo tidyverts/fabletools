@@ -77,10 +77,15 @@ model_col_response <- function(x){
 #'   groups being pivoted with their models (named `<group>$<model>`).
 #' * [simulate_iid()] and [conformal_scp()], which are applied to each model of
 #'   the group.
+#' * [bootstrap_iid()] and [bootstrap_block()], which sample jointly across
+#'   every model of the group: the same historical time point (or block) is
+#'   drawn for each model and series at a given step of each path, so their
+#'   forecasts share the same resampled residuals. This includes the models of
+#'   bootstrapped or reconciled columns within the group.
 #'
-#' The bootstrap modifiers ([bootstrap_iid()] and [bootstrap_block()]) and the
-#' reconciliation functions (such as [reconcile_mint()]) can't be applied to a
-#' model group. Instead apply them to the model columns before grouping them.
+#' The reconciliation functions (such as [reconcile_mint()]) can't be applied
+#' to a model group. Instead apply them to the model columns before grouping
+#' them.
 #' [interpolate()] requires a mable with a single model column, which can't be
 #' a model group.
 #'
@@ -181,6 +186,46 @@ vec_cast.mdl_df.mdl_df <- function(x, to, ...){
     abort("Can't convert between model groups with different model columns.")
   }
   new_mdl_df(vctrs::tib_cast(x, to, ...))
+}
+
+# Model groups modified jointly (by the bootstrap modifiers) can only be
+# combined with groups modified in the same way.
+#' @rawNamespace S3method(vec_ptype2, mdl_df.mdl_df_bootstrap_iid, vec_ptype2_mdl_df_modified)
+#' @rawNamespace S3method(vec_ptype2, mdl_df.mdl_df_bootstrap_block, vec_ptype2_mdl_df_modified)
+#' @rawNamespace S3method(vec_ptype2, mdl_df_bootstrap_iid.mdl_df, vec_ptype2_mdl_df_modified)
+#' @rawNamespace S3method(vec_ptype2, mdl_df_bootstrap_iid.mdl_df_bootstrap_iid, vec_ptype2_mdl_df_modified)
+#' @rawNamespace S3method(vec_ptype2, mdl_df_bootstrap_iid.mdl_df_bootstrap_block, vec_ptype2_mdl_df_modified)
+#' @rawNamespace S3method(vec_ptype2, mdl_df_bootstrap_block.mdl_df, vec_ptype2_mdl_df_modified)
+#' @rawNamespace S3method(vec_ptype2, mdl_df_bootstrap_block.mdl_df_bootstrap_iid, vec_ptype2_mdl_df_modified)
+#' @rawNamespace S3method(vec_ptype2, mdl_df_bootstrap_block.mdl_df_bootstrap_block, vec_ptype2_mdl_df_modified)
+#' @rawNamespace S3method(vec_cast, mdl_df.mdl_df_bootstrap_iid, vec_cast_mdl_df_modified)
+#' @rawNamespace S3method(vec_cast, mdl_df.mdl_df_bootstrap_block, vec_cast_mdl_df_modified)
+#' @rawNamespace S3method(vec_cast, mdl_df_bootstrap_iid.mdl_df, vec_cast_mdl_df_modified)
+#' @rawNamespace S3method(vec_cast, mdl_df_bootstrap_iid.mdl_df_bootstrap_iid, vec_cast_mdl_df_modified)
+#' @rawNamespace S3method(vec_cast, mdl_df_bootstrap_iid.mdl_df_bootstrap_block, vec_cast_mdl_df_modified)
+#' @rawNamespace S3method(vec_cast, mdl_df_bootstrap_block.mdl_df, vec_cast_mdl_df_modified)
+#' @rawNamespace S3method(vec_cast, mdl_df_bootstrap_block.mdl_df_bootstrap_iid, vec_cast_mdl_df_modified)
+#' @rawNamespace S3method(vec_cast, mdl_df_bootstrap_block.mdl_df_bootstrap_block, vec_cast_mdl_df_modified)
+NULL
+
+vec_ptype2_mdl_df_modified <- function(x, y, ...){
+  if(!identical(class(x), class(y))) {
+    vctrs::stop_incompatible_type(x, y, ..., details = "Model groups with different modifiers can't be combined.")
+  }
+  restore_mdl_df_modifier(vec_ptype2.mdl_df.mdl_df(x, y, ...), x)
+}
+
+vec_cast_mdl_df_modified <- function(x, to, ...){
+  if(!identical(class(x), class(to))) {
+    vctrs::stop_incompatible_cast(x, to, ..., details = "Model groups with different modifiers can't be combined.")
+  }
+  restore_mdl_df_modifier(vec_cast.mdl_df.mdl_df(x, to, ...), to)
+}
+
+restore_mdl_df_modifier <- function(x, from){
+  class(x) <- class(from)
+  attr(x, "block_size") <- attr(from, "block_size")
+  x
 }
 
 #' @export

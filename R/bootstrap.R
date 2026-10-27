@@ -28,6 +28,11 @@
 #' If the series don't all share the same historical time domain, sampling is
 #' restricted to their overlapping period and a warning is raised.
 #'
+#' Applied to a model group (see [model_groups]), sampling is joint across
+#' every model of the group, for all of its series. The innovations of each
+#' model are then its own residuals at the same historical time points, which
+#' keeps the relationship between the models' (and series') errors.
+#'
 #' @param model A fitted model, typically a model column from a mable
 #' modified with [dplyr::mutate()] (e.g. `mutate(ets = bootstrap_iid(ets))`).
 #' Alternatively, an unfitted model specification can be wrapped directly
@@ -77,7 +82,8 @@ bootstrap_iid.mdl_lst <- function(model, times = 5000) {
 
 #' @export
 bootstrap_iid.mdl_df <- function(model, times = 5000) {
-  abort_bootstrap_model_group(model, "bootstrap_iid")
+  check_model_group(model, "bootstrap_iid")
+  mdl_wrap_col(map_models(model, bootstrap_iid, times = times), "mdl_df_bootstrap_iid")
 }
 
 #' @export
@@ -113,7 +119,7 @@ bootstrap_block.default <- function(model, times = 5000, block_size = NULL) {
 
 #' @export
 bootstrap_block.mdl_ts <- function(model, times = 5000, block_size = NULL) {
-  block_size <- block_size %||% max(1L, as.integer(round(stats::frequency(model$data))))
+  block_size <- block_size %||% default_block_size(list(model))
   mdl_wrap(
     model, c("mdl_bootstrap_block", "mdl_ts_sim"),
     times = times, block_size = block_size
@@ -122,19 +128,16 @@ bootstrap_block.mdl_ts <- function(model, times = 5000, block_size = NULL) {
 
 #' @export
 bootstrap_block.mdl_df <- function(model, times = 5000, block_size = NULL) {
-  abort_bootstrap_model_group(model, "bootstrap_block")
+  check_model_group(model, "bootstrap_block")
+  block_size <- block_size %||% default_block_size(model)
+  model <- map_models(model, bootstrap_block, times = times, block_size = block_size)
+  mdl_wrap_col(model, "mdl_df_bootstrap_block", block_size = block_size)
 }
 
-# Joint bootstrapping across the models of a group isn't supported yet
-abort_bootstrap_model_group <- function(model, fn, call = caller_env()) {
-  check_model_group(model, fn, call = call)
-  abort(c(
-    sprintf("`%s()` can't be applied to a model group.", fn),
-    "i" = sprintf(
-      "Apply it to each model column before grouping them, e.g. `cbind(%s(ets), %s(arima))`.",
-      fn, fn
-    )
-  ), call = call)
+# The largest seasonal period of the models' data
+default_block_size <- function(x) {
+  freq <- vapply(model_list(x), function(m) stats::frequency(m$data), double(1L))
+  max(1L, as.integer(round(max(freq, 1))))
 }
 
 #' @export
@@ -150,17 +153,16 @@ new_model.mdl_spec_bootstrap_block <- function(fit = NULL, model, data, response
 
 #' @export
 bootstrap_block.mdl_lst <- function(model, times = 5000, block_size = NULL) {
-  elements <- vctrs::vec_data(model)
-  block_size <- block_size %||%
-    max(1L, as.integer(round(max(vapply(elements, function(m) stats::frequency(m$data), double(1L))))))
+  block_size <- block_size %||% default_block_size(model)
   model <- map_models(model, bootstrap_block, times = times, block_size = block_size)
   mdl_wrap_col(model, "mdl_lst_bootstrap_block", block_size = block_size)
 }
 
-# --- Joint (mdl_lst-level) bootstrap sampling -------------------------------
-# Draws the same historical time point for every series at a given position,
-# preserving cross-sectional correlation. The shared draws are attached to each
-# model, which then dispatches as usual (through any reconciliation).
+# --- Joint bootstrap sampling ----------------------------------------------
+# Draws the same historical time point for every model of a column (across
+# series) or group (across series and models) at a given position, preserving
+# their correlation. The shared draws are attached to each model, which then
+# dispatches as usual (through any reconciliation).
 
 #' @export
 forecast.mdl_lst_bootstrap_iid <- function(object, new_data = NULL, h = NULL, ...) {
@@ -173,6 +175,12 @@ forecast.mdl_lst_bootstrap_block <- function(object, new_data = NULL, h = NULL, 
   object <- bootstrap_joint(object, new_data, h, block_size = object%@%"block_size")
   NextMethod()
 }
+
+#' @export
+forecast.mdl_df_bootstrap_iid <- forecast.mdl_lst_bootstrap_iid
+
+#' @export
+forecast.mdl_df_bootstrap_block <- forecast.mdl_lst_bootstrap_block
 
 #' @export
 generate.mdl_lst_bootstrap_iid <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...) {
@@ -194,13 +202,21 @@ generate.mdl_lst_bootstrap_block <- function(x, new_data = NULL, h = NULL, times
   NextMethod()
 }
 
-# Draw the time points to bootstrap from jointly for the models of a column,
-# and attach them to each model. NULL models are left out (and give NA), and
-# models already given joint draws (by an outer modifier) are kept as is.
-# `times` is the number of paths, defaulting to each model's own.
-bootstrap_joint <- function(x, new_data, h, times = NULL, block_size = NULL) {
-  models <- vec_data(x)
-  new_data <- new_data %||% rep(list(NULL), length.out = length(models))
+#' @export
+generate.mdl_df_bootstrap_iid <- generate.mdl_lst_bootstrap_iid
+
+#' @export
+generate.mdl_df_bootstrap_block <- generate.mdl_lst_bootstrap_block
+
+# Draw the time points to bootstrap from jointly for the models of a column or
+# group, and attach them to each model. `new_data` has the data for each row.
+# NULL models are left out (and give NA), and models already given joint draws
+# (by an outer modifier) are kept as is. `times` is the number of paths,
+# defaulting to each model's own.
+bootstrap_joint <- function(x, new_data, h, times = NULL, block_size = NULL, call = caller_env()) {
+  models <- model_list(x)
+  # The models of a group are listed by column, each with a model for every row
+  new_data <- rep_len(new_data %||% list(NULL), length(models))
   use <- !vapply(models, is_null_model, logical(1L))
   if (!any(use) || all(vapply(models[use], has_bootstrap_draws, logical(1L)))) {
     return(x)
@@ -210,12 +226,10 @@ bootstrap_joint <- function(x, new_data, h, times = NULL, block_size = NULL) {
   }, list(models[use], new_data[use]), NULL)
   shape <- unique(lapply(new_data, function(nd) lengths(tsibble::key_rows(nd))))
   if (length(shape) > 1L) {
-    abort("Joint bootstrap sampling requires all series to share the same forecast horizon and number of paths.")
+    abort("Joint bootstrap sampling requires all models to share the same forecast horizon and number of paths.", call = call)
   }
-  draws <- bootstrap_draw_times(models[use], new_data[[1]], block_size)
-  models[use] <- lapply(models[use], `attr<-`, "bootstrap_draws", draws)
-  attributes(models) <- attributes(x)
-  models
+  draws <- bootstrap_draw_times(models[use], new_data[[1]], block_size, call = call)
+  map_models(x, function(m) if (is_null_model(m)) m else structure(m, bootstrap_draws = draws))
 }
 
 has_bootstrap_draws <- function(x) !is.null(attr(x, "bootstrap_draws"))

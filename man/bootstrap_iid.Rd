@@ -53,6 +53,11 @@ of the others. This matters most for hierarchies (see \code{\link[=aggregate_key
 between a hierarchy's nodes, instead of treating every node as unrelated.
 If the series don't all share the same historical time domain, sampling is
 restricted to their overlapping period and a warning is raised.
+
+Applied to a model group (see \link{model_groups}), sampling is joint across
+every model of the group, for all of its series. The innovations of each
+model are then its own residuals at the same historical time points, which
+keeps the relationship between the models' (and series') errors.
 }
 \examples{
 \dontshow{if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)) withAutoprint(\{ # examplesIf}

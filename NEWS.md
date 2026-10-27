@@ -9,9 +9,10 @@
   printed as a column for each of their models, and results computed from the
   mable (such as `forecast()`, `generate()`, `accuracy()` and `tidy()`) label
   their models as `joint$ets` and `joint$arima`. `simulate_iid()` and
-  `conformal_scp()` can be applied to model groups, while the bootstrap
-  modifiers and reconciliation are applied to model columns before grouping
-  them.
+  `conformal_scp()` modify each model of a group, while `bootstrap_iid()` and
+  `bootstrap_block()` sample jointly across every model of the group (using
+  the same resampled time points). Reconciliation is applied to model columns
+  before grouping them.
 * Added `bootstrap_iid()`, `bootstrap_block()`, and `simulate_iid()`, which
   wrap a fitted model (via `mutate()`) so that `forecast()`/`generate()`
   produce forecasts from bootstrapped or simulated sample paths instead of

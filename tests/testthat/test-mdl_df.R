@@ -238,9 +238,6 @@ test_that("modifiers applied to model groups", {
   expect_s3_class(cnf$grp$ets[[1]], "mdl_conformal_scp")
   expect_s3_class(cnf$grp$lm[[1]], "mdl_conformal_scp")
 
-  # Joint bootstrapping across a group's models isn't supported yet
-  expect_error(mutate(mbl_grp, grp = bootstrap_iid(grp)), "can't be applied to a model group")
-  expect_error(mutate(mbl_grp, grp = bootstrap_block(grp)), "can't be applied to a model group")
   boot <- mutate(mbl_grp, grp = cbind(ets = bootstrap_iid(ets, times = 10), lm))
   expect_s3_class(boot$grp$ets, "mdl_lst_bootstrap_iid")
   expect_equal(NROW(forecast(boot, h = 2)), 2 * 4 * 2)
@@ -252,4 +249,69 @@ test_that("modifiers applied to model groups", {
 
   # Modifiers can't be applied to a mable
   expect_error(simulate_iid(mbl_complex), "not to a mable")
+})
+
+test_that("bootstrapping a model group samples jointly across all of its models", {
+  skip_if_not_installed("fable")
+
+  mbl_grp <- mbl_complex %>%
+    mutate(grp = cbind(ets, lm))
+  # The time points drawn for every model of the group
+  group_draws <- function(grp, ...) {
+    grp <- fabletools:::bootstrap_joint(grp, NULL, h = 3, times = 2, ...)
+    lapply(fabletools:::model_list(grp), attr, "bootstrap_draws")
+  }
+
+  for (modifier in list(bootstrap_iid, bootstrap_block)) {
+    fit <- mutate(mbl_grp, grp = modifier(grp, times = 10))
+    expect_s3_class(fit$grp, "mdl_df")
+    expect_s3_class(fit$grp$ets[[1]], "mdl_ts_sim")
+    draws <- group_draws(fit$grp, block_size = fit$grp %@% "block_size")
+    expect_length(draws, 4)
+    expect_length(draws[[1]], 6)
+    expect_true(all(vapply(draws, identical, logical(1L), draws[[1]])))
+
+    fc <- forecast(fit, h = 2)
+    expect_true(all(dist_types(dplyr::filter(fc, .model %in% c("grp$ets", "grp$lm"))$value) == "dist_sample"))
+  }
+
+  # Identical models of identical series give identical paths
+  two_id <- dplyr::bind_rows(
+    dplyr::mutate(as_tibble(us_deaths_tr), id = "A"),
+    dplyr::mutate(as_tibble(us_deaths_tr), id = "B")
+  ) %>% as_tsibble(index = index, key = id)
+  fit <- two_id %>%
+    model(a = fable::ETS(value ~ error("A") + trend("N") + season("A"))) %>%
+    mutate(b = a) %>%
+    transmute(grp = bootstrap_iid(cbind(a, b), times = 5))
+  set.seed(1)
+  gen <- generate(fit, h = 3, times = 5)
+  sims <- split(gen$.sim, list(gen$id, gen$.model))
+  expect_true(all(vapply(sims, identical, logical(1L), sims[[1]])))
+
+  # The group's draws are used by jointly bootstrapped and reconciled columns
+  # within it
+  fit <- lung_deaths_long_tr %>%
+    aggregate_key(key, value = sum(value)) %>%
+    model(
+      ses = fable::ETS(value ~ error("A") + trend("N") + season("N")),
+      snaive = fable::SNAIVE(value)
+    ) %>%
+    transmute(grp = bootstrap_iid(cbind(ses = reconcile_mint(ses), snaive = bootstrap_block(snaive)), times = 10))
+  expect_s3_class(fit$grp$ses, "lst_mint_mdl")
+  expect_s3_class(fit$grp$snaive, "mdl_lst_bootstrap_block")
+  # The seasonal naive residuals start a year later
+  expect_warning(draws <- group_draws(fit$grp), "overlapping period")
+  expect_length(draws, 6)
+  expect_true(all(vapply(draws, identical, logical(1L), draws[[1]])))
+  expect_warning(fc <- forecast(fit, h = 3), "overlapping period")
+  fc <- dplyr::filter(fc, .model == "grp$ses")
+  tot <- fc$.mean[is_aggregated(fc$key)]
+  btm <- tapply(fc$.mean[!is_aggregated(fc$key)], fc$index[!is_aggregated(fc$key)], sum)
+  expect_equal(tot, as.numeric(btm))
+
+  # Groups modified differently can't be combined
+  boot <- mutate(mbl_grp, grp = bootstrap_iid(grp))
+  expect_s3_class(vctrs::vec_rbind(boot$grp[1, ], boot$grp[2, ]), "mdl_df_bootstrap_iid")
+  expect_error(vctrs::vec_rbind(boot$grp[1, ], mbl_grp$grp[2, ]), "different modifiers")
 })
