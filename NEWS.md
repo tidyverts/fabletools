@@ -250,6 +250,9 @@ fitted model, and groundwork has been laid for mixtime-based tsibbles.
 * The `bias_adjust` argument of `forecast()`, defunct since fabletools 0.2.0,
   has been removed. Using it is an error, rather than being silently ignored;
   please use `point_forecast` instead.
+* The defunct `construct_fc()` has been removed. `forecast()` methods for a
+  model should return a vector of distributions from the distributional
+  package.
 * The superseded internal utility function `bias_adjust()` has been deprecated.
   The forecast mean has been correctly calculated (including 'bias adjustments')
   in the `mean()` function of distributional objects for a long time. The 

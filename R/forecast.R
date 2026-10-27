@@ -357,27 +357,6 @@ forecast_mdl_ts_assemble <- function(new_data, fc, resp_vars, dist_col, point_fo
   build_fable(fbl, response = resp_vars, distribution = dist_col)
 }
 
-#' Construct a new set of forecasts
-#' 
-#' @description 
-#' `r lifecycle::badge('deprecated')`
-#' 
-#' This function is deprecated. `forecast()` methods for a model should return
-#' a vector of distributions using the distributional package.
-#' 
-#' Backtransformations are automatically handled, and so no transformations should be specified here.
-#' 
-#' @param point The transformed point forecasts
-#' @param sd The standard deviation of the transformed forecasts
-#' @param dist The forecast distribution (typically produced using `new_fcdist`)
-#' 
-#' @keywords internal
-#' @export
-construct_fc <- function(point, sd, dist){
-  lifecycle::deprecate_stop("0.3.0", what = "fabletools::construct_fc()",
-                            details = "The forecast function should now return a vector of distributions from the 'distributional' package.")
-}
-
 compute_point_forecasts <- function(distribution, measures){
   map(measures, function(f){
     out <- f(distribution)
