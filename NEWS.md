@@ -72,9 +72,11 @@
 * `get_frequencies()` now accepts mixtime durations, so seasonal periods and
   forecast horizons can be given as e.g. `forecast(h = mixtime::years(2L))`
   or `season(period = mixtime::weeks(1L))`.
-* `trend()`, `season()` and `fourier()` now count steps of the interval for
-  mixtime indices using the index's own time units, rather than
-  `default_time_units()`, which measures sub-daily intervals in seconds.
+* The `trend()`, `season()` and `fourier()` specials of `common_xregs` now
+  count steps of the interval for mixtime indices using the index's own time
+  units, rather than `default_time_units()`, which measures sub-daily
+  intervals in seconds. fable's models have their own copies of these
+  specials, and so are unaffected.
 
 ## Bug fixes
 
@@ -83,9 +85,10 @@
   any models, such as `forecast()`, `fitted()`, `augment()` and `accuracy()`,
   are empty with the same structure as for a mable with models (except for
   `components()`, which depends on the models). This includes models using
-  specials which need observations, such as `trend()`, and `interpolate()`. The response variable(s) of a mable are
-  now retained when it is modified rather than recomputed from its models,
-  which also allows mables with missing (`NULL`) models to be combined (#234).
+  specials which need observations, such as `trend()`, and `interpolate()`.
+  The response variable(s) of a mable are now retained when it is modified
+  rather than recomputed from its models, which also allows mables with
+  missing (`NULL`) models to be combined (#234).
   Missing models are treated as NULL models (see `null_model()`) without any
   data, so they give no forecasts and missing accuracy measures and summaries.
   `as_mable()` gains a `response` argument for constructing mables without any
@@ -96,16 +99,19 @@
   stored with the model's data, alongside the response. `forecast()`,
   `generate()`, `refit()` and `stream()` give an informative error if the
   parameter isn't in `new_data` (#382).
-* `trend()` for irregular time series is now proportional to elapsed time in
-  the units of the time index, instead of `NaN`.
-* `trend()` now converts `knots` and `origin` to the class of the time index,
-  and errors if they're incompatible. Previously other classes (e.g. a `Date`
-  origin for a `yearmonth` index, or text knots) silently gave wrong trends.
-* The default origin of `trend()` is now the first time point of each series.
-  Previously the origin of the first series estimated was reused for every
-  other series, dataset and `model()` call using the same model
-  specification, which gave wrong forecasts for series starting at different
-  times and errors for datasets with a different index class.
+* The `trend()` special of `common_xregs` (not used by fable's models, which
+  have their own) for irregular time series is now proportional to elapsed
+  time in the units of the time index, instead of `NaN`.
+* The `trend()` special of `common_xregs` now converts `knots` and `origin` to
+  the class of the time index, and errors if they're incompatible.
+  Previously other classes (e.g. a `Date` origin for a `yearmonth` index, or
+  text knots) silently gave wrong trends.
+* The default origin of the `trend()` special of `common_xregs` is now the
+  first time point of each series. Previously the origin of the first series
+  estimated was reused for every other series, dataset and `model()` call
+  using the same model specification, which gave wrong forecasts for series
+  starting at different times and errors for datasets with a different index
+  class.
 * Fixed `common_periods()` giving incorrect frequencies for sub-daily
   intervals made of several units (e.g. 1 hour 30 minutes).
 * Fixed `select()`, `transmute()`, `rename()` and `relocate()` dropping the
@@ -202,9 +208,9 @@
 
 ## Breaking changes
 
-* The `origin` argument of the `fourier()` special is deprecated, as it had
-  no effect. Fourier terms are anchored to the time index's epoch, consistent
-  with `season()`.
+* The `origin` argument of the `fourier()` special of `common_xregs` is
+  deprecated, as it had no effect. Fourier terms are anchored to the time
+  index's epoch, consistent with `season()`.
 * `reconcile()` is soft-deprecated in favour of `mutate()` with the
   `reconcile_*()` functions (e.g. `mutate(lm = reconcile_mint(lm))`).
 * All of the mable's S3 methods (`forecast()`, `generate()`, `accuracy()`,
