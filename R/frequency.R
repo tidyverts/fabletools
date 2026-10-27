@@ -213,6 +213,8 @@ granule_as_period <- function(x){
     millisecond = lubridate::milliseconds(n),
     microsecond = lubridate::microseconds(n),
     nanosecond = lubridate::nanoseconds(n),
+    # Unitless or unknown steps have no length in time, as for legacy intervals
+    "mixtime::mt_unit" = lubridate::period(0),
     abort(sprintf("Cannot convert a time unit of class <%s> into a period.", class(x)[1]))
   )
 }

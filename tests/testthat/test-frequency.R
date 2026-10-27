@@ -63,6 +63,39 @@ test_that("get_frequencies() with mixtime durations", {
   expect_error(get_frequencies(mixtime::yearmonth(600L), ym), "duration")
 })
 
+test_that("multi-year, numeric and irregular intervals", {
+  # These results are the same for legacy and mixtime-based tsibbles
+  yr2 <- freq_tsbl(seq(2000, 2020, by = 2))
+  expect_equal(unname(get_frequencies(NULL, yr2)), 1)
+  expect_equal(get_frequencies("4 years", yr2), 2)
+  expect_equal(NROW(make_future_data(yr2, "4 years")), 2)
+  expect_equal(tsibble::new_data(yr2, 3)$t, c(2022, 2024, 2026))
+  expect_equal(fbl_trend(yr2, origin = 2000)$trend, 1:11)
+  expect_equal(as.integer(fbl_season(yr2, 2)[[1]]), rep_len(1:2, 11))
+  # Two-yearly data has half an observation per year
+  expect_equal(
+    common_periods(yr2),
+    if (inherits(tsibble::interval(yr2), "mixtime::mt_unit")) c(year = 0.5) else c(year = 1)
+  )
+
+  for (half in list(freq_tsbl(seq(0, 5, by = 0.5)), freq_tsbl(seq(0, 30, by = 3)))) {
+    expect_equal(common_periods(half), c(none = 1))
+    expect_equal(get_frequencies(NULL, half), c(none = 1))
+    # Numeric steps have no length in time
+    expect_equal(get_frequencies("1 year", half), Inf)
+    expect_equal(fbl_trend(half, origin = half$t[1])$trend, 1:11)
+  }
+  expect_equal(tsibble::new_data(freq_tsbl(seq(0, 5, by = 0.5)), 2)$t, c(5.5, 6))
+
+  irr <- tsibble::tsibble(
+    t = d0 + c(0, 1, 3, 6, 10), y = 1:5, index = t, regular = FALSE
+  )
+  expect_equal(get_frequencies("1 year", irr), Inf)
+  expect_null(calendar_horizon(irr, "1 year"))
+  expect_error(make_future_data(irr, "1 year"), "irregular")
+  expect_equal(fbl_trend(irr)$trend, as.double(irr$t))
+})
+
 test_that("common_periods() for mixtime indices", {
   skip_if_no_granules()
   expect_equal(common_periods(freq_tsbl(mixtime::yearmonth(600:623))), c(year = 12))

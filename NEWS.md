@@ -84,7 +84,8 @@ fitted model, and groundwork has been laid for mixtime-based tsibbles.
   the index can be a `mixtime` vector. `common_periods()` and
   `get_frequencies()` work with these intervals, so seasonal models,
   `season()`, `fourier()`, `lag("year")`, `accuracy()` and `features()` work
-  with them. Current tsibble releases are still supported.
+  with them. Results for multi-year, numeric and irregular intervals match
+  those with current tsibble releases, which are still supported.
 * `get_frequencies()` now accepts mixtime durations, so seasonal periods and
   forecast horizons can be given as e.g. `forecast(h = mixtime::years(2L))`
   or `season(period = mixtime::weeks(1L))`.
