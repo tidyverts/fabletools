@@ -761,54 +761,6 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
   })
 }
 
-build_smat_rows <- function(key_data){
-  lifecycle::deprecate_warn("0.2.1", "fabletools::build_smat_rows()", "fabletools::build_key_data_smat()")
-  row_col <- sym(colnames(key_data)[length(key_data)])
-  
-  smat <- key_data %>%
-    unnest(!!row_col) %>% 
-    dplyr::arrange(!!row_col) %>% 
-    select(!!expr(-!!row_col))
-  
-  agg_struc <- group_data(dplyr::group_by_all(as_tibble(map(smat, is_aggregated))))
-  
-  # key_unique <- map(smat, function(x){
-  #   x <- unique(x)
-  #   x[!is_aggregated(x)]
-  # })
-  
-  agg_struc$.smat <- map(agg_struc$.rows, function(n) diag(1, nrow = length(n), ncol = length(n)))
-  agg_struc <- map(seq_len(nrow(agg_struc)), function(i) agg_struc[i,])
-  
-  out <- reduce(agg_struc, function(x, y){
-    # For now, assume x is aggregated into y somehow
-    n_key <- ncol(x)-2
-    nm_key <- names(x)[seq_len(n_key)]
-    agg_vars <- map2_lgl(x[seq_len(n_key)], y[seq_len(n_key)], `<`)
-    
-    if(!any(agg_vars)) abort("Something unexpected happened, please report this bug at https://github.com/tidyverts/fabletools/issues/ with a description of what you're trying to do.")
-    
-    # Match rows between summation matrices
-    not_agg <- names(Filter(`!`, y[seq_len(n_key)]))
-    cols <- group_data(group_by(smat[x$.rows[[1]][seq_len(ncol(x$.smat[[1]]))],], !!!syms(not_agg)))$.rows
-    cols_pos <- unlist(cols)
-    cols <- rep(seq_along(cols), map_dbl(cols, length))
-    cols[cols_pos] <- cols
-    
-    x$.rows[[1]] <- c(x$.rows[[1]], y$.rows[[1]])
-    x$.smat <- list(rbind(
-      x$.smat[[1]],
-      y$.smat[[1]][, cols, drop = FALSE]
-    ))
-    x
-  })
-  
-  smat <- out$.smat[[1]]
-  smat[out$.rows[[1]],] <- smat
-  
-  return(smat)
-}
-
 build_key_data_smat <- function(x){
   if (any(lengths(x[[ncol(x)]]) > 1L)) {
     # Find the order based on the first entry position of each key
