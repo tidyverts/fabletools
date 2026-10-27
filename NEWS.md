@@ -64,11 +64,12 @@
 * Added the `interval_coverage()` interval accuracy measure for the
   proportion of actual values within the prediction interval, which is
   included in `interval_accuracy_measures` (#368).
-* Added support for mixtime-based tsibble, where `interval()` is a mixtime
-  time unit (or a list of them) and the index can be a `mixtime` vector.
-  `common_periods()` and `get_frequencies()` work with these intervals, so
-  seasonal models, `season()`, `fourier()`, `lag("year")`, `accuracy()` and
-  `features()` work again. Older tsibble versions are still supported.
+* Added support for the mixtime-based tsibble of a forthcoming tsibble
+  release, where `interval()` is a mixtime time unit (or a list of them) and
+  the index can be a `mixtime` vector. `common_periods()` and
+  `get_frequencies()` work with these intervals, so seasonal models,
+  `season()`, `fourier()`, `lag("year")`, `accuracy()` and `features()` work
+  with them. Current tsibble releases are still supported.
 * `get_frequencies()` now accepts mixtime durations, so seasonal periods and
   forecast horizons can be given as e.g. `forecast(h = mixtime::years(2L))`
   or `season(period = mixtime::weeks(1L))`.
