@@ -224,6 +224,14 @@
 
 ## Breaking changes
 
+* `generate()` now simulates every series of a model column before moving on
+  to the next model column (as `forecast()` does), rather than every model
+  column of a series before moving on to the next series. For mables with
+  more than one model column and more than one series, simulations after
+  `set.seed()` therefore differ from those of fabletools 0.8.0. Mables with a
+  single model column or a single series, the deprecated `seed` argument
+  (which reseeds each model), and simulated or bootstrapped forecasts from
+  `forecast()` are unaffected.
 * The `origin` argument of the `fourier()` special of `common_xregs` is
   deprecated, as it had no effect. Fourier terms are anchored to the time
   index's epoch, consistent with `season()`.
