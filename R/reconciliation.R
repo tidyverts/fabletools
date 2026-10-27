@@ -535,6 +535,13 @@ forecast.lst_midout_mdl <- function(object, key_data,
   if(is.na(split) || split < 1L || split > length(agg_order)) {
     abort("`split` must identify one of the hierarchy levels.")
   }
+  # Splitting at the bottom level is bottom-up reconciliation
+  if(split == length(agg_order)) {
+    class(object) <- c("lst_btmup_mdl", setdiff(class(object), "lst_midout_mdl"))
+    attr(object, "split") <- NULL
+    return(forecast(object, key_data = key_data, point_forecast = point_method,
+                    new_data = new_data, ...))
+  }
   
   level_id <- rowSums(agg_shadow)
   split_level <- length(agg_order) - split

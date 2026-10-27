@@ -398,3 +398,18 @@ test_that("top_down and middle_out disaggregate the distributions of their top l
   expect_true(all(dist_types(mo$sales) == "dist_normal"))
   expect_true(all(distributional::variance(mo$sales) > 0))
 })
+
+test_that("middle_out splitting at the bottom level is bottom up reconciliation", {
+  skip_if_not_installed("fable")
+
+  lung_deaths_agg <- lung_deaths_long %>%
+    aggregate_key(key, value = sum(value))
+  fc <- lung_deaths_agg %>%
+    model(snaive = fable::SNAIVE(value)) %>%
+    mutate(mo = reconcile_mo(snaive), bu = reconcile_bu(snaive)) %>%
+    forecast(h = 3)
+  expect_equal(
+    dplyr::filter(fc, .model == "mo")$value,
+    dplyr::filter(fc, .model == "bu")$value
+  )
+})

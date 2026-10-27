@@ -125,6 +125,9 @@
   `"proportion_averages"` forecasting the top series with the `new_data` of
   another series, and `reconcile_mo()` erroring when forecasting with
   `new_data`.
+* `reconcile_mo()` with the split at the bottom level of the hierarchy is now
+  bottom-up reconciliation, rather than an error. This includes the default
+  `split = 1` for hierarchies with a single level below the total.
 * Fixed `top_down()` and `middle_out()` reconciliation collapsing sample path
   forecasts (e.g. from `simulate_iid()`) to degenerate distributions (#408).
   Only the distributions of the series being disaggregated (the top or split
