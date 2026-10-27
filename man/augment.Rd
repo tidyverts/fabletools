@@ -17,7 +17,7 @@
 
 \item{...}{Arguments for model methods.}
 
-\item{type}{Deprecated.}
+\item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#defunct}{\figure{lifecycle-defunct.svg}{options: alt='[Defunct]'}}}{\strong{[Defunct]}} Response residuals are in \code{.resid} and innovation residuals are in \code{.innov}.}
 }
 \description{
 Uses a fitted model to augment the response variable with fitted values and

@@ -74,3 +74,8 @@ test_that("broom generics error informatively when `.model` is already used (#27
   expect_error(augment(fit), "key variable named `.model`")
   expect_error(coef(fit), "key variable named `.model`")
 })
+
+test_that("augment() errors for the defunct `type` argument", {
+  skip_if_not_installed("fable")
+  expect_error(augment(mbl, type = "response"), class = "defunctError")
+})
