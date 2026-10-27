@@ -94,6 +94,10 @@ fitted model, and groundwork has been laid for mixtime-based tsibbles.
 
 ## Bug fixes
 
+* Text forecast horizons of years or months (such as `h = "1 year"`) for data
+  with a `Date` or `POSIXct` index now cover exactly that calendar period
+  after the end of the data, e.g. 366 days when the year includes 29 February
+  (#196). Previously they were approximated with 365.25 days per year.
 * Modelling a keyed tsibble without any observations now returns a mable with
   no rows, rather than an error (#313). Results computed from a mable without
   any models, such as `forecast()`, `fitted()`, `augment()` and `accuracy()`,

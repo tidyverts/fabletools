@@ -13,7 +13,9 @@
 #' @param x A mable.
 #' @param new_data The data to be generated (time index and exogenous regressors)
 #' @param h The simulation horizon (can be used instead of `new_data` for regular
-#' time series with no exogenous regressors).
+#' time series with no exogenous regressors). This can be a number of steps, or
+#' text such as `"1 year"` for the number of steps covering that calendar
+#' period after the end of the data.
 #' @param times The number of replications.
 #' @param seed `r lifecycle::badge('deprecated')` Call [set.seed()] before `generate()` instead.
 #' @param ... Additional arguments for individual simulation methods.

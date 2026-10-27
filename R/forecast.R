@@ -16,7 +16,9 @@
 #' @param object The time series model used to produce the forecasts
 #' @param new_data A `tsibble` containing future information used to forecast.
 #' @param h The forecast horizon (can be used instead of `new_data` for regular
-#' time series with no exogenous regressors).
+#' time series with no exogenous regressors). This can be a number of steps, or
+#' text such as `"1 year"` for the number of steps covering that calendar
+#' period after the end of the data.
 #' @param simulate `r lifecycle::badge('deprecated')` Please use [simulate_iid()] to wrap the model instead.
 #' @param bootstrap `r lifecycle::badge('deprecated')` Please use [bootstrap_iid()] or [bootstrap_block()] to wrap the model instead.
 #' @param times `r lifecycle::badge('deprecated')` The number of sample paths

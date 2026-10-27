@@ -33,7 +33,7 @@ make_future_data <- function(.data, h = NULL){
   # A model without any data (such as the prototype of an empty mable) has no
   # future time points (#313).
   if(NROW(.data) == 0) return(.data[0, index_var(.data)])
-  n <- get_frequencies(h, .data, .auto = "smallest")
+  n <- calendar_horizon(.data, h) %||% get_frequencies(h, .data, .auto = "smallest")
   if(length(n) > 1){
     warn("More than one forecast horizon specified, using the smallest.")
     n <- min(n)
@@ -59,6 +59,24 @@ make_future_data <- function(.data, h = NULL){
   #   key_data = new_tibble(list(.rows = list(seq_len(n))), nrow = 1),
   #   index = idx, index2 = idx, ordered = TRUE, interval = itvl
   # )
+}
+
+# The number of steps covering a calendar horizon of years or months (e.g.
+# "1 year") from the last time point of Date or POSIXct data, or NULL to
+# approximate it with get_frequencies() (e.g. 365.25 days per year).
+calendar_horizon <- function(.data, h){
+  if(!(is.character(h) || inherits(h, "Period")) || length(h) != 1) return(NULL)
+  idx <- .data[[index_var(.data)]]
+  if(!inherits(idx, c("Date", "POSIXct")) || inherits(idx, "mixtime::mixtime")) return(NULL)
+  check_installed("lubridate")
+  period <- if(is.character(h)) lubridate::as.period(h) else h
+  if(is.na(period) || (period@year == 0 && period@month == 0)) return(NULL)
+  last <- max(idx)
+  end <- lubridate::add_with_rollback(last, period)
+  secs <- as.double(difftime(as.POSIXct(end), as.POSIXct(last), units = "secs"))
+  n <- secs * get_frequencies(lubridate::seconds(1), .data)
+  if(!is.finite(n)) return(NULL)
+  n
 }
 
 bind_new_data <- function(object, new_data){

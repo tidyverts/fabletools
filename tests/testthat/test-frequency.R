@@ -131,3 +131,23 @@ test_that("models and forecasts with a mixtime index", {
   # The trend origin keeps the index class
   expect_identical(fit$lm[[1]]$model$origin, y$t[1])
 })
+
+test_that("text horizons cover the calendar period after the data", {
+  daily <- function(start) {
+    tsibble::tsibble(t = as.Date(start) + 0:99, y = 1, index = t)
+  }
+  # The year after 2024-02-03 contains 29 Feb 2024
+  expect_equal(NROW(make_future_data(daily("2023-10-28"), "1 year")), 366)
+  expect_equal(NROW(make_future_data(daily("2024-10-28"), "1 year")), 365)
+  expect_equal(NROW(make_future_data(daily("2023-10-28"), "1 month")), 29)
+  expect_equal(NROW(make_future_data(daily("2023-10-28"), "2 weeks")), 14)
+  expect_equal(NROW(make_future_data(daily("2023-10-28"), 10)), 10)
+
+  hourly <- tsibble::tsibble(
+    t = as.POSIXct("2024-01-01", tz = "UTC") + 3600 * (0:99), y = 1, index = t
+  )
+  expect_equal(NROW(make_future_data(hourly, "1 month")), 31 * 24)
+
+  # Other intervals are unchanged
+  expect_equal(NROW(make_future_data(as_tsibble(USAccDeaths), "1 year")), 12)
+})

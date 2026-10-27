@@ -30,7 +30,9 @@
 \item{new_data}{A \code{tsibble} containing future information used to forecast.}
 
 \item{h}{The forecast horizon (can be used instead of \code{new_data} for regular
-time series with no exogenous regressors).}
+time series with no exogenous regressors). This can be a number of steps, or
+text such as \code{"1 year"} for the number of steps covering that calendar
+period after the end of the data.}
 
 \item{point_forecast}{The point forecast measure(s) which should be returned
 in the resulting fable. Specified as a named list of functions which accept

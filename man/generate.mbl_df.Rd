@@ -24,7 +24,9 @@
 \item{new_data}{The data to be generated (time index and exogenous regressors)}
 
 \item{h}{The simulation horizon (can be used instead of \code{new_data} for regular
-time series with no exogenous regressors).}
+time series with no exogenous regressors). This can be a number of steps, or
+text such as \code{"1 year"} for the number of steps covering that calendar
+period after the end of the data.}
 
 \item{times}{The number of replications.}
 
