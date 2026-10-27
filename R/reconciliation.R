@@ -197,7 +197,7 @@ forecast.lst_mint_mdl <- function(object, key_data,
   }
   if (!is_pd) {
     abort(c(
-      sprintf("`min_trace(method = \"%s\")` requires a positive definite covariance matrix, but the estimated matrix is (near) singular.", method),
+      sprintf("`reconcile_mint(method = \"%s\")` requires a positive definite covariance matrix, but the estimated matrix is (near) singular.", method),
       i = "This commonly occurs when two series in the hierarchy are identical, such as an aggregate with a single child series (e.g. a state containing only one region).",
       i = "It can also occur when some series have constant or all-zero residuals.",
       i = "Consider removing redundant series from the hierarchy, or use a method that does not estimate the covariance matrix, such as `method = \"wls_struct\"` or `method = \"ols\"`."
