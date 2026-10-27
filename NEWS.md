@@ -221,6 +221,10 @@
   index's epoch, consistent with `season()`.
 * `reconcile()` is soft-deprecated in favour of `mutate()` with the
   `reconcile_*()` functions (e.g. `mutate(lm = reconcile_mint(lm))`).
+* The superseded internal utility function `bias_adjust()` has been deprecated.
+  The forecast mean has been correctly calculated (including 'bias adjustments')
+  in the `mean()` function of distributional objects for a long time. The 
+  forecast median can be obtained using `median()` on a forecast distribution.
 * All of the mable's S3 methods (`forecast()`, `generate()`, `accuracy()`,
   `report()`, `augment()`, `glance()`, `tidy()`, and others) now dispatch on
   `mbl_df` rather than `mdl_df`, completing the class rename announced in
@@ -288,10 +292,6 @@
   and `mdl_lst` (for local and global models respectively), and free the class 
   name for an eventual `mdl_df` multi-model class. The `mbl_df` class has been
   added, and `mdl_df` will be removed in the next minor release (v0.9.0).
-* The superseded internal utility function `bias_adjust()` has been deprecated.
-  The forecast mean has been correctly calculated (including 'bias adjustments')
-  in the `mean()` function of distributional objects for a long time. The 
-  forecast median can be obtained using `median()` on a forecast distribution.
 
 # fabletools 0.7.0
 
