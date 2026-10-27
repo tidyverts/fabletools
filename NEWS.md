@@ -47,8 +47,13 @@
   `bootstrap_iid((ets + arima)/2)`) resamples the residuals of each of its
   models at the same time points. A combination is no longer modified by the
   modifiers of its first model.
-* Added `conformal_scp()` for producing forecast distributions using split
-  conformal prediction, e.g. `fit %>% mutate(ets = conformal_scp(ets))`.
+* Added the experimental `conformal_scp()` for producing forecast
+  distributions using split conformal prediction, e.g.
+  `fit %>% mutate(ets = conformal_scp(ets))`. Each forecast horizon is
+  calibrated with the out-of-sample errors of rolling-origin refits of the
+  model, and horizons with too few errors give `NA` forecasts. Models with
+  regressors can be calibrated when `conformal_scp()` is applied to their
+  specification, e.g. `model(fit = conformal_scp(ARIMA(y ~ x)))`.
 * Added `reconcile_mint()`, `reconcile_bu()`, `reconcile_td()`, and
   `reconcile_mo()` as short aliases for `min_trace()`, `bottom_up()`,
   `top_down()`, and `middle_out()` respectively, bringing reconciliation

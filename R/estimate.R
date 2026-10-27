@@ -41,9 +41,10 @@ estimate.tbl_ts <- function(.data, .model, ...){
   # not just `.model`.
   recent_data <- .model$recent_data
   origin <- .model$origin
+  # The specification's data is still available to new_model() methods
+  out <- new_model(fit, .model, .data, parsed$response, parsed$transformation, recent_data)
   .model$remove_data()
   .model$stage <- NULL
-  out <- new_model(fit, .model, .data, parsed$response, parsed$transformation, recent_data)
   attr(out, "origin") <- origin
   out
 }

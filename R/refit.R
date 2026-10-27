@@ -50,6 +50,9 @@ refit.mdl_ts <- function(object, new_data, ...){
   }
 
   check_transformation_data(object, new_data)
+  # Regressors kept for conformal_scp() are replaced by those of new_data
+  xreg <- names(attr(object, "conformal_regressors"))
+  if (length(xreg) > 0) attr(object, "conformal_regressors") <- as.list(new_data)[xreg]
   params <- model_transformation_params(object)
   trans <- map(object$transformation, bind_transformation_data, new_data)
   resp <- map2(seq_along(object$response), object$response, function(i, resp){

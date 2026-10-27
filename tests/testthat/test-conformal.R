@@ -53,7 +53,7 @@ test_that("conformal_scp() calibration is genuinely out-of-sample (not just in-s
   naive_resid <- residuals(mbl_small$ets[[1]], type = "response")$.resid
   naive_resid <- naive_resid[!is.na(naive_resid)]
 
-  pool_h1 <- fabletools:::conformal_cv_errors(mbl_small$ets[[1]], 1)[, 1]
+  pool_h1 <- fabletools:::conformal_cv_errors(mbl_small$ets[[1]], 1)$errors[, 1]
   pool_h1 <- pool_h1[!is.na(pool_h1)]
   expect_false(isTRUE(all.equal(sort(pool_h1), sort(naive_resid))))
 
@@ -98,4 +98,73 @@ test_that("conformal_scp() errors sensibly when there isn't enough data to calib
       forecast(h = 3),
     "Not enough held-out data"
   )
+})
+
+test_that("conformal_scp() refits models with regressors from their specification", {
+  skip_if_not_installed("fable")
+
+  set.seed(1)
+  dt <- tsibble::tsibble(t = 1:40, x = rnorm(40), index = t)
+  dt$y <- 2 * dt$x + cumsum(rnorm(40))
+  future <- dplyr::mutate(tsibble::new_data(dt, 3), x = 0)
+
+  fit <- model(dt, lm = conformal_scp(fable::TSLM(y ~ x), n_quantiles = 50, min_calibration = 10))
+  expect_named(attr(fit$lm[[1]], "conformal_regressors"), "x")
+  fc <- forecast(fit, new_data = future)
+  expect_true(all(dist_types(fc$y) == "dist_sample"))
+  expect_true(all(is.finite(fc$.mean)))
+
+  # The regressors are updated by refit() and stream()
+  expect_length(attr(refit(fit, dt[1:30, ])$lm[[1]], "conformal_regressors")$x, 30)
+  streamed <- stream(refit(fit, dt[1:30, ]), dt[31:40, ])
+  expect_equal(attr(streamed$lm[[1]], "conformal_regressors")$x, dt$x)
+
+  # An estimated model doesn't keep its regressors
+  fit <- model(dt, lm = fable::TSLM(y ~ x))
+  expect_error(
+    forecast(mutate(fit, lm = conformal_scp(lm, min_calibration = 10)), new_data = future),
+    "apply `conformal_scp\\(\\)` to the model specification"
+  )
+})
+
+test_that("conformal_scp() calibrates each horizon with enough errors", {
+  skip_if_not_installed("fable")
+
+  set.seed(1)
+  rw <- model(tsibble::tsibble(t = 1:40, y = cumsum(rnorm(40)), index = t), rw = fable::RW(y))
+
+  # Horizons with fewer than 20 errors can't be calibrated
+  expect_warning(
+    fc <- forecast(mutate(rw, rw = conformal_scp(rw, n_quantiles = 50)), h = 25),
+    "horizons 21 to 25 are `NA`"
+  )
+  expect_true(all(is.finite(fc$.mean[1:20])))
+  expect_true(all(is.na(fc$.mean[21:25])))
+
+  # Calibration needs enough errors in total
+  short <- model(tsibble::tsibble(t = 1:15, y = cumsum(rnorm(15)), index = t), rw = fable::RW(y))
+  expect_warning(
+    fc <- forecast(mutate(short, rw = conformal_scp(rw, n_quantiles = 50)), h = 5),
+    "horizons 1 to 5 are `NA`"
+  )
+  expect_true(all(is.na(fc$.mean)))
+  expect_error(
+    forecast(mutate(short, rw = conformal_scp(rw, min_calibration = 200)), h = 5),
+    "only 60 were available"
+  )
+})
+
+test_that("conformal_scp() calibrates transformed responses on their original scale", {
+  skip_if_not_installed("fable")
+
+  set.seed(1)
+  dt <- tsibble::tsibble(t = 1:40, y = exp(cumsum(rnorm(40, 0, 0.1))), index = t)
+  fit <- model(dt, rw = fable::RW(log(y)))
+  fc <- forecast(mutate(fit, rw = conformal_scp(rw, n_quantiles = 50, min_calibration = 10)), h = 3)
+  expect_true(all(dist_types(fc$y) == "dist_sample"))
+
+  # The calibration errors are those of the back-transformed refits (with
+  # bias adjusted point forecasts)
+  errors <- fabletools:::conformal_cv_errors(fit$rw[[1]], 1)$errors[, 1]
+  expect_equal(errors[-1], diff(dt$y), tolerance = 0.1)
 })

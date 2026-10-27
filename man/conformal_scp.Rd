@@ -11,10 +11,10 @@ conformal_scp(model, n_quantiles = 5000, min_calibration = 20)
 model specification (e.g. \code{model(ets = conformal_scp(ETS(y)))}).}
 
 \item{n_quantiles}{The number of quantiles of the calibration errors used to
-represent each forecast distribution (as a \code{\link[distributional:dist_sample]{distributional::dist_sample()}}).}
+represent each forecast distribution.}
 
-\item{min_calibration}{The minimum number of errors needed to calibrate a
-forecast horizon.}
+\item{min_calibration}{The minimum number of out-of-sample errors needed to
+calibrate a forecast horizon.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -28,12 +28,43 @@ The forecast distribution is obtained as follows:
 \enumerate{
 \item The model is refit on an expanding window of its history, forecasting
 up to \code{h} steps ahead from each origin to obtain out-of-sample errors.
-\item The errors for each forecast horizon are used as calibration sets.
-Horizons with fewer than \code{min_calibration} errors instead use the errors
-from all horizons combined.
+\item The errors for each forecast horizon are used as its calibration set.
+Forecasts for horizons with fewer than \code{min_calibration} errors can't be
+calibrated, and are \code{NA} (with a warning).
 \item The quantiles of the calibration errors are added to the model's point
 forecast to give the forecast distribution.
 }
+}
+\details{
+This differs from textbook split conformal prediction in a few ways:
+\itemize{
+\item The calibration errors come from rolling-origin refits of the model
+(time series cross-validation) rather than a single split of the data, so
+there's no finite-sample coverage guarantee.
+\item The forecast distribution is a \code{\link[distributional:dist_sample]{distributional::dist_sample()}} of
+\code{n_quantiles} quantiles of the calibration errors (on an evenly spaced
+grid of probabilities), added to the model's point forecast. Any interval
+can be computed from it with \code{\link[=hilo]{hilo()}}, and intervals needn't be
+symmetric. The quantiles are the conformal order statistics of the
+errors, with those beyond the observed errors truncated to the most
+extreme error.
+\item The mean of the forecast distribution (\code{.mean}) is the model's point
+forecast plus the mean of these quantiles, so it is shifted from the
+model's own point forecast when its errors are biased.
+}
+
+Calibration refits the model for every origin of its history, which can be
+slow for long series or slow to estimate models. Refits of the first,
+shortest windows which fail are left out, and warnings from the refits
+aren't shown. A model with regressors can only
+be refit with their historical values, which are kept when
+\code{conformal_scp()} is applied to the model specification (e.g.
+\code{model(fit = conformal_scp(ARIMA(y ~ x)))}), but not to an already
+estimated model.
+
+\code{conformal_scp()} only changes forecasts. It uses the point forecasts of
+the model it wraps (without any simulation from \code{\link[=simulate_iid]{simulate_iid()}} or
+\code{\link[=bootstrap_iid]{bootstrap_iid()}}), and \code{\link[=generate]{generate()}} simulates from that model as usual.
 }
 \examples{
 \dontshow{if (requireNamespace("fable", quietly = TRUE) && requireNamespace("tsibbledata", quietly = TRUE)) withAutoprint(\{ # examplesIf}

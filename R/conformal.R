@@ -12,18 +12,48 @@
 #'
 #' 1. The model is refit on an expanding window of its history, forecasting
 #'    up to `h` steps ahead from each origin to obtain out-of-sample errors.
-#' 2. The errors for each forecast horizon are used as calibration sets.
-#'    Horizons with fewer than `min_calibration` errors instead use the errors
-#'    from all horizons combined.
+#' 2. The errors for each forecast horizon are used as its calibration set.
+#'    Forecasts for horizons with fewer than `min_calibration` errors can't be
+#'    calibrated, and are `NA` (with a warning).
 #' 3. The quantiles of the calibration errors are added to the model's point
 #'    forecast to give the forecast distribution.
+#'
+#' @details
+#' This differs from textbook split conformal prediction in a few ways:
+#'
+#' * The calibration errors come from rolling-origin refits of the model
+#'   (time series cross-validation) rather than a single split of the data, so
+#'   there's no finite-sample coverage guarantee.
+#' * The forecast distribution is a [distributional::dist_sample()] of
+#'   `n_quantiles` quantiles of the calibration errors (on an evenly spaced
+#'   grid of probabilities), added to the model's point forecast. Any interval
+#'   can be computed from it with [hilo()], and intervals needn't be
+#'   symmetric. The quantiles are the conformal order statistics of the
+#'   errors, with those beyond the observed errors truncated to the most
+#'   extreme error.
+#' * The mean of the forecast distribution (`.mean`) is the model's point
+#'   forecast plus the mean of these quantiles, so it is shifted from the
+#'   model's own point forecast when its errors are biased.
+#'
+#' Calibration refits the model for every origin of its history, which can be
+#' slow for long series or slow to estimate models. Refits of the first,
+#' shortest windows which fail are left out, and warnings from the refits
+#' aren't shown. A model with regressors can only
+#' be refit with their historical values, which are kept when
+#' `conformal_scp()` is applied to the model specification (e.g.
+#' `model(fit = conformal_scp(ARIMA(y ~ x)))`), but not to an already
+#' estimated model.
+#'
+#' `conformal_scp()` only changes forecasts. It uses the point forecasts of
+#' the model it wraps (without any simulation from [simulate_iid()] or
+#' [bootstrap_iid()]), and [generate()] simulates from that model as usual.
 #'
 #' @param model A fitted model (e.g. `mutate(ets = conformal_scp(ets))`), or a
 #' model specification (e.g. `model(ets = conformal_scp(ETS(y)))`).
 #' @param n_quantiles The number of quantiles of the calibration errors used to
-#' represent each forecast distribution (as a [distributional::dist_sample()]).
-#' @param min_calibration The minimum number of errors needed to calibrate a
-#' forecast horizon.
+#' represent each forecast distribution.
+#' @param min_calibration The minimum number of out-of-sample errors needed to
+#' calibrate a forecast horizon.
 #'
 #' @seealso [bootstrap_iid()], [simulate_iid()], [forecast()], [refit()]
 #'
@@ -80,7 +110,17 @@ conformal_scp.mdl_spec <- function(model, n_quantiles = 5000, min_calibration = 
 #' @export
 new_model.mdl_spec_conformal_scp <- function(fit = NULL, model, data, response,
                                              transformation, recent_data = NULL){
-  conformal_scp(NextMethod(), n_quantiles = model %@% "n_quantiles", min_calibration = model %@% "min_calibration")
+  out <- conformal_scp(NextMethod(), n_quantiles = model %@% "n_quantiles", min_calibration = model %@% "min_calibration")
+  # Keep the regressors used by the model, for refitting it to calibrate
+  if(!is.null(model$data) && !is_null_model(out)) {
+    dt <- model$data
+    xreg <- setdiff(
+      intersect(all.vars(get_expr(model$formula)), names(dt)),
+      c(index_var(dt), key_vars(dt), all.vars(model_lhs(model)), names(out$data))
+    )
+    if(length(xreg) > 0L) attr(out, "conformal_regressors") <- as.list(dt)[xreg]
+  }
+  out
 }
 
 #' @export
@@ -109,35 +149,67 @@ forecast.mdl_conformal_scp <- function(object, new_data = NULL, h = NULL,
 
   anchor <- forecast(base_object, new_data = new_data, point_forecast = list(.mean = mean), ...)$.mean
 
-  pools <- conformal_scp_calibration(base_object, NROW(new_data), min_calibration)
+  pools <- conformal_scp_calibration(base_object, NROW(new_data), min_calibration, call = NULL)
 
   draws <- .mapply(function(a, pool) a + conformal_scp_quantile(pool, n_quantiles),
                    list(anchor, pools), NULL)
+  # Horizons that can't be calibrated are NA
+  is_na <- vapply(pools, is.null, logical(1L))
+  draws[is_na] <- list(NA_real_)
   fc <- distributional::dist_sample(draws)
+  fc[is_na] <- NA
 
   forecast_mdl_ts_assemble(new_data, fc, resp_vars, dist_col, point_forecast)
 }
 
 # Rolling-origin (time series cross-validation) nonconformity scores for
-# horizons 1:H. Returns a length-H list of numeric residual pools (one per
-# horizon), falling back to a pooled set (across all horizons) for any
-# horizon with fewer than `min_calibration` out-of-sample errors.
-conformal_scp_calibration <- function(object, H, min_calibration) {
-  errors <- conformal_cv_errors(object, H)
-  pools <- lapply(seq_len(H), function(h) errors[!is.na(errors[, h]), h])
+# horizons 1:H, as a list with the errors of each horizon. Horizons with fewer
+# than `min_calibration` errors can't be calibrated, and are NULL.
+conformal_scp_calibration <- function(object, H, min_calibration, call = caller_env()) {
+  cv <- conformal_cv_errors(object, H)
+  pools <- lapply(seq_len(H), function(h) cv$errors[!is.na(cv$errors[, h]), h])
+  n <- lengths(pools)
 
-  if(max(lengths(pools), 0L) < min_calibration){
+  if(cv$n_refits == 0L && !is.null(cv$error)) {
+    abort(c(
+      "Can't refit the model to calibrate `conformal_scp()`.",
+      "i" = "For models with regressors, apply `conformal_scp()` to the model specification (e.g. `model(fit = conformal_scp(ARIMA(y ~ x)))`), which keeps the regressors' historical values."
+    ), parent = cv$error, call = call)
+  }
+  if(sum(n) < min_calibration){
     abort(c(
       "Not enough held-out data to calibrate `conformal_scp()`.",
       "i" = sprintf(
         "At least %d out-of-sample errors are required for calibration (only %d were available after rolling-origin refitting).",
-        min_calibration, max(lengths(pools), 0L)
+        min_calibration, sum(n)
       )
+    ), call = call)
+  }
+  if(cv$n_failed > 0L) {
+    warn(c(
+      sprintf("%d of the rolling-origin refits for calibrating `conformal_scp()` failed, and were left out.", cv$n_failed),
+      "x" = conditionMessage(cv$failure)
     ))
   }
 
-  pooled <- unlist(pools, use.names = FALSE)
-  lapply(pools, function(p) if(length(p) >= min_calibration) p else pooled)
+  short <- which(n < min_calibration)
+  if(length(short) > 0L) {
+    warn(c(
+      sprintf(
+        "Forecasts for %s are `NA`, as there are fewer than %d out-of-sample errors to calibrate them with `conformal_scp()`.",
+        format_horizons(short), min_calibration
+      ),
+      "i" = "Use a shorter forecast horizon, or a smaller `min_calibration`."
+    ))
+  }
+  pools[short] <- list(NULL)
+  pools
+}
+
+format_horizons <- function(h) {
+  if(length(h) == 1L) return(paste("horizon", h))
+  if(all(diff(h) == 1L)) return(sprintf("horizons %d to %d", h[1], h[length(h)]))
+  paste("horizons", paste(h, collapse = ", "))
 }
 
 # Evaluate the split conformal quantile function of the nonconformity scores
@@ -156,14 +228,14 @@ conformal_scp_quantile <- function(errors, n_quantiles) {
   errors[pmin(pmax(k, 1), n)]
 }
 
-# Genuinely out-of-sample 1:H-step-ahead forecast errors via repeated refit()
-# on an expanding window of `object`'s own history (adapted from the manual
-# refit loop in hfitted.mdl_ts(), but used unconditionally - see Description
-# above for why conformal_scp() can't use hfitted() itself for this). Each
-# origin is refit once and forecast up to H steps ahead, filling every
-# horizon's errors from that single refit. Returns an n x H matrix of errors,
-# where row t, column h is the error of the h-step forecast of time t (made
-# at origin t - h), and NA where no such forecast exists.
+# Out-of-sample 1:H-step-ahead forecast errors from refit()ting the model on
+# an expanding window of its own history. This doesn't use hfitted(), as model
+# specific hfitted() methods (such as for ETS) keep the parameters estimated
+# from the whole series. Each origin is refit once and forecast up to H steps
+# ahead. The errors are returned as an n x H matrix, where row t, column h is
+# the error of the h-step forecast of time t (NA where no such forecast
+# exists), with the number of successful and failed refits, the first error
+# and the last failure after a successful refit.
 conformal_cv_errors <- function(object, H) {
   dt <- object$data
   resp <- response_vars(object)
@@ -179,28 +251,41 @@ conformal_cv_errors <- function(object, H) {
   dt[mv] <- mapply(calc, bt, dt[mv], SIMPLIFY = FALSE)
   names(dt)[mv] <- resp
 
+  # Regressors kept from estimating a wrapped model specification
+  xreg <- attr(object, "conformal_regressors")
+  xreg <- xreg[setdiff(names(xreg), names(dt))]
+  dt[names(xreg)] <- xreg
+
   actual <- dt[[resp]]
   # Errors are only computed for time points within the history, so each
   # origin's future data is a slice of the history's index (cheaper than
   # constructing it with make_future_data() for every origin).
-  future <- dt[c(key_vars(dt), index_var(dt), model_transformation_params(object))]
+  future <- dt[c(key_vars(dt), index_var(dt), model_transformation_params(object), names(xreg))]
+  n_refits <- n_failed <- 0L
+  error <- failure <- NULL
   for (i in seq_len(n - 1L)) {
     h <- seq_len(min(H, n - i))
-    mdl <- tryCatch(
-      refit(object, vec_slice(dt, seq_len(i)), reestimate = TRUE),
-      error = function(e) NULL
-    )
-    if (is.null(mdl)) next
     # Slicing a single row loses the tsibble's interval, which is required
     # to compute some specials (e.g. seasonal periods).
     new_data <- vec_slice(future, i + h)
     attr(new_data, "interval") <- interval(future)
-    fc <- tryCatch(
-      forecast(mdl, new_data = new_data, point_forecast = list(.mean = mean)),
-      error = function(e) NULL
-    )
-    if (is.null(fc)) next
+    # Warnings from refitting short windows of the history aren't shown
+    fc <- tryCatch(withCallingHandlers({
+      mdl <- refit(object, vec_slice(dt, seq_len(i)), reestimate = TRUE)
+      forecast(mdl, new_data = new_data, point_forecast = list(.mean = mean))
+    }, warning = function(w) invokeRestart("muffleWarning")), error = function(e) e)
+    if (inherits(fc, "error")) {
+      # Refits of the first (shortest) windows are expected to fail for some
+      # models, but failures after a successful refit are reported.
+      if (n_refits > 0L) {
+        n_failed <- n_failed + 1L
+        failure <- fc
+      }
+      error <- error %||% fc
+      next
+    }
+    n_refits <- n_refits + 1L
     errors[cbind(i + h, h)] <- actual[i + h] - fc$.mean
   }
-  errors
+  list(errors = errors, n_refits = n_refits, n_failed = n_failed, error = error, failure = failure)
 }
