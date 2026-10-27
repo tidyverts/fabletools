@@ -10,7 +10,7 @@ deprecate_lst_mdl <- function(f) {
   rlang::new_function(
     args = fmls,
     body = rlang::expr({
-      lifecycle::deprecate_soft(
+      lifecycle::deprecate_warn(
           "0.7.0",
           I("The `lst_mdl` class"),
           I("the `mdl_lst` class for lists of models")

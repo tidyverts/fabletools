@@ -99,3 +99,10 @@ test_that("fables saved with fabletools <= 0.8.0 forward named tidy-eval argumen
   hilo_level <- function(level) hilo(old, level = level)
   expect_equal(hilo_level(90), hilo(fbl_complex, level = 90))
 })
+
+test_that("lists of models with only the lst_mdl class are deprecated", {
+  skip_if_not_installed("fable")
+  mdls <- mbl[[mable_vars(mbl)[[1]]]]
+  class(mdls) <- setdiff(class(mdls), "mdl_lst")
+  lifecycle::expect_deprecated(glance(mdls))
+})
