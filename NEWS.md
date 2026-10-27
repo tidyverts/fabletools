@@ -109,7 +109,9 @@
   intervals made of several units (e.g. 1 hour 30 minutes).
 * Fixed `select()`, `transmute()`, `rename()` and `relocate()` dropping the
   fable class or distribution column (#324, #348, #403).
-* Fixed `[[<-` not registering model columns in a mable (#402, #323).
+* Fixed `[[<-` and `[<-` not registering model columns in a mable (#402,
+  #323), and removed model columns (e.g. with `mutate(fit, ets = NULL)`)
+  still being registered as models.
 * Fixed `min_trace()` positive definite check not being scale invariant (#358).
   Diagonal weights are checked to be positive, and covariance matrices are
   checked on the correlation scale, so series with very different scales are

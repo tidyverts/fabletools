@@ -111,6 +111,21 @@ test_that("Assigning model columns registers them as models (#402, #323)", {
   # Non-model columns are not registered as models
   m_dbl[["c"]] <- 1
   expect_identical(mable_vars(m_dbl), c("a", "b"))
+
+  # [<- registers model columns
+  m_sub <- m1
+  m_sub["b"] <- list(m2[["b"]])
+  expect_identical(mable_vars(m_sub), c("a", "b"))
+  expect_identical(m_sub, m_dol)
+
+  # Removed model columns are no longer registered
+  expect_identical(mable_vars(mutate(m_dbl, a = NULL)), "b")
+  expect_identical(unique(forecast(mutate(m_dbl, a = NULL), h = 1)[[".model"]]), "b")
+  m_sub["a"] <- NULL
+  expect_identical(mable_vars(m_sub), "b")
+  m_dol$a <- NULL
+  expect_identical(mable_vars(m_dol), "b")
+  expect_identical(mable_vars(mutate(m_dbl, a = 1)), "b")
 })
 test_that("Modelling data without any series gives an empty mable (#313)", {
   skip_if_not_installed("fable")

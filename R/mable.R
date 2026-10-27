@@ -239,7 +239,7 @@ transmute.mbl_df <- function (.data, ...){
 
 # Rebuild a mable after column assignment, registering any model columns
 restore_mable_assign <- function(tbl, x) {
-  mdls <- names(which(map_lgl(tbl, inherits, c("mdl_lst", "mdl_df"))))
+  mdls <- names(which(map_lgl(tbl, inherits, c("lst_mdl", "mdl_lst", "mdl_df"))))
   build_mable(tbl, key = !!key_vars(x), model = mdls, template = x)
 }
 
@@ -250,6 +250,11 @@ restore_mable_assign <- function(tbl, x) {
 
 #' @export
 `[[<-.mbl_df` <- function (x, i, j, ..., value) {
+  restore_mable_assign(NextMethod(), x)
+}
+
+#' @export
+`[<-.mbl_df` <- function (x, i, j, ..., value) {
   restore_mable_assign(NextMethod(), x)
 }
 
