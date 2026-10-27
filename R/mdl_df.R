@@ -118,6 +118,12 @@ model_col_response <- function(x){
 cbind.mdl_lst <- function(..., deparse.level = 1){
   dots <- list(...)
   if(any(map_lgl(dots, is_mable))) {
+    if(any(map_lgl(dots, inherits, "mdl_lst"))) {
+      abort(c(
+        "Model columns can't be added to a mable with `cbind()`.",
+        i = "Use `mutate()` to add model columns, e.g. `mutate(fit, ets2 = ets)`."
+      ))
+    }
     return(base::cbind.data.frame(..., deparse.level = deparse.level))
   }
 

@@ -126,6 +126,8 @@
 * Fixed `[[<-` and `[<-` not registering model columns in a mable (#402,
   #323), and removed model columns (e.g. with `mutate(fit, ets = NULL)`)
   still being registered as models.
+* Adding model columns to a mable with `cbind()` and giving a mable duplicate
+  column names with `names<-` now error, rather than giving corrupt mables.
 * Fixed `reconcile_mint()` positive definite check not being scale invariant (#358).
   Diagonal weights are checked to be positive, and covariance matrices are
   checked on the correlation scale, so series with very different scales are

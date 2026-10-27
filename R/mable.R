@@ -260,6 +260,9 @@ restore_mable_assign <- function(tbl, x) {
 
 #' @export
 `names<-.mbl_df` <- function(x, value) {
+  if(anyDuplicated(value)) {
+    abort("The column names of a mable must be unique.")
+  }
   nm <- colnames(x)
   key_pos <- match(key_vars(x), nm)
   kd <- key_data(x)
@@ -277,14 +280,9 @@ restore_mable_assign <- function(tbl, x) {
   new_kv <- intersect(old_kv <- key_vars(x), cn)
   mv <- intersect(mable_vars(x), cn)
   
-  # If keys have changed, return a tibble if mable is invalid
+  # If keys have changed, return a tibble
   if(!identical(old_kv, new_kv)){
     return(out)
-    key_data <- group_data(group_by(x, !!!syms(key)))
-    if(any(lengths(key_data[[length(key_data)]]) > 1))
-      return(out)
-    else
-      return(build_mable(out, key_data = key_data, model = mv, template = x))
   }
   
   # If all models are removed, return a tibble

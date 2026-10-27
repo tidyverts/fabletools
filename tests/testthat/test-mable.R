@@ -126,6 +126,12 @@ test_that("Assigning model columns registers them as models (#402, #323)", {
   m_dol$a <- NULL
   expect_identical(mable_vars(m_dol), "b")
   expect_identical(mable_vars(mutate(m_dbl, a = 1)), "b")
+
+  # Model columns are added with mutate(), not cbind()
+  expect_error(cbind(m1, b = m2$b), "can't be added to a mable")
+
+  # Column names must be unique
+  expect_error(names(m_dbl) <- c("key", "a", "a", "c")[seq_along(m_dbl)], "must be unique")
 })
 test_that("Modelling data without any series gives an empty mable (#313)", {
   skip_if_not_installed("fable")
