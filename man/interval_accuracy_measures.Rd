@@ -4,7 +4,7 @@
 \alias{winkler_score}
 \alias{pinball_loss}
 \alias{scaled_pinball_loss}
-\alias{coverage}
+\alias{interval_coverage}
 \alias{interval_accuracy_measures}
 \title{Interval estimate accuracy measures}
 \usage{
@@ -25,7 +25,7 @@ scaled_pinball_loss(
   ...
 )
 
-coverage(.dist, .actual, level = 95, na.rm = TRUE, ...)
+interval_coverage(.dist, .actual, level = 95, na.rm = TRUE, ...)
 
 interval_accuracy_measures
 }
@@ -35,7 +35,8 @@ interval_accuracy_measures
 \item{.actual}{A vector of responses matching the fitted values
 (for forecast accuracy, \code{new_data} must be provided).}
 
-\item{level}{The level of the forecast interval.}
+\item{level}{The level of the forecast interval, as a percentage (e.g.
+\code{95} for a 95\% interval). A single level is used for each measure.}
 
 \item{na.rm}{Remove the missing values before calculating the accuracy measure}
 
@@ -54,8 +55,8 @@ from a model, or forecasted values from the forecast.}
 \item{D}{Should the response model include a seasonal difference?}
 }
 \description{
-\code{coverage()} computes the proportion of actual values that fall within the
-central \code{level}\% interval of the distribution (bounds inclusive). It is not
-included in \code{interval_accuracy_measures} by default, but can be added via
-\code{measures = list(coverage = coverage)} in \code{\link[=accuracy]{accuracy()}}.
+\code{interval_coverage()} computes the proportion (between 0 and 1) of actual
+values that fall within the central \code{level}\% interval of the distribution
+(bounds inclusive). For well calibrated intervals, it is close to
+\code{level / 100}.
 }

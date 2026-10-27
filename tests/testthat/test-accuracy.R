@@ -88,7 +88,7 @@ test_that("Out-of-sample accuracy", {
 
   acc <- accuracy(fbl, us_deaths, measures = list(interval_accuracy_measures, distribution_accuracy_measures))
   expect_equal(acc$.type, "Test")
-  expect_equal(colnames(acc), c(".model", ".type", "winkler", "pinball", "scaled_pinball", "percentile", "CRPS"))
+  expect_equal(colnames(acc), c(".model", ".type", "winkler", "pinball", "scaled_pinball", "coverage", "percentile", "CRPS"))
   expect_true(!any(map_lgl(acc, compose(any, is.na))))
 
   acc_multi <- accuracy(fbl_multi, lung_deaths_long)
@@ -112,29 +112,31 @@ test_that("Out-of-sample accuracy", {
   expect_true(!any(map_lgl(acc_mv, compose(any, is.na))))
 })
 
-test_that("coverage()", {
+test_that("interval_coverage()", {
   dist <- distributional::dist_normal(mu = c(0, 0, 10, 10), sigma = c(1, 1, 2, 2))
   # 95% intervals: [-1.96, 1.96], [-1.96, 1.96], [6.08, 13.92], [6.08, 13.92]
   actual <- c(0, 2.5, 13, 5)
-  expect_equal(coverage(dist, actual), 0.5)
+  expect_equal(interval_coverage(dist, actual), 0.5)
   # 80% intervals: [-1.28, 1.28], [-1.28, 1.28], [7.44, 12.56], [7.44, 12.56]
-  expect_equal(coverage(dist, actual, level = 80), 0.25)
+  expect_equal(interval_coverage(dist, actual, level = 80), 0.25)
 
   # Bounds are inclusive
   bounds <- hilo(distributional::dist_normal(0, 1), 95)
   expect_equal(
-    coverage(distributional::dist_normal(c(0, 0), 1), c(bounds$lower, bounds$upper)),
+    interval_coverage(distributional::dist_normal(c(0, 0), 1), c(bounds$lower, bounds$upper)),
     1
   )
 
   # Missing values
-  expect_equal(coverage(dist, c(0, NA, 13, 5)), 2/3)
-  expect_true(is.na(coverage(dist, c(0, NA, 13, 5), na.rm = FALSE)))
+  expect_equal(interval_coverage(dist, c(0, NA, 13, 5)), 2/3)
+  expect_true(is.na(interval_coverage(dist, c(0, NA, 13, 5), na.rm = FALSE)))
 
   # Within accuracy()
   skip_if_not_installed("fable")
-  acc <- accuracy(fbl, us_deaths, measures = list(coverage = coverage))
+  acc <- accuracy(fbl, us_deaths, measures = list(coverage = interval_coverage))
   expect_equal(colnames(acc), c(".model", ".type", "coverage"))
   expect_true(acc$coverage >= 0 && acc$coverage <= 1)
+  acc_int <- accuracy(fbl, us_deaths, measures = interval_accuracy_measures)
+  expect_equal(acc_int$coverage, acc$coverage)
 })
 

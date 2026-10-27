@@ -61,8 +61,9 @@
   into the same `<family>_<variant>` naming used by `bootstrap_*()`/
   `simulate_*()`. The original names remain the canonical, documented
   functions.
-* Added `coverage()` interval accuracy measure for the proportion of actual
-  values within the prediction interval (#368).
+* Added the `interval_coverage()` interval accuracy measure for the
+  proportion of actual values within the prediction interval, which is
+  included in `interval_accuracy_measures` (#368).
 * Added support for mixtime-based tsibble, where `interval()` is a mixtime
   time unit (or a list of them) and the index can be a `mixtime` vector.
   `common_periods()` and `get_frequencies()` work with these intervals, so

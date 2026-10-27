@@ -223,26 +223,27 @@ scaled_pinball_loss <- function(.dist, .actual, .train, level = 95, na.rm = TRUE
 
 #' @rdname interval_accuracy_measures
 #' @export
-coverage <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
+interval_coverage <- function(.dist, .actual, level = 95, na.rm = TRUE, ...){
   interval <- hilo(.dist, level)
-  if(!inherits(interval, "hilo")) abort("Coverage is not supported for multivariate distributions.")
+  if(!inherits(interval, "hilo")) abort("Interval coverage is not supported for multivariate distributions.")
   within <- (.actual >= interval$lower) & (.actual <= interval$upper)
   mean(within, na.rm = na.rm)
 }
 
 #' Interval estimate accuracy measures
 #'
-#' `coverage()` computes the proportion of actual values that fall within the
-#' central `level`% interval of the distribution (bounds inclusive). It is not
-#' included in `interval_accuracy_measures` by default, but can be added via
-#' `measures = list(coverage = coverage)` in [accuracy()].
+#' `interval_coverage()` computes the proportion (between 0 and 1) of actual
+#' values that fall within the central `level`% interval of the distribution
+#' (bounds inclusive). For well calibrated intervals, it is close to
+#' `level / 100`.
 #'
 #' @inheritParams point_accuracy_measures
 #' @param .dist The distribution of fitted values from the model, or forecasted values from the forecast.
-#' @param level The level of the forecast interval.
+#' @param level The level of the forecast interval, as a percentage (e.g.
+#' `95` for a 95% interval). A single level is used for each measure.
 #'
 #' @export
-interval_accuracy_measures <- list(winkler = winkler_score, pinball = pinball_loss, scaled_pinball = scaled_pinball_loss)
+interval_accuracy_measures <- list(winkler = winkler_score, pinball = pinball_loss, scaled_pinball = scaled_pinball_loss, coverage = interval_coverage)
 
 #' @rdname distribution_accuracy_measures
 #' @export
