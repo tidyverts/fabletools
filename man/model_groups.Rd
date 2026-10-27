@@ -47,10 +47,13 @@ When printed within a mable, a model group is shown as a column for each of
 its models, under the name of the group (such as \code{grp$ets} followed by
 \verb{$arima}).
 
-Results computed from a mable include each model of a group, with a
-\code{.model} of \verb{<group>$<model>} (e.g. \code{grp$ets}). This applies to
+Results computed from a mable include each model of a group, labelled in
+the \code{.model} column by the string \code{"<group>$<model>"} (e.g. \code{"grp$ets"}).
+This applies to
 \code{\link[=forecast]{forecast()}}, \code{\link[=generate]{generate()}}, \code{\link[=accuracy]{accuracy()}}, \code{\link[=fitted]{fitted()}}, \code{\link[=residuals]{residuals()}},
 \code{\link[=augment]{augment()}}, \code{\link[=glance]{glance()}}, \code{\link[=tidy]{tidy()}}, \code{\link[=components]{components()}} and \code{\link[=hypothesize]{hypothesize()}}.
+These labels must be unique, so results can't be computed from a mable that
+also has a model column named \code{grp$ets}.
 Generics that modify the models, such as \code{\link[=refit]{refit()}} and \code{\link[=stream]{stream()}}, return
 the model group with its models replaced. Model groups can also be used
 with:

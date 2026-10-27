@@ -220,6 +220,25 @@ test_that("pivot_longer() and gather() unpack model groups", {
   expect_equal(unique(tidyr::gather(mbl_grp, ".model", "fit", -key)$.model), mdl_names)
 })
 
+test_that("model group labels must be unique", {
+  skip_if_not_installed("fable")
+
+  # A model column named like a model of a group
+  mbl_dup <- mutate(mbl_complex, grp = cbind(ets, lm), `grp$ets` = lm)
+  msg <- "`grp\\$ets` is both a column and a model of group `grp`"
+  expect_error(forecast(mbl_dup, h = 1), msg)
+  expect_error(accuracy(mbl_dup), msg)
+  expect_error(glance(mbl_dup), msg)
+  expect_error(tidy(mbl_dup), msg)
+  expect_error(augment(mbl_dup), msg)
+  expect_error(tidyr::pivot_longer(mbl_dup, -key), msg)
+
+  # A model of a group named like a model of a nested group
+  grp <- cbind(a = cbind(b = mbl_complex$ets), `a$b` = mbl_complex$lm)
+  mbl_dup <- mutate(mbl_complex, grp = grp)
+  expect_error(glance(mbl_dup), "`grp\\$a\\$b` labels more than one model")
+})
+
 test_that("modifiers applied to model groups", {
   skip_if_not_installed("fable")
 

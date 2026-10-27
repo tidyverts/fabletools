@@ -203,12 +203,14 @@ pivot_longer.mbl_df <- function (data, cols, ..., names_to = "name") {
 
 # Replace the model groups among `cols` with their model columns, named
 # `<group>$<model>`. The resulting names of `cols` are kept as "unpacked".
-unpack_model_groups <- function(x, cols){
+unpack_model_groups <- function(x, cols, call = caller_env()){
   unpacked <- map(set_names(names(x)), function(nm) {
     col <- x[[nm]]
     if (nm %in% cols && is_mdl_df(col)) unpack_model_results(list2(!!nm := col)) else list2(!!nm := col)
   })
-  out <- tibble::new_tibble(unlist(unname(unpacked), recursive = FALSE), nrow = NROW(x))
+  out <- unlist(unname(unpacked), recursive = FALSE)
+  check_model_labels(names(out), names(x), call = call)
+  out <- tibble::new_tibble(out, nrow = NROW(x))
   structure(out, unpacked = unlist(map(unpacked[cols], names), use.names = FALSE))
 }
 

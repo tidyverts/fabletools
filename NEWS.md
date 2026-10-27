@@ -18,7 +18,9 @@ fitted model, and groundwork has been laid for mixtime-based tsibbles.
   the same series, which can be stacked with `rbind()`. Model groups are
   printed as a column for each of their models, and results computed from the
   mable (such as `forecast()`, `generate()`, `accuracy()` and `tidy()`) label
-  their models as `joint$ets` and `joint$arima`. `simulate_iid()` and
+  their models as `joint$ets` and `joint$arima` (an error is given if these
+  labels aren't unique, such as for a mable that also has a model column
+  named `joint$ets`). `simulate_iid()` and
   `conformal_scp()` modify each model of a group, while `bootstrap_iid()` and
   `bootstrap_block()` sample jointly across every model of the group (using
   the same resampled time points). Reconciliation is applied to model columns

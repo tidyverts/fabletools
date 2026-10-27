@@ -124,7 +124,8 @@ dispatch_mbl_df <- function(x, ..., .f, .values_to = ".result",
   x <- as_tibble(x)
   x[mdls] <- lapply(x[mdls], fill_null_models, ptype)
   res <- unpack_model_results(
-    lapply(x[mdls], call_with_new_data, .f = .f, new_data = x[["new_data"]], ...)
+    lapply(x[mdls], call_with_new_data, .f = .f, new_data = x[["new_data"]], ...),
+    call = caller_env()
   )
   x <- vec_cbind(
     x[setdiff(names(x), c(mdls, "new_data"))],

@@ -64,10 +64,13 @@ model_col_response <- function(x){
 #' its models, under the name of the group (such as `grp$ets` followed by
 #' `$arima`).
 #'
-#' Results computed from a mable include each model of a group, with a
-#' `.model` of `<group>$<model>` (e.g. `grp$ets`). This applies to
+#' Results computed from a mable include each model of a group, labelled in
+#' the `.model` column by the string `"<group>$<model>"` (e.g. `"grp$ets"`).
+#' This applies to
 #' [forecast()], [generate()], [accuracy()], [fitted()], [residuals()],
 #' [augment()], [glance()], [tidy()], [components()] and [hypothesize()].
+#' These labels must be unique, so results can't be computed from a mable that
+#' also has a model column named `grp$ets`.
 #' Generics that modify the models, such as [refit()] and [stream()], return
 #' the model group with its models replaced. Model groups can also be used
 #' with:
@@ -299,11 +302,30 @@ mable_model_cols <- function(x){
 # Splice the data frame results of `mdl_df` columns (from `dispatch_mdl_df()`)
 # into top-level columns named `<group>$<model>`, so
 # every model's results can be pivoted into a single `.model` column.
-unpack_model_results <- function(x){
-  out <- map2(x, names(x), function(col, nm) {
-    if(!is.data.frame(col)) return(set_names(list(col), nm))
-    res <- unpack_model_results(unclass(col))
-    set_names(res, paste0(nm, "$", names(res)))
-  })
-  unlist(unname(out), recursive = FALSE) %||% list()
+unpack_model_results <- function(x, call = caller_env()){
+  unpack <- function(x) {
+    out <- map2(x, names(x), function(col, nm) {
+      if(!is.data.frame(col)) return(set_names(list(col), nm))
+      res <- unpack(unclass(col))
+      set_names(res, paste0(nm, "$", names(res)))
+    })
+    unlist(unname(out), recursive = FALSE) %||% list()
+  }
+  out <- unpack(x)
+  check_model_labels(names(out), names(x), call = call)
+  out
+}
+
+# Models of a group are labelled `<group>$<model>`, which can match the name
+# of another model column.
+check_model_labels <- function(labels, cols, call = caller_env()){
+  dup <- unique(labels[duplicated(labels)])
+  if(length(dup) == 0L) return(invisible(labels))
+  dup <- dup[1]
+  grp <- sub("\\$.*", "", dup)
+  abort(if(dup %in% cols && grp %in% cols) {
+    sprintf("Model labels must be unique; `%s` is both a column and a model of group `%s`.", dup, grp)
+  } else {
+    sprintf("Model labels must be unique; `%s` labels more than one model.", dup)
+  }, call = call)
 }
