@@ -367,7 +367,8 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
     # Code adapted from reconcile_fbl_list to handle changing weights over horizon
     # This will need to be refactored later so that reconcile_fbl_list is broken up into more sub-problems
     # As the weight matrix is an identity, this code and computation is much simpler.
-    is_normal <- all(map_lgl(fc_dist, function(x) all(dist_types(x) == "dist_normal")))
+    # Only the top level distribution is disaggregated
+    is_normal <- all(dist_types(fc_dist[[top]]) == "dist_normal")
     # Point forecast means can be computed in one step
     fc_mean <- split(fc_mean[,top]*fc_prop,col(fc_prop))
     if(is_normal) {
@@ -562,7 +563,10 @@ forecast.lst_midout_mdl <- function(object, key_data,
   # Code adapted from reconcile_fbl_list to handle changing weights over horizon
   # This will need to be refactored later so that reconcile_fbl_list is broken up into more sub-problems
   # As the weight matrix is an identity, this code and computation is much simpler.
-  is_normal <- all(map_lgl(fc_dist, function(x) all(dist_types(x) == "dist_normal")))
+  # Only the split level distributions are disaggregated
+  fc_pos <- seq_len(nrow(key_data))[-nodes_above]
+  split_dist <- fc_dist[match(split_nodes, fc_pos)]
+  is_normal <- all(map_lgl(split_dist, function(x) all(dist_types(x) == "dist_normal")))
   # Point forecast means can be computed in one step
   fc_mean <- split(fc_mean,col(fc_mean))
   if(is_normal) {
@@ -581,13 +585,12 @@ forecast.lst_midout_mdl <- function(object, key_data,
     })
     fc_dist <- map2(fc_mean, transpose_dbl(map(fc_var, sqrt)), distributional::dist_normal)
 
-  } else if (all(map_lgl(fc_dist, function(x) all(dist_types(x) == "dist_sample")))) {
+  } else if (all(map_lgl(split_dist, function(x) all(dist_types(x) == "dist_sample")))) {
     # Sample paths of the middle level series for each bottom level series
-    fc_pos <- seq_len(nrow(key_data))[-nodes_above]
     mid_x <- lapply(fc_dist[match(mid_root_nodes, fc_pos)],
                     function(x) distributional::parameters(x)$x)
     sample_size <- unique(unlist(lapply(mid_x, lengths)))
-    if(length(sample_size) != 1L) stop("Cannot reconcile sample paths with different replication sizes.")
+    if(length(sample_size) != 1L) abort("Cannot reconcile sample paths with different replication sizes.")
     # Disaggregate to bottom level, then aggregate with S: [samples, nodes] per horizon
     samples <- lapply(seq_len(h), function(i) {
       btm_x <- do.call(cbind, lapply(mid_x, `[[`, i))
@@ -647,9 +650,9 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
     fc_dist <- map2(fc_mean, transpose_dbl(map(fc_var, sqrt)), distributional::dist_normal)
   } else if (identical(dist_type, "dist_sample")) {
     sample_size <- unique(unlist(lapply(fc_dist, function(x) unique(lengths(distributional::parameters(x)$x)))))
-    if(length(sample_size) != 1L) stop("Cannot reconcile sample paths with different replication sizes.")
+    if(length(sample_size) != 1L) abort("Cannot reconcile sample paths with different replication sizes.")
     sample_horizon <- unique(lengths(fc_dist))
-    if(length(sample_horizon) != 1L) stop("Cannot reconcile sample paths with different forecast horizon lengths.")
+    if(length(sample_horizon) != 1L) abort("Cannot reconcile sample paths with different forecast horizon lengths.")
     # Extract sample paths
     samples <- lapply(fc_dist, function(x) distributional::parameters(x)$x)
     # Convert to array [samples,horizon,nodes]

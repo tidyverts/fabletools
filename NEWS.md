@@ -127,6 +127,9 @@
   `new_data`.
 * Fixed `top_down()` and `middle_out()` reconciliation collapsing sample path
   forecasts (e.g. from `simulate_iid()`) to degenerate distributions (#408).
+  Only the distributions of the series being disaggregated (the top or split
+  level) need to be normal or sample paths, so they no longer collapse when
+  other series have different distributions.
 * Fixed `generate()` erroring for mables with model columns of different
   classes, such as models using different reconciliation methods (#408).
 * Fixed parallel estimation not being used when `future::plan()` is set

@@ -362,3 +362,39 @@ test_that("top_down and middle_out reconcile forecasts using new_data", {
     as.numeric(tapply(split_level(base)$.mean, split_level(base)$index, sum))
   )
 })
+
+test_that("top_down and middle_out disaggregate the distributions of their top levels", {
+  skip_if_not_installed("fable")
+
+  set.seed(1408)
+  sim_hts <- tidyr::expand_grid(
+    index    = tsibble::yearmonth("2020 Jan") + 0:35,
+    category = c("Food", "Tech"),
+    sku      = c("S1", "S2")
+  ) |>
+    dplyr::mutate(sales = rpois(dplyr::n(), lambda = 50)) |>
+    tsibble::as_tsibble(key = c(category, sku), index = index) |>
+    aggregate_key(category / sku, sales = sum(sales))
+  fit <- model(sim_hts, snaive = fable::SNAIVE(sales))
+
+  # Sample paths below the top level don't change normal top level forecasts
+  is_top <- is_aggregated(fit$category)
+  fit$snaive[!is_top] <- simulate_iid(fit$snaive[!is_top], times = 10)
+  fc <- fit |>
+    mutate(td = reconcile_td(snaive)) |>
+    forecast(h = 2)
+  td <- dplyr::filter(fc, .model == "td")
+  expect_true(all(dist_types(td$sales) == "dist_normal"))
+  expect_true(all(distributional::variance(td$sales) > 0))
+
+  # Splitting middle_out at the second level uses the second level distributions
+  fit <- model(sim_hts, snaive = fable::SNAIVE(sales))
+  is_mid <- !is_aggregated(fit$category) & is_aggregated(fit$sku)
+  fit$snaive[!is_mid] <- simulate_iid(fit$snaive[!is_mid], times = 10)
+  mo <- fit |>
+    mutate(mo = reconcile_mo(snaive, split = 1)) |>
+    forecast(h = 2) |>
+    dplyr::filter(.model == "mo")
+  expect_true(all(dist_types(mo$sales) == "dist_normal"))
+  expect_true(all(distributional::variance(mo$sales) > 0))
+})
