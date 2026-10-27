@@ -13,14 +13,30 @@ bottom_up(models)
 \item{models}{A column of models in a mable.}
 }
 \description{
-\lifecycle{experimental}
-}
-\details{
 Reconciles a hierarchy using the bottom up reconciliation method. The
 response variable of the hierarchy must be aggregated using sums. The
 forecasted time points must match for all series in the hierarchy.
+}
+\section{Superseded names}{
 
-\code{reconcile_bu()} is a short alias for \code{bottom_up()}.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}
+
+\code{bottom_up()} is the original name of \code{reconcile_bu()}, and is kept for existing code.
+New code should use \code{reconcile_bu()}, consistent with the other \verb{reconcile_*()}
+functions.
+}
+
+\examples{
+\dontshow{if (requireNamespace("fable", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+library(fable)
+lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) \%>\%
+  aggregate_key(key, value = sum(value))
+
+lung_deaths_agg \%>\%
+  model(ets = ETS(value)) \%>\%
+  dplyr::mutate(ets = reconcile_bu(ets)) \%>\%
+  forecast()
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=reconcile_td]{reconcile_td()}}, \code{\link[=reconcile_mo]{reconcile_mo()}}, \code{\link[=reconcile_mint]{reconcile_mint()}}, \code{\link[=aggregate_key]{aggregate_key()}}

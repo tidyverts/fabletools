@@ -39,35 +39,6 @@ reconcile.mbl_df <- function(.data, ...){
   mutate(.data, ...)
 }
 
-#' @rdname min_trace
-#' @export
-reconcile_mint <- function(models, method = c("wls_var", "ols", "wls_struct", "mint_cov", "mint_shrink"),
-                           sparse = NULL){
-  check_reconcile_models(models, "reconcile_mint")
-  min_trace(models, method = method, sparse = sparse)
-}
-
-#' @rdname bottom_up
-#' @export
-reconcile_bu <- function(models){
-  check_reconcile_models(models, "reconcile_bu")
-  bottom_up(models)
-}
-
-#' @rdname top_down
-#' @export
-reconcile_td <- function(models, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
-  check_reconcile_models(models, "reconcile_td")
-  top_down(models, method = method)
-}
-
-#' @rdname middle_out
-#' @export
-reconcile_mo <- function(models, split = 1){
-  check_reconcile_models(models, "reconcile_mo")
-  middle_out(models, split = split)
-}
-
 # Reconciliation applies to a column of models across the series of a hierarchy
 check_reconcile_models <- function(models, fn, call = caller_env()) {
   if(is_mdl_df(models)) {
@@ -96,8 +67,6 @@ check_reconcile_models <- function(models, fn, call = caller_env()) {
 #' hierarchy are identical (e.g. an aggregate with only one child). Use
 #' `"wls_struct"` or `"ols"` in these situations.
 #'
-#' `reconcile_mint()` is a short alias for `min_trace()`.
-#'
 #' @param models A column of models in a mable.
 #' @param method The reconciliation method to use, which determines how the
 #' base forecast error covariance matrix is estimated.
@@ -113,6 +82,31 @@ check_reconcile_models <- function(models, fn, call = caller_env()) {
 #' @references 
 #' Wickramasuriya, S. L., Athanasopoulos, G., & Hyndman, R. J. (2019). Optimal forecast reconciliation for hierarchical and grouped time series through trace minimization. Journal of the American Statistical Association, 1-45. https://doi.org/10.1080/01621459.2018.1448825 
 #' 
+#' @section Superseded names:
+#' `r lifecycle::badge('superseded')`
+#'
+#' `min_trace()` is the original name of `reconcile_mint()`, and is kept for existing code.
+#' New code should use `reconcile_mint()`, consistent with the other `reconcile_*()`
+#' functions.
+#'
+#' @examplesIf requireNamespace("fable", quietly = TRUE)
+#' library(fable)
+#' lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) %>%
+#'   aggregate_key(key, value = sum(value))
+#' 
+#' lung_deaths_agg %>%
+#'   model(lm = TSLM(value ~ trend() + season())) %>%
+#'   dplyr::mutate(lm = reconcile_mint(lm, method = "mint_shrink")) %>%
+#'   forecast()
+#'
+#' @export
+reconcile_mint <- function(models, method = c("wls_var", "ols", "wls_struct", "mint_cov", "mint_shrink"),
+                           sparse = NULL){
+  check_reconcile_models(models, "reconcile_mint")
+  min_trace(models, method = method, sparse = sparse)
+}
+
+#' @rdname reconcile_mint
 #' @export
 min_trace <- function(models, method = c("wls_var", "ols", "wls_struct", "mint_cov", "mint_shrink"),
                  sparse = NULL){
@@ -247,13 +241,9 @@ forecast.lst_mint_mdl <- function(object, key_data,
 
 #' Bottom up forecast reconciliation
 #' 
-#' \lifecycle{experimental}
-#' 
 #' Reconciles a hierarchy using the bottom up reconciliation method. The
 #' response variable of the hierarchy must be aggregated using sums. The
 #' forecasted time points must match for all series in the hierarchy.
-#'
-#' `reconcile_bu()` is a short alias for `bottom_up()`.
 #'
 #' @param models A column of models in a mable.
 #'
@@ -261,6 +251,31 @@ forecast.lst_mint_mdl <- function(object, key_data,
 #' [`reconcile_td()`], [`reconcile_mo()`], [`reconcile_mint()`], [`aggregate_key()`]
 #'
 #' [*Forecasting: Principles and Practice* - Bottom-up approach](https://otexts.com/fpp3/hierarchical-forecasting.html#sec-single-level)
+#'
+#' @section Superseded names:
+#' `r lifecycle::badge('superseded')`
+#'
+#' `bottom_up()` is the original name of `reconcile_bu()`, and is kept for existing code.
+#' New code should use `reconcile_bu()`, consistent with the other `reconcile_*()`
+#' functions.
+#'
+#' @examplesIf requireNamespace("fable", quietly = TRUE)
+#' library(fable)
+#' lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) %>%
+#'   aggregate_key(key, value = sum(value))
+#' 
+#' lung_deaths_agg %>%
+#'   model(ets = ETS(value)) %>%
+#'   dplyr::mutate(ets = reconcile_bu(ets)) %>%
+#'   forecast()
+#'
+#' @export
+reconcile_bu <- function(models){
+  check_reconcile_models(models, "reconcile_bu")
+  bottom_up(models)
+}
+
+#' @rdname reconcile_bu
 #' @export
 bottom_up <- function(models){
   check_reconcile_models(models, "bottom_up")
@@ -304,22 +319,51 @@ forecast.lst_btmup_mdl <- function(object, key_data,
 
 #' Top down forecast reconciliation
 #' 
-#' \lifecycle{experimental}
-#' 
 #' Reconciles a hierarchy using the top down reconciliation method. The
 #' response variable of the hierarchy must be aggregated using sums. The
-#' forecasted time points must match for all series in the hierarchy.
+#' forecasted time points must match for all series in the hierarchy, which
+#' must be strictly hierarchical.
 #'
-#' `reconcile_td()` is a short alias for `top_down()`.
+#' The forecasts of the top level are disaggregated by proportions, so only
+#' its forecast distribution is used. Normal distributions and sample paths
+#' are disaggregated as such, while other distributions give degenerate
+#' (point) forecasts.
 #'
 #' @param models A column of models in a mable.
-#' @param method The method used to compute the disaggregation proportions.
+#' @param method The method used to compute the disaggregation proportions:
+#' the proportions of the forecasts (`"forecast_proportions"`), the average of
+#' the historical proportions (`"average_proportions"`), or the proportions of
+#' the historical averages (`"proportion_averages"`).
 #'
 #' @seealso
 #' [`reconcile_bu()`], [`reconcile_mo()`], [`reconcile_mint()`], [`aggregate_key()`]
 #'
 #' [*Forecasting: Principles and Practice* - Top-down approaches](https://otexts.com/fpp3/hierarchical-forecasting.html#sec-single-level)
 #'
+#' @section Superseded names:
+#' `r lifecycle::badge('superseded')`
+#'
+#' `top_down()` is the original name of `reconcile_td()`, and is kept for existing code.
+#' New code should use `reconcile_td()`, consistent with the other `reconcile_*()`
+#' functions.
+#'
+#' @examplesIf requireNamespace("fable", quietly = TRUE)
+#' library(fable)
+#' lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) %>%
+#'   aggregate_key(key, value = sum(value))
+#' 
+#' lung_deaths_agg %>%
+#'   model(ets = ETS(value)) %>%
+#'   dplyr::mutate(ets = reconcile_td(ets, method = "average_proportions")) %>%
+#'   forecast()
+#'
+#' @export
+reconcile_td <- function(models, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
+  check_reconcile_models(models, "reconcile_td")
+  top_down(models, method = method)
+}
+
+#' @rdname reconcile_td
 #' @export
 top_down <- function(models, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
   check_reconcile_models(models, "top_down")
@@ -476,22 +520,52 @@ propagate_forecast_proportions <- function(fc_mean, key_data, agg_order,
 
 #' Middle out forecast reconciliation
 #' 
-#' \lifecycle{experimental}
-#' 
 #' Reconciles a hierarchy using the middle out reconciliation method. The
 #' response variable of the hierarchy must be aggregated using sums. The
-#' forecasted time points must match for all series in the hierarchy.
+#' forecasted time points must match for all series in the hierarchy, which
+#' must be strictly hierarchical.
 #'
-#' `reconcile_mo()` is a short alias for `middle_out()`.
+#' The forecasts of the split level are aggregated bottom-up for the levels
+#' above it, and disaggregated top-down (using the forecast proportions) for
+#' the levels below it. Splitting at the bottom level is bottom-up
+#' reconciliation.
 #'
 #' @param models A column of models in a mable.
 #' @param split The middle level of the hierarchy from which the bottom-up and
-#' top-down approaches are used above and below respectively.
+#' top-down approaches are used above and below respectively. Either the
+#' number of levels below the top level (starting from `1` for the level just
+#' below the total), or the name of the key variable of that level.
 #' 
 #' @seealso 
 #' [`reconcile_bu()`], [`reconcile_td()`], [`reconcile_mint()`], [`aggregate_key()`]
+#'
 #' [*Forecasting: Principles and Practice* - Middle-out approach](https://otexts.com/fpp3/hierarchical-forecasting.html#sec-single-level)
 #' 
+#' @section Superseded names:
+#' `r lifecycle::badge('superseded')`
+#'
+#' `middle_out()` is the original name of `reconcile_mo()`, and is kept for existing code.
+#' New code should use `reconcile_mo()`, consistent with the other `reconcile_*()`
+#' functions.
+#'
+#' @examplesIf requireNamespace("fable", quietly = TRUE)
+#' library(fable)
+#' tourism_agg <- tsibble::tourism %>%
+#'   dplyr::filter(State %in% c("Tasmania", "Northern Territory")) %>%
+#'   aggregate_key(State / Region, Trips = sum(Trips))
+#'
+#' tourism_agg %>%
+#'   model(snaive = SNAIVE(Trips)) %>%
+#'   dplyr::mutate(snaive = reconcile_mo(snaive, split = "State")) %>%
+#'   forecast(h = 4)
+#'
+#' @export
+reconcile_mo <- function(models, split = 1){
+  check_reconcile_models(models, "reconcile_mo")
+  middle_out(models, split = split)
+}
+
+#' @rdname reconcile_mo
 #' @export
 middle_out <- function(models, split = 1){
   check_reconcile_models(models, "middle_out")

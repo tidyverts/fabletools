@@ -38,8 +38,27 @@ The \code{"wls_var"}, \code{"mint_cov"} and \code{"mint_shrink"} methods require
 definite covariance matrix, which is not the case if two series in the
 hierarchy are identical (e.g. an aggregate with only one child). Use
 \code{"wls_struct"} or \code{"ols"} in these situations.
+}
+\section{Superseded names}{
 
-\code{reconcile_mint()} is a short alias for \code{min_trace()}.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}
+
+\code{min_trace()} is the original name of \code{reconcile_mint()}, and is kept for existing code.
+New code should use \code{reconcile_mint()}, consistent with the other \verb{reconcile_*()}
+functions.
+}
+
+\examples{
+\dontshow{if (requireNamespace("fable", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+library(fable)
+lung_deaths_agg <- as_tsibble(cbind(mdeaths, fdeaths)) \%>\%
+  aggregate_key(key, value = sum(value))
+
+lung_deaths_agg \%>\%
+  model(lm = TSLM(value ~ trend() + season())) \%>\%
+  dplyr::mutate(lm = reconcile_mint(lm, method = "mint_shrink")) \%>\%
+  forecast()
+\dontshow{\}) # examplesIf}
 }
 \references{
 Wickramasuriya, S. L., Athanasopoulos, G., & Hyndman, R. J. (2019). Optimal forecast reconciliation for hierarchical and grouped time series through trace minimization. Journal of the American Statistical Association, 1-45. https://doi.org/10.1080/01621459.2018.1448825

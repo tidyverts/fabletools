@@ -46,7 +46,7 @@ where \eqn{\hat{\boldsymbol{y}}_h} are the \eqn{h}-step base forecasts.
 Optimal reconciled forecasts use
 \eqn{\mathbf{G} = (\mathbf{S}'\mathbf{W}^{-1}\mathbf{S})^{-1}\mathbf{S}'\mathbf{W}^{-1}},
 with \eqn{\mathbf{W}} a positive definite weight matrix (see
-\code{\link[=min_trace]{min_trace()}}).
+\code{\link[=reconcile_mint]{reconcile_mint()}}).
 }
 \examples{
 tsibble::tourism \%>\% 

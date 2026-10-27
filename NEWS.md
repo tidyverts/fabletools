@@ -56,11 +56,11 @@
   regressors can be calibrated when `conformal_scp()` is applied to their
   specification, e.g. `model(fit = conformal_scp(ARIMA(y ~ x)))`.
 * Added `reconcile_mint()`, `reconcile_bu()`, `reconcile_td()`, and
-  `reconcile_mo()` as short aliases for `min_trace()`, `bottom_up()`,
-  `top_down()`, and `middle_out()` respectively, bringing reconciliation
-  into the same `<family>_<variant>` naming used by `bootstrap_*()`/
-  `simulate_*()`. The original names remain the canonical, documented
-  functions.
+  `reconcile_mo()` for reconciling forecasts, bringing reconciliation into the
+  same `<family>_<variant>` naming used by `bootstrap_*()`/`simulate_*()`.
+  These are now the documented, stable reconciliation functions, and are no
+  longer experimental. The original names (`min_trace()`, `bottom_up()`,
+  `top_down()` and `middle_out()`) are superseded, but will continue to work.
 * Added the `interval_coverage()` interval accuracy measure for the
   proportion of actual values within the prediction interval, which is
   included in `interval_accuracy_measures` (#368).
@@ -92,7 +92,7 @@
   models.
 * Transformations with time-varying parameters from the data, such as
   `box_cox(resp(value), lambda)`, now work with `fitted()`, `residuals()`,
-  `refit()`, `stream()` and `min_trace()` reconciliation. The parameters are
+  `refit()`, `stream()` and `reconcile_mint()` reconciliation. The parameters are
   stored with the model's data, alongside the response. `forecast()`,
   `generate()`, `refit()` and `stream()` give an informative error if the
   parameter isn't in `new_data` (#382).
@@ -117,11 +117,11 @@
 * Fixed `[[<-` and `[<-` not registering model columns in a mable (#402,
   #323), and removed model columns (e.g. with `mutate(fit, ets = NULL)`)
   still being registered as models.
-* Fixed `min_trace()` positive definite check not being scale invariant (#358).
+* Fixed `reconcile_mint()` positive definite check not being scale invariant (#358).
   Diagonal weights are checked to be positive, and covariance matrices are
   checked on the correlation scale, so series with very different scales are
   accepted.
-* Improved error for singular covariance matrices in `min_trace()` (#309).
+* Improved error for singular covariance matrices in `reconcile_mint()` (#309).
 * Fixed `accuracy()` spreading extra arguments with more than one value (such
   as `level = c(80, 95)`) across the series and models, which is now an
   error. The interval accuracy measures also require a single `level`.
@@ -132,7 +132,7 @@
 * `reconcile_mo()` with the split at the bottom level of the hierarchy is now
   bottom-up reconciliation, rather than an error. This includes the default
   `split = 1` for hierarchies with a single level below the total.
-* Fixed `top_down()` and `middle_out()` reconciliation collapsing sample path
+* Fixed `reconcile_td()` and `reconcile_mo()` reconciliation collapsing sample path
   forecasts (e.g. from `simulate_iid()`) to degenerate distributions (#408).
   Only the distributions of the series being disaggregated (the top or split
   level) need to be normal or sample paths, so they no longer collapse when
@@ -189,9 +189,9 @@
 * Increased the minimum required versions of rlang to 1.0.0, vctrs to 0.3.0
   and lifecycle to 1.0.0, matching the functionality used by fabletools.
 * Documentation improvements (#281, #371, #389, #410).
-* The reconciliation functions (`reconcile_*()`, `min_trace()`, etc.) now
-  give an informative error when they aren't applied to a column of models,
-  rather than failing later in `forecast()`.
+* The reconciliation functions (`reconcile_*()`) now give an informative
+  error when they aren't applied to a column of models, rather than failing
+  later in `forecast()`.
 
 ## Breaking changes
 

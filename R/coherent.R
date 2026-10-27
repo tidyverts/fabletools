@@ -20,7 +20,7 @@
 #' Optimal reconciled forecasts use
 #' \eqn{\mathbf{G} = (\mathbf{S}'\mathbf{W}^{-1}\mathbf{S})^{-1}\mathbf{S}'\mathbf{W}^{-1}},
 #' with \eqn{\mathbf{W}} a positive definite weight matrix (see
-#' [`min_trace()`]).
+#' [`reconcile_mint()`]).
 #'
 #' @param data A data object which contains linearly related coherent structures.
 #' @param sparse If `TRUE`, a sparse matrix (class `"dgCMatrix"` from the
