@@ -20,8 +20,8 @@
 #'
 #' @param model A fitted model (e.g. `mutate(ets = conformal_scp(ets))`), or a
 #' model specification (e.g. `model(ets = conformal_scp(ETS(y)))`).
-#' @param times The number of quantiles used to represent each forecast
-#' distribution.
+#' @param n_quantiles The number of quantiles of the calibration errors used to
+#' represent each forecast distribution (as a [distributional::dist_sample()]).
 #' @param min_calibration The minimum number of errors needed to calibrate a
 #' forecast horizon.
 #'
@@ -43,33 +43,33 @@
 #'   forecast(h = 4)
 #'
 #' @export
-conformal_scp <- function(model, times = 5000, min_calibration = 20) {
-  check_count(times)
+conformal_scp <- function(model, n_quantiles = 5000, min_calibration = 20) {
+  check_count(n_quantiles)
   check_count(min_calibration)
   UseMethod("conformal_scp")
 }
 
 #' @export
-conformal_scp.mdl_ts <- function(model, times = 5000, min_calibration = 20) {
-  mdl_wrap(model, "mdl_conformal_scp", times = times, min_calibration = min_calibration)
+conformal_scp.mdl_ts <- function(model, n_quantiles = 5000, min_calibration = 20) {
+  mdl_wrap(model, "mdl_conformal_scp", n_quantiles = n_quantiles, min_calibration = min_calibration)
 }
 
 #' @export
-conformal_scp.mdl_lst <- function(model, times = 5000, min_calibration = 20) {
+conformal_scp.mdl_lst <- function(model, n_quantiles = 5000, min_calibration = 20) {
   # Each series is calibrated on its own history, not jointly across series.
   new_mdl_lst(lapply(
-    vctrs::vec_data(model), conformal_scp, times = times, min_calibration = min_calibration
+    vctrs::vec_data(model), conformal_scp, n_quantiles = n_quantiles, min_calibration = min_calibration
   ))
 }
 
 #' @export
-conformal_scp.mdl_df <- function(model, times = 5000, min_calibration = 20) {
-  modify_model_group(model, conformal_scp, times = times, min_calibration = min_calibration)
+conformal_scp.mdl_df <- function(model, n_quantiles = 5000, min_calibration = 20) {
+  modify_model_group(model, conformal_scp, n_quantiles = n_quantiles, min_calibration = min_calibration)
 }
 
 #' @export
-conformal_scp.mdl_spec <- function(model, times = 5000, min_calibration = 20) {
-  mdl_wrap(model, "mdl_spec_conformal_scp", times = times, min_calibration = min_calibration)
+conformal_scp.mdl_spec <- function(model, n_quantiles = 5000, min_calibration = 20) {
+  mdl_wrap(model, "mdl_spec_conformal_scp", n_quantiles = n_quantiles, min_calibration = min_calibration)
 }
 
 # Wrap the mdl_ts produced by estimate() when the spec was itself wrapped
@@ -77,11 +77,11 @@ conformal_scp.mdl_spec <- function(model, times = 5000, min_calibration = 20) {
 #' @export
 new_model.mdl_spec_conformal_scp <- function(fit = NULL, model, data, response,
                                              transformation, recent_data = NULL){
-  conformal_scp(NextMethod(), times = model %@% "times", min_calibration = model %@% "min_calibration")
+  conformal_scp(NextMethod(), n_quantiles = model %@% "n_quantiles", min_calibration = model %@% "min_calibration")
 }
 
 #' @export
-forecast.mdl_conformal_scp <- function(object, new_data = NULL, h = NULL, times = NULL,
+forecast.mdl_conformal_scp <- function(object, new_data = NULL, h = NULL,
                                        point_forecast = list(.mean = mean), ...){
   setup <- forecast_mdl_ts_setup(object, new_data, h, point_forecast)
   if(!is.null(setup$empty_fbl)) return(setup$empty_fbl)
@@ -93,7 +93,7 @@ forecast.mdl_conformal_scp <- function(object, new_data = NULL, h = NULL, times 
     abort("conformal_scp() currently only supports models with a single response variable.")
   }
 
-  times <- times %||% (object%@%"times") %||% 5000
+  n_quantiles <- object%@%"n_quantiles"
   min_calibration <- (object%@%"min_calibration") %||% 20
 
   # Strip our class before using the model to compute the anchor point
@@ -108,7 +108,7 @@ forecast.mdl_conformal_scp <- function(object, new_data = NULL, h = NULL, times 
 
   pools <- conformal_scp_calibration(base_object, NROW(new_data), min_calibration)
 
-  draws <- .mapply(function(a, pool) a + conformal_scp_quantile(pool, times),
+  draws <- .mapply(function(a, pool) a + conformal_scp_quantile(pool, n_quantiles),
                    list(anchor, pools), NULL)
   fc <- distributional::dist_sample(draws)
 
@@ -138,17 +138,17 @@ conformal_scp_calibration <- function(object, H, min_calibration) {
 }
 
 # Evaluate the split conformal quantile function of the nonconformity scores
-# `errors` on an evenly spaced grid of `times` probabilities. With n scores,
+# `errors` on an evenly spaced grid of `n_quantiles` probabilities. With n scores,
 # the finite-sample valid conformal bounds for a central interval at level
 # 1 - alpha are the floor((n+1)*alpha/2)-th and ceiling((n+1)*(1-alpha/2))-th
 # order statistics (i.e. the empirical quantiles of the scores augmented with
 # -Inf/+Inf), so the lower tail uses floor() and the upper tail ceiling().
 # Order statistics beyond the observed scores (which conformal prediction
 # would make infinite) are truncated to the most extreme observed score.
-conformal_scp_quantile <- function(errors, times) {
+conformal_scp_quantile <- function(errors, n_quantiles) {
   errors <- sort(errors)
   n <- length(errors)
-  p <- (seq_len(times) - 1) / max(times - 1, 1)
+  p <- (seq_len(n_quantiles) - 1) / max(n_quantiles - 1, 1)
   k <- ifelse(p < 0.5, floor((n + 1) * p), ceiling((n + 1) * p))
   errors[pmin(pmax(k, 1), n)]
 }

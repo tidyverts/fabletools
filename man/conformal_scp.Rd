@@ -4,14 +4,14 @@
 \alias{conformal_scp}
 \title{Split conformal prediction intervals}
 \usage{
-conformal_scp(model, times = 5000, min_calibration = 20)
+conformal_scp(model, n_quantiles = 5000, min_calibration = 20)
 }
 \arguments{
 \item{model}{A fitted model (e.g. \code{mutate(ets = conformal_scp(ets))}), or a
 model specification (e.g. \code{model(ets = conformal_scp(ETS(y)))}).}
 
-\item{times}{The number of quantiles used to represent each forecast
-distribution.}
+\item{n_quantiles}{The number of quantiles of the calibration errors used to
+represent each forecast distribution (as a \code{\link[distributional:dist_sample]{distributional::dist_sample()}}).}
 
 \item{min_calibration}{The minimum number of errors needed to calibrate a
 forecast horizon.}

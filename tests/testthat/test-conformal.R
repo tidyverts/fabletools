@@ -13,7 +13,7 @@ test_that("conformal_scp() runs end-to-end and produces valid distributions", {
 
   set.seed(1)
   fc_cp <- mbl_small %>%
-    mutate(ets = conformal_scp(ets, times = 200, min_calibration = 10)) %>%
+    mutate(ets = conformal_scp(ets, n_quantiles = 200, min_calibration = 10)) %>%
     forecast(h = 3)
 
   expect_true(all(dist_types(fc_cp$value) == "dist_sample"))
@@ -39,7 +39,7 @@ test_that("conformal_scp() calibration is genuinely out-of-sample (not just in-s
 
   set.seed(1)
   fc_cp <- mbl_small %>%
-    mutate(ets = conformal_scp(ets, times = 500, min_calibration = 10)) %>%
+    mutate(ets = conformal_scp(ets, n_quantiles = 500, min_calibration = 10)) %>%
     forecast(h = 2)
 
   cp_width <- vapply(seq_len(2), function(i) {
@@ -72,14 +72,14 @@ test_that("conformal_scp() composes with mutate() across model columns/series an
   mbl_two_id <- two_id %>% model(ets = fable::ETS(value))
 
   fc_multi <- mbl_two_id %>%
-    mutate(ets = conformal_scp(ets, times = 100, min_calibration = 10)) %>%
+    mutate(ets = conformal_scp(ets, n_quantiles = 100, min_calibration = 10)) %>%
     forecast(h = 3)
   expect_true(all(dist_types(fc_multi$value) == "dist_sample"))
   expect_equal(n_keys(fc_multi), 2)
 
   # Applied to a model specification before fitting.
   fit_cp <- us_deaths_small %>%
-    model(ets = conformal_scp(fable::ETS(value), times = 50, min_calibration = 10))
+    model(ets = conformal_scp(fable::ETS(value), n_quantiles = 50, min_calibration = 10))
   expect_true(inherits(fit_cp$ets[[1]], "mdl_conformal_scp"))
 
   fc_cp <- fit_cp %>% forecast(h = 3)
