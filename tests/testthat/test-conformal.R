@@ -135,21 +135,26 @@ test_that("conformal_scp() calibrates each horizon with enough errors", {
 
   # Horizons with fewer than 20 errors can't be calibrated
   expect_warning(
-    fc <- forecast(mutate(rw, rw = conformal_scp(rw, n_quantiles = 50)), h = 25),
+    fc <- forecast(mutate(rw, rw = conformal_scp(rw, n_quantiles = 50, initial = 1)), h = 25),
     "horizons 21 to 25 are `NA`"
   )
   expect_true(all(is.finite(fc$.mean[1:20])))
   expect_true(all(is.na(fc$.mean[21:25])))
+  # Refits starting from 10 observations leave fewer errors
+  expect_warning(
+    forecast(mutate(rw, rw = conformal_scp(rw, n_quantiles = 50)), h = 25),
+    "horizons 12 to 25 are `NA`"
+  )
 
   # Calibration needs enough errors in total
   short <- model(tsibble::tsibble(t = 1:15, y = cumsum(rnorm(15)), index = t), rw = fable::RW(y))
   expect_warning(
-    fc <- forecast(mutate(short, rw = conformal_scp(rw, n_quantiles = 50)), h = 5),
+    fc <- forecast(mutate(short, rw = conformal_scp(rw, n_quantiles = 50, initial = 1)), h = 5),
     "horizons 1 to 5 are `NA`"
   )
   expect_true(all(is.na(fc$.mean)))
   expect_error(
-    forecast(mutate(short, rw = conformal_scp(rw, min_calibration = 200)), h = 5),
+    forecast(mutate(short, rw = conformal_scp(rw, min_calibration = 200, initial = 1)), h = 5),
     "only 60 were available"
   )
 })
@@ -167,4 +172,40 @@ test_that("conformal_scp() calibrates transformed responses on their original sc
   # bias adjusted point forecasts)
   errors <- fabletools:::conformal_cv_errors(fit$rw[[1]], 1)$errors[, 1]
   expect_equal(errors[-1], diff(dt$y), tolerance = 0.1)
+})
+
+test_that("conformal_scp() refits from an initial window", {
+  skip_if_not_installed("fable")
+
+  set.seed(1)
+  dt <- tsibble::tsibble(t = 1:40, y = cumsum(rnorm(40)), index = t)
+  fit <- model(dt, rw = fable::RW(y ~ drift()))
+
+  # The first refit uses the first `initial` observations
+  errors <- fabletools:::conformal_cv_errors(fit$rw[[1]], 2, initial = 10)$errors
+  expect_equal(which(!is.na(errors[, 1]))[1], 11)
+  expect_equal(colSums(!is.na(errors)), c(30, 29))
+  errors <- fabletools:::conformal_cv_errors(fit$rw[[1]], 1, initial = 1)$errors
+  expect_equal(sum(!is.na(errors)), 38)
+
+  # Defaults to 10 observations
+  cnf <- mutate(fit, rw = conformal_scp(rw))
+  expect_equal(cnf$rw[[1]] %@% "initial", 10)
+  fc <- forecast(mutate(fit, rw = conformal_scp(rw, n_quantiles = 50, initial = 5)), h = 2)
+  expect_true(all(is.finite(fc$.mean)))
+
+  expect_error(conformal_scp(fit$rw, initial = 0), "`initial` must be a single positive whole number")
+  expect_error(conformal_scp(fit$rw, initial = 2.5), "`initial` must be a single positive whole number")
+  expect_error(conformal_scp(fit$rw, initial = c(1, 2)), "`initial` must be a single positive whole number")
+  expect_error(
+    mutate(fit, rw = conformal_scp(rw, initial = 40)),
+    "`initial` \\(40\\) must be less than the number of observations \\(40\\)"
+  )
+  expect_error(
+    model(dt, rw = conformal_scp(fable::RW(y), initial = 50), .safely = FALSE),
+    "must be less than the number of observations"
+  )
+  # Refitting to a shorter series is checked when forecasting
+  short <- refit(cnf, dt[1:8, ])
+  expect_error(forecast(short, h = 1), "must be less than the number of observations \\(8\\)")
 })

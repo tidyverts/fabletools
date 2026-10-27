@@ -10,8 +10,9 @@
 #'
 #' The forecast distribution is obtained as follows:
 #'
-#' 1. The model is refit on an expanding window of its history, forecasting
-#'    up to `h` steps ahead from each origin to obtain out-of-sample errors.
+#' 1. The model is refit on an expanding window of its history (starting with
+#'    its first `initial` observations), forecasting up to `h` steps ahead from
+#'    each origin to obtain out-of-sample errors.
 #' 2. The errors for each forecast horizon are used as its calibration set.
 #'    Forecasts for horizons with fewer than `min_calibration` errors can't be
 #'    calibrated, and are `NA` (with a warning).
@@ -52,6 +53,11 @@
 #' represent each forecast distribution.
 #' @param min_calibration The minimum number of out-of-sample errors needed to
 #' calibrate a forecast horizon.
+#' @param initial The number of observations in the first (shortest) window
+#' the model is refit on. Forecasts from models fit to very few observations
+#' can be poor, which inflates the calibration errors (and so the intervals),
+#' while a larger `initial` leaves fewer errors to calibrate with. It must be
+#' less than the number of observations of each series.
 #'
 #' @seealso [bootstrap_iid()], [simulate_iid()], [forecast()], [refit()]
 #'
@@ -71,37 +77,41 @@
 #'   forecast(h = 4)
 #'
 #' @export
-conformal_scp <- function(model, n_quantiles = 5000, min_calibration = 20) {
+conformal_scp <- function(model, n_quantiles = 5000, min_calibration = 20, initial = 10) {
   check_count(n_quantiles)
   check_count(min_calibration)
+  check_count(initial)
   UseMethod("conformal_scp")
 }
 
 #' @export
-conformal_scp.default <- function(model, n_quantiles = 5000, min_calibration = 20) {
+conformal_scp.default <- function(model, n_quantiles = 5000, min_calibration = 20, initial = 10) {
   abort_invalid_modifier(model, "conformal_scp")
 }
 
 #' @export
-conformal_scp.mdl_ts <- function(model, n_quantiles = 5000, min_calibration = 20) {
-  if (!is_null_model(model)) check_conformal_refit(model)
-  mdl_wrap(model, "mdl_conformal_scp", n_quantiles = n_quantiles, min_calibration = min_calibration)
+conformal_scp.mdl_ts <- function(model, n_quantiles = 5000, min_calibration = 20, initial = 10) {
+  if (!is_null_model(model)) {
+    check_conformal_initial(initial, nrow(model$data))
+    check_conformal_refit(model)
+  }
+  mdl_wrap(model, "mdl_conformal_scp", n_quantiles = n_quantiles, min_calibration = min_calibration, initial = initial)
 }
 
 #' @export
-conformal_scp.mdl_lst <- function(model, n_quantiles = 5000, min_calibration = 20) {
+conformal_scp.mdl_lst <- function(model, n_quantiles = 5000, min_calibration = 20, initial = 10) {
   # Each series is calibrated on its own history, not jointly across series.
-  map_models(model, conformal_scp, n_quantiles = n_quantiles, min_calibration = min_calibration)
+  map_models(model, conformal_scp, n_quantiles = n_quantiles, min_calibration = min_calibration, initial = initial)
 }
 
 #' @export
-conformal_scp.mdl_df <- function(model, n_quantiles = 5000, min_calibration = 20) {
-  modify_model_group(model, conformal_scp, n_quantiles = n_quantiles, min_calibration = min_calibration)
+conformal_scp.mdl_df <- function(model, n_quantiles = 5000, min_calibration = 20, initial = 10) {
+  modify_model_group(model, conformal_scp, n_quantiles = n_quantiles, min_calibration = min_calibration, initial = initial)
 }
 
 #' @export
-conformal_scp.mdl_spec <- function(model, n_quantiles = 5000, min_calibration = 20) {
-  mdl_wrap(model, "mdl_spec_conformal_scp", n_quantiles = n_quantiles, min_calibration = min_calibration)
+conformal_scp.mdl_spec <- function(model, n_quantiles = 5000, min_calibration = 20, initial = 10) {
+  mdl_wrap(model, "mdl_spec_conformal_scp", n_quantiles = n_quantiles, min_calibration = min_calibration, initial = initial)
 }
 
 # Wrap the mdl_ts produced by estimate() when the spec was itself wrapped
@@ -109,7 +119,7 @@ conformal_scp.mdl_spec <- function(model, n_quantiles = 5000, min_calibration = 
 #' @export
 new_model.mdl_spec_conformal_scp <- function(fit = NULL, model, data, response,
                                              transformation, recent_data = NULL){
-  conformal_scp(NextMethod(), n_quantiles = model %@% "n_quantiles", min_calibration = model %@% "min_calibration")
+  conformal_scp(NextMethod(), n_quantiles = model %@% "n_quantiles", min_calibration = model %@% "min_calibration", initial = model %@% "initial")
 }
 
 # Models are refit on their own history to calibrate, so the specials must be
@@ -135,6 +145,16 @@ check_conformal_refit <- function(object, call = caller_env()) {
   invisible(object)
 }
 
+# The first refit window must leave later observations to calibrate with
+check_conformal_initial <- function(initial, n, call = caller_env()) {
+  if (initial >= n) {
+    abort(c(
+      sprintf("`initial` (%d) must be less than the number of observations (%d).", initial, n),
+      "i" = "Use a smaller `initial` to calibrate `conformal_scp()` on this series."
+    ), call = call)
+  }
+}
+
 #' @export
 forecast.mdl_conformal_scp <- function(object, new_data = NULL, h = NULL,
                                        point_forecast = list(.mean = mean), ...){
@@ -150,6 +170,7 @@ forecast.mdl_conformal_scp <- function(object, new_data = NULL, h = NULL,
 
   n_quantiles <- object%@%"n_quantiles"
   min_calibration <- (object%@%"min_calibration") %||% 20
+  initial <- (object%@%"initial") %||% 10
 
   # Strip our class before using the model to compute the anchor point
   # forecast and calibration residuals, so both use plain analytical
@@ -161,7 +182,7 @@ forecast.mdl_conformal_scp <- function(object, new_data = NULL, h = NULL,
 
   anchor <- forecast(base_object, new_data = new_data, point_forecast = list(.mean = mean), ...)$.mean
 
-  pools <- conformal_scp_calibration(base_object, NROW(new_data), min_calibration, call = NULL)
+  pools <- conformal_scp_calibration(base_object, NROW(new_data), min_calibration, initial, call = NULL)
 
   draws <- .mapply(function(a, pool) a + conformal_scp_quantile(pool, n_quantiles),
                    list(anchor, pools), NULL)
@@ -177,8 +198,9 @@ forecast.mdl_conformal_scp <- function(object, new_data = NULL, h = NULL,
 # Rolling-origin (time series cross-validation) nonconformity scores for
 # horizons 1:H, as a list with the errors of each horizon. Horizons with fewer
 # than `min_calibration` errors can't be calibrated, and are NULL.
-conformal_scp_calibration <- function(object, H, min_calibration, call = caller_env()) {
-  cv <- conformal_cv_errors(object, H)
+conformal_scp_calibration <- function(object, H, min_calibration, initial = 1, call = caller_env()) {
+  check_conformal_initial(initial, nrow(object$data), call = call)
+  cv <- conformal_cv_errors(object, H, initial)
   pools <- lapply(seq_len(H), function(h) cv$errors[!is.na(cv$errors[, h]), h])
   n <- lengths(pools)
 
@@ -245,7 +267,7 @@ conformal_scp_quantile <- function(errors, n_quantiles) {
 # the error of the h-step forecast of time t (NA where no such forecast
 # exists), with the number of successful and failed refits, the first error
 # and the last failure after a successful refit.
-conformal_cv_errors <- function(object, H) {
+conformal_cv_errors <- function(object, H, initial = 1) {
   dt <- conformal_history(object)
   resp <- response_vars(object)
   n <- nrow(dt)
@@ -258,7 +280,7 @@ conformal_cv_errors <- function(object, H) {
   future <- dt[c(key_vars(dt), index_var(dt), model_transformation_params(object))]
   n_refits <- n_failed <- 0L
   error <- failure <- NULL
-  for (i in seq_len(n - 1L)) {
+  for (i in seq(initial, length.out = max(n - initial, 0L))) {
     h <- seq_len(min(H, n - i))
     # Slicing a single row loses the tsibble's interval, which is required
     # to compute some specials (e.g. seasonal periods).

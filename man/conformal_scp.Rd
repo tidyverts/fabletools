@@ -4,7 +4,7 @@
 \alias{conformal_scp}
 \title{Split conformal prediction intervals}
 \usage{
-conformal_scp(model, n_quantiles = 5000, min_calibration = 20)
+conformal_scp(model, n_quantiles = 5000, min_calibration = 20, initial = 10)
 }
 \arguments{
 \item{model}{A fitted model (e.g. \code{mutate(ets = conformal_scp(ets))}), or a
@@ -15,6 +15,12 @@ represent each forecast distribution.}
 
 \item{min_calibration}{The minimum number of out-of-sample errors needed to
 calibrate a forecast horizon.}
+
+\item{initial}{The number of observations in the first (shortest) window
+the model is refit on. Forecasts from models fit to very few observations
+can be poor, which inflates the calibration errors (and so the intervals),
+while a larger \code{initial} leaves fewer errors to calibrate with. It must be
+less than the number of observations of each series.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -26,8 +32,9 @@ described by its assumed distribution.
 
 The forecast distribution is obtained as follows:
 \enumerate{
-\item The model is refit on an expanding window of its history, forecasting
-up to \code{h} steps ahead from each origin to obtain out-of-sample errors.
+\item The model is refit on an expanding window of its history (starting with
+its first \code{initial} observations), forecasting up to \code{h} steps ahead from
+each origin to obtain out-of-sample errors.
 \item The errors for each forecast horizon are used as its calibration set.
 Forecasts for horizons with fewer than \code{min_calibration} errors can't be
 calibrated, and are \code{NA} (with a warning).
