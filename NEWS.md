@@ -169,7 +169,10 @@
   `stretch_tsibble()`), since every series shares the same model definition
   object (#318, #326). The short-term memory is now snapshotted onto each
   fitted model individually, rather than only ever living on the shared,
-  mutable model definition.
+  mutable model definition. Models estimated with fabletools 0.8.0 or earlier
+  don't have their own short-term memory, so `forecast()`, `generate()` and
+  `stream()` with `lag()` now error for them, asking for the model to be
+  re-estimated.
 * Fixed `lag()` not lagging the regressors of models using `special_xreg()`
   (such as fable's `TSLM()`), which used the unlagged regressor. Lagged
   regressors of these models now also use the short-term memory of the model

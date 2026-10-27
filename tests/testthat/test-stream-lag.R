@@ -130,3 +130,12 @@ test_that("lag() in special_xreg() regressors uses short term memory", {
   fc <- forecast(fit, lag_test_data(c(60, 70, 80), from = 6))
   expect_equal(fc$.mean, c(40, 50, 60))
 })
+
+test_that("lag() errors clearly for fits without their own recent data", {
+  dt <- lag_test_data(c(10, 20, 30, 40, 50))
+  fit <- estimate(dt, new_lag_test_model(y ~ lagged(x, 2)))
+  # Fits from fabletools <= 0.8.0 don't have the recent_data attribute
+  attr(fit, "recent_data") <- NULL
+  expect_error(forecast(fit, h = 1), "estimated with fabletools 0.8.0 or earlier")
+  expect_error(stream(fit, lag_test_data(60, from = 6)), "estimated with fabletools 0.8.0 or earlier")
+})

@@ -21,6 +21,13 @@ model_definition <- R6::R6Class(NULL,
     recall_lag = function(x, n = 1L, ...){
       start <- NULL
       if(self$stage %in% c("generate", "forecast", "stream")){
+        # Fits from fabletools <= 0.8.0 don't keep their own recent data
+        if(is.null(self$recent_data)) {
+          abort(c(
+            "The recent data used by `lag()` isn't available for this model, as it was estimated with fabletools 0.8.0 or earlier.",
+            i = "Re-estimate the model with `model()` to use it with lagged variables."
+          ), call = NULL)
+        }
         x_quo <- enquo(x)
         start <- eval_tidy(get_expr(x_quo), self$recent_data)
         # Variables only used through lag() needn't be in the future data (#318),
