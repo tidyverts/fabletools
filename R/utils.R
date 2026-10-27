@@ -62,20 +62,41 @@ make_future_data <- function(.data, h = NULL){
 }
 
 # The number of steps covering a calendar horizon of years or months (e.g.
-# "1 year") from the last time point of Date or POSIXct data, or NULL to
-# approximate it with get_frequencies() (e.g. 365.25 days per year).
+# "1 year") from the last time point of Date, POSIXct or mixtime data, or NULL
+# to approximate it with get_frequencies() (e.g. 365.25 days per year).
 calendar_horizon <- function(.data, h){
   if(!(is.character(h) || inherits(h, "Period")) || length(h) != 1) return(NULL)
   idx <- .data[[index_var(.data)]]
-  if(!inherits(idx, c("Date", "POSIXct")) || inherits(idx, "mixtime::mixtime")) return(NULL)
+  is_mixtime <- inherits(idx, "mixtime::mixtime")
+  if(!is_mixtime && !inherits(idx, c("Date", "POSIXct"))) return(NULL)
   check_installed("lubridate")
   period <- if(is.character(h)) lubridate::as.period(h) else h
   if(is.na(period) || (period@year == 0 && period@month == 0)) return(NULL)
   last <- max(idx)
+  if(is_mixtime) return(mixtime_calendar_horizon(.data, last, period))
   end <- lubridate::add_with_rollback(last, period)
   secs <- as.double(difftime(as.POSIXct(end), as.POSIXct(last), units = "secs"))
   n <- secs * get_frequencies(lubridate::seconds(1), .data)
   if(!is.finite(n)) return(NULL)
+  n
+}
+
+# Calendar horizons for mixtime indices, using mixtime's calendar arithmetic
+# for the years and months of `period`.
+mixtime_calendar_horizon <- function(.data, last, period){
+  if(!is_integerish(c(period@year, period@month))) return(NULL)
+  end <- tryCatch({
+    end <- last
+    if(period@year != 0) end <- end + mixtime::years(as.integer(period@year))
+    if(period@month != 0) end <- end + mixtime::months(as.integer(period@month))
+    end
+  }, error = function(e) NULL)
+  if(is.null(end)) return(NULL)
+  n <- (as.double(end) - as.double(last)) / index_time_units(.data)
+  # The remaining days, hours, etc. have a fixed length
+  period@year <- period@month <- 0
+  n <- n + get_frequencies(period, .data)
+  if(length(n) != 1 || !is.finite(n)) return(NULL)
   n
 }
 

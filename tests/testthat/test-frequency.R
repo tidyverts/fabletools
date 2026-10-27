@@ -184,3 +184,18 @@ test_that("text horizons cover the calendar period after the data", {
   # Other intervals are unchanged
   expect_equal(NROW(make_future_data(as_tsibble(USAccDeaths), "1 year")), 12)
 })
+
+test_that("text horizons cover the calendar period after mixtime data", {
+  skip_if_no_granules()
+  daily <- function(start) freq_tsbl(mixtime::date(as.Date(start) + 0:99))
+  expect_equal(NROW(make_future_data(daily("2023-10-28"), "1 year")), 366)
+  expect_equal(NROW(make_future_data(daily("2024-10-28"), "1 year")), 365)
+  expect_equal(NROW(make_future_data(daily("2023-10-28"), "1 month")), 29)
+  expect_equal(NROW(make_future_data(daily("2023-10-28"), "1 year 2 days")), 368)
+  expect_equal(NROW(make_future_data(daily("2023-10-28"), "2 weeks")), 14)
+  hourly <- freq_tsbl(mt_hourly(as.POSIXct("2024-01-01", tz = "UTC") + 3600 * (0:99)))
+  expect_equal(NROW(make_future_data(hourly, "1 month")), 31 * 24)
+  expect_equal(NROW(make_future_data(freq_tsbl(mixtime::yearmonth(600:647)), "18 months")), 18)
+  # Calendar shifts that mixtime can't make are approximated
+  expect_equal(NROW(make_future_data(freq_tsbl(mixtime::yearweek(2600:2647)), "1 year")), 52)
+})
