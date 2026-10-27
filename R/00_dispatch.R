@@ -120,7 +120,9 @@ dispatch_mbl_df <- function(x, ..., .f, .values_to = ".result",
   }
   mdls <- mable_vars(x)
   kv <- c(key_vars(x), ".model")
+  ptype <- mable_ptype(x)
   x <- as_tibble(x)
+  x[mdls] <- lapply(x[mdls], fill_null_models, ptype)
   res <- unpack_model_results(
     lapply(x[mdls], call_with_new_data, .f = .f, new_data = x[["new_data"]], ...)
   )
@@ -170,6 +172,23 @@ placeholder_model_col <- function(x, ptype) {
     return(new_mdl_df(lapply(as.list(x), placeholder_model_col, ptype)))
   }
   new_mdl_lst(rep(list(ptype), vec_size(x)))
+}
+
+# Replace missing (`NULL`) models, such as those from combining mables with
+# `bind_rows()`, with a NULL model without any data (#234).
+fill_null_models <- function(x, ptype) {
+  if (is.null(ptype)) return(x)
+  attrs <- attributes(x)
+  if (is_mdl_df(x)) {
+    x <- lapply(unclass(x), fill_null_models, ptype)
+  } else {
+    is_null <- vapply(x, is.null, logical(1L))
+    if (!any(is_null)) return(x)
+    x <- vec_data(x)
+    x[is_null] <- list(ptype)
+  }
+  attributes(x) <- attrs
+  x
 }
 
 # Apply `.f` to each model column of a mable, replacing them with the results.

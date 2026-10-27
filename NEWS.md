@@ -84,6 +84,8 @@
   `components()`, which depends on the models). The response variable(s) of a mable are
   now retained when it is modified rather than recomputed from its models,
   which also allows mables with missing (`NULL`) models to be combined (#234).
+  Missing models are treated as NULL models (see `null_model()`) without any
+  data, so they give no forecasts and missing accuracy measures and summaries.
   `as_mable()` gains a `response` argument for constructing mables without any
   models.
 * Transformations with time-varying parameters from the data, such as

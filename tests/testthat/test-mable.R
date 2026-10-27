@@ -161,6 +161,17 @@ test_that("Mables can be combined with missing models (#234)", {
   res <- bind_rows(mbl[2, c("key", "a")], mbl[1,])
   expect_identical(response_vars(res), "value")
   expect_null(res[["b"]][[1]])
+
+  # Missing models give no forecasts and missing summaries
+  fc <- forecast(res, h = 2)
+  expect_identical(NROW(fc), 6L)
+  expect_identical(unique(fc$.model[fc$key == res$key[1]]), "a")
+  acc <- accuracy(res)
+  expect_identical(NROW(acc), 4L)
+  expect_true(all(is.nan(acc$RMSE[acc$key == res$key[1] & acc$.model == "b"])))
+  expect_identical(NROW(glance(res)), 3L)
+  expect_identical(NROW(tidy(res)), 0L)
+  expect_identical(NROW(augment(res)), 3L * 72L)
 })
 
 test_that("Results of an empty mable have the structure of non-empty results (#313)", {
