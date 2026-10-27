@@ -136,7 +136,12 @@ forecast.mbl_df <- function(object, new_data = NULL, h = NULL,
 
 # The modifier replacing the deprecated `simulate`/`bootstrap` arguments of
 # forecast() and generate() (with a deprecation warning), or NULL if unused.
-deprecated_sim_modifier <- function(dots, fn, user_env = caller_env(2)) {
+deprecated_sim_modifier <- function(dots, fn, user_env = caller_env(2), call = caller_env()) {
+  for (arg in intersect(c("simulate", "bootstrap"), names(dots))) {
+    if (!is_bool(dots[[arg]])) {
+      abort(sprintf("`%s` must be `TRUE` or `FALSE`.", arg), call = call)
+    }
+  }
   simulate <- isTRUE(dots$simulate) && fn == "forecast"
   bootstrap <- isTRUE(dots$bootstrap)
   if (!simulate && !bootstrap) return(NULL)
@@ -194,7 +199,7 @@ forecast.lst_mdl <- deprecate_lst_mdl(forecast.mdl_lst)
 forecast.mdl_ts <- function(object, new_data = NULL, h = NULL, bias_adjust = NULL,
                             simulate = FALSE, bootstrap = FALSE, times = 5000,
                             point_forecast = list(.mean = mean), ...){
-  if(isTRUE(simulate) || isTRUE(bootstrap)) {
+  if(!isFALSE(simulate) || !isFALSE(bootstrap)) {
     dots <- list2(...)
     modifier <- deprecated_sim_modifier(
       list(simulate = simulate, bootstrap = bootstrap, times = times, bootstrap_block_size = dots$bootstrap_block_size),

@@ -381,6 +381,15 @@ test_that("deprecated forecast()/generate() bootstrap/simulate arguments still w
   expect_equal(fc, fc_each)
 })
 
+test_that("deprecated simulate and bootstrap arguments are checked", {
+  skip_if_not_installed("fable")
+
+  expect_error(forecast(mbl, h = 2, simulate = "yes"), "`simulate` must be `TRUE` or `FALSE`")
+  expect_error(forecast(mbl, h = 2, bootstrap = NA), "`bootstrap` must be `TRUE` or `FALSE`")
+  expect_error(generate(mbl, h = 2, bootstrap = 1), "`bootstrap` must be `TRUE` or `FALSE`")
+  expect_error(forecast(mbl$ets[[1]], h = 2, simulate = c(TRUE, FALSE)), "`simulate` must be `TRUE` or `FALSE`")
+})
+
 test_that("deprecated bootstrap_block_size uses a block bootstrap as in fabletools 0.8.0", {
   skip_if_not_installed("fable")
 

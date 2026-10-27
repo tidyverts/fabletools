@@ -62,7 +62,7 @@ generate.lst_mdl <- deprecate_lst_mdl(generate.mdl_lst)
 #' @export
 generate.mdl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL,
                             bootstrap = FALSE, bootstrap_block_size = 1, ...){
-  if(isTRUE(bootstrap)) {
+  if(!isFALSE(bootstrap)) {
     modifier <- deprecated_sim_modifier(
       list(bootstrap = bootstrap, bootstrap_block_size = bootstrap_block_size),
       "generate", user_env = caller_env()
