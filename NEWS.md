@@ -247,6 +247,13 @@ fitted model, and groundwork has been laid for mixtime-based tsibbles.
 
 ## Breaking changes
 
+* `forecast()` of a model now returns its forecast distribution, and of a list
+  of models (a column of a mable) a list of their forecast distributions,
+  rather than fables. The fable of a mable's forecasts is built from these
+  distributions, with the point forecasts computed once for all models.
+  Methods for models that still return a fable keep working, as its forecast
+  distribution is used, and they are given `point_forecast = list()` so that
+  no point forecasts are computed for each model.
 * `generate()` now simulates every series of a model column before moving on
   to the next model column (as `forecast()` does), rather than every model
   column of a series before moving on to the next series. For mables with

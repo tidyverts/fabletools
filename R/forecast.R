@@ -32,7 +32,11 @@
 #' @param ... Additional arguments for forecast model methods.
 #' 
 #' @return
-#' A fable containing the following columns:
+#' For a model, its forecast distribution with one value for each future time
+#' point. A list of models (a column of a mable) gives a list of the forecast
+#' distributions of each model. Point forecasts are only computed for a mable.
+#'
+#' For a mable, a fable containing the following columns:
 #' - `.model`: The name of the model used to obtain the forecast. Taken from
 #'   the column names of models in the provided mable.
 #' - The forecast distribution. The name of this column will be the same as the 
@@ -113,19 +117,52 @@ forecast.mbl_df <- function(object, new_data = NULL, h = NULL,
 
   # The data is bound here, rather than by dispatch_mbl_df(), so that joint
   # forecasting methods (such as reconciliation) get the key structure of all
-  # the series to forecast.
+  # the series to forecast. The future time points for a horizon `h` are also
+  # bound to each row, as the forecast distributions from the models are
+  # combined with them into a fable.
   # A mable without any models has no series to bind the data to, so its
   # structure is passed on instead (#313).
-  if(!is.null(new_data) && NROW(object) > 0){
-    object <- bind_new_data(object, new_data)
+  if(NROW(object) > 0){
+    object <- if(is.null(new_data)) bind_future_data(object, h) else bind_new_data(object, new_data)
     new_data <- NULL
+  } else if(is.null(new_data) && !is.null(ptype <- mable_ptype(object))){
+    new_data <- make_future_data(ptype$data, h)
   }
+  response <- unname(response_vars(object))
+  # The point forecasts are computed from the distributions here, so methods
+  # still computing them for each model (and returning a fable) compute none.
   inject(dispatch_mbl_df(
-    object, h = h, point_forecast = point_forecast, !!!dots,
+    object, point_forecast = list(), !!!dots,
     key_data = key_data(object),
-    .f = forecast, .values_to = ".fc", .unnest = unnest_fable,
+    .f = forecast, .values_to = ".fc", .keep_new_data = TRUE,
+    .unnest = function(x, col, key) unnest_fable(x, col, key, response, point_forecast),
     .new_data = new_data
   ))
+}
+
+# Bind the future time points of each series for horizon `h` as its
+# `new_data`, from the data of its first model with any.
+bind_future_data <- function(object, h) {
+  mdls <- as_tibble(object)[mable_vars(object)]
+  ptype <- mable_ptype(object)
+  object[["new_data"]] <- lapply(seq_len(NROW(object)), function(i) {
+    data <- NULL
+    for (mdl in row_models(mdls, i)) {
+      if (NROW(mdl$data) > 0) {
+        data <- mdl$data
+        break
+      }
+    }
+    make_future_data(data %||% ptype$data, h)
+  })
+  object
+}
+
+# The models of row `i` of a mable's model columns
+row_models <- function(x, i) {
+  unlist(lapply(unclass(x), function(col) {
+    if (is.data.frame(col)) row_models(col, i) else list(col[[i]])
+  }), recursive = FALSE)
 }
 
 # The modifier replacing the deprecated `simulate`/`bootstrap` arguments of
@@ -168,11 +205,40 @@ modify_each_model <- function(object, modifier) {
   dplyr::dplyr_col_modify(object, lapply(as_tibble(object)[mdls], map_models, modifier))
 }
 
-# Combine the nested forecasts of each model into a fable
-unnest_fable <- function(x, col, key) {
-  fbl_attr <- attributes(x[[col]][[1]])
+# Combine the forecast distributions of each model with the data of their
+# future time points, and compute their point forecasts, as a fable.
+unnest_fable <- function(x, col, key, response, point_forecast) {
+  dist_col <- if(length(response) > 1) ".distribution" else response
+  x[[col]] <- map2(x[["new_data"]], x[[col]], function(new_data, fc) {
+    fc <- as_forecast_distribution(fc)
+    # Missing models give no forecasts
+    if(vec_size(fc) == 0) new_data <- vec_slice(new_data, 0L)
+    if(vec_size(fc) != NROW(new_data)) {
+      abort(sprintf(
+        "The forecast distribution of a model has %d values, but %d future time points were forecast.",
+        vec_size(fc), NROW(new_data)
+      ), call = NULL)
+    }
+    dimnames(fc) <- response
+    new_data[[dist_col]] <- fc
+    new_data[unique(c(index_var(new_data), dist_col, names(new_data)))]
+  })
+  x[["new_data"]] <- NULL
   x <- suppressWarnings(unnest_tsbl(x, col, parent_key = key))
-  build_fable(x, response = fbl_attr$response, distribution = fbl_attr$dist)
+
+  point_fc <- compute_point_forecasts(x[[dist_col]], point_forecast)
+  x[names(point_fc)] <- point_fc
+  x <- x[unique(c(key, index_var(x), dist_col, names(point_fc), names(x)))]
+  build_fable(x, response = response, distribution = dist_col)
+}
+
+# Forecasts used to be returned as a fable by the methods for models, which
+# is converted to its forecast distribution (or to a list of them for a list
+# of models). A list of forecasts is returned as is.
+as_forecast_distribution <- function(x) {
+  if (is_fable(x)) return(x[[distribution_var(x)]])
+  if (is.list(x) && !inherits(x, "distribution")) return(lapply(x, as_forecast_distribution))
+  x
 }
 
 #' @export
@@ -182,7 +248,10 @@ forecast.mdl_df <- mdl_df_method(forecast)
 forecast.mdl_lst <- function(object, new_data = NULL, key_data, ...){
   # `key_data` is only used by joint forecasting methods for `mdl_lst`
   # subclasses, and so it isn't passed on to each model.
-  dispatch_mdl_lst(object, ..., .f = forecast, .new_data = new_data)
+  lapply(
+    dispatch_mdl_lst(object, ..., .f = forecast, .new_data = new_data),
+    as_forecast_distribution
+  )
 }
 
 #' @export
@@ -202,7 +271,7 @@ check_removed_bias_adjust <- function(dots, call = caller_env()) {
 #' @export
 forecast.mdl_ts <- function(object, new_data = NULL, h = NULL,
                             simulate = FALSE, bootstrap = FALSE, times = 5000,
-                            point_forecast = list(.mean = mean), ...){
+                            point_forecast = list(), ...){
   check_removed_bias_adjust(list2(...))
   if(!isFALSE(simulate) || !isFALSE(bootstrap)) {
     dots <- list2(...)
@@ -212,14 +281,12 @@ forecast.mdl_ts <- function(object, new_data = NULL, h = NULL,
     )
     object <- modifier(object)
     dots$bootstrap_block_size <- NULL
-    return(exec(forecast, object, new_data = new_data, h = h, point_forecast = point_forecast, !!!dots))
+    return(exec(forecast, object, new_data = new_data, h = h, !!!dots))
   }
 
-  setup <- forecast_mdl_ts_setup(object, new_data, h, point_forecast)
-  if(!is.null(setup$empty_fbl)) return(setup$empty_fbl)
+  setup <- forecast_mdl_ts_setup(object, new_data, h)
+  if(!is.null(setup$empty_fc)) return(setup$empty_fc)
   new_data <- setup$new_data
-  resp_vars <- setup$resp_vars
-  dist_col <- setup$dist_col
 
   # Compute specials with new_data
   object$model$stage <- "forecast"
@@ -278,29 +345,28 @@ Does your model require extra variables to produce forecasts?", e$message))
     }
   }
 
-  forecast_mdl_ts_assemble(new_data, fc, resp_vars, dist_col, point_forecast)
+  forecast_mdl_ts_finalise(fc, setup$resp_vars)
 }
 
 #' @export
 forecast.mdl_ts_sim <- function(object, new_data = NULL, h = NULL,
-                                point_forecast = list(.mean = mean), ...){
+                                point_forecast = list(), ...){
   check_removed_bias_adjust(list2(...))
-  setup <- forecast_mdl_ts_setup(object, new_data, h, point_forecast)
-  if(!is.null(setup$empty_fbl)) return(setup$empty_fbl)
+  setup <- forecast_mdl_ts_setup(object, new_data, h)
+  if(!is.null(setup$empty_fc)) return(setup$empty_fc)
   new_data <- setup$new_data
   resp_vars <- setup$resp_vars
-  dist_col <- setup$dist_col
 
   # The modifier's number of paths is used, rather than the deprecated `times`
   dots <- list2(...)
   dots$times <- NULL
   sim <- exec(generate, object, new_data, times = object%@%"times", !!!dots)
-  forecast_from_generate(new_data, sim, resp_vars, dist_col, point_forecast)
+  forecast_from_generate(sim, resp_vars)
 }
 
-# Build a forecast fable from generate()'s simulated paths, split by date
+# The forecast distribution of generate()'s simulated paths, split by date
 # into a dist_sample distribution.
-forecast_from_generate <- function(new_data, sim, resp_vars, dist_col, point_forecast) {
+forecast_from_generate <- function(sim, resp_vars) {
   fc_idx <- sim[[index_var(sim)]]
   fc <- if (length(resp_vars) > 1) {
     do.call(cbind, sim[resp_vars])
@@ -309,12 +375,12 @@ forecast_from_generate <- function(new_data, sim, resp_vars, dist_col, point_for
   }
   fc <- distributional::dist_sample(vctrs::vec_split(fc, fc_idx)$val)
 
-  forecast_mdl_ts_assemble(new_data, fc, resp_vars, dist_col, point_forecast)
+  forecast_mdl_ts_finalise(fc, resp_vars)
 }
 
 # Shared setup for forecast.mdl_ts()/forecast.mdl_ts_sim(): resolves
-# new_data/h and response/distribution column names.
-forecast_mdl_ts_setup <- function(object, new_data, h, point_forecast) {
+# new_data/h and the response names.
+forecast_mdl_ts_setup <- function(object, new_data, h) {
   if(!is.null(h) && !is.null(new_data)){
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
     h <- NULL
@@ -329,40 +395,21 @@ forecast_mdl_ts_setup <- function(object, new_data, h, point_forecast) {
   restore_model_state(object)
 
   resp_vars <- vapply(object$response, expr_name, character(1L), USE.NAMES = FALSE)
-  dist_col <- if(length(resp_vars) > 1) ".distribution" else resp_vars
 
-  empty_fbl <- NULL
-  if(NROW(new_data) == 0){
-    empty_fbl <- forecast_mdl_ts_assemble(
-      new_data, distributional::new_dist(), resp_vars, dist_col, point_forecast
-    )
+  # Missing models (see `fill_null_models()`) don't have any data, and give
+  # no forecasts.
+  empty_fc <- NULL
+  if(NROW(new_data) == 0 || NROW(object$data) == 0){
+    empty_fc <- forecast_mdl_ts_finalise(distributional::new_dist(), resp_vars)
   }
 
-  list(new_data = new_data, resp_vars = resp_vars, dist_col = dist_col, empty_fbl = empty_fbl)
+  list(new_data = new_data, resp_vars = resp_vars, empty_fc = empty_fc)
 }
 
-# Shared assembly for forecast.mdl_ts()/forecast.mdl_ts_sim(): attaches
-# the forecast distribution and builds the fable.
-forecast_mdl_ts_assemble <- function(new_data, fc, resp_vars, dist_col, point_forecast) {
-  idx <- index_var(new_data)
-  mv <- measured_vars(new_data)
-
+# The forecast distribution of a model, named by its response(s)
+forecast_mdl_ts_finalise <- function(fc, resp_vars) {
   dimnames(fc) <- resp_vars
-
-  new_data[[dist_col]] <- fc
-  point_fc <- compute_point_forecasts(fc, point_forecast)
-  new_data[names(point_fc)] <- point_fc
-
-  cn <- c(dist_col, names(point_fc))
-
-  fbl <- build_tsibble_meta(
-    as_tibble(new_data)[unique(c(idx, cn, mv))],
-    key_data(new_data),
-    index = idx, index2 = idx, ordered = is_ordered(new_data),
-    interval = interval(new_data)
-  )
-
-  build_fable(fbl, response = resp_vars, distribution = dist_col)
+  fc
 }
 
 compute_point_forecasts <- function(distribution, measures){

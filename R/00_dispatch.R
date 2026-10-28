@@ -104,14 +104,15 @@ mdl_lst_method <- function(generic, new_data = FALSE, modify = FALSE) {
 # either `"tbl"`, `"tsibble"`, or a function of the pivoted results, the name
 # of the results column and the keys of the output. `.reserved` are the names
 # that can't already be used by the keys or `new_data` (see
-# `check_reserved_names()`).
+# `check_reserved_names()`). With `.keep_new_data`, the `new_data` of each row
+# is kept alongside the results for an `.unnest` function.
 dispatch_mbl_df <- function(x, ..., .f, .values_to = ".result",
                             .unnest = c("tbl", "tsibble"), .new_data = NULL,
-                            .reserved = ".model") {
+                            .reserved = ".model", .keep_new_data = FALSE) {
   if (NROW(x) == 0) {
     return(dispatch_mbl_df_empty(
       x, ..., .f = .f, .values_to = .values_to, .unnest = .unnest,
-      .new_data = .new_data, .reserved = .reserved
+      .new_data = .new_data, .reserved = .reserved, .keep_new_data = .keep_new_data
     ))
   }
   check_reserved_names(x, .new_data, key = .reserved, call = caller_env())
@@ -128,7 +129,7 @@ dispatch_mbl_df <- function(x, ..., .f, .values_to = ".result",
     call = caller_env()
   )
   x <- vec_cbind(
-    x[setdiff(names(x), c(mdls, "new_data"))],
+    x[setdiff(names(x), c(mdls, if (!.keep_new_data) "new_data"))],
     tibble::new_tibble(res, nrow = NROW(x))
   )
   x <- tidyr::pivot_longer(x, all_of(names(res)), names_to = ".model", values_to = .values_to)

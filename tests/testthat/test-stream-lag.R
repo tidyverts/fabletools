@@ -51,8 +51,8 @@ test_that("forecast() does not leak recent_data across series sharing a model de
   fc2 <- forecast(fit2, new2)
 
   # Each forecast should bridge from its own series' last x, not the other's.
-  expect_equal(fc1$.mean, 50)
-  expect_equal(fc2$.mean, 500)
+  expect_equal(mean(fc1), 50)
+  expect_equal(mean(fc2), 500)
 })
 
 test_that("stream() resolves lag() regressors correctly across chained calls", {
@@ -124,11 +124,11 @@ test_that("lag() in special_xreg() regressors uses short term memory", {
 
   # Forecasts without new_data use the recent data, then are missing
   fc <- forecast(fit, h = 3)
-  expect_equal(fc$.mean, c(40, 50, NA))
+  expect_equal(mean(fc), c(40, 50, NA))
 
   # Forecasts with new_data bridge from the recent data
   fc <- forecast(fit, lag_test_data(c(60, 70, 80), from = 6))
-  expect_equal(fc$.mean, c(40, 50, 60))
+  expect_equal(mean(fc), c(40, 50, 60))
 })
 
 test_that("lag() errors clearly for fits without their own recent data", {

@@ -157,12 +157,11 @@ check_conformal_initial <- function(initial, n, call = caller_env()) {
 
 #' @export
 forecast.mdl_conformal_scp <- function(object, new_data = NULL, h = NULL,
-                                       point_forecast = list(.mean = mean), ...){
-  setup <- forecast_mdl_ts_setup(object, new_data, h, point_forecast)
-  if(!is.null(setup$empty_fbl)) return(setup$empty_fbl)
+                                       point_forecast = list(), ...){
+  setup <- forecast_mdl_ts_setup(object, new_data, h)
+  if(!is.null(setup$empty_fc)) return(setup$empty_fc)
   new_data <- setup$new_data
   resp_vars <- setup$resp_vars
-  dist_col <- setup$dist_col
 
   if(length(resp_vars) > 1L){
     abort("conformal_scp() currently only supports models with a single response variable.")
@@ -180,7 +179,7 @@ forecast.mdl_conformal_scp <- function(object, new_data = NULL, h = NULL,
   base_object <- object
   class(base_object) <- setdiff(class(object), c("mdl_conformal_scp", mdl_sim_classes))
 
-  anchor <- forecast(base_object, new_data = new_data, point_forecast = list(.mean = mean), ...)$.mean
+  anchor <- mean(forecast(base_object, new_data = new_data, ...))
 
   pools <- conformal_scp_calibration(base_object, NROW(new_data), min_calibration, initial, call = NULL)
 
@@ -192,7 +191,7 @@ forecast.mdl_conformal_scp <- function(object, new_data = NULL, h = NULL,
   fc <- distributional::dist_sample(draws)
   fc[is_na] <- NA
 
-  forecast_mdl_ts_assemble(new_data, fc, resp_vars, dist_col, point_forecast)
+  forecast_mdl_ts_finalise(fc, resp_vars)
 }
 
 # Rolling-origin (time series cross-validation) nonconformity scores for
@@ -289,7 +288,7 @@ conformal_cv_errors <- function(object, H, initial = 1) {
     # Warnings from refitting short windows of the history aren't shown
     fc <- tryCatch(withCallingHandlers({
       mdl <- refit(object, vec_slice(dt, seq_len(i)), reestimate = TRUE)
-      forecast(mdl, new_data = new_data, point_forecast = list(.mean = mean))
+      forecast(mdl, new_data = new_data)
     }, warning = function(w) invokeRestart("muffleWarning")), error = function(e) e)
     if (inherits(fc, "error")) {
       # Refits of the first (shortest) windows are expected to fail for some
@@ -302,7 +301,7 @@ conformal_cv_errors <- function(object, H, initial = 1) {
       next
     }
     n_refits <- n_refits + 1L
-    errors[cbind(i + h, h)] <- actual[i + h] - fc$.mean
+    errors[cbind(i + h, h)] <- actual[i + h] - mean(fc)
   }
   list(errors = errors, n_refits = n_refits, n_failed = n_failed, error = error, failure = failure)
 }

@@ -140,7 +140,7 @@ test_that("modifiers can be nested", {
   # bootstrap modifier how innovations are drawn
   set.seed(1)
   fc <- forecast(simulate_iid(bootstrap_iid(m, times = 10), times = 20), h = 2)
-  expect_equal(unique(lengths(distributional::parameters(fc$value)$x)), 20)
+  expect_equal(unique(lengths(distributional::parameters(fc)$x)), 20)
   set.seed(1)
   fc_boot <- forecast(bootstrap_iid(m, times = 20), h = 2)
   expect_equal(fc, fc_boot)
@@ -199,8 +199,8 @@ test_that("bootstrap_iid/bootstrap_block sample jointly across series in a mdl_l
   set.seed(1)
   fc_a <- forecast(bootstrap_iid(mbl_two_id$ets[[1]], times = 20), h = 6)
   fc_b <- forecast(bootstrap_iid(mbl_two_id$ets[[2]], times = 20), h = 6)
-  paths_a <- distributional::parameters(fc_a$value)$x
-  paths_b <- distributional::parameters(fc_b$value)$x
+  paths_a <- distributional::parameters(fc_a)$x
+  paths_b <- distributional::parameters(fc_b)$x
   expect_false(all(mapply(identical, paths_a, paths_b)))
 })
 

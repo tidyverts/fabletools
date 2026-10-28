@@ -180,3 +180,44 @@ test_that("rbind() of fables is defunct in favour of bind_rows()", {
   skip_if_not_installed("fable")
   expect_error(rbind(fbl, fbl), class = "defunctError")
 })
+
+test_that("forecast() of models gives their forecast distributions", {
+  skip_if_not_installed("fable")
+  mdls <- mbl[[attr(mbl, "model")[1]]]
+  fc <- forecast(mdls[[1]], h = 3)
+  expect_s3_class(fc, "distribution")
+  expect_length(fc, 3)
+  expect_identical(dimnames(fc), response_vars(mbl))
+
+  # A list of models gives a list of their distributions
+  fc_lst <- forecast(mdls, h = 3)
+  expect_type(fc_lst, "list")
+  expect_length(fc_lst, length(mdls))
+  expect_equal(fc_lst[[1]], fc)
+  expect_equal(forecast(mbl, h = 3)[[response_vars(mbl)]], vec_c(!!!fc_lst))
+})
+
+forecast.legacy_fc_mdl <- function(object, new_data = NULL, h = NULL,
+                                   point_forecast = list(.mean = mean), ...){
+  legacy_point_forecast <<- point_forecast
+  new_data <- new_data %||% make_future_data(object$data, h)
+  resp <- response_vars(object)
+  new_data[[resp]] <- NextMethod()
+  new_data[names(point_forecast)] <- compute_point_forecasts(new_data[[resp]], point_forecast)
+  build_fable(new_data, response = resp, distribution = resp)
+}
+registerS3method("forecast", "legacy_fc_mdl", forecast.legacy_fc_mdl)
+
+test_that("forecasts returned as a fable by model methods are converted to distributions", {
+  skip_if_not_installed("fable")
+  nm <- attr(mbl, "model")[1]
+  mdls <- mbl[[nm]]
+  legacy <- map_models(mdls, function(m) structure(m, class = c("legacy_fc_mdl", class(m))))
+
+  # Directly from a list of models, and with the point forecasts of a mable
+  expect_equal(forecast(legacy, h = 3), forecast(mdls, h = 3))
+  fc <- forecast(dplyr::mutate(mbl, !!nm := legacy), h = 3, point_forecast = list(.median = median))
+  expect_equal(fc, forecast(mbl, h = 3, point_forecast = list(.median = median)))
+  # Point forecasts aren't computed by the models of a mable
+  expect_identical(legacy_point_forecast, list())
+})

@@ -20,7 +20,7 @@
   simulate = FALSE,
   bootstrap = FALSE,
   times = 5000,
-  point_forecast = list(.mean = mean),
+  point_forecast = list(),
   ...
 )
 }
@@ -51,7 +51,11 @@ for the deprecated \code{simulate} and \code{bootstrap} arguments. Please use th
 \code{\link[=bootstrap_block]{bootstrap_block()}} instead, which this doesn't change.}
 }
 \value{
-A fable containing the following columns:
+For a model, its forecast distribution with one value for each future time
+point. A list of models (a column of a mable) gives a list of the forecast
+distributions of each model. Point forecasts are only computed for a mable.
+
+For a mable, a fable containing the following columns:
 \itemize{
 \item \code{.model}: The name of the model used to obtain the forecast. Taken from
 the column names of models in the provided mable.

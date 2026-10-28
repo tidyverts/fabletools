@@ -84,7 +84,7 @@ hfitted.mdl_ts <- function(object, h, ...) {
       # Future data includes time-varying transformation parameters
       new_data <- vec_slice(future, i + seq_len(h))
       attr(new_data, "interval") <- interval(future)
-      fits[i + h] <- mean(forecast(mdl, new_data = new_data, point_forecast = NULL)[[resp]][h])
+      fits[i + h] <- mean(forecast(mdl, new_data = new_data)[h])
     }
     fits <- list(fits)
   } else {

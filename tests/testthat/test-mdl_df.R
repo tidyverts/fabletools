@@ -77,7 +77,7 @@ test_that("forecast() and generate() with mdl_df", {
   fc <- forecast(grp, h = 2)
   expect_equal(names(fc), c("ets", "lm"))
   expect_equal(NROW(fc), 2)
-  expect_s3_class(fc$ets[[1]], "fbl_ts")
+  expect_s3_class(fc$ets[[1]], "distribution")
 
   mbl_grp <- mbl_complex %>%
     mutate(grp = cbind(ets, lm))

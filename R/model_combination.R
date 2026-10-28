@@ -267,8 +267,7 @@ forecast.model_combination <- function(object, new_data, specials, ...) {
     return(distributional::dist_sample(vctrs::vec_split(sim[[".sim"]], sim[[index_var(sim)]])$val))
   }
 
-  fcs   <- map(models, forecast, new_data = new_data, ...)
-  dists <- map(fcs, function(x) x[[distribution_var(x)]])
+  dists <- map(models, function(m) as_forecast_distribution(forecast(m, new_data = new_data, ...)))
   
   is_normal <- map_lgl(dists, function(x) all(dist_types(x) == "dist_normal"))
   

@@ -120,8 +120,7 @@ min_trace <- function(models, method = c("wls_var", "ols", "wls_struct", "mint_c
 
 #' @export
 forecast.lst_mint_mdl <- function(object, key_data, 
-                                  new_data = NULL, h = NULL,
-                                  point_forecast = list(.mean = mean), ...){
+                                  new_data = NULL, h = NULL, ...){
   method <- object%@%"method"
   sparse <- object%@%"sparse"
   if(sparse){
@@ -135,13 +134,9 @@ forecast.lst_mint_mdl <- function(object, key_data,
     cov2cor <- stats::cov2cor
   }
   
-  point_method <- point_forecast
-  point_forecast <- list()
+  check_reconcile_interval(object, new_data)
   # Get forecasts
   fc <- NextMethod()
-  if(length(unique(map(fc, interval))) > 1){
-    abort("Reconciliation of temporal hierarchies is not yet supported.")
-  }
   
   # Compute weights (sample covariance)
   res <- map(object, function(x, ...) residuals(x, ...), type = "response")
@@ -236,7 +231,7 @@ forecast.lst_mint_mdl <- function(object, key_data,
     P <- solve(R%*%S)%*%R
   }
   
-  reconcile_fbl_list(fc, S, P, W, point_forecast = point_method)
+  reconcile_fc_list(fc, S, P, W)
 }
 
 #' Bottom up forecast reconciliation
@@ -283,9 +278,8 @@ bottom_up <- function(models){
 }
 
 #' @export
-forecast.lst_btmup_mdl <- function(object, key_data, 
-                                   point_forecast = list(.mean = mean),
-                                   new_data = NULL, ...){
+forecast.lst_btmup_mdl <- function(object, key_data, new_data = NULL, ...){
+  check_reconcile_interval(object, new_data)
   # Keep only bottom layer
   agg_data <- build_key_data_smat(key_data)
   
@@ -298,9 +292,6 @@ forecast.lst_btmup_mdl <- function(object, key_data,
   #   new_data <- new_data[btm]
   # }
   
-  point_method <- point_forecast
-  point_forecast <- list()
-  
   # Get base forecasts
   # fc <- vector("list", nrow(S))
   # fc[btm] <- NextMethod()
@@ -312,8 +303,7 @@ forecast.lst_btmup_mdl <- function(object, key_data,
   P <- matrix(0L, nrow = ncol(S), ncol = nrow(S))
   P[(btm-1L)*nrow(P) + seq_len(nrow(P))] <- 1L
   
-  reconcile_fbl_list(fc, S, P, W = diag(nrow(S)),
-                     point_forecast = point_method)
+  reconcile_fc_list(fc, S, P, W = diag(nrow(S)))
 }
 
 
@@ -372,12 +362,9 @@ top_down <- function(models, method = c("forecast_proportions", "average_proport
 }
 
 #' @export
-forecast.lst_topdwn_mdl <- function(object, key_data, 
-                                    point_forecast = list(.mean = mean),
-                                    new_data = NULL, ...){
+forecast.lst_topdwn_mdl <- function(object, key_data, new_data = NULL, ...){
+  check_reconcile_interval(object, new_data)
   method <- object%@%"method"
-  point_method <- point_forecast
-  point_forecast <- list()
   
   agg_data <- build_key_data_smat(key_data)
   S <- matrix(0L, nrow = length(agg_data$agg), ncol = max(vec_c(!!!agg_data$agg)))
@@ -397,7 +384,7 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
   
   if(method == "forecast_proportions") {
     fc <- NextMethod()
-    fc_dist <- lapply(fc, function(x) x[[distribution_var(x)]])
+    fc_dist <- fc
     fc_mean <- lapply(fc_dist, mean)
     fc_mean <- do.call(cbind, fc_mean)
     # Ensure key structure matches order of fc object
@@ -408,8 +395,8 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
       start_nodes = which(level_id == length(kv))
     )
     fc_prop <- td$fc_prop
-    # Code adapted from reconcile_fbl_list to handle changing weights over horizon
-    # This will need to be refactored later so that reconcile_fbl_list is broken up into more sub-problems
+    # Code adapted from reconcile_fc_list to handle changing weights over horizon
+    # This will need to be refactored later so that reconcile_fc_list is broken up into more sub-problems
     # As the weight matrix is an identity, this code and computation is much simpler.
     # Only the top level distribution is disaggregated
     is_normal <- all(dist_types(fc_dist[[top]]) == "dist_normal")
@@ -429,15 +416,11 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
     } else {
       fc_dist <- lapply(fc_mean, distributional::dist_degenerate)
     }
-    # Update fables
-    fc <- map2(fc, fc_dist, function(fc, dist){
-      dimnames(dist) <- dimnames(fc[[distribution_var(fc)]])
-      fc[[distribution_var(fc)]] <- dist
-      point_fc <- compute_point_forecasts(dist, point_method)
-      fc[names(point_fc)] <- point_fc
-      fc
-    })
-    return(fc)
+    # Name the distributions by their response
+    return(map2(fc, fc_dist, function(fc, dist){
+      dimnames(dist) <- dimnames(fc)
+      dist
+    }))
     
   } else {
     # Compute dis-aggregation matrix
@@ -469,8 +452,7 @@ forecast.lst_topdwn_mdl <- function(object, key_data,
   P <- matrix(0L, nrow = ncol(S), ncol = nrow(S))
   P[,top] <- prop
   
-  reconcile_fbl_list(fc, S, P, W = diag(nrow(S)),
-                     point_forecast = point_method)
+  reconcile_fc_list(fc, S, P, W = diag(nrow(S)))
 }
 
 
@@ -574,12 +556,9 @@ middle_out <- function(models, split = 1){
 }
 
 #' @export
-forecast.lst_midout_mdl <- function(object, key_data, 
-                                    point_forecast = list(.mean = mean),
-                                    new_data = NULL, ...){
+forecast.lst_midout_mdl <- function(object, key_data, new_data = NULL, ...){
+  check_reconcile_interval(object, new_data)
   split <- object%@%"split"
-  point_method <- point_forecast
-  point_forecast <- list()
   
   agg_data <- build_key_data_smat(key_data)
   S <- matrix(0L, nrow = length(agg_data$agg), ncol = max(vec_c(!!!agg_data$agg)))
@@ -613,8 +592,7 @@ forecast.lst_midout_mdl <- function(object, key_data,
   if(split == length(agg_order)) {
     class(object) <- c("lst_btmup_mdl", setdiff(class(object), "lst_midout_mdl"))
     attr(object, "split") <- NULL
-    return(forecast(object, key_data = key_data, point_forecast = point_method,
-                    new_data = new_data, ...))
+    return(forecast(object, key_data = key_data, new_data = new_data, ...))
   }
   
   level_id <- rowSums(agg_shadow)
@@ -627,7 +605,7 @@ forecast.lst_midout_mdl <- function(object, key_data,
   }
   fc <- NextMethod()
   
-  fc_dist <- lapply(fc, function(x) x[[distribution_var(x)]])
+  fc_dist <- fc
   h <- vec_size(fc_dist[[1]])
   fc_mean <- matrix(0, h, nrow(key_data))
   fc_mean[,-nodes_above] <- do.call(cbind, lapply(fc_dist, mean))
@@ -641,8 +619,8 @@ forecast.lst_midout_mdl <- function(object, key_data,
   fc_prop        <- td$fc_prop[, btm_loc, drop = FALSE]
 
   fc_mean <- (fc_prop * fc_mean[, mid_root_nodes]) %*% t(S)
-  # Code adapted from reconcile_fbl_list to handle changing weights over horizon
-  # This will need to be refactored later so that reconcile_fbl_list is broken up into more sub-problems
+  # Code adapted from reconcile_fc_list to handle changing weights over horizon
+  # This will need to be refactored later so that reconcile_fc_list is broken up into more sub-problems
   # As the weight matrix is an identity, this code and computation is much simpler.
   # Only the split level distributions are disaggregated
   fc_pos <- seq_len(nrow(key_data))[-nodes_above]
@@ -685,20 +663,26 @@ forecast.lst_midout_mdl <- function(object, key_data,
     fc_dist <- lapply(fc_mean, distributional::dist_degenerate)
   }
   
-  # Update fables
-  map2(rep(fc[1], nrow(key_data)), fc_dist, function(fc, dist){
-    dimnames(dist) <- dimnames(fc[[distribution_var(fc)]])
-    fc[[distribution_var(fc)]] <- dist
-    point_fc <- compute_point_forecasts(dist, point_method)
-    fc[names(point_fc)] <- point_fc
-    fc
+  # Name the distributions by their response
+  map(fc_dist, function(dist){
+    dimnames(dist) <- dimnames(fc[[1]])
+    dist
   })
 }
 
-reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
-  if(length(unique(map(fc, interval))) > 1){
-    abort("Reconciliation of temporal hierarchies is not yet supported.")
+# The forecasts of a hierarchy must be for the same time points
+check_reconcile_interval <- function(object, new_data = NULL) {
+  intervals <- if (is.null(new_data)) {
+    map(object, function(x) interval(x$data))
+  } else {
+    map(new_data, interval)
   }
+  if(length(unique(intervals)) > 1){
+    abort("Reconciliation of temporal hierarchies is not yet supported.", call = NULL)
+  }
+}
+
+reconcile_fc_list <- function(fc, S, P, W, SP = NULL) {
   if(!inherits(S, "matrix")) {
     # Use sparse functions
     check_installed("Matrix")
@@ -713,7 +697,7 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
     SP <- S%*%P
   }
   
-  fc_dist <- map(fc, function(x) x[[distribution_var(x)]])
+  fc_dist <- fc
   dist_type <- lapply(fc_dist, function(x) unique(dist_types(x)))
   dist_type <- unique(unlist(dist_type))
   is_normal <- all(map_lgl(fc_dist, function(x) all(dist_types(x) == "dist_normal")))
@@ -751,13 +735,10 @@ reconcile_fbl_list <- function(fc, S, P, W, point_forecast, SP = NULL) {
     fc_dist <- map(fc_mean, distributional::dist_degenerate)
   }
   
-  # Update fables
+  # Name the distributions by their response
   map2(fc, fc_dist, function(fc, dist){
-    dimnames(dist) <- dimnames(fc[[distribution_var(fc)]])
-    fc[[distribution_var(fc)]] <- dist
-    point_fc <- compute_point_forecasts(dist, point_forecast)
-    fc[names(point_fc)] <- point_fc
-    fc
+    dimnames(dist) <- dimnames(fc)
+    dist
   })
 }
 
