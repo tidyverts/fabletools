@@ -188,10 +188,16 @@ test_that("Mables can be combined with missing models (#234)", {
   expect_identical(response_vars(res), "value")
   expect_null(res[["b"]][[1]])
 
-  # Missing models give no forecasts and missing summaries
+  # Missing models give missing forecasts and summaries
   fc <- forecast(res, h = 2)
-  expect_identical(NROW(fc), 6L)
-  expect_identical(unique(fc$.model[fc$key == res$key[1]]), "a")
+  expect_identical(NROW(fc), 8L)
+  is_missing <- fc$key == res$key[1] & fc$.model == "b"
+  expect_identical(sum(is_missing), 2L)
+  expect_true(all(is.na(fc$.mean[is_missing])))
+  expect_false(anyNA(fc$.mean[!is_missing]))
+  fc <- forecast(res, new_data = tsibble::new_data(lung_deaths_long, 3))
+  expect_identical(NROW(fc), 12L)
+  expect_true(all(is.na(fc$.mean[fc$key == res$key[1] & fc$.model == "b"])))
   acc <- accuracy(res)
   expect_identical(NROW(acc), 4L)
   expect_true(all(is.nan(acc$RMSE[acc$key == res$key[1] & acc$.model == "b"])))

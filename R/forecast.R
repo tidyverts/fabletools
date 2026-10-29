@@ -211,8 +211,6 @@ unnest_fable <- function(x, col, key, response, point_forecast) {
   dist_col <- if(length(response) > 1) ".distribution" else response
   x[[col]] <- map2(x[["new_data"]], x[[col]], function(new_data, fc) {
     fc <- as_forecast_distribution(fc)
-    # Missing models give no forecasts
-    if(vec_size(fc) == 0) new_data <- vec_slice(new_data, 0L)
     if(vec_size(fc) != NROW(new_data)) {
       abort(sprintf(
         "The forecast distribution of a model has %d values, but %d future time points were forecast.",
@@ -397,10 +395,10 @@ forecast_mdl_ts_setup <- function(object, new_data, h) {
   resp_vars <- vapply(object$response, expr_name, character(1L), USE.NAMES = FALSE)
 
   # Missing models (see `fill_null_models()`) don't have any data, and give
-  # no forecasts.
+  # missing forecasts.
   empty_fc <- NULL
   if(NROW(new_data) == 0 || NROW(object$data) == 0){
-    empty_fc <- forecast_mdl_ts_finalise(distributional::new_dist(), resp_vars)
+    empty_fc <- forecast_mdl_ts_finalise(distributional::dist_missing(NROW(new_data)), resp_vars)
   }
 
   list(new_data = new_data, resp_vars = resp_vars, empty_fc = empty_fc)

@@ -116,7 +116,8 @@ fitted model, and groundwork has been laid for mixtime-based tsibbles.
   rather than recomputed from its models, which also allows mables with
   missing (`NULL`) models to be combined (#234).
   Missing models are treated as NULL models (see `null_model()`) without any
-  data, so they give no forecasts and missing accuracy measures and summaries.
+  data, so they give missing forecasts (`dist_missing()`), accuracy measures
+  and summaries.
   `as_mable()` gains a `response` argument for constructing mables without any
   models.
 * Transformations with time-varying parameters from the data, such as
