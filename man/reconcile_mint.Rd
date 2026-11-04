@@ -6,7 +6,7 @@
 \title{Minimum trace forecast reconciliation}
 \usage{
 reconcile_mint(
-  models,
+  model,
   method = c("wls_var", "ols", "wls_struct", "mint_cov", "mint_shrink"),
   sparse = NULL
 )
@@ -18,7 +18,8 @@ min_trace(
 )
 }
 \arguments{
-\item{models}{A column of models in a mable.}
+\item{model}{A column of models in a mable (e.g. \code{mutate(ets = reconcile_mint(ets))}),
+a model data frame, or a model specification (e.g. \code{model(ets = reconcile_mint(ETS(y)))}).}
 
 \item{method}{The reconciliation method to use, which determines how the
 base forecast error covariance matrix is estimated.}
@@ -26,6 +27,8 @@ base forecast error covariance matrix is estimated.}
 \item{sparse}{If TRUE, the reconciliation will be computed using sparse
 matrix algebra? By default, sparse matrices will be used if the Matrix
 package is installed.}
+
+\item{models}{Used instead of \code{model} by the superseded names.}
 }
 \description{
 Reconciles a hierarchy using the minimum trace combination method. The

@@ -5,12 +5,15 @@
 \alias{bottom_up}
 \title{Bottom up forecast reconciliation}
 \usage{
-reconcile_bu(models)
+reconcile_bu(model)
 
 bottom_up(models)
 }
 \arguments{
-\item{models}{A column of models in a mable.}
+\item{model}{A column of models in a mable (e.g. \code{mutate(ets = reconcile_mint(ets))}),
+a model data frame, or a model specification (e.g. \code{model(ets = reconcile_mint(ETS(y)))}).}
+
+\item{models}{Used instead of \code{model} by the superseded names.}
 }
 \description{
 Reconciles a hierarchy using the bottom up reconciliation method. The

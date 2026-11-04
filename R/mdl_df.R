@@ -86,9 +86,10 @@ model_col_response <- function(x){
 #'   forecasts share the same resampled residuals. This includes the models of
 #'   bootstrapped or reconciled columns within the model data frame.
 #'
-#' The reconciliation functions (such as [reconcile_mint()]) can't be applied
-#' to a model data frame. Instead apply them to the model columns before
-#' combining them.
+#' The reconciliation functions (such as [reconcile_mint()]) are applied to
+#' each of its model columns separately, as reconciliation is across the series
+#' of a model, not across models.
+#'
 #' [interpolate()] requires a mable with a single model column, which can't be
 #' a model data frame.
 #'

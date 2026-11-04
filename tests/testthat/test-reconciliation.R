@@ -421,3 +421,72 @@ test_that("middle_out splitting at the bottom level is bottom up reconciliation"
     dplyr::filter(fc, .model == "bu")$value
   )
 })
+
+test_that("reconcile_*() are model modifiers for columns, model data frames and specifications", {
+  skip_if_not_installed("fable")
+
+  agg <- lung_deaths_long %>%
+    aggregate_key(key, value = sum(value))
+  ets <- function() fable::ETS(value ~ error("A") + trend("N") + season("N"))
+
+  mods <- list(
+    mint = function(x) reconcile_mint(x, method = "ols"),
+    bu = reconcile_bu,
+    td = function(x) reconcile_td(x, method = "average_proportions"),
+    mo = function(x) reconcile_mo(x, split = 1)
+  )
+  for (nm in names(mods)) {
+    f <- mods[[nm]]
+    # Specification form matches the column form
+    fit_spec <- agg %>% model(m = f(ets()))
+    fit_col <- agg %>% model(m = ets()) %>% mutate(m = f(m))
+    expect_s3_class(fit_spec$m, paste0("mdl_lst_reconcile_", nm))
+    expect_equal(forecast(fit_spec, h = 3), forecast(fit_col, h = 3))
+    # Model data frames reconcile each of their columns
+    fc <- agg %>% model(m = ets()) %>%
+      transmute(grp = f(cbind(a = m, b = m))) %>%
+      forecast(h = 3)
+    expect_equal(fc$.mean[fc$.model == "grp$a"], fc$.mean[fc$.model == "grp$b"])
+    expect_equal(fc$.mean[fc$.model == "grp$a"], forecast(fit_col, h = 3)$.mean)
+  }
+
+  # Superseded names give the same result
+  fit <- agg %>% model(m = ets())
+  expect_equal(
+    forecast(mutate(fit, m = min_trace(m, method = "ols")), h = 3),
+    forecast(mutate(fit, m = reconcile_mint(m, method = "ols")), h = 3)
+  )
+  expect_equal(
+    forecast(mutate(fit, m = bottom_up(m)), h = 3),
+    forecast(mutate(fit, m = reconcile_bu(m)), h = 3)
+  )
+
+  # Nesting specification modifiers in either order
+  set.seed(1)
+  a <- agg %>% model(m = bootstrap_iid(reconcile_bu(ets()), times = 20)) %>% forecast(h = 3)
+  set.seed(1)
+  b <- agg %>% model(m = reconcile_bu(bootstrap_iid(ets(), times = 20))) %>% forecast(h = 3)
+  expect_equal(a, b)
+  expect_true(all(dist_types(a$value) == "dist_sample"))
+  tot <- a$.mean[is_aggregated(a$key)]
+  btm <- tapply(a$.mean[!is_aggregated(a$key)], a$index[!is_aggregated(a$key)], sum)
+  expect_equal(tot, as.numeric(btm))
+})
+
+test_that("reconcile_*() errors for invalid or repeated reconciliation", {
+  skip_if_not_installed("fable")
+
+  agg <- lung_deaths_long %>%
+    aggregate_key(key, value = sum(value))
+  fit <- agg %>% model(m = fable::SNAIVE(value))
+
+  expect_error(reconcile_mint(fit$m[[1]]), "model column")
+  expect_error(reconcile_bu(1), "not <numeric>")
+  expect_error(reconcile_mint(fit$m, method = "nope"), "should be one of")
+  expect_error(reconcile_bu(reconcile_mint(fit$m)), "already reconciled")
+  expect_error(reconcile_bu(reconcile_mint(fable::SNAIVE(value))), "already reconciled")
+  expect_error(
+    fit %>% transmute(grp = reconcile_td(reconcile_bu(cbind(a = m)))),
+    "already reconciled"
+  )
+})

@@ -59,7 +59,7 @@ test_that("bootstrapped forecasts reconcile jointly (dist_sample branch)", {
     mutate(snaive = min_trace(bootstrap_iid(snaive, times = 100)))
 
   # min_trace() must preserve the mdl_lst_bootstrap_iid class so
-  # forecast.lst_mint_mdl()'s NextMethod() reaches the joint bootstrap
+  # forecast.mdl_lst_reconcile_mint()'s NextMethod() reaches the joint bootstrap
   # forecast method instead of independent per-series sampling.
   expect_true(inherits(reconciled$snaive, "mdl_lst_bootstrap_iid"))
 
@@ -109,7 +109,7 @@ test_that("modifiers keep the reconciliation of a model column, in either order"
     col <- names(modifiers)[i]
     fit <- select(fit_agg, key, !!col)
     fit[[col]] <- modifiers[[i]](fit[[col]])
-    expect_true(inherits(fit[[col]], c("lst_mint_mdl", "lst_btmup_mdl")))
+    expect_true(inherits(fit[[col]], "mdl_lst_reconcile"))
     fc <- forecast(fit, h = 3)
     expect_true(all(dist_types(fc$value) == "dist_sample"))
     expect_true(is_coherent(fc))

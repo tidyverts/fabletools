@@ -71,6 +71,10 @@ model.tbl_ts <- function(.data, ..., .safely = TRUE){
 Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   }
   
+  # Modifiers applied to the whole column of models (such as reconciliation)
+  # once every series is estimated.
+  col_modifiers <- map(models, function(x) x %@% "mdl_lst_modifier")
+  
   num_key <- n_keys(.data)
   num_mdl <- length(models)
   num_est <- num_mdl * num_key
@@ -156,6 +160,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   }
   
   fits <- map(fits, new_mdl_lst)
+  fits <- map2(fits, col_modifiers, function(x, f) if(is.null(f)) x else f(x))
   
   .data %>% 
     transmute(

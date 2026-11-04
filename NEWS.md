@@ -73,7 +73,11 @@ fitted model, and groundwork has been laid for mixtime-based tsibbles.
   These are now the documented, stable reconciliation functions, and are no
   longer experimental. They are applied to model columns with `mutate()`, e.g.
   `mutate(fit, lm = reconcile_mint(lm))`, as `reconcile()` is now
-  soft-deprecated. The original names (`min_trace()`, `bottom_up()`,
+  soft-deprecated. Like the other model modifiers, they are S3 generics
+  that also apply to model data frames (reconciling each model column) and to
+  model specifications, e.g. `model(lm = reconcile_mint(TSLM(y)))`, which
+  reconciles the models after all series are estimated. Reconciling models that
+  are already reconciled is an error. The original names (`min_trace()`, `bottom_up()`,
   `top_down()` and `middle_out()`) are superseded, but will continue to work
   without warnings.
 * Added the `interval_coverage()` interval accuracy measure for the

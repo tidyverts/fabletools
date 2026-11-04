@@ -5,17 +5,20 @@
 \alias{middle_out}
 \title{Middle out forecast reconciliation}
 \usage{
-reconcile_mo(models, split = 1)
+reconcile_mo(model, split = 1)
 
 middle_out(models, split = 1)
 }
 \arguments{
-\item{models}{A column of models in a mable.}
+\item{model}{A column of models in a mable (e.g. \code{mutate(ets = reconcile_mint(ets))}),
+a model data frame, or a model specification (e.g. \code{model(ets = reconcile_mint(ETS(y)))}).}
 
 \item{split}{The middle level of the hierarchy from which the bottom-up and
 top-down approaches are used above and below respectively. Either the
 number of levels below the top level (starting from \code{1} for the level just
 below the total), or the name of the key variable of that level.}
+
+\item{models}{Used instead of \code{model} by the superseded names.}
 }
 \description{
 Reconciles a hierarchy using the middle out reconciliation method. The

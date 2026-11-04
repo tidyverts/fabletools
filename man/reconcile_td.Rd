@@ -6,7 +6,7 @@
 \title{Top down forecast reconciliation}
 \usage{
 reconcile_td(
-  models,
+  model,
   method = c("forecast_proportions", "average_proportions", "proportion_averages")
 )
 
@@ -16,12 +16,15 @@ top_down(
 )
 }
 \arguments{
-\item{models}{A column of models in a mable.}
+\item{model}{A column of models in a mable (e.g. \code{mutate(ets = reconcile_mint(ets))}),
+a model data frame, or a model specification (e.g. \code{model(ets = reconcile_mint(ETS(y)))}).}
 
 \item{method}{The method used to compute the disaggregation proportions:
 the proportions of the forecasts (\code{"forecast_proportions"}), the average of
 the historical proportions (\code{"average_proportions"}), or the proportions of
 the historical averages (\code{"proportion_averages"}).}
+
+\item{models}{Used instead of \code{model} by the superseded names.}
 }
 \description{
 Reconciles a hierarchy using the top down reconciliation method. The

@@ -40,19 +40,27 @@ reconcile.mbl_df <- function(.data, ...){
 }
 
 # Reconciliation applies to a column of models across the series of a hierarchy
-check_reconcile_models <- function(models, fn, call = caller_env()) {
-  if(is_mdl_df(models)) {
+reconcile_hint <- "Reconciliation applies to the models of a column across the series of a hierarchy (see `aggregate_key()`)."
+
+# Reconciling a column that is already reconciled can't apply both
+check_not_reconciled <- function(model, fn, call = caller_env()) {
+  if(inherits(model, c("mdl_lst_reconcile", "mdl_spec_reconcile"))) {
     abort(c(
-      sprintf("`%s()` can't be applied to a model data frame.", fn),
-      "i" = "Reconcile each model column before combining them with `cbind()`."
+      sprintf("`%s()` can't be applied to models that are already reconciled.", fn),
+      "i" = "Models can only be reconciled by one method."
     ), call = call)
   }
-  if(!inherits(models, c("mdl_lst", "lst_mdl"))) {
-    abort(sprintf(
-      "`%s()` must be applied to a column of models (<mdl_lst>), not <%s>.",
-      fn, vctrs::vec_ptype_full(models)
-    ), call = call)
-  }
+}
+
+# Reconciling a model specification reconciles the models it estimates for
+# each series, which model() does after all the series are estimated.
+wrap_reconcile_spec <- function(model, variant, fn, ..., call = caller_env(2)) {
+  check_not_reconciled(model, paste0("reconcile_", variant), call = call)
+  args <- list(...)
+  mdl_wrap(
+    model, c(paste0("mdl_spec_reconcile_", variant), "mdl_spec_reconcile"),
+    mdl_lst_modifier = function(x) inject(fn(x, !!!args))
+  )
 }
 
 #' Minimum trace forecast reconciliation
@@ -67,7 +75,9 @@ check_reconcile_models <- function(models, fn, call = caller_env()) {
 #' hierarchy are identical (e.g. an aggregate with only one child). Use
 #' `"wls_struct"` or `"ols"` in these situations.
 #'
-#' @param models A column of models in a mable.
+#' @param model A column of models in a mable (e.g. `mutate(ets = reconcile_mint(ets))`),
+#' a model data frame, or a model specification (e.g. `model(ets = reconcile_mint(ETS(y)))`).
+#' @param models Used instead of `model` by the superseded names.
 #' @param method The reconciliation method to use, which determines how the
 #' base forecast error covariance matrix is estimated.
 #' @param sparse If TRUE, the reconciliation will be computed using sparse
@@ -100,26 +110,53 @@ check_reconcile_models <- function(models, fn, call = caller_env()) {
 #'   forecast()
 #'
 #' @export
-reconcile_mint <- function(models, method = c("wls_var", "ols", "wls_struct", "mint_cov", "mint_shrink"),
+reconcile_mint <- function(model, method = c("wls_var", "ols", "wls_struct", "mint_cov", "mint_shrink"),
                            sparse = NULL){
-  check_reconcile_models(models, "reconcile_mint")
-  min_trace(models, method = method, sparse = sparse)
+  match.arg(method)
+  UseMethod("reconcile_mint")
+}
+
+#' @export
+reconcile_mint.default <- function(model, method = c("wls_var", "ols", "wls_struct", "mint_cov", "mint_shrink"),
+                                   sparse = NULL){
+  abort_invalid_modifier(model, "reconcile_mint", hint = reconcile_hint)
+}
+
+#' @export
+reconcile_mint.mdl_ts <- reconcile_mint.default
+
+#' @export
+reconcile_mint.mdl_lst <- function(model, method = c("wls_var", "ols", "wls_struct", "mint_cov", "mint_shrink"),
+                                   sparse = NULL){
+  check_not_reconciled(model, "reconcile_mint")
+  if(is.null(sparse)){
+    sparse <- requireNamespace("Matrix", quietly = TRUE)
+  }
+  mdl_wrap_col(model, c("mdl_lst_reconcile_mint", "mdl_lst_reconcile"),
+               method = match.arg(method), sparse = sparse)
+}
+
+#' @export
+reconcile_mint.mdl_df <- function(model, method = c("wls_var", "ols", "wls_struct", "mint_cov", "mint_shrink"),
+                                  sparse = NULL){
+  modify_mdl_df(model, reconcile_mint, method = match.arg(method), sparse = sparse)
+}
+
+#' @export
+reconcile_mint.mdl_spec <- function(model, method = c("wls_var", "ols", "wls_struct", "mint_cov", "mint_shrink"),
+                                    sparse = NULL){
+  wrap_reconcile_spec(model, "mint", reconcile_mint, method = match.arg(method), sparse = sparse)
 }
 
 #' @rdname reconcile_mint
 #' @export
 min_trace <- function(models, method = c("wls_var", "ols", "wls_struct", "mint_cov", "mint_shrink"),
                  sparse = NULL){
-  if(is.null(sparse)){
-    sparse <- requireNamespace("Matrix", quietly = TRUE)
-  }
-  check_reconcile_models(models, "min_trace")
-  structure(models, class = union("lst_mint_mdl", class(models)),
-            method = match.arg(method), sparse = sparse)
+  reconcile_mint(models, method = match.arg(method), sparse = sparse)
 }
 
 #' @export
-forecast.lst_mint_mdl <- function(object, key_data, 
+forecast.mdl_lst_reconcile_mint <- function(object, key_data, 
                                   new_data = NULL, h = NULL, ...){
   method <- object%@%"method"
   sparse <- object%@%"sparse"
@@ -240,7 +277,9 @@ forecast.lst_mint_mdl <- function(object, key_data,
 #' response variable of the hierarchy must be aggregated using sums. The
 #' forecasted time points must match for all series in the hierarchy.
 #'
-#' @param models A column of models in a mable.
+#' @param model A column of models in a mable (e.g. `mutate(ets = reconcile_mint(ets))`),
+#' a model data frame, or a model specification (e.g. `model(ets = reconcile_mint(ETS(y)))`).
+#' @param models Used instead of `model` by the superseded names.
 #'
 #' @seealso
 #' [`reconcile_td()`], [`reconcile_mo()`], [`reconcile_mint()`], [`aggregate_key()`]
@@ -265,20 +304,42 @@ forecast.lst_mint_mdl <- function(object, key_data,
 #'   forecast()
 #'
 #' @export
-reconcile_bu <- function(models){
-  check_reconcile_models(models, "reconcile_bu")
-  bottom_up(models)
+reconcile_bu <- function(model){
+  UseMethod("reconcile_bu")
+}
+
+#' @export
+reconcile_bu.default <- function(model){
+  abort_invalid_modifier(model, "reconcile_bu", hint = reconcile_hint)
+}
+
+#' @export
+reconcile_bu.mdl_ts <- reconcile_bu.default
+
+#' @export
+reconcile_bu.mdl_lst <- function(model){
+  check_not_reconciled(model, "reconcile_bu")
+  mdl_wrap_col(model, c("mdl_lst_reconcile_bu", "mdl_lst_reconcile"))
+}
+
+#' @export
+reconcile_bu.mdl_df <- function(model){
+  modify_mdl_df(model, reconcile_bu)
+}
+
+#' @export
+reconcile_bu.mdl_spec <- function(model){
+  wrap_reconcile_spec(model, "bu", reconcile_bu)
 }
 
 #' @rdname reconcile_bu
 #' @export
 bottom_up <- function(models){
-  check_reconcile_models(models, "bottom_up")
-  structure(models, class = union("lst_btmup_mdl", class(models)))
+  reconcile_bu(models)
 }
 
 #' @export
-forecast.lst_btmup_mdl <- function(object, key_data, new_data = NULL, ...){
+forecast.mdl_lst_reconcile_bu <- function(object, key_data, new_data = NULL, ...){
   check_reconcile_interval(object, new_data)
   # Keep only bottom layer
   agg_data <- build_key_data_smat(key_data)
@@ -319,7 +380,9 @@ forecast.lst_btmup_mdl <- function(object, key_data, new_data = NULL, ...){
 #' are disaggregated as such, while other distributions give degenerate
 #' (point) forecasts.
 #'
-#' @param models A column of models in a mable.
+#' @param model A column of models in a mable (e.g. `mutate(ets = reconcile_mint(ets))`),
+#' a model data frame, or a model specification (e.g. `model(ets = reconcile_mint(ETS(y)))`).
+#' @param models Used instead of `model` by the superseded names.
 #' @param method The method used to compute the disaggregation proportions:
 #' the proportions of the forecasts (`"forecast_proportions"`), the average of
 #' the historical proportions (`"average_proportions"`), or the proportions of
@@ -348,21 +411,43 @@ forecast.lst_btmup_mdl <- function(object, key_data, new_data = NULL, ...){
 #'   forecast()
 #'
 #' @export
-reconcile_td <- function(models, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
-  check_reconcile_models(models, "reconcile_td")
-  top_down(models, method = method)
+reconcile_td <- function(model, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
+  match.arg(method)
+  UseMethod("reconcile_td")
+}
+
+#' @export
+reconcile_td.default <- function(model, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
+  abort_invalid_modifier(model, "reconcile_td", hint = reconcile_hint)
+}
+
+#' @export
+reconcile_td.mdl_ts <- reconcile_td.default
+
+#' @export
+reconcile_td.mdl_lst <- function(model, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
+  check_not_reconciled(model, "reconcile_td")
+  mdl_wrap_col(model, c("mdl_lst_reconcile_td", "mdl_lst_reconcile"), method = match.arg(method))
+}
+
+#' @export
+reconcile_td.mdl_df <- function(model, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
+  modify_mdl_df(model, reconcile_td, method = match.arg(method))
+}
+
+#' @export
+reconcile_td.mdl_spec <- function(model, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
+  wrap_reconcile_spec(model, "td", reconcile_td, method = match.arg(method))
 }
 
 #' @rdname reconcile_td
 #' @export
 top_down <- function(models, method = c("forecast_proportions", "average_proportions", "proportion_averages")){
-  check_reconcile_models(models, "top_down")
-  structure(models, class = union("lst_topdwn_mdl", class(models)),
-            method = match.arg(method))
+  reconcile_td(models, method = match.arg(method))
 }
 
 #' @export
-forecast.lst_topdwn_mdl <- function(object, key_data, new_data = NULL, ...){
+forecast.mdl_lst_reconcile_td <- function(object, key_data, new_data = NULL, ...){
   check_reconcile_interval(object, new_data)
   method <- object%@%"method"
   
@@ -512,7 +597,9 @@ propagate_forecast_proportions <- function(fc_mean, key_data, agg_order,
 #' the levels below it. Splitting at the bottom level is bottom-up
 #' reconciliation.
 #'
-#' @param models A column of models in a mable.
+#' @param model A column of models in a mable (e.g. `mutate(ets = reconcile_mint(ets))`),
+#' a model data frame, or a model specification (e.g. `model(ets = reconcile_mint(ETS(y)))`).
+#' @param models Used instead of `model` by the superseded names.
 #' @param split The middle level of the hierarchy from which the bottom-up and
 #' top-down approaches are used above and below respectively. Either the
 #' number of levels below the top level (starting from `1` for the level just
@@ -542,21 +629,42 @@ propagate_forecast_proportions <- function(fc_mean, key_data, agg_order,
 #'   forecast(h = 4)
 #'
 #' @export
-reconcile_mo <- function(models, split = 1){
-  check_reconcile_models(models, "reconcile_mo")
-  middle_out(models, split = split)
+reconcile_mo <- function(model, split = 1){
+  UseMethod("reconcile_mo")
+}
+
+#' @export
+reconcile_mo.default <- function(model, split = 1){
+  abort_invalid_modifier(model, "reconcile_mo", hint = reconcile_hint)
+}
+
+#' @export
+reconcile_mo.mdl_ts <- reconcile_mo.default
+
+#' @export
+reconcile_mo.mdl_lst <- function(model, split = 1){
+  check_not_reconciled(model, "reconcile_mo")
+  mdl_wrap_col(model, c("mdl_lst_reconcile_mo", "mdl_lst_reconcile"), split = split)
+}
+
+#' @export
+reconcile_mo.mdl_df <- function(model, split = 1){
+  modify_mdl_df(model, reconcile_mo, split = split)
+}
+
+#' @export
+reconcile_mo.mdl_spec <- function(model, split = 1){
+  wrap_reconcile_spec(model, "mo", reconcile_mo, split = split)
 }
 
 #' @rdname reconcile_mo
 #' @export
 middle_out <- function(models, split = 1){
-  check_reconcile_models(models, "middle_out")
-  structure(models, class = union("lst_midout_mdl", class(models)),
-            split = split)
+  reconcile_mo(models, split = split)
 }
 
 #' @export
-forecast.lst_midout_mdl <- function(object, key_data, new_data = NULL, ...){
+forecast.mdl_lst_reconcile_mo <- function(object, key_data, new_data = NULL, ...){
   check_reconcile_interval(object, new_data)
   split <- object%@%"split"
   
@@ -590,7 +698,7 @@ forecast.lst_midout_mdl <- function(object, key_data, new_data = NULL, ...){
   }
   # Splitting at the bottom level is bottom-up reconciliation
   if(split == length(agg_order)) {
-    class(object) <- c("lst_btmup_mdl", setdiff(class(object), "lst_midout_mdl"))
+    class(object) <- c("mdl_lst_reconcile_bu", setdiff(class(object), "mdl_lst_reconcile_mo"))
     attr(object, "split") <- NULL
     return(forecast(object, key_data = key_data, new_data = new_data, ...))
   }

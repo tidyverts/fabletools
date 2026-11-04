@@ -261,10 +261,10 @@ test_that("modifiers applied to model data frames", {
   expect_s3_class(boot$grp$ets, "mdl_lst_bootstrap_iid")
   expect_equal(NROW(forecast(boot, h = 2)), 2 * 4 * 2)
 
-  # Reconciliation applies to a column of models across the hierarchy
-  expect_error(mutate(mbl_grp, grp = reconcile_bu(grp)), "can't be applied to a model data frame")
-  expect_error(mutate(mbl_grp, grp = min_trace(grp)), "can't be applied to a model data frame")
-  expect_error(reconcile_mint(mbl_complex), "must be applied to a column of models")
+  # Reconciliation applies to each model column of a model data frame
+  expect_s3_class(mutate(mbl_grp, grp = reconcile_bu(grp))$grp$ets, "mdl_lst_reconcile_bu")
+  expect_s3_class(mutate(mbl_grp, grp = min_trace(grp))$grp$lm, "mdl_lst_reconcile_mint")
+  expect_error(reconcile_mint(mbl_complex), "not to a mable")
 
   # Modifiers can't be applied to a mable
   expect_error(simulate_iid(mbl_complex), "not to a mable")
@@ -317,7 +317,7 @@ test_that("bootstrapping a model data frame samples jointly across all of its mo
       snaive = fable::SNAIVE(value)
     ) %>%
     transmute(grp = bootstrap_iid(cbind(ses = reconcile_mint(ses), snaive = bootstrap_block(snaive)), times = 10))
-  expect_s3_class(fit$grp$ses, "lst_mint_mdl")
+  expect_s3_class(fit$grp$ses, "mdl_lst_reconcile_mint")
   expect_s3_class(fit$grp$snaive, "mdl_lst_bootstrap_block")
   # The seasonal naive residuals start a year later
   expect_warning(draws <- group_draws(fit$grp), "overlapping period")

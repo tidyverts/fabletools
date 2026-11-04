@@ -71,9 +71,10 @@ forecasts share the same resampled residuals. This includes the models of
 bootstrapped or reconciled columns within the model data frame.
 }
 
-The reconciliation functions (such as \code{\link[=reconcile_mint]{reconcile_mint()}}) can't be applied
-to a model data frame. Instead apply them to the model columns before
-combining them.
+The reconciliation functions (such as \code{\link[=reconcile_mint]{reconcile_mint()}}) are applied to
+each of its model columns separately, as reconciliation is across the series
+of a model, not across models.
+
 \code{\link[=interpolate]{interpolate()}} requires a mable with a single model column, which can't be
 a model data frame.
 }

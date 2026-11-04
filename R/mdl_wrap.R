@@ -45,10 +45,13 @@ model_list <- function(x) {
   x
 }
 
-abort_invalid_modifier <- function(model, fn, call = caller_env()) {
-  abort(sprintf(
-    "`%s()` must be applied to a model column (such as within `mutate()`), a model data frame, or a model specification, not <%s>.",
-    fn, class(model)[1]
+abort_invalid_modifier <- function(model, fn, hint = NULL, call = caller_env()) {
+  abort(c(
+    sprintf(
+      "`%s()` must be applied to a model column (such as within `mutate()`), a model data frame, or a model specification, not <%s>.",
+      fn, class(model)[1]
+    ),
+    if (!is.null(hint)) c("i" = hint)
   ), call = call)
 }
 
