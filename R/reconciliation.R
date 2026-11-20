@@ -503,7 +503,7 @@ forecast.mdl_lst_reconcile_td <- function(object, key_data, new_data = NULL, ...
     }
     # Name the distributions by their response
     return(map2(fc, fc_dist, function(fc, dist){
-      dimnames(dist) <- dimnames(fc)
+      dist_variates(dist) <- dist_variates(fc)
       dist
     }))
     
@@ -773,7 +773,7 @@ forecast.mdl_lst_reconcile_mo <- function(object, key_data, new_data = NULL, ...
   
   # Name the distributions by their response
   map(fc_dist, function(dist){
-    dimnames(dist) <- dimnames(fc[[1]])
+    dist_variates(dist) <- dist_variates(fc[[1]])
     dist
   })
 }
@@ -845,7 +845,7 @@ reconcile_fc_list <- function(fc, S, P, W, SP = NULL) {
   
   # Name the distributions by their response
   map2(fc, fc_dist, function(fc, dist){
-    dimnames(dist) <- dimnames(fc)
+    dist_variates(dist) <- dist_variates(fc)
     dist
   })
 }

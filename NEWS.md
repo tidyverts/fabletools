@@ -98,6 +98,9 @@ fitted model, and groundwork has been laid for mixtime-based tsibbles.
 * `get_frequencies()` now accepts mixtime durations, so seasonal periods and
   forecast horizons can be given as e.g. `forecast(h = mixtime::years(2L))`
   or `season(period = mixtime::weeks(1L))`.
+* Variate names of distributions are now read and set with
+  `distributional::variates()` when it exists, and with `dimnames()` for
+  released versions of distributional that predate it.
 * The `trend()`, `season()` and `fourier()` specials of `common_xregs` now
   count steps of the interval for mixtime indices using the index's own time
   units, rather than `default_time_units()`, which measures sub-daily

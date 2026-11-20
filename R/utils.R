@@ -376,6 +376,25 @@ dist_types <- function(dist) {
   map_chr(vec_data(dist), function(x) class(x)[1])
 }
 
+# Variate names of a distribution vector: `variates()` in newer versions of
+# distributional, and `dimnames()` in older versions.
+dist_variates <- function(x) {
+  if(has_variates()) distributional::variates(x) else dimnames(x)
+}
+
+`dist_variates<-` <- function(x, value) {
+  if(has_variates()) {
+    distributional::variates(x) <- value
+  } else {
+    dimnames(x) <- value
+  }
+  x
+}
+
+has_variates <- function() {
+  exists("variates", envir = asNamespace("distributional"), inherits = FALSE)
+}
+
 # Check that the data underlying a mable does not already contain columns whose
 # names are reserved for identifiers added to the output (such as `.model` from
 # forecast() or `.rep` from generate()). Without this check the name clash

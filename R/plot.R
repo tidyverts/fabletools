@@ -288,7 +288,7 @@ build_fbl_layer <- function(object, data = NULL, level = c(80, 95),
     }
     if (length(resp_var) > 1) abort("`show_gap = FALSE` is not yet supported for multivariate forecasts.")
     gap[[dist_var]] <- distributional::dist_degenerate(gap[[resp_var]])
-    dimnames(gap[[dist_var]]) <- resp_var
+    dist_variates(gap[[dist_var]]) <- resp_var
     gap <- as_fable(gap, index = !!idx, key = key_vars(object),
                     response = resp_var,
                     distribution = dist_var)

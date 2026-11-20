@@ -118,7 +118,7 @@ as_fable.forecast <- function(x, ..., point_forecast = list(.mean = mean)){
     }
   }
   out <- as_tsibble(x$mean)
-  dimnames(dist) <- "value"
+  dist_variates(dist) <- "value"
   out[["value"]] <- dist
   
   point_fc <- compute_point_forecasts(dist, point_forecast)
@@ -143,12 +143,12 @@ build_fable <- function (x, response, distribution) {
       class = c("fbl_df", "fbl_ts"))
   }
   check_fable_distribution(fbl)
-  if(is.null(dimnames(fbl[[distribution]]))) {
+  if(is.null(dist_variates(fbl[[distribution]]))) {
     warn("The dimnames of the fable's distribution are missing and have been set to match the response variables.")
-    dimnames(fbl[[distribution]]) <- response
+    dist_variates(fbl[[distribution]]) <- response
   }
-  if(!identical(response, dimnames(fbl[[distribution]]))) {
-    dimnames(fbl[[distribution]]) <- response
+  if(!identical(response, dist_variates(fbl[[distribution]]))) {
+    dist_variates(fbl[[distribution]]) <- response
   }
   validate_fable(fbl)
   fbl
@@ -178,7 +178,10 @@ as_tibble.grouped_fbl <- function(x, ...) {
 validate_fable <- function(fbl){
   stopifnot(inherits(fbl, "fbl_df"))
   chr_dist <- check_fable_distribution(fbl)
-  vec_assert(fbl[[chr_dist]], distributional::new_dist(dimnames = response_vars(fbl)))
+  dist <- fbl[[chr_dist]]
+  if(!inherits(dist, "distribution") || !identical(dist_variates(dist), response_vars(fbl))) {
+    abort("The fable's distribution must be a distribution vector with variates matching the response variables.")
+  }
 }
 
 check_fable_distribution <- function(fbl){

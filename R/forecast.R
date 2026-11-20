@@ -217,7 +217,7 @@ unnest_fable <- function(x, col, key, response, point_forecast) {
         vec_size(fc), NROW(new_data)
       ), call = NULL)
     }
-    dimnames(fc) <- response
+    dist_variates(fc) <- response
     new_data[[dist_col]] <- fc
     new_data[unique(c(index_var(new_data), dist_col, names(new_data)))]
   })
@@ -406,7 +406,7 @@ forecast_mdl_ts_setup <- function(object, new_data, h) {
 
 # The forecast distribution of a model, named by its response(s)
 forecast_mdl_ts_finalise <- function(fc, resp_vars) {
-  dimnames(fc) <- resp_vars
+  dist_variates(fc) <- resp_vars
   fc
 }
 
@@ -415,7 +415,7 @@ compute_point_forecasts <- function(distribution, measures){
     out <- f(distribution)
     # Empty distributions give NULL rather than an empty point forecast (#313)
     if(is.null(out) && length(distribution) == 0){
-      resp <- dimnames(distribution)
+      resp <- dist_variates(distribution)
       out <- if(length(resp) > 1) matrix(numeric(), 0, length(resp), dimnames = list(NULL, resp)) else numeric()
     }
     out

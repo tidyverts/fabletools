@@ -187,7 +187,7 @@ test_that("forecast() of models gives their forecast distributions", {
   fc <- forecast(mdls[[1]], h = 3)
   expect_s3_class(fc, "distribution")
   expect_length(fc, 3)
-  expect_identical(dimnames(fc), response_vars(mbl))
+  expect_identical(dist_variates(fc), response_vars(mbl))
 
   # A list of models gives a list of their distributions
   fc_lst <- forecast(mdls, h = 3)
