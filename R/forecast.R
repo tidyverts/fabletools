@@ -224,7 +224,7 @@ unnest_fable <- function(x, col, key, response, point_forecast) {
   x[["new_data"]] <- NULL
   x <- suppressWarnings(unnest_tsbl(x, col, parent_key = key))
 
-  point_fc <- compute_point_forecasts(x[[dist_col]], point_forecast)
+  point_fc <- compute_point_forecasts(x[[dist_col]], point_forecast, response)
   x[names(point_fc)] <- point_fc
   x <- x[unique(c(key, index_var(x), dist_col, names(point_fc), names(x)))]
   build_fable(x, response = response, distribution = dist_col)
@@ -410,13 +410,15 @@ forecast_mdl_ts_finalise <- function(fc, resp_vars) {
   fc
 }
 
-compute_point_forecasts <- function(distribution, measures){
+compute_point_forecasts <- function(distribution, measures, resp = dist_variates(distribution)){
   map(measures, function(f){
     out <- f(distribution)
-    # Empty distributions give NULL rather than an empty point forecast (#313)
-    if(is.null(out) && length(distribution) == 0){
-      resp <- dist_variates(distribution)
-      out <- if(length(resp) > 1) matrix(numeric(), 0, length(resp), dimnames = list(NULL, resp)) else numeric()
+    # Empty distributions can give NULL or a vector rather than an empty point
+    # forecast with a column for each response (#313)
+    if(length(distribution) == 0 && !is.matrix(out) && length(resp) > 1){
+      out <- matrix(numeric(), 0, length(resp), dimnames = list(NULL, resp))
+    } else if(is.null(out) && length(distribution) == 0){
+      out <- numeric()
     }
     out
   })
