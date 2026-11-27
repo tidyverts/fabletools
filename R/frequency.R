@@ -43,7 +43,7 @@ common_periods.interval <- function(x){
          "year" = c("year" = 1),
          "quarter" = c("year" = 4/x[["quarter"]]),
          "month" = c("year" = 12/x[["month"]]),
-         "week" = c("year" = 52/x[["week"]]),
+         "week" = c("year" = 365.25/7/x[["week"]]),
          "day" = c("year" = 365.25, "week" = 7)/x[["day"]],
          with(list(secs = freq_sec/sum(as.numeric(unlist(x[nm]))*freq_sec[nm])), secs[secs>1])
   )
@@ -75,7 +75,7 @@ common_periods_granules <- function(x){
   per_day <- granules_per_unit(x, cal$day(1L))
   if(!is.null(per_day)) {
     if(all(map_lgl(x, inherits, "mixtime::tu_week"))) {
-      return(c("year" = 52 * 7 * per_day))
+      return(c("year" = 365.25 * per_day))
     }
     if(per_day <= 1) {
       return(c("year" = 365.25, "week" = 7) * per_day)

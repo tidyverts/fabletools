@@ -109,6 +109,12 @@ fitted model, and groundwork has been laid for mixtime-based tsibbles.
 
 ## Bug fixes
 
+* The annual seasonal period of weekly data is now 365.25/7 (about 52.18)
+  rather than 52, so `common_periods()` and `get_frequencies()` agree with
+  text periods such as `"1 year"`, with daily data (365.25 days per year), and
+  with tsibble. Models that use the default seasonal period of weekly data,
+  such as `fourier()` terms, will give slightly different results.
+
 * Text forecast horizons of years or months (such as `h = "1 year"`) for data
   with a `Date` or `POSIXct` index now cover exactly that calendar period
   after the end of the data, e.g. 366 days when the year includes 29 February
