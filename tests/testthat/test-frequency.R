@@ -25,8 +25,8 @@ skip_if_no_granules <- function() {
 test_that("common_periods() for legacy index classes", {
   expect_equal(common_periods(freq_tsbl(ym0 + 0:23)), c(year = 12))
   expect_equal(common_periods(freq_tsbl(yq0 + 0:23)), c(year = 4))
-  expect_equal(common_periods(freq_tsbl(yw0 + 0:23)), c(year = 52))
-  expect_equal(common_periods(freq_tsbl(yw0 + 2*(0:23))), c(year = 26))
+  expect_equal(common_periods(freq_tsbl(yw0 + 0:23)), c(year = 365.25/7))
+  expect_equal(common_periods(freq_tsbl(yw0 + 2*(0:23))), c(year = 365.25/14))
   expect_equal(common_periods(freq_tsbl(d0 + 0:23)), c(year = 365.25, week = 7))
   expect_equal(common_periods(freq_tsbl(d0 + 2*(0:23))), c(year = 365.25, week = 7)/2)
   expect_equal(
@@ -47,6 +47,11 @@ test_that("get_frequencies() with text periods", {
   expect_equal(get_frequencies("2 years", freq_tsbl(yq0 + 0:23)), 8)
   expect_equal(get_frequencies("1 week", freq_tsbl(t0 + 3600*(0:23))), 168)
   expect_equal(get_frequencies("1 year", freq_tsbl(d0 + 0:23)), 365.25)
+  # The default weekly period matches the text period "1 year"
+  expect_equal(
+    unname(get_frequencies(NULL, freq_tsbl(yw0 + 0:23))),
+    get_frequencies("1 year", freq_tsbl(yw0 + 0:23))
+  )
   expect_equal(
     get_frequencies(NULL, freq_tsbl(t0 + 3600*(0:23)), .auto = "smallest"),
     c(day = 24)
@@ -100,7 +105,7 @@ test_that("common_periods() for mixtime indices", {
   skip_if_no_granules()
   expect_equal(common_periods(freq_tsbl(mixtime::yearmonth(600:623))), c(year = 12))
   expect_equal(common_periods(freq_tsbl(mixtime::yearquarter(200:223))), c(year = 4))
-  expect_equal(common_periods(freq_tsbl(mixtime::yearweek(2600:2623))), c(year = 52))
+  expect_equal(common_periods(freq_tsbl(mixtime::yearweek(2600:2623))), c(year = 365.25/7))
   expect_equal(
     common_periods(freq_tsbl(mixtime::date(d0 + 0:23))),
     c(year = 365.25, week = 7)
