@@ -49,7 +49,7 @@ test_that("get_frequencies() with text periods", {
   expect_equal(get_frequencies("1 year", freq_tsbl(d0 + 0:23)), 365.25)
   # The default weekly period matches the text period "1 year"
   expect_equal(
-    get_frequencies(NULL, freq_tsbl(yw0 + 0:23)),
+    unname(get_frequencies(NULL, freq_tsbl(yw0 + 0:23))),
     get_frequencies("1 year", freq_tsbl(yw0 + 0:23))
   )
   expect_equal(
